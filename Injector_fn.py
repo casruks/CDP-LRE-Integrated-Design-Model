@@ -1,4 +1,5 @@
 import numpy as np
+# injector(1712, 212, 1.2, 9.80665, 1137, 870, 1e-3, 1e-3, 5.52e5, 6.9e5, 1)
 
 def injector(F, Isp, OF, g0, rho_ox, rho_f, D_i_ox, D_i_f, dp_ox, dp_f, K_comp):
 
