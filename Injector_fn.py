@@ -1,6 +1,6 @@
 import numpy as np
 
-def injector(F, Isp, OF, g0, rho_ox, rho_f, D_i_ox, D_i_f, dp_ox, dp_f):
+def injector(F, Isp, OF, g0, rho_ox, rho_f, D_i_ox, D_i_f, dp_ox, dp_f, K_comp):
 
     def Massflow(OF, F, Isp, n, g0):
         m = (F/(Isp*g0))/n
@@ -9,7 +9,8 @@ def injector(F, Isp, OF, g0, rho_ox, rho_f, D_i_ox, D_i_f, dp_ox, dp_f):
         return [m_ox, m_f, m]
 
     #0.5-0.7. Changes with changing Re, is correct for only one set of conditions
-    def Discharge(K_comp, A_s, A_I): 
+    def Discharge(K_comp, A_s, A_I):
+        
         zeta_c = K_comp*0.5*(1 - A_s/A_I)**(3/4)    # For sudden contraction
         zeta_e = (1 - A_s/A_I)**2                   # For sudden expansion
         zeta = zeta_c + zeta_e
