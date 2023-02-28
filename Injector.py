@@ -1,4 +1,4 @@
-def injector(m, OF, A_s, A_I, rho_ox, rho_f, p_c):
+def injector(m, OF, A_s, A_I, rho_ox, rho_f):
     
     def Massflow(m, OF):
         m_ox = (OF/(OF+1))*m
@@ -39,4 +39,18 @@ def injector(m, OF, A_s, A_I, rho_ox, rho_f, p_c):
     dp_f = zeta * 0.5 * rho_ox*v_iox**2
     p_c = dp_ox / 0.1 #pintle
     
+    ## like doublet : https://ntrs.nasa.gov/citations/19720010642
+    D = 4.85e4*v_i**(-0.75)*d_j**0.57*(p_c/p_j)**(-0.52)
+    
+        #single jet
+    D = 15.9e4*v_i**(-1)*d_j**0.57*(p_c/p_j)**(-0.1)
+    
+    ## unlike doublet (same ref)
+    # single jet
+    d_f <= d_o #for both
+    D_f = 2.91e4*v_f**(-0.76*d_f**0.29)*(p_c/p_j)**(-0.65)*P_d**(0.165*(d_o/d_f)**(0.023))
+    D_o = 2.72e4*v_o**(-0.57*d_o**0.65)*(p_c/p_j)**(-0.3)*P_d**(-0.25*(d_o/d_f)**(-0.17))
     return v_i_ox, v_i_f, dp_ox, dp_f
+
+# V_inj and droplet size lvl 0
+# p_c at end
