@@ -1,6 +1,24 @@
 import Turbomachinery_code as Turbo
 import Injector as Inj
 
+#Default values
+class Default:
+    #Injectors
+    Cd = 1.0
+
+    #Nozzle
+
+
+    #Turbomachinery
+
+
+    #Combustion chamber
+
+
+    #Cooling
+
+    
+
 #Propellant class
 class Propellant:
     #Oxidizer
