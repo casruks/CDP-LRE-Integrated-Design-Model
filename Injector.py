@@ -30,8 +30,13 @@ def injector(m, OF, A_s, A_I, rho_ox, rho_f, p_c):
         b_pentad = 4/5
         b = [b_doublet, b_triplet, b_quadletA, b_quadletB, b_pentad]  #in order as above
         R = k*((rho_ox/rho_f)*(m_ox/m_f)**2)**b #orifice area ratio
-     
-     
+    
+    zeta = 0.7
+    
     v_iox = m_ox / (rho_ox*A_i_ox)
-    v_if = 
-    return v_i_ox, v_i_f, dp_inj
+    v_if = m_f / (rho_f*A_i_f)
+    dp_ox = zeta * 0.5 * rho_ox*v_iox**2
+    dp_f = zeta * 0.5 * rho_ox*v_iox**2
+    p_c = dp_ox / 0.1 #pintle
+    
+    return v_i_ox, v_i_f, dp_ox, dp_f
