@@ -1,0 +1,21 @@
+class Materials:
+    def __init__(self, material, density, yieldstress, Emod, OpTemp):
+        self.material = material
+        self.density = density
+        self.yieldstress = yieldstress
+        self.Emod = Emod
+        self.OpTemp = OpTemp
+
+steel = Materials('steel', 10, 20, 30,5)
+aluminium = Materials('aluminium', 40, 50, 60,5)
+carbon = Materials('carbon', 70, 80, 90,5)
+
+a = [steel,aluminium,carbon]
+
+pressure = 25
+
+for i in  a:
+    if i.yieldstress > pressure:
+        a = i.material
+        print(a)
+       
