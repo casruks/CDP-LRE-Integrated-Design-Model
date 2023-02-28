@@ -59,8 +59,14 @@ class Propellant:
     tq = 0.0
 
     def __init__(self,type):
-        if(type==1):
-            ox_dens=1141.0
+        match type:
+            case 0:
+                f_name = "LH"
+                o_name = "LOX"
+                
+        
+            case 1:
+                f_name = "CH4"
 
 prop = Propellant(0)
 
