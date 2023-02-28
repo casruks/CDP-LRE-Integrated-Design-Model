@@ -1,76 +1,65 @@
-#inputs: pc, At, type of propellant, material, safety factor
-#outputs: Length - check, thickness - check, Vchamber - check, h (heatflow) - check, Achamber - check
+#inputs: pc, At, Propellant, Material, safety factor, velocity,d0,Tc,of,bool
+#outputs: Thickness, Area of the Chamber, Conductive Heat transfer factor, Mass
 import math
 
-#d = d0 - lambda *t
-#define d0 as something that comes from injectors
-#vinj = sqrt(1/ksi)*sqrt(2*deltap/ro) -> need delta P and ksi from inject type
-# considering 90% oxidizer vaporized in order to compute t
-# t + velocity - > chamber length
-# Lstar = Vc / At - > Vc
-# chamber length + Vc - > Achamber
-#h = a * ro^0.8 * v^0.8 * (1/Dc)^0.2 * (k*Pr^0.33/niu^0.8)
-#Pr = 4*gama/(9*gama-5)
-#k = Pr / (niu*cp)
-# combustion chamber - shapes - cylindrical so far
-# t = pc  * Rchamber * safety factor / sigma material
-# Propellant dude needs to compute gama, cp, niu for the average o/f ratio
-import numpy as np
+#Pc - Chamber Pressure
+#At - Throat Area
+#Propellant - Class with Propellant qualities
+#Material - Class with Material qualities
+#Safety factor - Factor to compute thickness/etc
+#Velocity - Velocity of propellants after injector
+#d0 - diameter of drops after injection
+#Tc - Chamber Temperature
+#of - oxidizer/fuel ratio
+#bool - variable to say if this is on the pressure iteration loop
 
-def Lambda(Propellant):
-    if Propellant == 'blabla':
-        return 2
-    elif Propellant == 'blabla1':
-        return 3
-    else:
-        return 4
 
-def Lstar(Propellant):
-    if Propellant == 'blabla':
-        return 2
-    elif Propellant == 'blabla1':
-        return 3
-    else:
-        return 4
+def CombustionChamber (Pc,At,Propellant,Material,Safety,velocity,d0,Tc,of,bool):
 
-def PropertiesMaterial(Material):
-    if Material == 'blabla':
-        return 2
-    elif Material == 'blabla1':
-        return 3
-    else:
-        return 4
-
-def CombustionChamber (Pc,At,Propellant,Material,Safety,deltap,ksi,d0):
-    lamb = Lambda(Propellant)
     Vi = 4/3*math.pi*(d0/2)**3
     Vf = Vi * 0.1 #random value for now
     d = (3/4*Vf)**(1/3)*2
-    time = -(d-d0)/lamb #dquadrado
-    ro = 1000
-    velocity = math.sqrt(1/ksi)*math.sqrt(2*deltap/ro)
+    time_f = -(d-d0)/Propellant.lamb_f #dquadrado
+    time_o = -(d-d0)/Propellant.lamb_o
+
+
+    nfuel = 1/(of+1)
+    nox = 1-nfuel
+
+    gama = nox * Propellant.o_gama + nfuel * Propellant.f_gama
+    GAMA = math.sqrt(gama)*(2/(gama+1))**((gama+1)/(2*gama-2))
+
+    if time_f>time_o:
+        time = time_f
+    else:
+        time = time_o
 
     LengthChamber = velocity/time
-    lstar = Lstar(Propellant)
+    lstar = Propellant.tq * GAMA * math.sqrt(propellant.f_gamma*Tc)
+
+
 
     Vchamber = lstar * At
     Achamber = Vchamber / LengthChamber
     Rchamber = (Achamber/math.pi)**(1/2)
-    sigma = 1000000
-    sigma = PropertiesMaterial(Material)
-    Thickness = Pc * Rchamber * Safety / sigma
-    k = 1000
-    Mass = Achamber * Thickness * k #k is a value to be determined
+
+
+
+    Thickness = Pc * Rchamber * Safety / Material.yieldstress
+
+   if bool == 1:
+        Mass = Achamber * Thickness * Material.density
 
     a = 0.023
-    ro = 5
-    Pr = 5
-    cp = 5
-    niu = 5
+    #weighted averages for the several Parameters
+    ro = nox*Propellant.o_density + nfuel*Propellant.f_density
+    Pr = 4*gama/(9*gama-5)
+    cp = nox*Propellant.ocp + nfuel*Propellant.fcp
+    niu = nox*Propellant.omiu + nox*Propellant.fmiu
     k = (Pr/(niu*cp))
-    # ro,niu,Pr comes from propellant as well, so I'm using placeholders
-    h = a * ro**0.8 * velocity**0.8 * (1/(Rchamber*2))**0.2 * (k*Pr**0.33/niu**0.8)
-    return (Mass,Thickness,h,LengthChamber,Vchamber,Achamber)
 
-[Mass,Thickness,h_chamber,LengthChamber,Vchamber,Achamber]=CombustionChamber(1*10**6,0.02,'blabla','blabla',1.5,2*10^5,1,0.001)
-print(Mass,Thickness,h_chamber,LengthChamber,Vchamber,Achamber)
+    heattransfer = a * ro**0.8 * velocity**0.8 * (1/(Rchamber*2))**0.2 * (k*Pr**0.33/niu**0.8)
+    if bool == 0:
+        return (heattransfer,Achamber,Thickness)
+    else:
+        return (heattransfer,Achamber,Thickness,Mass)
