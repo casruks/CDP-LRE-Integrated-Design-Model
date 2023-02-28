@@ -29,6 +29,8 @@ class Default:
 
     #Cooling
 
+    #Igniters
+    ignburntime = 4
 
     #Material
     material = "This"
@@ -69,7 +71,7 @@ class Propellant:
                 f_name = "CH4"
 
 prop = Propellant(0)
-
+bool = 0 #this variable is used to show the combustor function we are in the first loop
 #Main Function
 if __name__ == '__main__':
     Thrust = 15000 #= input("Introduce thrust")
@@ -85,8 +87,8 @@ if __name__ == '__main__':
 
         #COmpute injector (1)
 
-        #Compute chamber
-        h_comb = Comb.CombustionChamber(p_new, At, prop, default.material, default.SF, inj_vel, D0)
+        #Compute chamber - needs Chamber temperature + oxider to fuel ratio from previous functions (Tc and of)
+        h_comb, Achamber, ThicknessChamber = Comb.CombustionChamber(p_new, At, prop, default.material, default.SF, inj_vel, D0,Tc,of,bool)
 
         #COmpute nozzle (2)
 
@@ -99,9 +101,10 @@ if __name__ == '__main__':
         #Cmpute Injector (2)
 
 
-
-    #Compute Ignitor
-
+    bool = 1 #Shows the combustor it is out of the loop in order to compute mass!
+    #Compute Ignitor - m is the mass flow, Hc is enthalpy of propelants at chamber exit, H0 is enthalpy of propelants at chamber entry
+    #For further information on igniter output, see comments on first line of the igniters functions
+    igniter_results = Igniters(m,Hc,H0)
     #Compute Masses
 
     #Compute reliability

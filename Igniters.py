@@ -1,3 +1,10 @@
+#Igniter function uses the following inputs:
+#m - mass flow
+#Hc - enthalpy of propellants at the end of the combustion chamber
+#H0 - enthalpy of propellants at the beggining of the combustion chamber
+#The output of the igniters function consists of a vector of the Subs class (this is defined right after this comment). For each element of the vector,
+#a different combination of substances is used to compute the mass needed for the igniter
+
 class Subs:
     def __init__(self):
         self.heatingvalues = '42 is the answer to the whole universe'
