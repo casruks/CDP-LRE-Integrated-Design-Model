@@ -63,7 +63,7 @@ class Propellant:
             case 0:
                 f_name = "LH"
                 o_name = "LOX"
-                
+
         
             case 1:
                 f_name = "CH4"
@@ -80,11 +80,15 @@ if __name__ == '__main__':
     inj_vel = default.inj_vel
     while abs(p_new-p_old)/p_old > default.pres_tol:
         p_new = p_old
-        #Compute nozzle
+        #Compute nozzle (1)
         At, Ae = nozzle()
+
+        #COmpute injector (1)
 
         #Compute chamber
         h_comb = Comb.CombustionChamber(p_new, At, prop, default.material, default.SF, inj_vel, D0)
+
+        #COmpute nozzle (2)
 
         #Compute regenerative
 
@@ -92,7 +96,7 @@ if __name__ == '__main__':
         #Compute Turbo
         Turbo.TurboM()
 
-        #Cmpute Injector
+        #Cmpute Injector (2)
 
 
 
