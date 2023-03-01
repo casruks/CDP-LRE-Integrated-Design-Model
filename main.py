@@ -19,9 +19,11 @@ class Default:
 
 
     #Turbomachinery
-    Eff_t = 0.5
-    Eff_p = 0.5
-    Eff_m = 0.95
+    Eff_t = 0.6 #Turbine efficiency
+    Eff_p = 0.6 #Pump efficiency
+    Eff_m = 0.95 #Mechanical efficiency between turbine and pumps
+    p_to = 1.0e5 #oxidizer tank storage pressure
+    p_tf = 1.0e5 #Fuel tank oxidizer pressure
 
     #Combustion chamber
     SF = 1.0
@@ -45,23 +47,23 @@ default = Default(0)
 #Propellant class
 class Propellant:
     #Oxidizer
-    o_name = "LOX"
-    o_dens = 1141.0
-    ocp = 14307.0
+    o_name = "LOX" #Oxidizer name for rocketCEA
+    o_dens = 1141.0 #Oxidizer density
+    ocp = 14307.0 #oxidizer cp
     o_lamb = 0.0
    
     #Fuel
-    f_name = "LH"
-    f_dens_l = 71.0
-    f_dens_g = 1.0
-    f_gamma = 1.4
-    fcp = 14307.0
-    R_f = 4.1573
+    f_name = "LH" #Fuel name for rocketCEA
+    f_dens_l = 71.0 #liquid fuel density
+    f_dens_g = 1.0 #gaseous fuel density
+    f_gamma = 1.4 #fuel gamma
+    fcp = 14307.0 #fuel cp
+    R_f = 4.1573 #fuel gas constant
     f_lamb = 0.0
     
     #Propellant
     gama = 1.4
-    tq = 0.0
+    tq = 0.0 #characteristic chemical time of propellant
 
     def __init__(self,type):
         match type:
@@ -99,7 +101,7 @@ if __name__ == '__main__':
 
 
         #Compute Turbo
-        Turbo.TurboM()
+        Turbo.TurboM(default, prop, O_F, p_a, Tf_cool, dptcool, m)
 
         #Cmpute Injector (2)
 

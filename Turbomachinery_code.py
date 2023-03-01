@@ -12,50 +12,61 @@ from scipy.optimize import least_squares
 from scipy.optimize import minimize
 import rocketcea as rc
 from rocketcea.cea_obj import CEA_Obj, add_new_fuel, add_new_oxidizer
+import Nozzle_turbine as NT
+
 
 #Values used during tests, corresponding to Global or software input
-P_entrance = 1.0e5
 O_F = 5.0
-eff_p = 0.6
-eff_t = 0.6
-eff_m = 0.95
 Pa = 1.0e5
 Tf_cool = 600.0
 dptcool = 1.0e5
 m = 2.0
-CYTYPE = "EX"
 
 #Placeholder for propellant class
 class Propellant:
-    o_dens = 1141.0
-    f_dens = 71.0
-    f_gamma = 1.4
-    fcp = 14307.0
-    R_f = 4.1573
+    o_dens = 1141.0 #oxidizer density
+    f_dens = 71.0 #fuel density
+    f_gamma = 1.4 #fuel gamma
+    fcp = 14307.0 #fuel cp
+    R_f = 4.1573 #fuel gas constant
 
-    def __init__(self,type):
+    def __init__(self,type): #Placeholder
         if(type==1):
             ox_dens=1141.0
 
 prop = Propellant(0)
 
+#Placeholder for default class
+class Default:
+    #Turbomachinery
+    cycle_type = "EX"
+    Eff_t = 0.6 #Turbine efficiency
+    Eff_p = 0.6 #Pump efficiency
+    Eff_m = 0.95 #Mechanical efficiency between turbine and pumps
+    p_to = 1.0e5 #oxidizer tank storage pressure
+    p_tf = 1.0e5 #Fuel tank oxidizer pressure
+
+def0 = Default()
+
 #Main function, which calls the function for the selected cycle type
-def TurboM(p_to, ptf, prop, O_F, eff_pump, eff_turb, eff_m, p_a, Tf_cool, dptcool, m, cycle_type):
-    match cycle_type:
+def TurboM(Default, prop, O_F, p_a, Tf_cool, dptcool, m):
+    match Default.cycle_type:
         case "GG": #Gas Generator
-            turbo = GG(p_to, ptf, prop, O_F, eff_pump, eff_turb, eff_m, Tf_cool, dptcool, m)
+            turbo = GG(Default.p_to, Default.ptf, prop, O_F, Default.Eff_pump, Default.Eff_turb, Default.Eff_m, Tf_cool, dptcool, m)
         case "EX": #Expander cycle
-            turbo = EX(p_to, ptf, prop, O_F, eff_pump, eff_turb, eff_m, Tf_cool, dptcool, m)
+            turbo = EX(Default.p_to, Default.ptf, prop, O_F, Default.Eff_pump, Default.Eff_turb, Default.Eff_m, Tf_cool, dptcool, m)
         case "SC": #Staged combustion cycle
-            turbo = SC(p_to, ptf, prop, O_F, eff_pump, eff_turb, eff_m, Tf_cool, dptcool, m)
+            turbo = SC(Default.p_to, Default.ptf, prop, O_F, Default.Eff_pump, Default.Eff_turb, Default.Eff_m, Tf_cool, dptcool, m)
         case "CB": #Coolant bleed cycle
-            turbo = CB(p_to, ptf, prop, O_F, eff_pump, eff_turb, eff_m, p_a, Tf_cool, dptcool, m)
+            turbo = CB(Default.p_to, Default.ptf, prop, O_F, Default.Eff_pump, Default.Eff_turb, Default.Eff_m, p_a, Tf_cool, dptcool, m)
         case "TO": #Combustion tap off cycle
-            turbo = TO(p_to, ptf, prop, O_F, eff_pump, eff_turb, eff_m, Tf_cool, dptcool, m) #Will not be currently implmented
+            turbo = TO(Default.p_to, Default.ptf, prop, O_F, Default.Eff_pump, Default.Eff_turb, Default.eff_m, Tf_cool, dptcool, m) #Will not be currently implmented
         case "NO": #No turbomachinery
             dptvalve = 0.0
             dptlines = 0.0
-            return [p_to-dptvalve-dptlines, ptf-dptvalve-dptlines]
+            return [Default.p_to-dptvalve-dptlines, Default.ptf-dptvalve-dptlines]
+        case "EL": #Electric motor to dirve pumps
+            turbo = EL(Default.p_to, Default.ptf, prop, O_F, Default.Eff_pump, Default.Eff_turb, Default.eff_m, Tf_cool, dptcool, m)
         case _:
             print("Cycle Not recognized")
             return
@@ -112,9 +123,9 @@ class EX:
         res = minimize(self.opt, [1.0e6], method = 'Nelder-Mead', bounds=[[0.0, 10.0e12]])
         dptfp = res["x"][0]
         dptop, pt1, pt2, ptinj = fsolve(self.equations,[1.0e6,1.0e7,1.0e6,1.0e6],dptfp)
-        Wop = O_F/(O_F+1.0) * m * dptop / (eff_p*prop.o_dens)
-        Wfp = 1.0/(O_F+1.0) * m * dptfp / (eff_p*prop.f_dens)
-        Wt = 1.0/(O_F+1.0) * m * eff_t * prop.fcp * Tf_cool * (1.0-(pt2/pt1)**((prop.f_gamma-1.0)/prop.f_gamma))
+        Wop = O_F/(O_F+1.0) * m * dptop / (self.eff_p*prop.o_dens)
+        Wfp = 1.0/(O_F+1.0) * m * dptfp / (self.eff_p*prop.f_dens)
+        Wt = 1.0/(O_F+1.0) * m * self.eff_t * prop.fcp * Tf_cool * (1.0-(pt2/pt1)**((prop.f_gamma-1.0)/prop.f_gamma))
         print(res)
         print([dptop, dptfp, pt1, pt2, ptinj])
         print([Wop,Wfp,Wt])
@@ -233,9 +244,9 @@ class CB:
         pt2 = res["x"][0]
         l = res["x"][1]
         dptop, pt1, dptfp = fsolve(self.equations,[1.0e6,1.0e7,1.0e7],(pt2,l))
-        Wop = self.m_O * dptop / (eff_p*prop.o_dens)
-        Wfp = (1.0/(1.0-l)) * self.m_F * dptfp / (eff_p*prop.f_dens)
-        Wt = (l/(1.0-l)) * self.m_F * eff_t * prop.fcp * Tf_cool * (1.0-(pt2/pt1)**((prop.f_gamma-1.0)/prop.f_gamma))
+        Wop = self.m_O * dptop / (self.eff_p*prop.o_dens)
+        Wfp = (1.0/(1.0-l)) * self.m_F * dptfp / (self.eff_p*prop.f_dens)
+        Wt = (l/(1.0-l)) * self.m_F * self.eff_t * prop.fcp * Tf_cool * (1.0-(pt2/pt1)**((prop.f_gamma-1.0)/prop.f_gamma))
         print(res)
         print([dptop, dptfp, pt1, pt2, l])
         print([Wop,Wfp,Wt])
@@ -350,8 +361,42 @@ class TO:
         self.m = m
 
 
+#Function that computes Electric driven pumps cycle
+class EL:
+     #Global input
+    ptanko : float
+    ptankf : float
+    prop : Propellant
+    O_F : float
+    eff_p : float
+    eff_t : float
+    eff_m : float
+
+    #Software input
+    Tf_cool : float
+    dptcool : float
+    m : float
+
+    #Output
+    dptop: float
+    dptfp: float
+    pt1: float
+    pt2: float
+    ptinj: float
+    Wt: float
+    Wop: float
+    Wfp: float
+
+    #Auxiliary
+    dptvalve = 0.0
+    dptlines = 0.0
+
+    def __init__(self, p_to, ptf, prop, O_F, eff_pump, eff_turb, eff_m, Tf_cool, dptcool, m):
+        print("not supported")
+
+
 #Main Function
 if __name__ == '__main__':
     print('Loading...')
-    TurboM(P_entrance, P_entrance, prop, O_F, eff_p, eff_t, eff_m, Pa, Tf_cool, dptcool, m, CYTYPE)
+    TurboM(def0, prop, O_F, Pa, Tf_cool, dptcool, m)
     print('\nProcess Terminated')
