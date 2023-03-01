@@ -2,6 +2,7 @@ import Turbomachinery_code as Turbo
 import CombustionChamber as Comb
 import Injector as Inj
 import Igniters as Ign
+import Reliability as Rel
 
 #Default values
 class Default:
@@ -118,6 +119,9 @@ if __name__ == '__main__':
     #Compute Masses
 
     #Compute reliability
+    ## cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC', 'S_FR_GG', 'SP_EX']
+    ## Prop = ['LOX_LH2', 'LOX_RP1']
+    # Rel.Reliability(t, cycle, Fnom, Fop, N, prop, 0)
 
     #Compute costs
 

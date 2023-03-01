@@ -1,0 +1,7 @@
+﻿Cycle,lambda,Cf,,
+D_FR_SC,3.29934E-06,0.164052677,,"Dual-Burner, Fuel Rich, Staged Combustion"
+D_FF_SC,3.07402E-06,0.160238653,,"Dual-Burner, Full Flow, Staged Combustion"
+S_FR_SC,3.23624E-06,0.160302253,,"Single-Burner, Fuel Rich, Staged Combustion"
+S_OR_SC,3.21616E-06,0.160760353,,"Single-Burner, Oxidizer Rich, Staged Combustion"
+S_FR_GG,3.03319E-06,0.156924849,,"Single-Burner, Fuel Rich, Gas Generator"
+SP_EX,2.80502E-06,0.150540982,,Split Expander
