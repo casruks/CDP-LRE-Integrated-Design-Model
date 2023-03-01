@@ -13,7 +13,7 @@ class Default:
     inj_vel = 15
 
     #Injectors
-    Cd = 1.0
+    Cd = 0.7
 
     #Nozzle
 
@@ -90,7 +90,12 @@ if __name__ == '__main__':
         #Compute nozzle (1)
         At, Ae = nozzle()
 
-        #COmpute injector (1)
+        #Compute injector (1)
+            # placeholders for propellant reference factor K_prop =1
+        mu_wax = 2.69e-3    # [lbm/(ft-s)]
+        sig_wax = 17        # [dynes/cm]    
+        rho_wax = 47.7      # [lbm/ft3]
+        v_iox, v_if, dp_ox, dp_f, D_f, D_o, p_c = Inj.injector1(Cd, m, O_F, Propellant.o_dens, Propellant.f_dens_l, p_inj, mu_prop, sig_prop, rho_prop)
 
         #Compute chamber - needs Chamber temperature + oxider to fuel ratio from previous functions (Tc and of)
         h_comb, Achamber, ThicknessChamber = Comb.CombustionChamber(p_new, At, prop, default.material, default.SF, inj_vel, D0,Tc,of,bool)
@@ -104,7 +109,7 @@ if __name__ == '__main__':
         Turbo.TurboM(default, prop, O_F, p_a, Tf_cool, dptcool, m)
 
         #Cmpute Injector (2)
-
+        p_c, dp_ox, dp_f = Inj.injector2(v_iox, v_if, D_f, D_o, ptinj, Cd, Propellant.o_dens, Propellant.f_dens_l)
 
     bool = 1 #Shows the combustor it is out of the loop in order to compute mass!
     #Compute Ignitor - m is the mass flow, Hc is enthalpy of propelants at chamber exit, H0 is enthalpy of propelants at chamber entry
