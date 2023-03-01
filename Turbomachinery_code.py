@@ -16,11 +16,11 @@ import Nozzle_turbine as NT
 
 
 #Values used during tests, corresponding to Global or software input
-O_F = 5.0
-Pa = 1.0e5
-Tf_cool = 600.0
-dptcool = 1.0e5
-m = 2.0
+O_F_ = 5.0
+Pa_ = 1.0e5
+Tf_cool_ = 600.0
+dptcool_ = 1.0e5
+m_ = 2.0
 
 #Placeholder for propellant class
 class Propellant:
@@ -34,7 +34,7 @@ class Propellant:
         if(type==1):
             ox_dens=1141.0
 
-prop = Propellant(0)
+prop_ = Propellant(0)
 
 #Placeholder for default class
 class Default:
@@ -44,7 +44,7 @@ class Default:
     Eff_p = 0.6 #Pump efficiency
     Eff_m = 0.95 #Mechanical efficiency between turbine and pumps
     p_to = 1.0e5 #oxidizer tank storage pressure
-    p_tf = 1.0e5 #Fuel tank oxidizer pressure
+    ptf = 1.0e5 #Fuel tank oxidizer pressure
 
 def0 = Default()
 
@@ -52,15 +52,15 @@ def0 = Default()
 def TurboM(Default, prop, O_F, p_a, Tf_cool, dptcool, m):
     match Default.cycle_type:
         case "GG": #Gas Generator
-            turbo = GG(Default.p_to, Default.ptf, prop, O_F, Default.Eff_pump, Default.Eff_turb, Default.Eff_m, Tf_cool, dptcool, m)
+            turbo = GG(Default.p_to, Default.ptf, prop, O_F, Default.Eff_p, Default.Eff_t, Default.Eff_m, p_a, Tf_cool, dptcool, m)
         case "EX": #Expander cycle
-            turbo = EX(Default.p_to, Default.ptf, prop, O_F, Default.Eff_pump, Default.Eff_turb, Default.Eff_m, Tf_cool, dptcool, m)
+            turbo = EX(Default.p_to, Default.ptf, prop, O_F, Default.Eff_p, Default.Eff_t, Default.Eff_m, Tf_cool, dptcool, m)
         case "SC": #Staged combustion cycle
-            turbo = SC(Default.p_to, Default.ptf, prop, O_F, Default.Eff_pump, Default.Eff_turb, Default.Eff_m, Tf_cool, dptcool, m)
+            turbo = SC(Default.p_to, Default.ptf, prop, O_F, Default.Eff_p, Default.Eff_t, Default.Eff_m, p_a, Tf_cool, dptcool, m)
         case "CB": #Coolant bleed cycle
-            turbo = CB(Default.p_to, Default.ptf, prop, O_F, Default.Eff_pump, Default.Eff_turb, Default.Eff_m, p_a, Tf_cool, dptcool, m)
+            turbo = CB(Default.p_to, Default.ptf, prop, O_F, Default.Eff_p, Default.Eff_t, Default.Eff_m, p_a, Tf_cool, dptcool, m)
         case "TO": #Combustion tap off cycle
-            turbo = TO(Default.p_to, Default.ptf, prop, O_F, Default.Eff_pump, Default.Eff_turb, Default.eff_m, Tf_cool, dptcool, m) #Will not be currently implmented
+            turbo = TO(Default.p_to, Default.ptf, prop, O_F, Default.Eff_p, Default.Eff_t, Default.Eff_m, p_a, Tf_cool, dptcool, m) #Will not be currently implmented
         case "NO": #No turbomachinery
             dptvalve = 0.0
             dptlines = 0.0
@@ -92,20 +92,20 @@ class EX:
     m : float
 
     #Output
-    dptop = 0.0
-    dptfp = 0.0
-    pt1 = 0.0
-    pt2 = 0.0
-    ptinj = 0.0
-    Wt = 0.0
-    Wop = 0.0
-    Wfp = 0.0
+    dptop : float
+    dptfp : float
+    pt1 : float
+    pt2 : float
+    ptinj : float
+    Wt : float
+    Wop : float
+    Wfp : float
 
     #Auxiliary
     dptvalve = 0.0
     dptlines = 0.0
 
-    def __init__(self, p_to, ptf, prop, O_F, eff_pump, eff_turb, eff_m, Tf_cool, dptcool, m):
+    def __init__(self, p_to : float, ptf : float, prop : Propellant, O_F : float, eff_pump : float, eff_turb : float, eff_m : float, Tf_cool : float, dptcool : float, m : float):
         print("Expander cycle selected")
         self.ptanko = p_to
         self.ptankf = ptf
@@ -121,14 +121,14 @@ class EX:
 
     def results(self):
         res = minimize(self.opt, [1.0e6], method = 'Nelder-Mead', bounds=[[0.0, 10.0e12]])
-        dptfp = res["x"][0]
-        dptop, pt1, pt2, ptinj = fsolve(self.equations,[1.0e6,1.0e7,1.0e6,1.0e6],dptfp)
-        Wop = O_F/(O_F+1.0) * m * dptop / (self.eff_p*prop.o_dens)
-        Wfp = 1.0/(O_F+1.0) * m * dptfp / (self.eff_p*prop.f_dens)
-        Wt = 1.0/(O_F+1.0) * m * self.eff_t * prop.fcp * Tf_cool * (1.0-(pt2/pt1)**((prop.f_gamma-1.0)/prop.f_gamma))
+        self.dptfp = res["x"][0]
+        self.dptop, self.pt1, self.pt2, self.ptinj = fsolve(self.equations,[1.0e6,1.0e7,1.0e6,1.0e6],self.dptfp)
+        self.Wop = self.O_F/(self.O_F+1.0) * self.m * self.dptop / (self.eff_p*self.prop.o_dens)
+        self.Wfp = 1.0/(self.O_F+1.0) * self.m * self.dptfp / (self.eff_p*self.prop.f_dens)
+        self.Wt = 1.0/(self.O_F+1.0) * self.m * self.eff_t * self.prop.fcp * self.Tf_cool * (1.0-(self.pt2/self.pt1)**((self.prop.f_gamma-1.0)/self.prop.f_gamma))
         print(res)
-        print([dptop, dptfp, pt1, pt2, ptinj])
-        print([Wop,Wfp,Wt])
+        print([self.dptop, self.dptfp, self.pt1, self.pt2, self.ptinj])
+        print([self.Wop,self.Wfp,self.Wt])
 
     def opt(self,dptfp):
         root = least_squares(self.equations,[1.0e6,1.0e7,1.0e6,1.0e6], args = dptfp, bounds = ((0.0,0.0,0.0,0.0),(10.0e10,10.0e10,10.0e10,10.0e10)))
@@ -161,20 +161,20 @@ class SC:
     m : float
 
     #Output
-    dptop: float
-    dptfp: float
-    pt1: float
-    pt2: float
-    ptinj: float
-    Wt: float
-    Wop: float
-    Wfp: float
+    dptop : float
+    dptfp : float
+    pt1 : float
+    pt2 : float
+    ptinj : float
+    Wt : float
+    Wop : float
+    Wfp : float
 
     #Auxiliary
     dptvalve = 0.0
     dptlines = 0.0
 
-    def __init__(self, p_to, ptf, prop, O_F, eff_pump, eff_turb, eff_m, Tf_cool, dptcool, m):
+    def __init__(self, p_to : float, ptf : float, prop : Propellant, O_F : float, eff_pump : float, eff_turb : float, eff_m : float, p_a : float, Tf_cool : float, dptcool : float, m : float):
         print("Staged Combustion cycle selected")
         self.ptanko = p_to
         self.ptankf = ptf
@@ -206,15 +206,15 @@ class CB:
     m : float
 
     #Output
-    dptop = 0.0
-    dptfp = 0.0
-    pt1 = 0.0
-    pt2 = 0.0
-    ptinj = 0.0
-    Wt = 0.0
-    Wop = 0.0
-    Wfp = 0.0
-    l = 0.0 #fraction of fuel for bleed
+    dptop : float
+    dptfp : float
+    pt1 : float
+    pt2 : float
+    ptinj : float
+    Wt : float
+    Wop : float
+    Wfp : float
+    l : float #fraction of fuel for bleed
 
     #Auxiliary
     dptvalve = 0.0
@@ -222,7 +222,7 @@ class CB:
     m_O = 1.0
     m_F = 1.0
 
-    def __init__(self, p_to, ptf, prop, O_F, eff_pump, eff_turb, eff_m, p_a, Tf_cool, dptcool, m):
+    def __init__(self, p_to : float, ptf : float, prop : Propellant, O_F : float, eff_pump : float, eff_turb : float, eff_m : float, p_a : float, Tf_cool : float, dptcool : float, m : float):
         print("Coolant bleed cycle selected")
         self.ptanko = p_to
         self.ptankf = ptf
@@ -241,15 +241,15 @@ class CB:
 
     def results(self):
         res = minimize(self.opt, [1.0e5,0.01], method = 'Nelder-Mead', bounds=[[self.pa,10.0e12],[1.0e-5,1.0]])
-        pt2 = res["x"][0]
-        l = res["x"][1]
-        dptop, pt1, dptfp = fsolve(self.equations,[1.0e6,1.0e7,1.0e7],(pt2,l))
-        Wop = self.m_O * dptop / (self.eff_p*prop.o_dens)
-        Wfp = (1.0/(1.0-l)) * self.m_F * dptfp / (self.eff_p*prop.f_dens)
-        Wt = (l/(1.0-l)) * self.m_F * self.eff_t * prop.fcp * Tf_cool * (1.0-(pt2/pt1)**((prop.f_gamma-1.0)/prop.f_gamma))
+        self.pt2 = res["x"][0]
+        self.l = res["x"][1]
+        self.dptop, self.pt1, self.dptfp = fsolve(self.equations,[1.0e6,1.0e7,1.0e7],(self.pt2,self.l))
+        self.Wop = self.m_O * self.dptop / (self.eff_p*self.prop.o_dens)
+        self.Wfp = (1.0/(1.0-self.l)) * self.m_F * self.dptfp / (self.eff_p*self.prop.f_dens)
+        self.Wt = (self.l/(1.0-self.l)) * self.m_F * self.eff_t * self.prop.fcp * self.Tf_cool * (1.0-(self.pt2/self.pt1)**((self.prop.f_gamma-1.0)/self.prop.f_gamma))
         print(res)
-        print([dptop, dptfp, pt1, pt2, l])
-        print([Wop,Wfp,Wt])
+        print([self.dptop, self.dptfp, self.pt1, self.pt2, self.l])
+        print([self.Wop,self.Wfp,self.Wt])
 
     def opt(self,vars):
         root = least_squares(self.equations,[1.0e6,1.0e7,1.0e7], args = vars, bounds = ((10.0,self.pa,10.0),(10.0e10,10.0e10,10.0e10)))
@@ -290,20 +290,20 @@ class GG:
     m : float
 
     #Output
-    dptop: float
-    dptfp: float
-    pt1: float
-    pt2: float
-    ptinj: float
-    Wt: float
-    Wop: float
-    Wfp: float
+    dptop : float
+    dptfp : float
+    pt1 : float
+    pt2 : float
+    ptinj : float
+    Wt : float
+    Wop : float
+    Wfp : float
 
     #Auxiliary
     dptvalve = 0.0
     dptlines = 0.0
 
-    def __init__(self, p_to, ptf, prop, O_F, eff_pump, eff_turb, eff_m, Tf_cool, dptcool, m):
+    def __init__(self, p_to : float, ptf : float, prop : Propellant, O_F : float, eff_pump : float, eff_turb : float, eff_m : float, p_a : float, Tf_cool : float, dptcool : float, m : float):
         print("Gas generator cycle selected")
         self.ptanko = p_to
         self.ptankf = ptf
@@ -334,20 +334,20 @@ class TO:
     m : float
 
     #Output
-    dptop: float
-    dptfp: float
-    pt1: float
-    pt2: float
-    ptinj: float
-    Wt: float
-    Wop: float
-    Wfp: float
+    dptop : float
+    dptfp : float
+    pt1 : float
+    pt2 : float
+    ptinj : float
+    Wt : float
+    Wop : float
+    Wfp : float
 
     #Auxiliary
     dptvalve = 0.0
     dptlines = 0.0
 
-    def __init__(self, p_to, ptf, prop, O_F, eff_pump, eff_turb, eff_m, Tf_cool, dptcool, m):
+    def __init__(self, p_to : float, ptf : float, prop : Propellant, O_F : float, eff_pump : float, eff_turb : float, eff_m : float, p_a : float, Tf_cool : float, dptcool : float, m : float):
         print("not supported")
         self.ptanko = p_to
         self.ptankf = ptf
@@ -378,25 +378,25 @@ class EL:
     m : float
 
     #Output
-    dptop: float
-    dptfp: float
-    pt1: float
-    pt2: float
-    ptinj: float
-    Wt: float
-    Wop: float
-    Wfp: float
+    dptop : float
+    dptfp : float
+    pt1 : float
+    pt2 : float
+    ptinj : float
+    Wt : float
+    Wop : float
+    Wfp : float
 
     #Auxiliary
     dptvalve = 0.0
     dptlines = 0.0
 
-    def __init__(self, p_to, ptf, prop, O_F, eff_pump, eff_turb, eff_m, Tf_cool, dptcool, m):
+    def __init__(self, p_to : float, ptf : float, prop : Propellant, O_F : float, eff_pump : float, eff_turb : float, eff_m : float, Tf_cool : float, dptcool : float, m : float):
         print("not supported")
 
 
 #Main Function
 if __name__ == '__main__':
     print('Loading...')
-    TurboM(def0, prop, O_F, Pa, Tf_cool, dptcool, m)
+    print(TurboM(def0, prop_, O_F_, Pa_, Tf_cool_, dptcool_, m_))
     print('\nProcess Terminated')
