@@ -3,11 +3,19 @@ import CombustionChamber as Comb
 import Injector as Inj
 import Igniters as Ign
 import Reliability as Rel
+import Nozzle_loop_1 as Nz_1
+import Nozzle_loop_2 as Nz_2
+import Nozzle_turbine as Nz_t
 
 #Default values
 class Default:
     #Tolerances
     pres_tol = 0.01
+    toll_c_star = 0.01
+    toll_F_obj = 0.01
+    Max_iterations_mass_flow = 10000
+    toll_P_adapted = 0.01
+    
 
     #Seeds
     Pres = 1e6
@@ -17,7 +25,12 @@ class Default:
     Cd = 0.7
 
     #Nozzle
-
+    MR = 0
+    De_max = 2.5
+    Theta_con = 60
+    Theta_conical = 15
+    Theta_bell = 55
+    TH_exit_bell = 3
 
     #Turbomachinery
     Eff_t = 0.6 #Turbine efficiency
@@ -48,19 +61,21 @@ default = Default(0)
 #Propellant class
 class Propellant:
     #Oxidizer
-    o_name = "LOX" #Oxidizer name for rocketCEA
+    Ox_name = "LOX" #Oxidizer name for rocketCEA
     o_dens = 1141.0 #Oxidizer density
     ocp = 14307.0 #oxidizer cp
     o_lamb = 0.0
    
     #Fuel
-    f_name = "LH" #Fuel name for rocketCEA
+    Fuel_name = "LH" #Fuel name for rocketCEA
     f_dens_l = 71.0 #liquid fuel density
     f_dens_g = 1.0 #gaseous fuel density
     f_gamma = 1.4 #fuel gamma
     fcp = 14307.0 #fuel cp
     R_f = 4.1573 #fuel gas constant
     f_lamb = 0.0
+    
+    Frozen_state=0
     
     #Propellant
     gama = 1.4
@@ -82,6 +97,7 @@ bool = 0 #this variable is used to show the combustor function we are in the fir
 if __name__ == '__main__':
     Thrust = 15000 #= input("Introduce thrust")
     Thrust_time = 30 #= input("Introduce thrust time")
+    Pamb = 1.01325 #= input("Introudce ambient pressure (bar)")
 
     p_new = 0.0
     p_old = default.Pres
@@ -89,7 +105,7 @@ if __name__ == '__main__':
     while abs(p_new-p_old)/p_old > default.pres_tol:
         p_new = p_old
         #Compute nozzle (1)
-        At, Ae = nozzle()
+        m,Tc,O_F,At,eps,Isp = Nz_1(p_new,Thrust,Pamb,Propellant,Default)
 
         #Compute injector (1)
             # placeholders for propellant reference factor K_prop =1
@@ -102,7 +118,7 @@ if __name__ == '__main__':
         h_comb, Achamber, ThicknessChamber = Comb.CombustionChamber(p_new, At, prop, default.material, default.SF, inj_vel, D0,Tc,of,bool)
 
         #COmpute nozzle (2)
-
+        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz=Nz_2(p_new, Tc, Propellant, Material, Nozzle_type, O_F, eps, At, m, Dc, Default)
         #Compute regenerative
 
 
