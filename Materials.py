@@ -24,7 +24,7 @@ def Material_Select(pressure):
     return a
 
 
-#Computing Mass Conical: 
+#Computing Mass: 
 x = [(1,2),(3,4),(5,6)]
  
 def Mass(x,t,material):
