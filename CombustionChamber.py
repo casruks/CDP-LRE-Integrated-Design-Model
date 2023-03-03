@@ -48,19 +48,19 @@ def CombustionChamber (Pc,At,Propellant,Material,Safety,velocity,d0,Tc,of,bool):
 
     Thickness = Pc * Rchamber * Safety / Material.yieldstress
 
-   if bool == 1:
+    if bool == 1:
         Mass = Achamber * Thickness * Material.density
 
-   a = 0.023
-   #weighted averages for the several Parameters
-   ro = nox*Propellant.o_dens + nfuel*Propellant.f_dens_g
-   Pr = 4*gama/(9*gama-5)
-   cp = nox*Propellant.ocp + nfuel*Propellant.fcp
-   niu = nox*Propellant.omiu + nox*Propellant.fmiu
-   k = (Pr/(niu*cp))
+    a = 0.023
+    #weighted averages for the several Parameters
+    ro = nox*Propellant.o_dens + nfuel*Propellant.f_dens_g
+    Pr = 4*gama/(9*gama-5)
+    cp = nox*Propellant.ocp + nfuel*Propellant.fcp
+    niu = nox*Propellant.omiu + nox*Propellant.fmiu
+    k = (Pr/(niu*cp))
 
     heattransfer = a * ro**0.8 * velocity**0.8 * (1/(Rchamber*2))**0.2 * (k*Pr**0.33/niu**0.8)
-   if bool == 0:
+    if bool == 0:
         return (heattransfer,dchamber,Thickness)
-   #else:
-   #    return (heattransfer,dchamber,Thickness,Mass)
+    else:
+        return (heattransfer,dchamber,Thickness,Mass)
