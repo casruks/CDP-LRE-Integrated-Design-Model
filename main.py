@@ -7,6 +7,10 @@ import Nozzle_loop_1 as Nz_1
 import Nozzle_loop_2 as Nz_2
 import Nozzle_turbine as Nz_t
 
+p_a = 1.0e5
+Thrust = 15000
+Thurst_time = 60
+
 #Default values
 class Default:
     #Tolerances
@@ -46,6 +50,7 @@ class Default:
     #Cooling
     Dr = 0.01
     A=0.0003
+
     #Igniters
     ignburntime = 4
 
@@ -88,7 +93,6 @@ class Propellant:
                 f_name = "LH"
                 o_name = "LOX"
 
-        
             case 1:
                 f_name = "CH4"
 
@@ -120,6 +124,7 @@ if __name__ == '__main__':
 
         #COmpute nozzle (2)
         t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz=Nz_2(p_new, Tc, Propellant, Material, Nozzle_type, O_F, eps, At, m, Dc, Default)
+        
         #Compute regenerative
 
 
