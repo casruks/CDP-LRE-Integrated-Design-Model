@@ -1,16 +1,19 @@
 class Materials:
-    def __init__(self, material, density, yieldstress, Emod, OpTemp):
+    def __init__(self, material, density, yieldstress_l, yieldstress_u, Emod, OpTemp_l, OpTemp_u, cost):
         self.material = material
         self.density = density
-        self.yieldstress = yieldstress
+        self.yieldstress_l = yieldstress_l
+        self.yieldstress_u = yieldstress_u
         self.Emod = Emod
-        self.OpTemp = OpTemp
+        self.OpTemp_l = OpTemp_l
+        self.OpTemp_u = OpTemp_u
+        self.cost = cost
 
-steel = Materials('steel', 10, 20, 30, 1200)
-aluminium = Materials('aluminium', 40, 50, 60, 660)
-carbon = Materials('carbon', 70, 80, 90, 5)
 
-a = [steel,aluminium,carbon]
+Rhenium = Materials('Rhenium', 21000, 1060*10**6, 2300*10**6,471*10**9, 0, 997, 938)
+
+
+
 
 pressure = 25
 
@@ -18,4 +21,3 @@ for i in  a:
     if i.yieldstress > pressure:
         a = i.material
         print(a)
-       
