@@ -20,7 +20,6 @@ def Material_Select(pressure):
     for i in a:
         if i.yieldstress_l > pressure:
             a = i.material
-            print(a)
     return a
 
 
@@ -34,7 +33,6 @@ def Mass(x,t,material):
     
     vol = total_dist*t*2*mth.pi
     Mass = vol*material.density
-    print(Mass)
     return Mass
 
 
