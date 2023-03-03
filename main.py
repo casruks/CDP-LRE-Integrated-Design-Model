@@ -130,13 +130,12 @@ if __name__ == '__main__':
         sig_prop = 17        # [dynes/cm]    
         rho_prop = 47.7      # [lbm/ft3]
         Cd = 0.7
-        v_iox, v_if, dp_ox, dp_f, D_f, D_o, p_c = Inj.injector1(Cd, m, O_F, Propellant.o_dens, Propellant.f_dens_l, p_inj, mu_prop, sig_prop, rho_prop)
+        v_iox, v_if, dp_ox, dp_f, D_f, D_o = Inj.injector1(Cd, m, O_F, Propellant.o_dens, Propellant.f_dens_l, mu_prop, sig_prop, rho_prop)
         #Compute chamber - needs Chamber temperature + oxider to fuel ratio from previous functions (Tc and of)
         h_comb, Dc, ThicknessChamber = Comb.CombustionChamber(p_new, At, prop, default.material, default.SF, inj_vel, D_o, Tc, O_F, bool)
 
         #COmpute nozzle (2)
-
-        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz=Nz_2(p_new, Tc, Propellant, Mt.Materials, Default.Nozzle_type, O_F, eps, At, m, Dc, Default)
+        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz=Nz_2(p_new, Tc, Propellant, Mt.steel, Default.Nozzle_type, O_F, eps, At, m, Dc, Default)
         
         #Compute regenerative
         Tf_cool, T_w_after_cooling,dptcool=Cooling.regCool.Run(Tw_ad_noz[0], h_c_noz, t_noz[0],Propellant,Mt.steal,default.Dr,default.A,default.T_fuel_tanks,Re,m*1/(1+O_F),default.L)
@@ -150,9 +149,9 @@ if __name__ == '__main__':
     bool = 1 #Shows the combustor it is out of the loop in order to compute mass!
     #Compute Ignitor - m is the mass flow, Hc is enthalpy of propelants at chamber exit, H0 is enthalpy of propelants at chamber entry
     #For further information on igniter output, see comments on first line of the igniters functions
-    igniter_results = Igniters(m,Hc,H0)
+    # igniter_results = Igniters(m,Hc,H0)
     #Compute Masses
-
+    print(p_c)
     #Compute reliability
     ## cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC', 'S_FR_GG', 'SP_EX']
     ## Prop = ['LOX_LH2', 'LOX_RP1']

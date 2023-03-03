@@ -6,9 +6,9 @@ class Materials:
         self.Emod = Emod
         self.OpTemp = OpTemp
 
-steel = Materials('steel', 10, 20, 30,1200)
-aluminium = Materials('aluminium', 40, 50, 60,660)
-carbon = Materials('carbon', 70, 80, 90,5)
+steel = Materials('steel', 10, 20, 30, 1200)
+aluminium = Materials('aluminium', 40, 50, 60, 660)
+carbon = Materials('carbon', 70, 80, 90, 5)
 
 a = [steel,aluminium,carbon]
 
