@@ -6,7 +6,7 @@
 
 import numpy as np
 
-def injector1(C_d, m, OF, rho_ox, rho_f, p_inj, mu_prop, sig_prop, rho_prop):
+def injector1(C_d, m, OF, rho_ox, rho_f, mu_prop, sig_prop, rho_prop):
     
     #PLACEHOLDERS (incl. userinput)
     # C_d = 0.7
