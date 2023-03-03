@@ -2,17 +2,8 @@ import math
 from scipy.integrate import quad
 import scipy.optimize
 import scipy.constants 
-import Propellant_class_placeholder
 
-#Temp, so I can try this out
-class Materials:
-    def __init__(self, material, density, yieldstress, Emod, OpTemp,k):
-        self.material = material
-        self.density = density
-        self.yieldstress = yieldstress
-        self.Emod = Emod
-        self.OpTemp = OpTemp
-        self.k=k
+
 
 
 
@@ -84,7 +75,7 @@ class RegenerativeCool:
     def pressureloss(m_flow_fuel,Dr,L):
         delta_p=self.f*m_flow_fuel**2/(2*self.Prop.density)*L/Dr
 
-    def Run(self,Tr, hg, t, Prop : Propellant_class_placeholder.Propellant,Mater : Materials ,Dr,A,Ti_co,Re,m_flow_fuel,L):
+    def Run(self,Tr, hg, t, Prop ,Mater  ,Dr,A,Ti_co,Re,m_flow_fuel,L):
         self.Q=0
         self.Pr=4*Prop.f_gamma/(9*Prop.f_gamma-5)
         self.f=(1.82*math.log10(Re)-1.64)**(-2)
