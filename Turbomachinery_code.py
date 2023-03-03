@@ -72,7 +72,7 @@ def TurboM(Default, prop, O_F, p_a, Tf_cool, dptcool, m):
             return
     
     turbo.results();
-    return [turbo.dptop,turbo.dptfp,turbo.pt1,turbo.pt2,turbo.ptinj,turbo.Wt,turbo.Wop,turbo.Wfp]
+    return [turbo.ptinj]
             
 
 #Function that computes the expander cycle
