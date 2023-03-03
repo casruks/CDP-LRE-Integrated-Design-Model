@@ -20,7 +20,6 @@ class Default:
     toll_F_obj = 0.01
     Max_iterations_mass_flow = 10000
     toll_P_adapted = 0.01
-    
 
     #Seeds
     Pres = 1e6
@@ -30,6 +29,7 @@ class Default:
     Cd = 0.7
 
     #Nozzle
+    Nozzle_type = 0
     MR = 0
     De_max = 2.5
     Theta_con = 60
