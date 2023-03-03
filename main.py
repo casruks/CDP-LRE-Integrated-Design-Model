@@ -48,7 +48,6 @@ class Default:
     #Combustion chamber
     SF = 1.0
 
-
     #Cooling
     Dr = 0.01
     A=0.0003
@@ -121,21 +120,19 @@ if __name__ == '__main__':
         rho_prop = 47.7      # [lbm/ft3]
         Cd = 0.7
         v_iox, v_if, dp_ox, dp_f, D_f, D_o, p_c = Inj.injector1(Cd, m, O_F, Propellant.o_dens, Propellant.f_dens_l, p_inj, mu_prop, sig_prop, rho_prop)
-
         #Compute chamber - needs Chamber temperature + oxider to fuel ratio from previous functions (Tc and of)
-        h_comb, Achamber, ThicknessChamber = Comb.CombustionChamber(p_new, At, prop, default.material, default.SF, inj_vel, D0,Tc,of,bool)
+        h_comb, Dc, ThicknessChamber = Comb.CombustionChamber(p_new, At, prop, default.material, default.SF, inj_vel, D_o, Tc, O_F, bool)
 
         #COmpute nozzle (2)
-        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz=Nz_2(p_new, Tc, Propellant, Mt.Materials, Nozzle_type, O_F, eps, At, m, Dc, Default)
+        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz=Nz_2(p_new, Tc, Propellant, Mt.Materials, Default.Nozzle_type, O_F, eps, At, m, Dc, Default)
         
         #Compute regenerative
 
 
         #Compute Turbo
-        Turbo.TurboM(default, prop, O_F, p_a, Tf_cool, dptcool, m)
+        ptinj = Turbo.TurboM(default, prop, O_F, p_a, Tf_cool, dptcool, m)
 
         #Cmpute Injector (2)
-        
         p_c, dp_ox, dp_f = Inj.injector2(v_iox, v_if, D_f, D_o, ptinj, Cd, Propellant.o_dens, Propellant.f_dens_l)
 
     bool = 1 #Shows the combustor it is out of the loop in order to compute mass!
