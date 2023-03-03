@@ -44,7 +44,8 @@ class Default:
 
 
     #Cooling
-
+    Dr = 0.01
+    A=0.0003
     #Igniters
     ignburntime = 4
 
