@@ -153,7 +153,7 @@ if __name__ == '__main__':
     bool = 1 #Shows the combustor it is out of the loop in order to compute mass!
     #Compute Ignitor - m is the mass flow, Hc is enthalpy of propelants at chamber exit, H0 is enthalpy of propelants at chamber entry
     #For further information on igniter output, see comments on first line of the igniters functions
-    # igniter_results = Igniters(m,Hc,H0)
+    # igniter_results = Igniters(m,Hc,H0,default)
     #Compute Masses
     print(p_new)
     #Compute reliability

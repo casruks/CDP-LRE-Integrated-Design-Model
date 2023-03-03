@@ -13,7 +13,7 @@ class Subs:
 
 
 
-def Igniters (m,Hc,H0):
+def Igniters (m,Hc,H0,default):
 
     Power = m *(Hc-H0)
 
