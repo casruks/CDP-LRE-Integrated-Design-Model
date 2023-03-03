@@ -17,13 +17,13 @@ def Turbine_nozzle(m_p,Pc,Tc,Prop,Pamb,Default,h_fuel,h_ox,rho_fuel,rho_ox):
 
     card_str="""
     oxid {} {} 
-    h,kj/mol={} t(k)={} rho={}
+    h,kj/kg={} t(k)={} rho={}
     """.format(Ox,Ox_composition,h_ox,Tc,rho_ox)
     add_new_oxidizer('Ox_turbine',card_str)
 
     card_str="""
     fuel {} {} 
-    h,kj/mol={} t(k)={} rho={}
+    h,kj/kg={} t(k)={} rho={}
     """.format(Fuel,Fuel_composition,h_fuel,Tc,rho_fuel)
 
     add_new_fuel('Fuel_turbine',card_str)
