@@ -6,11 +6,15 @@ import Reliability as Rel
 import Nozzle_loop_1 as Nz_1
 import Nozzle_loop_2 as Nz_2
 import Nozzle_turbine as Nz_t
+import Cooling
 import Materials as Mt
 
 p_a = 1.0e5
 Thrust = 15000
 Thurst_time = 60
+
+
+
 
 #Default values
 class Default:
@@ -51,6 +55,9 @@ class Default:
     #Cooling
     Dr = 0.01
     A=0.0003
+
+    T_fuel_tanks = 20
+    T_ox_tanks = 60
 
     #Igniters
     ignburntime = 4
@@ -108,6 +115,10 @@ if __name__ == '__main__':
     p_new = 0.0
     p_old = default.Pres
     inj_vel = default.inj_vel
+
+    
+    T_w_after_cooling = 0;#Temperature after cooling
+    regCool=Cooling.RegenerativeCool();#inicialise cooling
     while abs(p_new-p_old)/p_old > default.pres_tol:
         p_new = p_old
         #Compute nozzle (1)
@@ -124,10 +135,11 @@ if __name__ == '__main__':
         h_comb, Dc, ThicknessChamber = Comb.CombustionChamber(p_new, At, prop, default.material, default.SF, inj_vel, D_o, Tc, O_F, bool)
 
         #COmpute nozzle (2)
+
         t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz=Nz_2(p_new, Tc, Propellant, Mt.Materials, Default.Nozzle_type, O_F, eps, At, m, Dc, Default)
         
         #Compute regenerative
-
+        Tf_cool, T_w_after_cooling,dptcool=Cooling.regCool.Run(Tw_ad_noz[0], h_c_noz, t_noz[0],Propellant,Mt.steal,default.Dr,default.A,default.T_fuel_tanks,Re,m*1/(1+O_F),default.L)
 
         #Compute Turbo
         ptinj = Turbo.TurboM(default, prop, O_F, p_a, Tf_cool, dptcool, m)
