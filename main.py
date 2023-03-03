@@ -37,6 +37,7 @@ class Default:
     TH_exit_bell = 3
 
     #Turbomachinery
+    cycle_type = "EX"
     Eff_t = 0.6 #Turbine efficiency
     Eff_p = 0.6 #Pump efficiency
     Eff_m = 0.95 #Mechanical efficiency between turbine and pumps
