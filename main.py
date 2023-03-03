@@ -135,7 +135,7 @@ if __name__ == '__main__':
         h_comb, Dc, ThicknessChamber = Comb.CombustionChamber(p_new, At, prop, default.material, default.SF, inj_vel, D_o, Tc, O_F, bool)
 
         #COmpute nozzle (2)
-        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz=Nz_2(p_new, Tc, Propellant, Mt.steel, Default.Nozzle_type, O_F, eps, At, m, Dc, Default)
+        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz,Re_t=Nz_2(p_new, Tc, Propellant, Mt.steel, Default.Nozzle_type, O_F, eps, At, m, Dc, Default)
         
         #Compute regenerative
         Tf_cool, T_w_after_cooling,dptcool=Cooling.regCool.Run(Tw_ad_noz[0], h_c_noz, t_noz[0],Propellant,Mt.steel,default.Dr,default.A,default.T_fuel_tanks,Re,m/(1+O_F),default.L)
