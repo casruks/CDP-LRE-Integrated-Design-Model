@@ -20,17 +20,17 @@ class Heatsink():
         self.T_calculated=-1;
 
     #Final T after a certain operation time dt, assuming a nozzle mass
-    def Tcalculation(self, T0, Tf,h,A,c,dt,m=self.m):
+    def Tcalculation(self, T0, Tf,h,A,c,dt,m):
         self.T_calculated = (T0-Tf)*math.e**(-h*A/(m*c)*dt)+Tf
 
     #Heat absorved assuming a certain nozzle mass
-    def Qcalculation(self,T0, Tf,h,A,c,dt,m=self.m):
+    def Qcalculation(self,T0, Tf,h,A,c,dt,m):
        Q_int_arg =  lambda time: h*(Tf-((T0-Tf)*math.e**(-h*A/(m*c)*time)+Tf))*A
        self.Q=quad(Q_int_arg,0,dt)
 
     #mass such that the nozzle doesn't melt
     def mcalculation(self,T0, Tf,h,A,Tmelt,c,dt):
-        if T_melt==Tf:
+        if Tmelt==Tf:
             raise ValueError('T_melt==Tf, error in mass calculation, for this equality only works after infinite time has passed')
         self.m=h*A*dt/(-math.log((Tmelt-Tf)/(T0-Tf))*c)
 
@@ -45,14 +45,14 @@ class RadiationCool:
         self.t=(h*(Tr-Tmelt)/(eps*scipy.constants.sigma)**(1/4)-Tmelt)/(Tr-Tmelt)*k/h
         self.Q=h(Tr-Tmelt)
     
-    def Tcalculation_system(self,x,Tr, eps,k,t=self.t):
+    def Tcalculation_system(self,x,Tr, eps,k,t,h):
         Ti, Tout=x
         return [ h*(Tr-Ti)-(Tout-Ti)*k/t,
             eps*scipy.constants.sigma*Tout**4- h*(Tr-Ti)
         ]
 
 
-    def Tcalculation(self,Toutguess,Tinguess,Tr, eps,k,t=self.t):
+    def Tcalculation(self,Toutguess,Tinguess,Tr, eps,k,t):
         x0=[Toutguess,Tinguess]
         sol=scipy.optimize.fsolve(self.Tcalculation_system,x0,args=(Tr, eps,k,t))
         self.T_calculated=sol[0]
@@ -63,16 +63,16 @@ class RegenerativeCool:
         self.t=0; #thickness
         self.T_calculated=-1;
 
-    def Tcalculation(self,Tr,Ti_co,A):
+    def Tcalculation(self,Tr,Ti_co,A,hg):
 
-            q=(Tr-Ti_co)/(1/hg+t/self.Mater.k+1/self.hco)
+            q=(Tr-Ti_co)/(1/hg+self.t/self.Mater.k+1/self.hco)
             self.Q += q*A
             Tinext_co=Ti_co+q*A/(self.Prop.fcp*self.m_flow_fuel)
             T_wall=self.t/self.Mater.k*q+Ti_co+q/self.hco
 
             return Tinext_co, T_wall
 
-    def pressureloss(m_flow_fuel,Dr,L):
+    def pressureloss(self,m_flow_fuel,Dr,L):
         delta_p=self.f*m_flow_fuel**2/(2*self.Prop.density)*L/Dr
 
     def Run(self,Tr, hg, t, Prop ,Mater  ,Dr,A,Ti_co,Re,m_flow_fuel,L):
@@ -88,7 +88,7 @@ class RegenerativeCool:
         self.t = t
         self.Mater = Mater()
         
-        T_co_calcualted, T_wall_calcualted = self.Tcalculation(Tr,Ti_co,A)
+        T_co_calcualted, T_wall_calcualted = self.Tcalculation(Tr,Ti_co,A,hg)
         ploss=self.pressureloss(m_flow_fuel,Dr,L)
 
         #T_co_list=[0 for i in range(len(Tr))]
