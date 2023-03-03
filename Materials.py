@@ -11,8 +11,9 @@ class Materials:
 
 
 Rhenium = Materials('Rhenium', 21000, 1060*10**6, 2300*10**6,471*10**9, 0, 997, 938)
+Rhenium2 = Materials('Rhenium', 21000, 1060*10**6, 2300*10**6,471*10**9, 0, 997, 938)
 
-
+a = [Rhenium, Rhenium2]
 
 
 pressure = 25
