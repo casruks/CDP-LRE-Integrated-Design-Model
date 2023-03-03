@@ -73,20 +73,22 @@ class RegenerativeCool:
             return Tinext_co, T_wall
 
     def pressureloss(self,m_flow_fuel,Dr,L):
-        delta_p=self.f*m_flow_fuel**2/(2*self.Prop.density)*L/Dr
+        delta_p=self.f*m_flow_fuel**2/(2*self.Prop.f_dens_l)*L/Dr
+        return delta_p
+        
 
     def Run(self,Tr, hg, t, Prop ,Mater  ,Dr,A,Ti_co,Re,m_flow_fuel,L):
         self.Q=0
         self.Pr=4*Prop.f_gamma/(9*Prop.f_gamma-5)
         self.f=(1.82*math.log10(Re)-1.64)**(-2)
-        self.Nu=self.f/8*(Re-1000)*self.Pr/(1+12.7*math.sqrt(self.f/8)*(self.Pr^2/3-1))
-        self.hco=self.Nu*self.Mater.k/Dr
+        self.Nu=self.f/8*(Re-1000)*self.Pr/(1+12.7*math.sqrt(self.f/8)*(self.Pr**2/3-1))
+        self.hco=self.Nu*Mater.k/Dr
         
         self.Prop = Prop
         self.m_flow_fuel = m_flow_fuel
 
         self.t = t
-        self.Mater = Mater()
+        self.Mater = Mater
         
         T_co_calcualted, T_wall_calcualted = self.Tcalculation(Tr,Ti_co,A,hg)
         ploss=self.pressureloss(m_flow_fuel,Dr,L)

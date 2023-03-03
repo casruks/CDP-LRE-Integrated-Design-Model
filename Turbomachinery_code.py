@@ -114,7 +114,7 @@ class EX:
         self.eff_p = eff_pump
         self.eff_t = eff_turb
         self.eff_m = eff_m
-        self.Tf_cool = Tf_cool
+        self.Tf_cool = 450.0
         self.dptcool = dptcool
         self.m = m
 
@@ -140,7 +140,7 @@ class EX:
             self.ptanko - self.dptvalve + dptop - self.dptlines - pinj,
             self.ptankf - self.dptvalve + dptfp - self.dptcool - p1t,
             p2t - self.dptlines - pinj,
-            self.O_F*dptop/(self.eff_p*self.prop.o_dens) + dptfp/(self.eff_p*self.prop.f_dens) - self.eff_m*self.eff_t*self.prop.fcp*self.Tf_cool*(1.0-(p2t/p1t)**((self.prop.f_gamma-1.0)/self.prop.f_gamma))
+            self.O_F*dptop/(self.eff_p*self.prop.o_dens) + dptfp/(self.eff_p*self.prop.f_dens_l) - self.eff_m*self.eff_t*self.prop.fcp*self.Tf_cool*(1.0-(p2t/p1t)**((self.prop.f_gamma-1.0)/self.prop.f_gamma))
             ]
 
     

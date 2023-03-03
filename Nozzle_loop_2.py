@@ -25,7 +25,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     import math as mth
     import matplotlib.pyplot as plt
     import numpy as geek
-    
+    Pc=Pc/100000.0
     Ox=Propellant.Ox_name
     Fuel=Propellant.Fuel_name
     frozen_state=Propellant.Frozen_state
@@ -230,7 +230,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         eps_it=i/At
         rhos_div=ispObj.get_Densities(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state,frozenAtThroat=frozen_state)
         cps_div=ispObj.get_HeatCapacities(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state,frozenAtThroat=frozen_state)
-        gs_div=ispObj.get_exit_MolWt_gamma(Pc,MR,eps_it,frozen_state)
+        gs_div=ispObj.get_exit_MolWt_gamma(Pc,MR,eps_it)
         u_sound=ispObj.get_SonicVelocities(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state,frozenAtThroat=frozen_state)
         Mach_n=ispObj.get_MachNumber(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state,frozenAtThroat=frozen_state)
         Transp=ispObj.get_Exit_Transport(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state)
@@ -239,7 +239,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         v_it=u_it*Mach_n
         rho_div_it=rhos_div[2]
         cp_div_it=cps_div[2]
-        g_div_it=gs_div[2]
+        g_div_it=gs_div[1]
         mu_div_it=Transp[1]
         Pr_div_it=Transp[3]
         k_div_it=Transp[2]
@@ -252,17 +252,25 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         Mach_div.append(Mach_n)
         k_div.append(k_div_it);
     
-    r_div=Pr_div**(1/3)
-    Tw_ad_div=T_div*(1+r_div*(g_div-1)/2*Mach_div**2)
-
+    r_div=Pr_div
+    Tw_ad_div=r_div
+    T_f_div=Pr_div
+    for i in range(len(Pr_div)):
+        r_div[i]=Pr_div[i]**(1/3)
+        Tw_ad_div[i]=T_div[i]*(1+r_div[i]*(g_div[i]-1)/2*Mach_div[i]**2)
+        T_f_div[i]=0.5*T_w+0.28*T_div[i]+0.22*Tw_ad_div[i]
     Tw_ad_noz=geek.concatenate((Tw_ad_con,Tw_ad_div))
 
-    T_f_div=0.5*T_w+0.28*T_div+0.22*Tw_ad_div # Film temperature in the divergent calculated as in Ziebland
+     # Film temperature in the divergent calculated as in Ziebland
     T_f_con=0.5*T_w+0.28*T_con+0.22*Tw_ad_con # Film temperature in convergent
 
     a_b=0.026
-    h_c_div=1.213*a_b*m_p**0.8*mu_div**0.2*cp_div*Pr_div**(-0.6)*(2*y_2)**(-1)*(Tc/T_f_div)**0.68
-    h_c_con=1.213*a_b*m_p**0.8*mu_con**0.2*cp_con*Pr_con**(-0.6)*(2*y_1)**(-1)*(Tc/T_f_con)**0.68
+    h_c_div=mu_div
+    for i in range(len(mu_div)):
+        h_c_div[i]=1.213*a_b*m_p**0.8*mu_div[i]**0.2*cp_div[i]*Pr_div[i]**(-0.6)*(2*y_2[i])**(-1)*(Tc/T_f_div[i])**0.68
+    h_c_con=T_f_con
+    for i in range(len(T_f_con)):
+        h_c_con[i]=1.213*a_b*m_p**0.8*mu_con[i]**0.2*cp_con[i]*Pr_con[i]**(-0.6)*(2*y_1[i])**(-1)*(Tc/T_f_con[i])**0.68
 
     h_c_noz=geek.concatenate((h_c_con,h_c_div))
 
@@ -272,7 +280,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     t_noz=SF*P_noz*y_noz/sig #Thickness of the wall in the nozzle
 
     sound_speeds=ispObj.get_SonicVelocities(Pc=Pc,MR=MR,eps=eps,frozen=frozen_state,frozenAtThroat=frozen_state)
-    u_t=sound_speeds(1)
+    u_t=sound_speeds[1]
     Re_t=rho_t*u_t*R_t*2/mu_t
 
     return t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz,Re_t;
