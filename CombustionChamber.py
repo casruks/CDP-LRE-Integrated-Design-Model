@@ -19,8 +19,8 @@ def CombustionChamber (Pc,At,Propellant,Material,Safety,velocity,d0,Tc,of,bool):
     Vi = 4/3*math.pi*(d0/2)**3
     Vf = Vi * 0.1 #random value for now
     d = (3/4*Vf)**(1/3)*2
-    time_f = -(d-d0)/f_lamb #dquadrado
-    time_o = -(d-d0)/o_lamb
+    time_f = -(d-d0)/Propellant.f_lamb #dquadrado
+    time_o = -(d-d0)/Propellant.o_lamb
 
 
     nfuel = 1/(of+1)
