@@ -74,7 +74,7 @@ class Propellant:
     o_lamb = 0.0
    
     #Fuel
-    Fuel_name = "LH" #Fuel name for rocketCEA
+    Fuel_name = "LH2" #Fuel name for rocketCEA
     f_dens_l = 71.0 #liquid fuel density
     f_dens_g = 1.0 #gaseous fuel density
     f_gamma = 1.4 #fuel gamma
