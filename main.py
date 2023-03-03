@@ -116,9 +116,9 @@ if __name__ == '__main__':
 
         #Compute injector (1)
             # placeholders for propellant reference factor K_prop =1
-        mu_wax = 2.69e-3    # [lbm/(ft-s)]
-        sig_wax = 17        # [dynes/cm]    
-        rho_wax = 47.7      # [lbm/ft3]
+        mu_prop = 2.69e-3    # [lbm/(ft-s)]
+        sig_prop = 17        # [dynes/cm]    
+        rho_prop = 47.7      # [lbm/ft3]
         Cd = 0.7
         v_iox, v_if, dp_ox, dp_f, D_f, D_o, p_c = Inj.injector1(Cd, m, O_F, Propellant.o_dens, Propellant.f_dens_l, p_inj, mu_prop, sig_prop, rho_prop)
 
