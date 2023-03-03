@@ -6,6 +6,7 @@ import Reliability as Rel
 import Nozzle_loop_1 as Nz_1
 import Nozzle_loop_2 as Nz_2
 import Nozzle_turbine as Nz_t
+import Materials as Mt
 
 p_a = 1.0e5
 Thrust = 15000
@@ -124,7 +125,7 @@ if __name__ == '__main__':
         h_comb, Achamber, ThicknessChamber = Comb.CombustionChamber(p_new, At, prop, default.material, default.SF, inj_vel, D0,Tc,of,bool)
 
         #COmpute nozzle (2)
-        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz=Nz_2(p_new, Tc, Propellant, Material, Nozzle_type, O_F, eps, At, m, Dc, Default)
+        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz=Nz_2(p_new, Tc, Propellant, Mt.Materials, Nozzle_type, O_F, eps, At, m, Dc, Default)
         
         #Compute regenerative
 
