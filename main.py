@@ -138,7 +138,7 @@ if __name__ == '__main__':
         t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz=Nz_2(p_new, Tc, Propellant, Mt.steel, Default.Nozzle_type, O_F, eps, At, m, Dc, Default)
         
         #Compute regenerative
-        Tf_cool, T_w_after_cooling,dptcool=Cooling.regCool.Run(Tw_ad_noz[0], h_c_noz, t_noz[0],Propellant,Mt.steal,default.Dr,default.A,default.T_fuel_tanks,Re,m*1/(1+O_F),default.L)
+        Tf_cool, T_w_after_cooling,dptcool=Cooling.regCool.Run(Tw_ad_noz[0], h_c_noz, t_noz[0],Propellant,Mt.steel,default.Dr,default.A,default.T_fuel_tanks,Re,m/(1+O_F),default.L)
 
         #Compute Turbo
         ptinj = Turbo.TurboM(default, prop, O_F, p_a, Tf_cool, dptcool, m)
