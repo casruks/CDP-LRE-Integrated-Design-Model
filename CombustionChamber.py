@@ -46,7 +46,7 @@ def CombustionChamber (Pc,At,Propellant,Material,Safety,velocity,d0,Tc,of,bool):
 
 
 
-    Thickness = Pc * Rchamber * Safety / Material.yieldstress
+    Thickness = Pc * Rchamber * Safety / Material.yieldstress_l
 
     if bool == 1:
         Mass = Achamber * Thickness * Material.density

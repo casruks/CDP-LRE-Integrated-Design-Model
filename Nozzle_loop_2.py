@@ -22,7 +22,6 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
 
     from rocketcea.cea_obj import add_new_fuel, add_new_oxidizer
     from rocketcea.cea_obj_w_units import CEA_Obj
-    from rocketcea import blend
     import math as mth
     import matplotlib.pyplot as plt
     import numpy as geek
@@ -33,7 +32,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     
     ispObj = CEA_Obj( oxName=Ox, fuelName=Fuel,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise')
 
-    T_w=Material.T_wall
+    T_w=Material.OpTemp_u
     theta_con=mth.radians(Default.Theta_con)
     Theta_conical=mth.radians(Default.Theta_conical)
     Theta_bell=mth.radians(Default.Theta_bell)
@@ -136,8 +135,8 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     Ts=ispObj.get_Temperatures(Pc=Pc,MR=MR,eps=eps,frozen=frozen_state,frozenAtThroat=frozen_state)
     rhos=ispObj.get_Densities(Pc=Pc,MR=MR,eps=eps,frozen=frozen_state,frozenAtThroat=frozen_state)
     cps=ispObj.get_HeatCapacities(Pc=Pc,MR=MR,eps=eps,frozen=frozen_state,frozenAtThroat=frozen_state)
-    gs=ispObj.get_Throat_MolWt_gamma(Pc=Pc,MR=MR,esp=eps,frozen=frozen_state)
-    gsc=ispObj.get_Chamber_MolWt_gamma(Pc=Pc,MR=MR,esp=eps)
+    gs=ispObj.get_Throat_MolWt_gamma(Pc=Pc,MR=MR,eps=eps,frozen=frozen_state)
+    gsc=ispObj.get_Chamber_MolWt_gamma(Pc=Pc,MR=MR,eps=eps)
 
     Transp_c=ispObj.get_Chamber_Transport(Pc=Pc,MR=MR,eps=eps,frozen=frozen_state)
     Transp_t=ispObj.get_Throat_Transport(Pc=Pc,MR=MR,eps=eps,frozen=frozen_state)
@@ -201,7 +200,9 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     cp_con=cp_c+a_cp_con*x_1 # heat capacity in the convergent
 
     rho_con=P_con/(R_con*T_con)
-    u_con=mth.sqrt(T_con*g_con*R_con)
+    u_con=T_con
+    for i in range(len(T_con)):
+        u_con[i]=mth.sqrt(T_con[i]*g_con[i]*R_con[i])
     y_1=geek.concatenate((y_con,y_throat1))
     y_2=geek.concatenate((y_throat2,y_div))
     A_con=mth.pi*y_1**2
@@ -229,19 +230,19 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         eps_it=i/At
         rhos_div=ispObj.get_Densities(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state,frozenAtThroat=frozen_state)
         cps_div=ispObj.get_HeatCapacities(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state,frozenAtThroat=frozen_state)
-        gs_div=ispObj.get_exit_MolWt_gamma(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state,frozenAtThroat=frozen_state)
+        gs_div=ispObj.get_exit_MolWt_gamma(Pc,MR,eps_it,frozen_state)
         u_sound=ispObj.get_SonicVelocities(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state,frozenAtThroat=frozen_state)
         Mach_n=ispObj.get_MachNumber(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state,frozenAtThroat=frozen_state)
         Transp=ispObj.get_Exit_Transport(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state)
 
-        u_it=u_sound(2)
+        u_it=u_sound[2]
         v_it=u_it*Mach_n
         rho_div_it=rhos_div[2]
         cp_div_it=cps_div[2]
         g_div_it=gs_div[2]
         mu_div_it=Transp[1]
         Pr_div_it=Transp[3]
-        k_div_it=Trans[2]
+        k_div_it=Transp[2]
         rho_div.append(rho_div_it)
         cp_div.append(cp_div_it)
         g_div.append(g_div_it)
@@ -265,7 +266,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
 
     h_c_noz=geek.concatenate((h_c_con,h_c_div))
 
-    sig=Material.sigma_y
+    sig=Material.yieldstress_l
     SF=Default.Safety_factor
 
     t_noz=SF*P_noz*y_noz/sig #Thickness of the wall in the nozzle

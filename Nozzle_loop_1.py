@@ -110,7 +110,7 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default):
                 Ae=Ae_1 # Finish iteration if we have reached the convergence
                 Pe=Pe_1;
             
-            eps_actual=Ae_1/At;
+        eps_actual=Ae/At;
         
         Isp_it=ispObj.estimate_Ambient_Isp(Pc=Pc,MR=MR,eps=eps_actual,Pamb=Pamb,frozen=frozen_state,frozenAtThroat=frozen_state) # Calculates Isp for this iteration
         v_eff_it=Isp_it[0]*9.80665; # Calculates effective velocity for this iteration

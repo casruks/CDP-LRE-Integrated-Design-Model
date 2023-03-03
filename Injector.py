@@ -87,7 +87,7 @@ def injector1(C_d, m, OF, rho_ox, rho_f, mu_prop, sig_prop, rho_prop):
 
     return v_iox, v_if, D_f, D_o
 
-def injector0(v_iox, v_if, D_f, D_o, p_inj, C_d, rho_ox, rho_f):
+def injector2(v_iox, v_if, D_f, D_o, p_inj, C_d, rho_ox, rho_f):
     
     t = 0
     InjTypes = ['like', 'unlike', 'pintle']

@@ -24,6 +24,7 @@ class Default:
     toll_F_obj = 0.01
     Max_iterations_mass_flow = 10000
     toll_P_adapted = 0.01
+    Safety_factor=1.3
 
     #Seeds
     Pres = 1e6
@@ -40,6 +41,7 @@ class Default:
     Theta_conical = 15
     Theta_bell = 55
     TH_exit_bell = 3
+    R_u_ratio=1
 
     #Turbomachinery
     cycle_type = "EX"
@@ -78,7 +80,8 @@ class Propellant:
     Ox_name = "LOX" #Oxidizer name for rocketCEA
     o_dens = 1141.0 #Oxidizer density
     ocp = 14307.0 #oxidizer cp
-    o_lamb = 0.0
+    o_lamb = 1.0e-3
+    omiu=1.0e-6
    
     #Fuel
     Fuel_name = "LH2" #Fuel name for rocketCEA
@@ -87,13 +90,14 @@ class Propellant:
     f_gamma = 1.4 #fuel gamma
     fcp = 14307.0 #fuel cp
     R_f = 4.1573 #fuel gas constant
-    f_lamb = 0.0
+    f_lamb = 1.0e-3
+    fmiu=1.0e-6
     
     Frozen_state=0
     
     #Propellant
     gama = 1.4
-    tq = 0.0 #characteristic chemical time of propellant
+    tq = 0.9 #characteristic chemical time of propellant
 
     def __init__(self,type):
         match type:
@@ -122,7 +126,7 @@ if __name__ == '__main__':
     while abs(p_new-p_old)/p_old > default.pres_tol:
         p_new = p_old
         #Compute nozzle (1)
-        m,Tc,O_F,At,eps,Isp = Nz_1(p_new,Thrust,Pamb,prop,default)
+        m,Tc,O_F,At,eps,Isp = Nz_1.Nozzle_loop_1(p_new,Thrust,Pamb,prop,default)
 
         #Compute injector (1)
             # placeholders for propellant reference factor K_prop =1
@@ -130,28 +134,28 @@ if __name__ == '__main__':
         sig_prop = 17        # [dynes/cm]    
         rho_prop = 47.7      # [lbm/ft3]
         Cd = 0.7
-        v_iox, v_if, dp_ox, dp_f, D_f, D_o = Inj.injector1(Cd, m, O_F, prop.o_dens, prop.f_dens_l, mu_prop, sig_prop, rho_prop)
+        v_iox, v_if, D_f, D_o = Inj.injector1(Cd, m, O_F, prop.o_dens, prop.f_dens_l, mu_prop, sig_prop, rho_prop)
         #Compute chamber - needs Chamber temperature + oxider to fuel ratio from previous functions (Tc and of)
-        h_comb, Dc, ThicknessChamber = Comb.CombustionChamber(p_new, At, prop, default.material, default.SF, inj_vel, D_o, Tc, O_F, bool)
+        h_comb, Dc, ThicknessChamber = Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF, inj_vel, D_o, Tc, O_F, bool)
 
         #COmpute nozzle (2)
-        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz,Re_t=Nz_2(p_new, Tc, prop, Mt.steel, default.Nozzle_type, O_F, eps, At, m, Dc, default)
+        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz,Re_t=Nz_2.Nozzle_loop(p_new, Tc, prop, Mt.Rhenium, default.Nozzle_type, O_F, eps, At, m, Dc, default)
         
         #Compute regenerative
-        Tf_cool, T_w_after_cooling,dptcool=Cooling.regCool.Run(Tw_ad_noz[0], h_c_noz, t_noz[0],prop,Mt.steel,default.Dr,default.A,default.T_fuel_tanks,Re_t,m/(1+O_F),default.L)
+        Tf_cool, T_w_after_cooling,dptcool=regCool.Run(Tw_ad_noz[0], h_c_noz, t_noz[0],prop,Mt.Rhenium,default.Dr,default.A,default.T_fuel_tanks,Re_t,m/(1+O_F),default.L)
 
         #Compute Turbo
         ptinj = Turbo.TurboM(default, prop, O_F, p_a, Tf_cool, dptcool, m)
 
         #Cmpute Injector (2)
-        p_c, dp_ox, dp_f = Inj.injector2(v_iox, v_if, D_f, D_o, ptinj, Cd, prop.o_dens, prop.f_dens_l)
-
+        p_new, dp_ox, dp_f = Inj.injector2(v_iox, v_if, D_f, D_o, ptinj, Cd, prop.o_dens, prop.f_dens_l)
+        print(p_new)
     bool = 1 #Shows the combustor it is out of the loop in order to compute mass!
     #Compute Ignitor - m is the mass flow, Hc is enthalpy of propelants at chamber exit, H0 is enthalpy of propelants at chamber entry
     #For further information on igniter output, see comments on first line of the igniters functions
     # igniter_results = Igniters(m,Hc,H0)
     #Compute Masses
-    print(p_c)
+    print(p_new)
     #Compute reliability
     ## cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC', 'S_FR_GG', 'SP_EX']
     ## Prop = ['LOX_LH2', 'LOX_RP1']

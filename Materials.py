@@ -13,12 +13,3 @@ class Materials:
 Rhenium = Materials('Rhenium', 21000, 1060*10**6, 2300*10**6,471*10**9, 0, 997, 938)
 Rhenium2 = Materials('Rhenium2', 21000, 1060*10**6, 2300*10**6,471*10**9, 0, 997, 938)
 
-a = [Rhenium, Rhenium2]
-
-
-pressure = 25
-
-for i in  a:
-    if i.yieldstress > pressure:
-        a = i.material
-        print(a)
