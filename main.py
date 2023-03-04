@@ -37,6 +37,7 @@ class Default:
     Nozzle_type = 0
     MR = 0
     De_max = 2.5
+    De_turbine_noz_max = 2.5
     Theta_con = 60
     Theta_conical = 15
     Theta_bell = 55
@@ -57,7 +58,6 @@ class Default:
     #Cooling
     Dr = 0.01
     A=0.0003
-
     T_fuel_tanks = 20
     T_ox_tanks = 60
 
@@ -78,20 +78,25 @@ default = Default(0)
 class Propellant:
     #Oxidizer
     Ox_name = "LOX" #Oxidizer name for rocketCEA
+    Ox_composition = "O 2" #Composition of oxidizer for rocketcea
     o_dens = 1141.0 #Oxidizer density
     ocp = 14307.0 #oxidizer cp
+    h_ox = -12.979 #oxidizer enthalpy
     o_lamb = 1.0e-3
     omiu=1.0e-6
    
     #Fuel
     Fuel_name = "LH2" #Fuel name for rocketCEA
+    Fuel_composition = "H 2" #Composition of fuel for rocketcea
     f_dens_l = 71.0 #liquid fuel density
     f_dens_g = 1.0 #gaseous fuel density
     f_gamma = 1.4 #fuel gamma
     fcp = 14307.0 #fuel cp
+    h_fuel = -9.012 # fuel enthalpy
     R_f = 4.1573 #fuel gas constant
     f_lamb = 1.0e-3
     fmiu=1.0e-6
+    MR = 3 #mixture ratio
     
     Frozen_state=0
     

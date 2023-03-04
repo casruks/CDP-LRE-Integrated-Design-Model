@@ -1,4 +1,4 @@
-def Turbine_nozzle(m_p,Pc,Tc,Prop,Pamb,Default,h_fuel,h_ox,rho_fuel,rho_ox):
+def Turbine_nozzle(m_p,Pc,Prop,Pamb,Default,h_fuel,h_ox,rho_fuel,rho_ox):
 
     Ox=Prop.Ox_name
     Fuel=Prop.Fuel_name
@@ -7,6 +7,8 @@ def Turbine_nozzle(m_p,Pc,Tc,Prop,Pamb,Default,h_fuel,h_ox,rho_fuel,rho_ox):
     De_turbine_noz_max=Default.De_turbine_noz_max
     Ox_composition=Prop.Ox_composition
     Fuel_composition=Prop.Fuel_composition
+    Pc = Pc/1.0e5
+    Pamb = Pamb/1.0e5
     
 
     from rocketcea.cea_obj_w_units import CEA_Obj
@@ -18,25 +20,25 @@ def Turbine_nozzle(m_p,Pc,Tc,Prop,Pamb,Default,h_fuel,h_ox,rho_fuel,rho_ox):
     card_str="""
     oxid {} {} 
     h,kj/kg={} t(k)={} rho={}
-    """.format(Ox,Ox_composition,h_ox,Tc,rho_ox)
+    """.format(Ox,Ox_composition,h_ox,298,rho_ox)
     add_new_oxidizer('Ox_turbine',card_str)
 
     card_str="""
     fuel {} {} 
     h,kj/kg={} t(k)={} rho={}
-    """.format(Fuel,Fuel_composition,h_fuel,Tc,rho_fuel)
+    """.format(Fuel,Fuel_composition,h_fuel,298,rho_fuel)
 
     add_new_fuel('Fuel_turbine',card_str)
     
     ispObj = CEA_Obj( oxName='Ox_turbine', fuelName='Fuel_turbine',cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise')
 
-    Ae_max=De_turbine_noz_max**2/4*mth.pi
-    At=0.001
+    Ae_max=De_turbine_noz_max**2.0/4.0*mth.pi
+    At=ispObj.get_Cstar(Pc,MR)*m_p/(Pc*1.0e5)
     variation=0.1
-    v_eff=-1
+    v_eff=-1.0
     it=0
 
-    while v_eff<0 or variation>0.01:
+    while v_eff<0.0 or variation>0.01:
 
         eps_max=Ae_max/At # Maximum expansion ratio with this throat area
         Pratio_max=ispObj.get_PcOvPe(Pc=Pc,MR=MR,eps=eps_max,frozen=frozen_state,frozenAtThroat=frozen_state)
@@ -88,5 +90,5 @@ def Turbine_nozzle(m_p,Pc,Tc,Prop,Pamb,Default,h_fuel,h_ox,rho_fuel,rho_ox):
             break;
         v_eff=v_eff_it;
     
-    Isp=Isp_it
+    Isp=Isp_it[0]
     return Isp
