@@ -188,12 +188,12 @@ class RegenerativeCool:
         # T_co_calcualted, T_wall_calcualted = self.Tcalculation(Tr, Ti_co, A, hg)
         ploss = self.pressureloss(m_flow_fuel, Dr, L)
 
-        T_co_calcualted = [0 for i in range(len(Tr)+1)]
+        T_co_calcualted = [0 for i in range(len(Tr) + 1)]
         T_co_calcualted[0] = Ti_co
         T_wall_calcualted = [0 for i in range(len(Tr))]
         for i in range(len(Tr)):
-            T_co_calcualted[i+1], T_wall_calcualted[i] = self.Tcalculation1D(
-                Tr[i], T_co_calcualted[i], A[i], hg[i], i
+            T_co_calcualted[i + 1], T_wall_calcualted[i] = self.Tcalculation1D(
+                Tr[i], T_co_calcualted[i], A, hg[i], i
             )
         print(T_co_calcualted)
         return T_co_calcualted, T_wall_calcualted, ploss

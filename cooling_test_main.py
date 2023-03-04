@@ -121,7 +121,7 @@ if __name__ == "__main__":
     m = 100
     O_F = 2
     A = default.A
-    default.A = [A for i in range(len(Tw_ad_noz))]
+    #default.A = [A for i in range(len(Tw_ad_noz))]
     # Temperature after cooling
     T_w_after_cooling = 0
 
