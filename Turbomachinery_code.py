@@ -14,6 +14,10 @@ import rocketcea as rc
 from rocketcea.cea_obj import CEA_Obj, add_new_fuel, add_new_oxidizer
 import Nozzle_turbine as NT
 
+#TODO:
+# Get enthalpy as function of temperature for Isp calculations, to see effect of propellant temperature
+# See how to pass on composition to CEA for SC and GG cycles
+
 
 #Values used during tests, corresponding to Global or software input
 O_F_ = 5.0
@@ -234,10 +238,14 @@ class SC:
     Wt : float
     Wop : float
     Wfp : float
+    l : float #fraction of oxidizer for pre-combustor
+    T1t : float #Temperature after pre-combustor
 
     #Auxiliary
     dptvalve = 0.0
     dptlines = 0.0
+    dptmix = 0.0
+    dptcomb = 0.0
 
     def __init__(self, DF : Default, prop : Propellant, O_F : float, p_a : float, Tf_cool : float, dptcool : float, m : float):
         print("Staged Combustion cycle selected")
@@ -252,6 +260,40 @@ class SC:
         self.Tf_cool = Tf_cool
         self.dptcool = dptcool
         self.m = m
+
+    #Obtain results, calling optimization procedure and then computing variables of interest
+    def results(self):
+        res = minimize(self.opt, [1.0e5,0.01], method = 'Nelder-Mead', bounds=[[self.pa*1.2,10.0e12],[1.0e-5,1.0]])
+        self.pt2 = res["x"][0]
+        self.l = res["x"][1]
+        self.dptop, self.pt1, self.dptfp, ptinj = fsolve(self.equations,[1.0e6,1.0e7,1.0e7,1.0e7],(self.pt2,self.l))
+        self.Wop = self.O_F/(self.O_F+1.0) * self.m * self.dptop / (self.eff_p*self.prop.o_dens)
+        self.Wfp = 1.0/(self.O_F+1.0) * self.m * self.dptfp / (self.eff_p*self.prop.f_dens_l)
+        self.Wt = (1.0+self.l*self.O_F)/(self.O_F+1.0) * self.m * self.eff_t * self.prop.fcp * self.T1t * (1.0-(self.pt2/self.pt1)**((self.prop.f_gamma-1.0)/self.prop.f_gamma))
+        print(res)
+        print([self.dptop, self.dptfp, self.pt1, self.pt2, self.ptinj])
+        print([self.Wop,self.Wfp,self.Wt])
+
+    #Optimize for maximum chamber pressure
+    def opt(self,vars):
+        root = least_squares(self.equations,[1.0e6,1.0e7,1.0e7,1.0e7], args = vars, bounds = ((10.0,self.pa,10.0,self.pa*1.5),(10.0e10,10.0e10,10.0e10,10.0e10)))
+        Isp_m = self.get_Isp_m(root["x"][1]) #ver como pasar aqui la composición modificada.....
+        return -Isp_m
+    
+    def get_Isp_m(self,pinj): #temporaty, needs modification
+        return NT.Turbine_nozzle(self.m,pinj,self.prop,self.pa,self.df,self.prop.h_fuel,self.prop.h_ox,self.prop.f_dens_g,self.prop.o_dens)
+
+    #System of equations to be solved
+    def equations(self,vars,p2t,l):
+        dptop, p1t, dptfp, pinj = vars
+        pcomb = self.ptankf - self.dptvalve + dptfp - self.dptcool
+        self.T1t = 1.0 #Function to get combustion temperature in pre-combustor
+        return [
+            self.ptanko - self.dptvalve + dptop - self.dptlines - pinj,
+            self.ptankf - self.dptvalve + dptfp - self.dptcool - self.dptmix - self.dptcomb - p1t,
+            p2t - self.dptlines - pinj,
+            self.O_F*dptop/(self.eff_p*self.prop.o_dens) + dptfp/(self.eff_p*self.prop.f_dens_l) - (1.0+l*self.O_F)*self.eff_m*self.eff_t*self.prop.fcp*self.T1t*(1.0-(p2t/p1t)**((self.prop.f_gamma-1.0)/self.prop.f_gamma))
+            ]
 
 
 #Function that computes coolant bleed
