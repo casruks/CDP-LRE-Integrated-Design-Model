@@ -2,7 +2,7 @@ import math as mth
 
 
 class Materials:
-    def __init__(self, material, density, yieldstress_l, yieldstress_u, Emod, OpTemp_l, OpTemp_u, cost):
+    def __init__(self, material, density, yieldstress_l, yieldstress_u, Emod, OpTemp_l, OpTemp_u, cost,k):
         self.material = material
         self.density = density
         self.yieldstress_l = yieldstress_l
@@ -11,9 +11,10 @@ class Materials:
         self.OpTemp_l = OpTemp_l
         self.OpTemp_u = OpTemp_u
         self.cost = cost
+        self.k=k
 
-Rhenium = Materials('Rhenium', 21000, 1060*10**6, 2300*10**6,471*10**9, 0, 997, 938)
-Rhenium2 = Materials('Rhenium2', 21000, 1060*10**6, 2300*10**6,471*10**9, 0, 997, 938)
+Rhenium = Materials('Rhenium', 21000, 1060*10**6, 2300*10**6,471*10**9, 0, 997, 938,39600)
+Rhenium2 = Materials('Rhenium2', 21000, 1060*10**6, 2300*10**6,471*10**9, 0, 997, 938,39600)
 
 def Material_Select(pressure):
     a = [Rhenium, Rhenium2]

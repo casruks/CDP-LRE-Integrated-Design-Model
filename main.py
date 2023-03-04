@@ -148,7 +148,7 @@ if __name__ == '__main__':
         t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz,Re_t=Nz_2.Nozzle_loop(p_new, Tc, prop, Mt.Rhenium, default.Nozzle_type, O_F, eps, At, m, Dc, default)
         
         #Compute regenerative
-        Tf_cool, T_w_after_cooling,dptcool=regCool.Run(Tw_ad_noz[0], h_c_noz, t_noz[0],prop,Mt.Rhenium,default.Dr,default.A,default.T_fuel_tanks,Re_t,m/(1+O_F),x_noz[-1])
+        Tf_cool, T_w_after_cooling,dptcool=regCool.Run(Tw_ad_noz[0], h_c_noz[0], t_noz[0],prop,Mt.Rhenium,default.Dr,default.A,default.T_fuel_tanks,Re_t,m/(1+O_F),x_noz[-1])
 
         #Compute Turbo
         ptinj = Turbo.TurboM(default, prop, O_F, p_a, Tf_cool, dptcool, m)
@@ -162,6 +162,7 @@ if __name__ == '__main__':
     # igniter_results = Igniters(m,Hc,H0,default)
     #Compute Masses
     print(p_new)
+
     #Compute reliability
     ## cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC', 'S_FR_GG', 'SP_EX']
     ## Prop = ['LOX_LH2', 'LOX_RP1']
