@@ -60,7 +60,9 @@ def CombustionChamber (Pc,At,Propellant,Material,Safety,velocity,d0,Tc,of,bool):
     k = (Pr/(niu*cp))
 
     heattransfer = a * ro**0.8 * velocity**0.8 * (1/(Rchamber*2))**0.2 * (k*Pr**0.33/niu**0.8)
+
+    Re=velocity*ro*dchamber/niu
     if bool == 0:
-        return (heattransfer,dchamber,Thickness)
+        return (heattransfer,dchamber,Thickness,LengthChamber,Re)
     else:
-        return (heattransfer,dchamber,Thickness,Mass)
+        return (heattransfer,dchamber,Thickness,LengthChamber,Re,Mass)

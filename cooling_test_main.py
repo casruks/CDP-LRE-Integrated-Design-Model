@@ -112,24 +112,26 @@ bool = (
 )
 # Main Function
 if __name__ == "__main__":
-    Q=0
+    Q = 0
     Tw_ad_noz = [3000, 3000, 3000]
-    h_c_noz = 1500
+    h_c_noz = [1300000, 1400000, 1500000]
     t_noz = [0.001, 0.001, 0.001]
     L = 1
     Re_t = 1000000
     m = 100
     O_F = 2
+    A = default.A
+    default.A = [A for i in range(len(Tw_ad_noz))]
     # Temperature after cooling
     T_w_after_cooling = 0
 
     # inicialise cooling
     regCool = Cooling.RegenerativeCool()
 
-    Tf_cool, T_w_after_cooling, dptcool, Q = regCool.Run(
-        Tw_ad_noz[0],
+    Tf_cool, T_w_after_cooling, dptcool = regCool.Run1D(
+        Tw_ad_noz,
         h_c_noz,
-        t_noz[0],
+        t_noz,
         prop,
         Mt.Rhenium,
         default.Dr,
@@ -141,4 +143,4 @@ if __name__ == "__main__":
     )
     print("Tf_cool: ", Tf_cool)
     print("T_w_after_cooling: ", T_w_after_cooling)
-    print("Q: ", Q)
+    print("Q: ", regCool.Q)
