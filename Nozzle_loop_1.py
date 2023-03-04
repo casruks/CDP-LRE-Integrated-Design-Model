@@ -36,7 +36,7 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default):
     toll_F_obj=Default.toll_F_obj
     Max_iterations_mass_flow=Default.Max_iterations_mass_flow
     toll_P_adapted=Default.toll_P_adapted
-    
+
     ispObj = CEA_Obj( oxName=Ox, fuelName=Fuel,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise')
 
     if MR==0:
