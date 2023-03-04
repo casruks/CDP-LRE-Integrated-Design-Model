@@ -25,6 +25,7 @@ class Default:
     Max_iterations_mass_flow = 10000
     toll_P_adapted = 0.01
     Safety_factor=1.3
+    noz_res=0.01
 
     #Seeds
     Pres = 1e6

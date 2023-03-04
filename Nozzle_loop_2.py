@@ -38,6 +38,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     Theta_bell=mth.radians(Default.Theta_bell)
     TH_exit_bell=mth.radians(Default.TH_exit_bell)
 
+    noz_res=Default.noz_res
     # Definition of the geometry of the nozzle
     R_t=mth.sqrt(At/(mth.pi))
     R_u=R_t*Default.R_u_ratio
@@ -54,12 +55,12 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         xp_con=L_nozzle_con-R_u*mth.sin(theta_con)
         yp_con=R_t+(1-mth.cos(theta_con))*R_u
         
-        n=round(xp_con/0.01)
+        n=round(xp_con/noz_res)
         x_con=geek.linspace(0,xp_con,num=n)
         a_con=(yp_con-Dc/2)/(xp_con)
         y_con=Dc/2+a_con*x_con # With this part we have defined the coordinates for the convergent geometry
 
-        n1=round((L_nozzle_con-xp_con)/0.01)
+        n1=round((L_nozzle_con-xp_con)/noz_res)
         x_throat1=geek.linspace(xp_con,L_nozzle_con,num=n1)
         th_step=[]
         y_throat1=[]
@@ -69,7 +70,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
             y_cur=R_t+(1-mth.cos(th_step_cur))*R_u
             y_throat1.append(y_cur) # With this part we have defined the coordinates for the first part of the throat
 
-        n2=round((xp-L_nozzle_con)/0.01)
+        n2=round((xp-L_nozzle_con)/noz_res)
         x_throat2=geek.linspace(L_nozzle_con,xp,num=n2)#With this part we have defined the coordinates for the second part of the throat
 
         th_step=[]
@@ -80,7 +81,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
             y_cur=R_t+(1-mth.cos(th_step_cur))*R_u
             y_throat2.append(y_cur)
 
-        n3=round((L_tot-xp)/0.01)
+        n3=round((L_tot-xp)/noz_res)
         x_div=geek.linspace(xp,L_tot,num=n3)
         a_div=(mth.sqrt(eps)*R_t-yp)/(L_tot-xp)
         y_div=yp+a_div*(x_div-xp) # With this part we have defined the coordinates for the divergent part of the nozzle
@@ -102,7 +103,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         xp_con=L_nozzle_con-R_u*mth.sin(theta_con)
         yp_con=R_t+(1-mth.cos(theta_con))*R_u
         
-        n=round((xp_con)/0.01)
+        n=round((xp_con)/noz_res)
         x_con=geek.linspace(0,xp_con,num=n)
         a_con=(yp_con-Dc/2)/(xp_con)
         y_con=Dc/2+a_con*x_con # With this we have defined the geometry of the convergent part
@@ -110,7 +111,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         y_throat1=[]
         th_step=[]
 
-        n1=round((L_nozzle_con-xp_con)/0.01)
+        n1=round((L_nozzle_con-xp_con)/noz_res)
         x_throat1=geek.linspace(xp_con,L_nozzle_con,num=n1)
         for i in x_throat1:
             th_step_cur=mth.asin((L_nozzle_con-i)/R_u)
@@ -118,7 +119,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
             y_cur=R_t+(1-mth.cos(th_step_cur))*R_u
             y_throat1.append(y_cur) # With this part we have defined the coordinates for the first part of the throat
 
-        n2=round((xp-L_nozzle_con)/0.01)
+        n2=round((xp-L_nozzle_con)/noz_res)
         x_throat2=geek.linspace(L_nozzle_con,xp,num=n2)
         th_step=[]
         y_throat2=[]
@@ -128,7 +129,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
             y_cur=R_t+(1-mth.cos(th_step_cur))*R_t*0.382
             y_throat2.append(y_cur)
 
-        n3=round((L_tot-xp)/0.01)
+        n3=round((L_tot-xp)/noz_res)
         x_div=geek.linspace(xp,L_tot,num=n3)
         Delta=b**2-4*a*(c-x_div)
         y_div=(-b+mth.sqrt(Delta))/(2*a) # With this part we have defined the coordinates for the divergent part of the nozzle
