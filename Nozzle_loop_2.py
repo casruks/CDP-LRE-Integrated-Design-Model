@@ -141,8 +141,8 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     Transp_c=ispObj.get_Chamber_Transport(Pc=Pc,MR=MR,eps=eps,frozen=frozen_state)
     Transp_t=ispObj.get_Throat_Transport(Pc=Pc,MR=MR,eps=eps,frozen=frozen_state)
 
-    mu_c=Transp_c[1]
-    mu_t=Transp_t[1]
+    mu_c=Transp_c[1]/10
+    mu_t=Transp_t[1]/10
 
     T_t=Ts[1]
     rho_t=rhos[1]
@@ -240,7 +240,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         rho_div_it=rhos_div[2]
         cp_div_it=cps_div[2]
         g_div_it=gs_div[1]
-        mu_div_it=Transp[1]
+        mu_div_it=Transp[1]/10
         Pr_div_it=Transp[3]
         k_div_it=Transp[2]
         rho_div.append(rho_div_it)
