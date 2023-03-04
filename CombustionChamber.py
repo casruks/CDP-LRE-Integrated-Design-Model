@@ -17,10 +17,10 @@ import math
 def CombustionChamber (Pc,At,Propellant,Material,Safety,velocity,d0,Tc,of,bool):
 
     Vi = 4/3*math.pi*(d0/2)**3
-    Vf = Vi * 0.1 #random value for now
+    Vf = Vi * 0.3 #random value for now
     d = (3/4*Vf)**(1/3)*2
-    time_f = -(d-d0)/Propellant.f_lamb #dquadrado
-    time_o = -(d-d0)/Propellant.o_lamb
+    time_f = -(d**2-d0**2)/Propellant.f_lamb #dquadrado
+    time_o = -(d**2-d0**2)/Propellant.o_lamb
 
 
     nfuel = 1/(of+1)
@@ -49,7 +49,7 @@ def CombustionChamber (Pc,At,Propellant,Material,Safety,velocity,d0,Tc,of,bool):
     Thickness = Pc * Rchamber * Safety / Material.yieldstress_l
 
     if bool == 1:
-        Mass = Achamber * Thickness * Material.density
+        Mass = kloads *(1/(LengthChamber/dchamber)+2)*Material.density*Safety/Material.yieldstress_l*Vchamber*Pc
 
     a = 0.023
     #weighted averages for the several Parameters
@@ -60,7 +60,9 @@ def CombustionChamber (Pc,At,Propellant,Material,Safety,velocity,d0,Tc,of,bool):
     k = (Pr/(niu*cp))
 
     heattransfer = a * ro**0.8 * velocity**0.8 * (1/(Rchamber*2))**0.2 * (k*Pr**0.33/niu**0.8)
+
+    Re=velocity*ro*dchamber/niu
     if bool == 0:
-        return (heattransfer,dchamber,Thickness)
+        return (heattransfer,dchamber,Thickness,LengthChamber,Re)
     else:
-        return (heattransfer,dchamber,Thickness,Mass)
+        return (heattransfer,dchamber,Thickness,LengthChamber,Re,Mass)

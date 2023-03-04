@@ -142,14 +142,21 @@ if __name__ == '__main__':
         Cd = 0.7
         v_iox, v_if, D_f, D_o = Inj.injector1(Cd, m, O_F, prop.o_dens, prop.f_dens_l, mu_prop, sig_prop, rho_prop)
         #Compute chamber - needs Chamber temperature + oxider to fuel ratio from previous functions (Tc and of)
-        h_comb, Dc, ThicknessChamber = Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF, inj_vel, D_o, Tc, O_F, bool)
+        h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF, inj_vel, D_o, Tc, O_F, bool)
 
         #COmpute nozzle (2)
         t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz,Re_t=Nz_2.Nozzle_loop(p_new/100000, Tc, prop, Mt.Rhenium, default.Nozzle_type, O_F, eps, At, m, Dc, default)
         
         #Compute regenerative
-        Tf_cool, T_w_after_cooling,dptcool=regCool.Run(Tw_ad_noz[0], h_c_noz[0], t_noz[0],prop,Mt.Rhenium,default.Dr,default.A,default.T_fuel_tanks,Re_t,m/(1+O_F),x_noz[-1])
 
+        #0D, nozzle (do not delete, in case 1D doesnt work)
+        #Tf_cool, T_w_after_cooling,dptcool=regCool.Run(Tw_ad_noz[0], h_c_noz[0], t_noz[0],prop,Mt.Rhenium,default.Dr,default.A,default.T_fuel_tanks,Re_t,m/(1+O_F),x_noz[-1])
+
+        #1D Nozzle + 0D chamber
+        Tf_cool, T_w_after_cooling,dptcool=regCool.Run1D(Tw_ad_noz, h_c_noz, t_noz,prop,Mt.Rhenium,default.Dr,default.A,default.T_fuel_tanks,Re_t,m/(1+O_F),x_noz[-1])
+        Tf_cool, T_w_after_cooling_c,dptcool_c=regCool.Run(Tc, h_comb, ThicknessChamber,prop,Mt.Rhenium,default.Dr,default.A,Tf_cool,Re_c,m/(1+O_F),Chamber_L)
+        dptcool=dptcool+dptcool_c
+        
         #Compute Turbo
         ptinj = Turbo.TurboM(default, prop, O_F, p_a, Tf_cool, dptcool, m)
 
