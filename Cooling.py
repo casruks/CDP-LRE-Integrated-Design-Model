@@ -97,7 +97,7 @@ class RegenerativeCool:
         #T_co_list[0]=Ti_co
         #for i in Tr:
          #   T_co_calcualted[i], T_wall_calcualted[i] = self.Tcalculation(Tr[i],T_co_list[i],A[i])
-        return T_co_calcualted, T_wall_calcualted, ploss
+        return T_co_calcualted, T_wall_calcualted, ploss,self.Q
 
     
 
