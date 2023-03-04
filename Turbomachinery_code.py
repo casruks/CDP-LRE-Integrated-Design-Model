@@ -87,12 +87,13 @@ class Default:
     R_u_ratio=1
 
     #Turbomachinery
-    cycle_type = "CB"
+    cycle_type = "EX"
     Eff_t = 0.6 #Turbine efficiency
     Eff_p = 0.6 #Pump efficiency
     Eff_m = 0.95 #Mechanical efficiency between turbine and pumps
     p_to = 1.0e5 #oxidizer tank storage pressure
     ptf = 1.0e5 #Fuel tank oxidizer pressure
+    Wmotor = 1.0e6 #Power of the electric motor
 
     #Combustion chamber
     SF = 1.0
@@ -106,7 +107,10 @@ class Default:
 def0 = Default()
 
 #Main function, which calls the function for the selected cycle type
-def TurboM(Default, prop, O_F, p_a, Tf_cool, dptcool, m):
+def TurboM(Default : Default, prop : Propellant, O_F : float, p_a : float, Tf_cool : float, dptcool : float, m : float):
+    # Tf_cool and dptcool are given by cooling, corresponding respectively to temperature after cooling and pressure drop in cooling
+    # m corresponds to the mass flow in the nozzle and it is given by the nozzle functions, as well as O_F, corresponding to mixture ratio
+    # p_a is the ambient pressure, considered a global input
     match Default.cycle_type:
         case "GG": #Gas Generator
             turbo = GG(Default, prop, O_F, p_a, Tf_cool, dptcool, m)
@@ -163,6 +167,7 @@ class EX:
     dptvalve = 0.0
     dptlines = 0.0
 
+    #Initialize values
     def __init__(self, DF : Default, prop : Propellant, O_F : float, Tf_cool : float, dptcool : float, m : float):
         print("Expander cycle selected")
         self.ptanko = DF.p_to
@@ -176,7 +181,7 @@ class EX:
         self.dptcool = dptcool
         self.m = m
 
-
+    #Obtain results, calling optimization procedure and then computing variables of interest
     def results(self):
         res = minimize(self.opt, [1.0e6], method = 'Nelder-Mead', bounds=[[0.0, 10.0e12]])
         self.dptfp = res["x"][0]
@@ -188,10 +193,12 @@ class EX:
         print([self.dptop, self.dptfp, self.pt1, self.pt2, self.ptinj])
         print([self.Wop,self.Wfp,self.Wt])
 
+    #Optimize for maximum chamber pressure
     def opt(self,dptfp):
         root = least_squares(self.equations,[1.0e6,1.0e7,1.0e6,1.0e6], args = dptfp, bounds = ((0.0,0.0,0.0,0.0),(10.0e10,10.0e10,10.0e10,10.0e10)))
         return -1.0*root["x"][3]
 
+    #System of equations to be solved
     def equations(self,vars,dptfp):
         dptop, p1t, p2t, pinj = vars
         return [
@@ -434,6 +441,7 @@ class EL:
     O_F : float
     eff_p : float
     eff_m : float
+    wmotor : float
 
     #Software input
     Tf_cool : float
@@ -443,10 +451,7 @@ class EL:
     #Output
     dptop : float
     dptfp : float
-    pt1 : float
-    pt2 : float
     ptinj : float
-    Wt : float
     Wop : float
     Wfp : float
 
@@ -462,16 +467,32 @@ class EL:
         self.O_F = O_F
         self.eff_p = DF.Eff_p
         self.eff_m = DF.Eff_m
+        self.wmotor = DF.Wmotor
         self.Tf_cool = Tf_cool
         self.dptcool = dptcool
         self.m = m
+
+    def results(self):
+        self.dptop, self.dptfp, self.ptinj = fsolve(self.equations,[1.0e6,1.0e6,1.0e6])
+        self.Wop = self.O_F/(self.O_F+1.0) * self.m * self.dptop / (self.eff_p*self.prop.o_dens)
+        self.Wfp = 1.0/(self.O_F+1.0) * self.m * self.dptfp / (self.eff_p*self.prop.f_dens_l)
+        print([self.dptop, self.dptfp, self.ptinj])
+        print([self.Wop,self.Wfp,self.wmotor])
+
+    def equations(self,vars):
+        dptop, dptfp, pinj = vars
+        return [
+            self.ptanko - self.dptvalve + dptop - self.dptlines - pinj,
+            self.ptankf - self.dptvalve + dptfp - self.dptcool - pinj,
+            self.O_F*dptop/(self.eff_p*self.prop.o_dens) + dptfp/(self.eff_p*self.prop.f_dens_l) - self.eff_m*self.wmotor
+            ]
 
 
 #Main Function
 if __name__ == '__main__':
     print('Loading...')
-    #print(TurboM(def0, prop_, O_F_, Pa_, Tf_cool_, dptcool_, m_))
+    print(TurboM(def0, prop_, O_F_, Pa_, Tf_cool_, dptcool_, m_))
     print('\nProcess Terminated')
 
-    Isp = NT.Turbine_nozzle(m_,3.0e5,prop_,Pa_,def0,prop_.h_fuel,prop_.h_ox,prop_.f_dens_g,prop_.o_dens)
-    print(Isp)
+    #Isp = NT.Turbine_nozzle(m_,3.0e5,prop_,Pa_,def0,prop_.h_fuel,prop_.h_ox,prop_.f_dens_g,prop_.o_dens)
+    #print(Isp)

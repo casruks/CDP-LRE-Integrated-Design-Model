@@ -51,6 +51,7 @@ class Default:
     Eff_m = 0.95 #Mechanical efficiency between turbine and pumps
     p_to = 1.0e5 #oxidizer tank storage pressure
     ptf = 1.0e5 #Fuel tank oxidizer pressure
+    Wmotor = 1.0e6 #Power of the electric motor
 
     #Combustion chamber
     SF = 1.0
