@@ -365,7 +365,7 @@
         <item row="0" column="0">
          <widget class="QGraphicsView" name="graphicsView">
           <property name="styleSheet">
-           <string notr="true">background-image: url(:/Schematics/images/try.jpg); self.label.setScaledContents(true);</string>
+           <string notr="true"/>
           </property>
          </widget>
         </item>
