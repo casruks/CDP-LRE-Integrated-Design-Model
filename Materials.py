@@ -1,6 +1,5 @@
 import math as mth
 
- 
 class Materials:
     def __init__(self, material, density, yieldstress_l, yieldstress_u, Emod, OpTemp_l, OpTemp_u, cost):
         self.material = material
@@ -13,16 +12,18 @@ class Materials:
         self.cost = cost
 
 Rhenium = Materials('Rhenium', 21000, 1060*10**6, 2300*10**6,471*10**9, 0, 997, 938)
-Rhenium2 = Materials('Rhenium2', 21000, 1060*10**6, 2300*10**6,471*10**9, 0, 997, 938)
+Rhenium2 = Materials('Rhenium2', 21000, 1070*10**6, 2300*10**6,471*10**9, 0, 997, 938)
 
+
+        
+##Selecting Materials:
 def Material_Select(pressure):
-    a = [Rhenium, Rhenium2]
-    for i in a:
+    Select = [Rhenium, Rhenium2]
+    o = []
+    for i in Select:
         if i.yieldstress_l > pressure:
-            a = i.material
-            print(a)
-    return a
-
+            o.append((i.material))
+    return o
 
 ##Computing Mass nozzle: 
 #Form Coordinates (integration of nozzle & material)
@@ -32,7 +33,7 @@ def coordinate(a,b):
     coordinate = []
     for i in range(len(a)):
         coordinate.append((a[i],b[i]))
-    return x
+    return coordinate
 
 #Mass estimation function: 
 def Mass(x,t,material):
@@ -46,4 +47,5 @@ def Mass(x,t,material):
 
 
 
-    
+print(Material_Select(25))
+
