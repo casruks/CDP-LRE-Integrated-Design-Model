@@ -157,7 +157,8 @@ if __name__ == '__main__':
         Tf_cool, T_w_after_cooling,dptcool=regCool.Run1D(Tw_ad_noz, h_c_noz, t_noz,prop,Mt.Rhenium,default.Dr,default.A,default.T_fuel_tanks,Re_t,m/(1+O_F),x_noz[-1])
         Tf_cool, T_w_after_cooling_c,dptcool_c=regCool.Run(Tc, h_comb, ThicknessChamber,prop,Mt.Rhenium,default.Dr,default.A,Tf_cool,Re_c,m/(1+O_F),Chamber_L)
         dptcool=dptcool+dptcool_c
-        
+        #Tf_cool=450
+        #dptcool=1000000
         #Compute Turbo
         ptinj = Turbo.TurboM(default, prop, O_F, p_a, Tf_cool, dptcool, m)
 
