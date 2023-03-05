@@ -8,10 +8,11 @@ from PyQt5.QtWidgets import QMessageBox
 set_images_path = "C:/Users/casru/Documents/GitHub/CDP-LRE-Integrated-Design-Model/images/"
 
 class MainWindow(QDialog):
-    
+
     def __init__(self):
         super(MainWindow, self).__init__()
         loadUi("GUI.ui",self)
+
         # set initial image to corresponding initial cycle
         self.graphicsView.setStyleSheet("background-image: url("+set_images_path+"EX.png);") 
         
@@ -44,38 +45,34 @@ class MainWindow(QDialog):
         msg = QMessageBox()
         msg.setWindowTitle("Input error!")
         x = 1
-        if self.spinBox_T.value() <=0:
+        if self.doubleSpinBox_T.value() <=0:
             x = 0
             msg.setText("Invalid thrust entry, try again.")
             msg.exec_()
-        if self.spinBox_t.value() <=0:
+        if self.doubleSpinBox_t.value() <=0:
             x = 0
             msg.setText("Invalid thrust time entry, try again.")
             msg.exec_()
-        if self.spinBox_pa.value() <=0:
+        if self.doubleSpinBox_pa.value() <=0:
             x = 0
             msg.setText("Invalid ambient pressure entry, try again.")
             msg.exec_()
-        if self.spinBox_ps.value() <=0:
+        if self.doubleSpinBox_ps.value() <=0:
             x = 0
             msg.setText("Invalid storage pressure entry, try again.")
             msg.exec_()
-        if self.spinBox_OF.value() <=0:
+        if self.doubleSpinBox_OF.value() <=0:
             x = 0
             msg.setText("Invalid OF entry, try again.")
             msg.exec_()
-        if self.spinBox_No.value() <=0:
-            x = 0
-            msg.setText("Invalid No. of reuses entry, try again.")
-            msg.exec_()
         if x == 1:
-            T = self.spinBox_T.value()
-            t = self.spinBox_t.value()
-            p_a = self.spinBox_pa.value()
-            p_s = self.spinBox_ps.value()
-            OF = self.spinBox_OF.value()
+            T = self.doubleSpinBox_T.value()
+            t = self.doubleSpinBox_t.value()
+            p_a = self.doubleSpinBox_pa.value()
+            p_s = self.doubleSpinBox_ps.value()
+            OF = self.doubleSpinBox_OF.value()
             Feed_cycle = self.comboBox.currentText()
-            SafetyFactor = self.spinBox_SF.value() 
+            SafetyFactor = self.doubleSpinBox_SF.value() 
             No_reuses = self.spinBox_No.value() 
             self.label_currentStatus.setText("Compiling..")
         return T, t, p_a, p_s, OF, Feed_cycle, SafetyFactor, No_reuses
@@ -87,6 +84,7 @@ widget = QtWidgets.QStackedWidget()
 widget.addWidget(mainwindow)
 widget.setFixedHeight(857)
 widget.setFixedWidth(1024)
+widget.setWindowTitle("LRE Design Tool - 0.0")
 widget.show()
 try:
     sys.exit(app.exec_())

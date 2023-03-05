@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
   <widget class="QWidget" name="gridLayoutWidget">
    <property name="geometry">
     <rect>
@@ -138,8 +141,11 @@
        <layout class="QHBoxLayout" name="horizontalLayout_21">
         <item>
          <widget class="QPushButton" name="pushButton_L">
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
           <property name="text">
-           <string>Does Nothing..</string>
+           <string>Cancel</string>
           </property>
          </widget>
         </item>
@@ -401,11 +407,28 @@
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="spinBox_T">
-        <property name="maximum">
-         <number>99999999</number>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_T">
+        <item>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_T">
+          <property name="decimals">
+           <number>4</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_26">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
       <item>
        <widget class="QLabel" name="label_2">
@@ -415,11 +438,28 @@
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="spinBox_t">
-        <property name="maximum">
-         <number>99999999</number>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_t">
+        <item>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_t">
+          <property name="decimals">
+           <number>4</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_27">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
       <item>
        <widget class="QLabel" name="label_3">
@@ -429,11 +469,28 @@
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="spinBox_pa">
-        <property name="maximum">
-         <number>99999999</number>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_pa">
+        <item>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_pa">
+          <property name="decimals">
+           <number>4</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_28">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
       <item>
        <widget class="QLabel" name="label_5">
@@ -443,11 +500,28 @@
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="spinBox_ps">
-        <property name="maximum">
-         <number>99999999</number>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_ps">
+        <item>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_ps">
+          <property name="decimals">
+           <number>4</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_29">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
       <item>
        <widget class="QLabel" name="label_6">
@@ -457,11 +531,28 @@
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="spinBox_OF">
-        <property name="maximum">
-         <number>99999999</number>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_OF">
+        <item>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_OF">
+          <property name="decimals">
+           <number>4</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_30">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
       <item>
        <widget class="QLabel" name="label_4">
@@ -471,7 +562,24 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox"/>
+       <layout class="QHBoxLayout" name="horizontalLayout_24">
+        <item>
+         <widget class="QComboBox" name="comboBox"/>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_33">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
       <item>
        <widget class="QLabel" name="label_7">
@@ -481,11 +589,28 @@
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="spinBox_SF">
-        <property name="maximum">
-         <number>99999999</number>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_SF">
+        <item>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_SF">
+          <property name="decimals">
+           <number>4</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_31">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
       <item>
        <widget class="QLabel" name="label_8">
@@ -495,11 +620,24 @@
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="spinBox_No">
-        <property name="maximum">
-         <number>99999999</number>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_No">
+        <item>
+         <widget class="QSpinBox" name="spinBox_No"/>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_32">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
       <item>
        <spacer name="verticalSpacer_8">

@@ -1,7 +1,5 @@
 ## Notice:  - orifice areas, currently average from literature & A_iox=A_if
 #           - C_d assumed to be 0.7
-#           - average jet velocity V_j = (v_iox + v_if)
-#           - p_center & p_j ??
 
 
 import numpy as np
@@ -80,10 +78,10 @@ def injector1(C_d, m, OF, rho_ox, rho_f, mu_prop, sig_prop, rho_prop):
         D_f = D_o = 1.6e5*v_j**(-1)*(p_center/p_j)**(-0.1)*d_j**0.57*K_prop
         
         ## like doublet : https://ntrs.nasa.gov/citations/19720010642
-        D_f = D_o = 4.85e4*v_j**(-0.75)*d_j**0.57*(p_center/p_j)**(-0.52)
+        #D_f = D_o = 4.85e4*v_j**(-0.75)*d_j**0.57*(p_center/p_j)**(-0.52)
         
             #single jet
-        D_f = D_o = 15.9e4*v_j**(-1)*d_j**0.57*(p_center/p_j)**(-0.1)
+        #D_f = D_o = 15.9e4*v_j**(-1)*d_j**0.57*(p_center/p_j)**(-0.1)
 
     return v_iox, v_if, D_f, D_o
 
@@ -93,11 +91,13 @@ def injector2(v_iox, v_if, D_f, D_o, p_inj, C_d, rho_ox, rho_f):
     InjTypes = ['like', 'unlike', 'pintle']
     InjType = InjTypes[t]
     
+    ## For throttled 0.2, for Unthrottled engines 0.3
     if InjType == 'unlike':
         eta_dp = 0.1 #10-15% [Humble et al.]
-        
     elif InjType == 'like':
         eta_dp = 0.2 #20-25% [Humble et al.]
+    elif InjType == 'pintle':
+        eta_dp = 0.1 #Oscar [DARE, Sparrow]
     
     zeta = 1/ C_d**2
     dp_ox = zeta * 0.5 * rho_ox*v_iox**2
