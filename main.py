@@ -153,11 +153,12 @@ def Main(Thrust, Thrust_time, Pamb):
         #Tf_cool=450
         #dptcool=1000000
         #Compute Turbo
-        ptinj = Turbo.TurboM(default, prop, O_F, Pamb, 800, dptcool, m)
+        ptinj = Turbo.TurboM(default, prop, O_F, Pamb, Tf_cool[-1], dptcool, m)
 
         #Cmpute Injector (2)
         p_new, dp_ox, dp_f = Inj.injector2(v_iox, v_if, D_f, D_o, ptinj, Cd, prop.o_dens, prop.f_dens_l)
         print(p_new)
+        return Chamber_L
         
     bool = 1 #Shows the combustor it is out of the loop in order to compute mass!
     #Compute Ignitor - m is the mass flow, Hc is enthalpy of propelants at chamber exit, H0 is enthalpy of propelants at chamber entry
