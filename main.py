@@ -181,8 +181,8 @@ def Main(Thrust, Thrust_time, Pamb):
     totalmass = nozzlemass + chambermass
     
     #Computing costs:
+    cost = Mt.chamber_material.cost*chambermass + Mt.nozzle_material.cost*nozzlemass
     
-
     print("Starting...")
 
 
