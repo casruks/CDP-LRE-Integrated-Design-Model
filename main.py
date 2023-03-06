@@ -9,9 +9,10 @@ import Nozzle_turbine as Nz_t
 import Cooling
 import Materials as Mt
 
-Thrust_ = 15000 #= input("Introduce thrust")
-Thrust_time_ = 30 #= input("Introduce thrust time")
-Pamb_ = 1.01325 #= input("Introudce ambient pressure (bar)")
+Thrust_ = 1860000 #= input("Introduce thrust")
+Thrust_time_ = 180 #= input("Introduce thrust time")
+Pamb_ = 10000 #= input("Introudce ambient pressure (Pa)")
+
 
 
 #Default values
@@ -34,7 +35,7 @@ class Default:
 
     #Nozzle
     Nozzle_type = 0
-    MR = 0
+    MR = 6.03
     De_max = 2.5
     De_turbine_noz_max = 2.5
     Theta_con = 60
@@ -114,14 +115,14 @@ class Propellant:
                 f_name = "CH4"
 
 prop = Propellant(0)
-bool = 0 #this variable is used to show the combustor function we are in the first loop
+
 #Main Function
 def Main(Thrust, Thrust_time, Pamb):
     p_old = 0.0
     p_new = default.Pres
     inj_vel = default.inj_vel
 
-    
+    bool = 0 #this variable is used to show the combustor function we are in the first loop
     T_w_after_cooling = 0;#Temperature after cooling
     regCool=Cooling.RegenerativeCool();#inicialise cooling
     while abs(p_new-p_old)/p_new > default.pres_tol:
@@ -154,18 +155,21 @@ def Main(Thrust, Thrust_time, Pamb):
         #Tf_cool=450
         #dptcool=1000000
         #Compute Turbo
-        ptinj = Turbo.TurboM(default, prop, O_F, Pamb, Tf_cool[-1], dptcool, m)
+        ptinj = Turbo.TurboM(default, prop, O_F, Pamb, 800, dptcool, m)
 
         #Cmpute Injector (2)
         p_new, dp_ox, dp_f = Inj.injector2(v_iox, v_if, D_f, D_o, ptinj, Cd, prop.o_dens, prop.f_dens_l)
         print(p_new)
+        
     bool = 1 #Shows the combustor it is out of the loop in order to compute mass!
     #Compute Ignitor - m is the mass flow, Hc is enthalpy of propelants at chamber exit, H0 is enthalpy of propelants at chamber entry
     #For further information on igniter output, see comments on first line of the igniters functions
     # igniter_results = Igniters(m,Hc,H0,default)
     #Compute Masses
     print(p_new)
-
+    print(Isp)
+    print(eps)
+    print(At)
     #Compute reliability
     ## cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC', 'S_FR_GG', 'SP_EX']
     ## Prop = ['LOX_LH2', 'LOX_RP1']
