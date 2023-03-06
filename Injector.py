@@ -19,6 +19,7 @@ def injector1(C_d, m, OF, rho_ox, rho_f, mu_prop, sig_prop, rho_prop):
     # orificie diameter, restrict to usual range : d_o, d_f # http://libgen.rs/book/index.php?md5=3D236B9BDD4070690CA83952058D9A1F p.113
     
     def Massflow(m, OF):
+        m=m/100
         m_ox = (OF/(OF+1))*m
         m_f = m - m_ox
         return m_ox, m_f
