@@ -52,7 +52,7 @@ def coordinate(a,b):
         coordinate.append((a[i],b[i]))
     return coordinate
 
-#Mass estimation function: 
+#Mass estimation function Nozzle: 
 def Mass(x,t,material):
     total_dist = 0
     for i in range(len(x)-1):
@@ -62,8 +62,13 @@ def Mass(x,t,material):
     return Mass
 
 
+##Computing Mass Chamber:
+def MassChamb(len, diameter, t, materialchamb):
+    masschamb = 0
+    vol = 2*mth.pi*(diameter/2)**2*t + t*2*mth.pi*(diameter/2)*len
+    masschamb = vol*materialchamb.density
+    return masschamb
 
 
-print(Material_Select(3000*10**6,2,3000))
 
 
