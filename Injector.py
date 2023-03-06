@@ -1,7 +1,4 @@
-## Notice:  - orifice areas, currently average from literature & A_iox=A_if
-#           - C_d assumed to be 0.7
-
-
+import matplotlib.pyplot as plt 
 import numpy as np
 
 def injector1(C_d, m, OF, rho_ox, rho_f, mu_prop, sig_prop, rho_prop):
@@ -79,11 +76,11 @@ def injector1(C_d, m, OF, rho_ox, rho_f, mu_prop, sig_prop, rho_prop):
         v_j = (v_iox + v_if)/2
         D_f = D_o = (1.6e5*(v_j*3.28084)**(-1)*(p_center/p_j)**(-0.1)*(d_j*39.3701)**0.57*K_prop)*1e-6
 
-    return print(v_iox, v_if, D_f, D_o)
+    return v_iox, v_if, D_f, D_o
 
 def injector2(v_iox, v_if, D_f, D_o, p_inj, C_d, rho_ox, rho_f):
     
-    t = 0
+    t = 1
     InjTypes = ['like', 'unlike', 'pintle']
     InjType = InjTypes[t]
     
@@ -106,3 +103,6 @@ def injector2(v_iox, v_if, D_f, D_o, p_inj, C_d, rho_ox, rho_f):
         print('dp_ox (', InjType,') <', eta_dp,' p_c!')
         
     return p_c, dp_ox, dp_f
+
+def validateInj():
+    injector1(C_d, m, OF, rho_ox, rho_f, mu_prop, sig_prop, rho_prop)
