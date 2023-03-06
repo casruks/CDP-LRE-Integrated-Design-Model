@@ -9,11 +9,9 @@ import Nozzle_turbine as Nz_t
 import Cooling
 import Materials as Mt
 
-p_a = 1.0e5
-Thrust = 1500
-Thurst_time = 60
-
-
+Thrust_ = 15000 #= input("Introduce thrust")
+Thrust_time_ = 30 #= input("Introduce thrust time")
+Pamb_ = 1.01325 #= input("Introudce ambient pressure (bar)")
 
 
 #Default values
@@ -118,11 +116,7 @@ class Propellant:
 prop = Propellant(0)
 bool = 0 #this variable is used to show the combustor function we are in the first loop
 #Main Function
-if __name__ == '__main__':
-    Thrust = 15000 #= input("Introduce thrust")
-    Thrust_time = 30 #= input("Introduce thrust time")
-    Pamb = 1.01325 #= input("Introudce ambient pressure (bar)")
-
+def Main(Thrust, Thrust_time, Pamb):
     p_old = 0.0
     p_new = default.Pres
     inj_vel = default.inj_vel
@@ -180,3 +174,7 @@ if __name__ == '__main__':
     #Compute costs
 
     print("Starting...")
+
+
+if __name__ == '__main__':
+    Main(Thrust_, Thrust_time_, Pamb_)
