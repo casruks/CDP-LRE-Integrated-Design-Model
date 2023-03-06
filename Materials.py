@@ -10,8 +10,8 @@ class Materials:
         self.Conductivity = Conductivity
         self.cost = cost
 
-Rhenium                 =       Materials('Rhenium',                            21000,  2300*10**6, 471*10**9, 1270,   48,   938)
-Aluminium_7075_T6       =       Materials('Aluminium 7075 T6',                  2810,   505*10**6,  72*10**9,  373.15, 130,  3.97)
+Rhenium                 =       Materials('Rhenium',                            21000,  2300.0e6, 471*10**9, 1270,   48,   938)
+Aluminium_7075_T6       =       Materials('Aluminium 7075 T6',                  2810,   505e6,  72*10**9,  373.15, 130,  3.97)
 Ti6Al4V                 =       Materials('Tungsten & Aluminium alloy',         4428,   110*10**6,  114*10**9, 693.15, 6.7,  23.8)
 Haynes_188              =       Materials('Nickel Alloy',                       8980,   464*10**6,  244*10**9, 1423,   10.8, 30.6)
 Inconel_X_750           =       Materials('Inconel-750, Nickel-Chromium Alloy', 8280,   850*10**6,  222*10**9, 1090,   12,   20.4)
@@ -60,20 +60,11 @@ def Coating_Select(temp):
             
 
 ##Computing Mass nozzle: 
-#Form Coordinates (integration of nozzle & material)
-def coordinate(a,b):
-    if len(a) != len(b):
-        raise Exception("#x-coordinates not equal to #y-coordiates for nozzle") 
-    coordinate = []
-    for i in range(len(a)):
-        coordinate.append((a[i],b[i]))
-    return coordinate
-
 #Mass estimation function Nozzle: 
-def Mass(x,t,material):
+def Mass(x,R,t,material):
     total_dist = 0
     for i in range(len(x)-1):
-        total_dist += mth.dist(x[i+1],x[i])
+        total_dist += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])
     vol = total_dist*t*2*mth.pi
     Mass = vol*material.density
     return Mass
