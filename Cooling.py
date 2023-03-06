@@ -195,5 +195,5 @@ class RegenerativeCool:
             T_co_calcualted[i + 1], T_wall_calcualted[i] = self.Tcalculation1D(
                 Tr[i], T_co_calcualted[i], A, hg[i], i
             )
-        print(T_co_calcualted)
+        #print(T_co_calcualted)
         return T_co_calcualted, T_wall_calcualted, ploss
