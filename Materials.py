@@ -48,7 +48,9 @@ def Material_Select(pressure,safety,temp):
                 for i in o:
                     if i not in Material:
                         Material.append(i)
-    return Material
+    sortedbymass = sorted(Material, key= lambda x: x.density, reverse=True)
+    sortedbycost = sorted(Material, key= lambda x: x.cost, reverse=True)
+    return sortedbymass, sortedbycost
 
 def Coating_Select(temp):
     Select2 = [Copper, Narloy_Z,GRCop_84,Silica,Carbon]
