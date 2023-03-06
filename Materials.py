@@ -17,30 +17,47 @@ Haynes_188              =       Materials('Nickel Alloy',                       
 Inconel_X_750           =       Materials('Inconel-750, Nickel-Chromium Alloy', 8280,   850*10**6,  222*10**9, 1090,   12,   20.4)
 Inconel_600             =       Materials('Inconel-600, Nickel-Chromium Alloy', 8470,   290*10**6,  206*10**9, 982,    15.9, 20.2)
 Inconel_718             =       Materials('Inconel-718, Nickel-Chromium Alloy', 8190,   1036*10**6, 211*10**9, 825,    11.4, 16.6)
-Inconel_A_286           =       Materials('A-286, Nickel-Chromium Alloy',       7920,   7920*10**6, 201*10**9, 700,    23.9, 5.43)
+Inconel_A_286           =       Materials('A-286_Nickel-Chromium Alloy',       7920,   7920*10**6, 201*10**9, 700,    23.9, 5.43)
 Columbium_c103          =       Materials('Niobium (Colombium) - cold rolled',  8600,   550*10**6,  130*10**9, 1255,   0.54, 225)
 
-# #Coating Materials:
-# Copper
-# Narloy_Z
-# GRCop_84
-# Silica
-# Alumina
+#Coating Materials:
+Copper                  =       Materials('Copper coating',                     8940,   0,          0,          573,    390,  6.4)
+Narloy_Z                =       Materials('Copper Alloy Coating',               9130,   0,          0,          740,    290,  6.4)
+GRCop_84                =       Materials('GRPCop_84 Copper alloy coating',     8756,   0,          0,          1000,   351,  6.4)
+Silica                  =       Materials('Scilica Coating',                    1700,   0,          0,          1200,   0.55, 6.4)
+Carbon                  =       Materials('Carbon-Carbon Matrix coating',       1950,   0,          0,          2400,   37.4, 6.4)
 
 
 
 
         
-##Selecting Materials:
+#Selecting Materials:
 def Material_Select(pressure,safety,temp):
     Select = [Rhenium,Aluminium_7075_T6,Ti6Al4V,Haynes_188,Inconel_X_750,Inconel_600,Inconel_718,Inconel_A_286,Columbium_c103]
+    Select2 = [Copper, Narloy_Z,GRCop_84,Silica,Carbon]
     o = []
+    Material = []
     for i in Select:
-        if i.yieldstress/safety > pressure and i.OpTemp_u > temp:
-            o.append((i.material))
-        else:
-            print('No Suitable Material')
-    return o
+        if ((i.yieldstress/safety >= pressure) and (i.OpTemp_u >= temp)):
+            o.append(i)
+        elif i.yieldstress >= pressure:
+            o.append(i)
+            for i in Select2:
+                if i.OpTemp_u >= temp:
+                    o.append(i)
+                for i in o:
+                    if i not in Material:
+                        Material.append(i)
+    return Material
+
+def Coating_Select(temp):
+    Select2 = [Copper, Narloy_Z,GRCop_84,Silica,Carbon]
+    coating = []
+    for i in Select2:
+        if i.OpTemp_u > temp:
+            coating.append((i.material))
+    return coating
+            
 
 ##Computing Mass nozzle: 
 #Form Coordinates (integration of nozzle & material)
@@ -68,7 +85,4 @@ def MassChamb(len, diameter, t, materialchamb):
     vol = 2*mth.pi*(diameter/2)**2*t + t*2*mth.pi*(diameter/2)*len
     masschamb = vol*materialchamb.density
     return masschamb
-
-
-
 
