@@ -1,13 +1,13 @@
 import math as mth
 
 class Materials:
-    def __init__(self, material, density, yieldstress_l, Emod, OpTemp_u, Conductivity, cost):
+    def __init__(self, material, density, yieldstress_l, Emod, OpTemp_u, k, cost):
         self.material = material
         self.density = density
         self.yieldstress_l = yieldstress_l
         self.Emod = Emod
         self.OpTemp_u = OpTemp_u
-        self.Conductivity = Conductivity
+        self.k = k
         self.cost = cost
 
 Rhenium                 =       Materials('Rhenium',                            21000,  2300.0e6,   471*10**9, 1270,   48,   938)
