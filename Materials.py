@@ -48,6 +48,8 @@ def Material_Select(pressure,safety,temp):
                 for i in o:
                     if i not in Material:
                         Material.append(i)
+    sortedbymass = sorted(Material, key= lambda x: x.density, reverse=True)
+    sortedbycost = sorted(Material, key= lambda x: x.cost, reverse=True)
     return Material
 
 def Coating_Select(temp):
