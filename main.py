@@ -9,9 +9,9 @@ import Nozzle_turbine as Nz_t
 import Cooling
 import Materials as Mt
 
-Thrust_ = 1860000 #= input("Introduce thrust")
+Thrust_ = 1500 #= input("Introduce thrust")
 Thrust_time_ = 180 #= input("Introduce thrust time")
-Pamb_ = 10000 #= input("Introudce ambient pressure (Pa)")
+Pamb_ = 100000 #= input("Introudce ambient pressure (Pa)")
 
 
 
@@ -83,8 +83,12 @@ class Propellant:
     o_dens = 1141.0 #Oxidizer density
     ocp = 14307.0 #oxidizer cp
     h_ox = -12.979 #oxidizer enthalpy
+<<<<<<< Updated upstream
     o_lamb = 1.0e-3
     o_nist_enthalpy_coef = [1, 1, 1, 1, 1, 1, 1, 1]  # for shomate equation
+=======
+    o_lamb = 1.0e-6
+>>>>>>> Stashed changes
     omiu=1.0e-6
    
     #Fuel
@@ -96,7 +100,7 @@ class Propellant:
     fcp = 14307.0 #fuel cp
     h_fuel = -9.012 # fuel enthalpy
     R_f = 4.1573 #fuel gas constant
-    f_lamb = 1.0e-3
+    f_lamb = 1.0e-6
     fmiu=1.0e-6
     f_nist_enthalpy_coef = [1, 1, 1, 1, 1, 1, 1, 1]  # for shomate equation
     MR = 3 #mixture ratio
@@ -160,7 +164,7 @@ def Main(Thrust, Thrust_time, Pamb):
         #Cmpute Injector (2)
         p_new, dp_ox, dp_f = Inj.injector2(v_iox, v_if, D_f, D_o, ptinj, Cd, prop.o_dens, prop.f_dens_l)
         print(p_new)
-        return Chamber_L
+        
         
     bool = 1 #Shows the combustor it is out of the loop in order to compute mass!
     #Compute Ignitor - m is the mass flow, Hc is enthalpy of propelants at chamber exit, H0 is enthalpy of propelants at chamber entry
@@ -171,6 +175,8 @@ def Main(Thrust, Thrust_time, Pamb):
     print(Isp)
     print(eps)
     print(At)
+    print(D_f)
+    print(D_o)
     #Compute reliability
     ## cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC', 'S_FR_GG', 'SP_EX']
     ## Prop = ['LOX_LH2', 'LOX_RP1']
@@ -180,14 +186,14 @@ def Main(Thrust, Thrust_time, Pamb):
     chamber_material = Mt.Rhenium
     nozzle_material = Mt.Rhenium
     nozzlemass = Mt.Mass(x_noz,y_noz,t_noz,nozzle_material)
-    chambermass = Comb.Mass
-    totalmass = nozzlemass + chambermass
+    #chambermass = Comb.Mass
+    #totalmass = nozzlemass + chambermass
     
     #Computing costs:
-    cost = Mt.chamber_material.cost*chambermass + Mt.nozzle_material.cost*nozzlemass
+    #cost = Mt.chamber_material.cost*chambermass + Mt.nozzle_material.cost*nozzlemass
     
     print("Starting...")
-
+    return p_new,Isp,m,150,Tc,Chamber_L
 
 if __name__ == '__main__':
     Main(Thrust_, Thrust_time_, Pamb_)
