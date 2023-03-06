@@ -55,7 +55,7 @@ def Coating_Select(temp):
     coating = []
     for i in Select2:
         if i.OpTemp_u > temp:
-            coating.append((i.material))
+            coating.append(i)
     return coating
             
 
