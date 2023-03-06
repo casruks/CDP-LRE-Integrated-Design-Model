@@ -41,7 +41,7 @@ def Igniters (m,Propellant,default,Tc,of):
         Compound[i].mass = Power/Compound[i].heatingvalues*time/14
 
 
-    return Compound
+    return Compound[0]
 
 
 #n = 6
