@@ -176,7 +176,7 @@ def Main(Thrust, Thrust_time, Pamb):
     #Compute masses
     chamber_material = Mt.Rhenium
     nozzle_material = Mt.Rhenium
-    nozzlemass = Mt.Mass(x_noz,y_noz,t,nozzle_material)
+    nozzlemass = Mt.Mass(x_noz,y_noz,t_noz,nozzle_material)
     chambermass = Comb.Mass
     totalmass = nozzlemass + chambermass
     
