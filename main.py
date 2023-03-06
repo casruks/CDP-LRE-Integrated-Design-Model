@@ -173,7 +173,15 @@ def Main(Thrust, Thrust_time, Pamb):
     ## Prop = ['LOX_LH2', 'LOX_RP1']
     # Rel.Reliability(t, cycle, Fnom, Fop, N, prop, 0)
 
-    #Compute costs
+    #Compute masses
+    chamber_material = Mt.Rhenium
+    nozzle_material = Mt.Rhenium
+    nozzlemass = Mt.Mass(x_noz,y_noz,t,nozzle_material)
+    chambermass = Comb.Mass
+    totalmass = nozzlemass + chambermass
+    
+    #Computing costs:
+    
 
     print("Starting...")
 
