@@ -84,6 +84,7 @@ class Propellant:
     ocp = 14307.0 #oxidizer cp
     h_ox = -12.979 #oxidizer enthalpy
     o_lamb = 1.0e-3
+    o_nist_enthalpy_coef = [1, 1, 1, 1, 1, 1, 1, 1]  # for shomate equation
     omiu=1.0e-6
    
     #Fuel
@@ -97,6 +98,7 @@ class Propellant:
     R_f = 4.1573 #fuel gas constant
     f_lamb = 1.0e-3
     fmiu=1.0e-6
+    f_nist_enthalpy_coef = [1, 1, 1, 1, 1, 1, 1, 1]  # for shomate equation
     MR = 3 #mixture ratio
     
     Frozen_state=0
@@ -163,7 +165,7 @@ def Main(Thrust, Thrust_time, Pamb):
     bool = 1 #Shows the combustor it is out of the loop in order to compute mass!
     #Compute Ignitor - m is the mass flow, Hc is enthalpy of propelants at chamber exit, H0 is enthalpy of propelants at chamber entry
     #For further information on igniter output, see comments on first line of the igniters functions
-    # igniter_results = Igniters(m,Hc,H0,default)
+    # igniter_results = Igniters(m,prop,default,Tc,O_F)
     #Compute Masses
     print(p_new)
     print(Isp)

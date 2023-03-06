@@ -10,10 +10,23 @@ class Subs:
         self.heatingvalues = '42 is the answer to the whole universe'
         self.Compound = 0
         self.mass = 0
+def Enthalpy (Propellant,Tc,of)
+    Hc_ox = (Propellant.o_nist_enthalpy_coef[0] * Tc + Propellant.o_nist_enthalpy_coef[1] * Tc ** 2 / 2
+             + Propellant.o_nist_enthalpy_coef[2] * Tc ** 3 / 3 + Propellant.o_nist_enthalpy_coef[3] * Tc ** 4 / 4
+             - Propellant.o_nist_enthalpy_coef[4] / Tc + Propellant.o_nist_enthalpy_coef[5]
+             - Tc + Propellant.o_nist_enthalpy_coef[7])
+    Hc_fuel = (Propellant.f_nist_enthalpy_coef[0] * Tc + Propellant.f_nist_enthalpy_coef[1] * Tc ** 2 / 2
+               + Propellant.f_nist_enthalpy_coef[2] * Tc ** 3 / 3 + Propellant.f_nist_enthalpy_coef[3] * Tc ** 4 / 4
+               - Propellant.f_nist_enthalpy_coef[4] / Tc + Propellant.f_nist_enthalpy_coef[5]
+               - Tc + Propellant.f_nist_enthalpy_coef[7])
+    #nfuel+nox = 1 Nox/Nfuel=of nfuel = 1/(of+1) + nox = of/(of+1)
+    H = Hc_ox*1/(of+1)+ Hc_fuel*of/(of+1)
+    return H
 
+def Igniters (m,Propellant,default,Tc,of):
 
-
-def Igniters (m,Hc,H0,default):
+    Hc = Enthalpy(Propellant,Tc,of)
+    H0 = Enthalpy(Propellant,298,of)
 
     Power = m *(Hc-H0)
 
@@ -29,6 +42,7 @@ def Igniters (m,Hc,H0,default):
 
 
     return Compound
+
 
 #n = 6
 #nH2 = 1/7
