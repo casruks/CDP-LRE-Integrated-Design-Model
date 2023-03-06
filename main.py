@@ -114,20 +114,18 @@ class Propellant:
                 f_name = "CH4"
 
 prop = Propellant(0)
-bool = 0 #this variable is used to show the combustor function we are in the first loop
 #Main Function
 def Main(Thrust, Thrust_time, Pamb):
     p_old = 0.0
     p_new = default.Pres
     inj_vel = default.inj_vel
-
+    bool = 0 #this variable is used to show the combustor function we are in the first loop
     
-    T_w_after_cooling = 0;#Temperature after cooling
     regCool=Cooling.RegenerativeCool();#inicialise cooling
     while abs(p_new-p_old)/p_new > default.pres_tol:
         p_old = p_new
         #Compute nozzle (1)
-        m,Tc,O_F,At,eps,Isp = Nz_1.Nozzle_loop_1(p_new/100000,Thrust,Pamb,prop,default)
+        m,Tc,O_F,At,eps,Isp = Nz_1.Nozzle_loop_1(p_new/100000,Thrust,Pamb/100000,prop,default)
 
         #Compute injector (1)
             # placeholders for propellant reference factor K_prop =1
