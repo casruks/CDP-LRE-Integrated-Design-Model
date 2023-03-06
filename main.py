@@ -83,12 +83,8 @@ class Propellant:
     o_dens = 1141.0 #Oxidizer density
     ocp = 14307.0 #oxidizer cp
     h_ox = -12.979 #oxidizer enthalpy
-<<<<<<< Updated upstream
     o_lamb = 1.0e-3
     o_nist_enthalpy_coef = [1, 1, 1, 1, 1, 1, 1, 1]  # for shomate equation
-=======
-    o_lamb = 1.0e-6
->>>>>>> Stashed changes
     omiu=1.0e-6
    
     #Fuel
