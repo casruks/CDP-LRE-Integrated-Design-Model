@@ -10,15 +10,15 @@ class Materials:
         self.Conductivity = Conductivity
         self.cost = cost
 
-Rhenium                 =       Materials('Rhenium',                            21000,  2300.0e6, 471*10**9, 1270,   48,   938)
-Aluminium_7075_T6       =       Materials('Aluminium 7075 T6',                  2810,   505e6,  72*10**9,  373.15, 130,  3.97)
-Ti6Al4V                 =       Materials('Tungsten & Aluminium alloy',         4428,   110*10**6,  114*10**9, 693.15, 6.7,  23.8)
-Haynes_188              =       Materials('Nickel Alloy',                       8980,   464*10**6,  244*10**9, 1423,   10.8, 30.6)
-Inconel_X_750           =       Materials('Inconel-750, Nickel-Chromium Alloy', 8280,   850*10**6,  222*10**9, 1090,   12,   20.4)
-Inconel_600             =       Materials('Inconel-600, Nickel-Chromium Alloy', 8470,   290*10**6,  206*10**9, 982,    15.9, 20.2)
-Inconel_718             =       Materials('Inconel-718, Nickel-Chromium Alloy', 8190,   1036*10**6, 211*10**9, 825,    11.4, 16.6)
-Inconel_A_286           =       Materials('A-286_Nickel-Chromium Alloy',       7920,   7920*10**6, 201*10**9, 700,    23.9, 5.43)
-Columbium_c103          =       Materials('Niobium (Colombium) - cold rolled',  8600,   550*10**6,  130*10**9, 1255,   0.54, 225)
+Rhenium                 =       Materials('Rhenium',                            21000,  2300.0e6,   471*10**9, 1270,   48,   938)
+Aluminium_7075_T6       =       Materials('Aluminium 7075 T6',                  2810,   505e6,      72*10**9,  373.15, 130,  3.97)
+Ti6Al4V                 =       Materials('Tungsten & Aluminium alloy',         4428,   110e6,  114*10**9, 693.15, 6.7,  23.8)
+Haynes_188              =       Materials('Nickel Alloy',                       8980,   464e6,  244*10**9, 1423,   10.8, 30.6)
+Inconel_X_750           =       Materials('Inconel-750, Nickel-Chromium Alloy', 8280,   850e6,  222*10**9, 1090,   12,   20.4)
+Inconel_600             =       Materials('Inconel-600, Nickel-Chromium Alloy', 8470,   290e6,  206*10**9, 982,    15.9, 20.2)
+Inconel_718             =       Materials('Inconel-718, Nickel-Chromium Alloy', 8190,   1036e6, 211*10**9, 825,    11.4, 16.6)
+Inconel_A_286           =       Materials('A-286_Nickel-Chromium Alloy',       7920,   7920e6,  201*10**9, 700,    23.9, 5.43)
+Columbium_c103          =       Materials('Niobium (Colombium) - cold rolled',  8600,   550e6,  130*10**9, 1255,   0.54, 225)
 
 #Coating Materials:
 Copper                  =       Materials('Copper coating',                     8940,   0,          0,          573,    390,  6.4)
