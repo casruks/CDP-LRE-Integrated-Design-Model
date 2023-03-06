@@ -1,10 +1,10 @@
 import math as mth
 
 class Materials:
-    def __init__(self, material, density, yieldstress, Emod, OpTemp_u, Conductivity, cost):
+    def __init__(self, material, density, yieldstress_l, Emod, OpTemp_u, Conductivity, cost):
         self.material = material
         self.density = density
-        self.yieldstress = yieldstress
+        self.yieldstress_l = yieldstress_l
         self.Emod = Emod
         self.OpTemp_u = OpTemp_u
         self.Conductivity = Conductivity
@@ -38,9 +38,9 @@ def Material_Select(pressure,safety,temp):
     o = []
     Material = []
     for i in Select:
-        if ((i.yieldstress/safety >= pressure) and (i.OpTemp_u >= temp)):
+        if ((i.yieldstress_l/safety >= pressure) and (i.OpTemp_u >= temp)):
             o.append(i)
-        elif i.yieldstress >= pressure:
+        elif i.yieldstress_l >= pressure:
             o.append(i)
             for i in Select2:
                 if i.OpTemp_u >= temp:
