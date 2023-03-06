@@ -5,7 +5,7 @@ from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtWidgets import QDialog, QApplication, QWidget
 from PyQt5.QtWidgets import QMessageBox
 
-set_images_path = "C:/Users/casru/Documents/GitHub/CDP-LRE-Integrated-Design-Model/images/"
+set_images_path = "../Turbomachinery_code/"
 
 class MainWindow(QDialog):
 
@@ -14,7 +14,7 @@ class MainWindow(QDialog):
         loadUi("GUI.ui",self)
 
         # set initial image to corresponding initial cycle
-        self.graphicsView.setStyleSheet("background-image: url("+set_images_path+"EX.png);") 
+        self.graphicsView.setStyleSheet("background-image: url("+set_images_path+"Turbo_cycle_types.jpeg);") 
         
         # Compile button
         self.pushButton_Rcompile.clicked.connect(self.compile)
@@ -82,10 +82,11 @@ app = QApplication(sys.argv)
 mainwindow = MainWindow()
 widget = QtWidgets.QStackedWidget()
 widget.addWidget(mainwindow)
-widget.setFixedHeight(857)
-widget.setFixedWidth(1024)
+#widget.setHeight(857)
+#widget.setWidth(1024)
 widget.setWindowTitle("LRE Design Tool - 0.0")
 widget.show()
+widget.showMaximized()
 try:
     sys.exit(app.exec_())
 except:

@@ -10,7 +10,7 @@ import Cooling
 import Materials as Mt
 
 p_a = 1.0e5
-Thrust = 15000
+Thrust = 1500
 Thurst_time = 60
 
 
@@ -123,15 +123,15 @@ if __name__ == '__main__':
     Thrust_time = 30 #= input("Introduce thrust time")
     Pamb = 1.01325 #= input("Introudce ambient pressure (bar)")
 
-    p_new = 0.0
-    p_old = default.Pres
+    p_old = 0.0
+    p_new = default.Pres
     inj_vel = default.inj_vel
 
     
     T_w_after_cooling = 0;#Temperature after cooling
     regCool=Cooling.RegenerativeCool();#inicialise cooling
-    while abs(p_new-p_old)/p_old > default.pres_tol:
-        p_new = p_old
+    while abs(p_new-p_old)/p_new > default.pres_tol:
+        p_old = p_new
         #Compute nozzle (1)
         m,Tc,O_F,At,eps,Isp = Nz_1.Nozzle_loop_1(p_new/100000,Thrust,Pamb,prop,default)
 
@@ -160,7 +160,7 @@ if __name__ == '__main__':
         #Tf_cool=450
         #dptcool=1000000
         #Compute Turbo
-        ptinj = Turbo.TurboM(default, prop, O_F, p_a, Tf_cool, dptcool, m)
+        ptinj = Turbo.TurboM(default, prop, O_F, p_a, Tf_cool[-1], dptcool, m)
 
         #Cmpute Injector (2)
         p_new, dp_ox, dp_f = Inj.injector2(v_iox, v_if, D_f, D_o, ptinj, Cd, prop.o_dens, prop.f_dens_l)
