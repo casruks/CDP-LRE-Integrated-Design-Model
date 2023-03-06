@@ -128,7 +128,7 @@ def Main(Thrust, Thrust_time, Pamb):
     while abs(p_new-p_old)/p_new > default.pres_tol:
         p_old = p_new
         #Compute nozzle (1)
-        m,Tc,O_F,At,eps,Isp = Nz_1.Nozzle_loop_1(p_new/100000,Thrust,Pamb/100000,prop,default)
+        m,Tc,O_F,At,eps,Isp,rho_c,cp_c,mu_c,k_c,Pr_c = Nz_1.Nozzle_loop_1(p_new/100000,Thrust,Pamb/100000,prop,default)
 
         #Compute injector (1)
             # placeholders for propellant reference factor K_prop =1

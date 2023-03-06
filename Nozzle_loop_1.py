@@ -140,7 +140,18 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default):
     eps=Ae/At # Expansion ratio
     Isp=Isp_it # Isp value
 
-    return m_p,Tc,MR,At,eps,Isp[0]
+    # Combustion chamber properties
+
+    rhos=ispObj.get_Densities(Pc=Pc,MR=MR,eps=eps_actual,frozen=frozen_state,frozenAtThroat=frozen_state)
+    Transp_c=ispObj.get_Chamber_Transport(Pc=Pc,MR=MR,eps=eps_actual,frozen=frozen_state)
+
+    rho_c=rhos[0]
+    cp_c=Transp_c[0]
+    mu_c=Transp_c[1]
+    k_c=Transp_c[2]
+    Pr_c=Transp_c[3]
+
+    return m_p,Tc,MR,At,eps,Isp[0],rho_c,cp_c,mu_c,k_c,Pr_c
 
 
 
