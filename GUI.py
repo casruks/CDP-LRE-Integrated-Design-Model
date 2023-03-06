@@ -84,8 +84,13 @@ class MainWindow(QDialog):
         main.default.Safety_factor = SafetyFactor
         #main.default. = No_reuses
         print("Running main...")
-        Lc=main.Main(T, t, p_a)
+        Pc,Isp,m_p,M_p,Tc,Lc=main.Main(T, t, p_a)
         self.input_length.setText(str(Lc))
+        self.line_pc.setText(str(Pc))
+        self.line_Isp.setText(str(Isp))
+        self.line_m.setText(str(m_p))
+        self.line_mass.setText(str(M_p))
+        self.line_T.setText(str(Tc))
 # main
 app = QApplication(sys.argv)
 mainwindow = MainWindow()

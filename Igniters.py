@@ -10,7 +10,7 @@ class Subs:
         self.heatingvalues = '42 is the answer to the whole universe'
         self.Compound = 0
         self.mass = 0
-def Enthalpy (Propellant,Tc,of)
+def Enthalpy (Propellant,Tc,of):
     Hc_ox = (Propellant.o_nist_enthalpy_coef[0] * Tc + Propellant.o_nist_enthalpy_coef[1] * Tc ** 2 / 2
              + Propellant.o_nist_enthalpy_coef[2] * Tc ** 3 / 3 + Propellant.o_nist_enthalpy_coef[3] * Tc ** 4 / 4
              - Propellant.o_nist_enthalpy_coef[4] / Tc + Propellant.o_nist_enthalpy_coef[5]
