@@ -9,9 +9,9 @@ import Nozzle_turbine as Nz_t
 import Cooling
 import Materials as Mt
 
-Thrust_ = 1500 #= input("Introduce thrust")
+Thrust_ = 1860000 #= input("Introduce thrust")
 Thrust_time_ = 180 #= input("Introduce thrust time")
-Pamb_ = 100000 #= input("Introudce ambient pressure (Pa)")
+Pamb_ = 1000 #= input("Introudce ambient pressure (Pa)")
 
 
 
@@ -45,7 +45,7 @@ class Default:
     R_u_ratio=1
 
     #Turbomachinery
-    cycle_type = "EX"
+    cycle_type = "CB"
     Eff_t = 0.6 #Turbine efficiency
     Eff_p = 0.6 #Pump efficiency
     Eff_m = 0.95 #Mechanical efficiency between turbine and pumps
@@ -124,7 +124,8 @@ def Main(Thrust, Thrust_time, Pamb):
     p_new = default.Pres
     inj_vel = default.inj_vel
     bool = 0 #this variable is used to show the combustor function we are in the first loop
-    
+    import numpy as np
+
     regCool=Cooling.RegenerativeCool();#inicialise cooling
     while abs(p_new-p_old)/p_new > default.pres_tol:
         p_old = p_new
@@ -163,8 +164,10 @@ def Main(Thrust, Thrust_time, Pamb):
         #Tf_cool=450
         #dptcool=1000000
         #Compute Turbo
-        ptinj = Turbo.TurboM(default, prop, O_F, Pamb, Tf_cool, dptcool[0], m)
-
+        dp_cool:float
+        dp_cool=np.max(dptcool)
+        ptinj = Turbo.TurboM(default, prop, O_F, Pamb, Tf_cool, dp_cool, m)
+        
         #Cmpute Injector (2)
         p_new, dp_ox, dp_f = Inj.injector2(v_iox, v_if, D_f, D_o, ptinj, Cd, prop.o_dens, prop.f_dens_l)
         print(p_new)
@@ -185,13 +188,16 @@ def Main(Thrust, Thrust_time, Pamb):
     #Compute reliability
     cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC', 'S_FR_GG', 'SP_EX']
     Prop = ['LOX_LH2', 'LOX_RP1']
-    Reliability=Rel.Reliability(t, cycle, Fnom, Fop, N, prop, 0)
+    t=Thrust_time
+    Fnom=Thrust
+    #Reliability=Rel.Reliability(t, cycle, Fnom, Fop, N, prop, 0)
 
     #Compute masses
     chamber_material = Mt.Rhenium
     nozzle_material = Mt.Rhenium
     nozzlemass = Mt.Mass(x_noz,y_noz,t_noz,nozzle_material)
-    chambermass = Comb.Mass
+    h_comb, Dc, ThicknessChamber, Chamber_L,Re_c,chambermass= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF, inj_vel, D_o, Tc, O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c)
+    #chambermass = Comb.Mass
     totalmass = nozzlemass + chambermass
     
     #Computing costs:
