@@ -29,7 +29,7 @@ class Material:
 
 
 
-def CombustionChamber (Pc,At,Propellant,Material,Safety,velocity,d0,Tc,of,bool):
+def CombustionChamber (Pc,At,Propellant,Material,Safety,velocity,d0,Tc,of,bool,rho_c,cp_c,mu_c,k_c,Pr_c):
 
     Vi = 4/3*math.pi*(d0/2)**3
     Vf = Vi * 0.3 #random value for now
@@ -70,12 +70,17 @@ def CombustionChamber (Pc,At,Propellant,Material,Safety,velocity,d0,Tc,of,bool):
         Mass = kloads *(1/(LengthChamber/dchamber)+2)*Material.density*Safety/Material.yieldstress_l*Vchamber*Pc
 
     a = 0.023
+    ro = rho_c
+    Pr = Pr_c
+    cp = cp_c
+    niu = mu_c
+    k = k_c
     #weighted averages for the several Parameters
-    ro = nox*Propellant.o_dens + nfuel*Propellant.f_dens_g
-    Pr = 4*gama/(9*gama-5)
-    cp = nox*Propellant.ocp + nfuel*Propellant.fcp
-    niu = nox*Propellant.omiu + nox*Propellant.fmiu
-    k = (Pr/(niu*cp))
+    #ro = nox*Propellant.o_dens + nfuel*Propellant.f_dens_g
+    #Pr = 4*gama/(9*gama-5)
+    #cp = nox*Propellant.ocp + nfuel*Propellant.fcp
+    #niu = nox*Propellant.omiu + nox*Propellant.fmiu
+    #k = (Pr/(niu*cp))
 
     heattransfer = a * ro**0.8 * velocity**0.8 * (1/(Rchamber*2))**0.2 * (k*Pr**0.33/niu**0.8)
 
