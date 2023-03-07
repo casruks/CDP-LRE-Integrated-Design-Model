@@ -66,7 +66,7 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default):
         MR=MR_curr #Mixture ratio
         c_star=c_star_curr;
     else:
-        c_star=ispObj.get_Cstar(Pc=Pc;MR=MR);
+        c_star=ispObj.get_Cstar(Pc=Pc,MR=MR);
 
     Tc=ispObj.get_Tcomb(Pc=Pc,MR=MR) # Function that returns the combustion chamber temperature
 
