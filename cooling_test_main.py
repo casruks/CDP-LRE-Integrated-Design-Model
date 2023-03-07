@@ -48,7 +48,7 @@ class Default:
 
     # Cooling
     Dr = 0.00001
-    A = 0.0003
+    A = 0.3
     T_fuel_tanks = 20
     T_ox_tanks = 60
 
@@ -113,34 +113,36 @@ bool = (
 # Main Function
 if __name__ == "__main__":
     Q = 0
-    Tw_ad_noz = [3000, 3000, 3000]
-    h_c_noz = [1300000, 1400000, 1500000]
+    Tw_ad_noz = [1000, 2000, 3000]
+    h_c_noz = [500, 500, 500]
     t_noz = [0.001, 0.001, 0.001]
+    # Tw_ad_noz = 9000
+    # h_c_noz = 1200
+    # t_noz = 0.001
     L = 1
     Re_t = 1000000
-    m = 100
-    O_F = 2
+    m = 1000
+    O_F = 4
     A = default.A
-    #default.A = [A for i in range(len(Tw_ad_noz))]
+    # default.A = [A for i in range(len(Tw_ad_noz))]
     # Temperature after cooling
     T_w_after_cooling = 0
 
     # inicialise cooling
     regCool = Cooling.RegenerativeCool()
 
-    Tf_cool, T_w_after_cooling, dptcool = regCool.Run1D(
+    Tf_cool, dptcool = regCool.Run_for_Toperating1D(
         Tw_ad_noz,
         h_c_noz,
         t_noz,
         prop,
         Mt.Rhenium,
-        default.Dr,
         default.A,
         default.T_fuel_tanks,
-        Re_t,
         m / (1 + O_F),
         L,
     )
+    print("D: ", regCool.D)
     print("Tf_cool: ", Tf_cool)
-    print("T_w_after_cooling: ", T_w_after_cooling)
+    # print("T_w_after_cooling: ", T_w_after_cooling)
     print("Q: ", regCool.Q)

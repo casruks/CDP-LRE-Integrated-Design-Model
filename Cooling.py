@@ -4,8 +4,7 @@ import scipy.optimize
 import scipy.constants
 
 
-#To do: calculate the mass flow required in order to end temperature to be equal to operating temperature!
-
+# To do: calculate the mass flow required in order to end temperature to be equal to operating temperature!
 
 
 # Holds all the functions to calculate the Heat tranfer in the rocket engine.
@@ -153,8 +152,8 @@ class RegenerativeCool:
 
     def Inicialise(self, t, Prop, Mater, Dr, Re, m_flow_fuel):
         self.Q = 0
-        #self.Pr = 4 * Prop.f_gamma / (9 * Prop.f_gamma - 5)
-        self.Pr=0.69 #PLACEHOLDER
+        # self.Pr = 4 * Prop.f_gamma / (9 * Prop.f_gamma - 5)
+        self.Pr = 0.69  # PLACEHOLDER
         self.f = (1.82 * math.log10(Re) - 1.64) ** (-2)
         self.Nu = (
             self.f
@@ -201,14 +200,109 @@ class RegenerativeCool:
             T_co_calcualted[i + 1], T_wall_calcualted[i] = self.Tcalculation1D(
                 Tr[i], T_co_calcualted[i], A, hg[i], i
             )
-        #print(T_co_calcualted)
+        # print(T_co_calcualted)
         return T_co_calcualted, T_wall_calcualted, ploss
 
-    def Run_for_Toperating0D(self, Tr, hg, t, Prop, Mater, Dr, A, Ti_co, Re, m_flow_fuel, L):
-        self.Inicialise(t, Prop, Mater, Dr, Re, m_flow_fuel)
+
+
+
+
+#These solvers size the hydralic diameter such that it runs at operating temperature
+#This is for only one tube along one wall, mass flow might have to be adjusted
+    def Run_for_Toperating0D(self, Tr, hg, t, Prop, Mater, A, Ti_co, m_flow_fuel, L):
+        self.Prop = Prop
+        self.m_flow_fuel = m_flow_fuel
+        self.t = t
+        self.Mater = Mater
+
+        Twh = self.Mater.OpTemp_u
+        if Tr < Twh:
+            print(
+                "Temperature at the wall is smaller than operating temperature. No need for regenerative cooling"
+            )
+            return Ti_co, 0
+
+        self.hco = (Tr - Twh) / (
+            (Twh - Ti_co) * (1 / hg + t / self.Mater.k)
+            - (Tr - Ti_co) * t / self.Mater.k
+        )
+
+        D0 = 0.00001
+        D = scipy.optimize.fsolve(self.SolveForD, D0)
 
         q = (Tr - Ti_co) / (1 / hg + self.t / self.Mater.k + 1 / self.hco)
         self.Q += q * A
-        Tinext_co = Ti_co + q * A / (self.Prop.fcp * self.m_flow_fuel)
-        T_wall = self.t[ArrayCounter] / self.Mater.k * q + Ti_co + q / self.hco
+        T_co_calcualted = Ti_co + q * A / (self.Prop.fcp * self.m_flow_fuel)
+        ploss = self.pressureloss(m_flow_fuel, D, L)
 
+        self.D = D
+
+        return T_co_calcualted, ploss
+
+    def SolveForD(self, D):
+        Re = self.m_flow_fuel * D / self.Prop.fmiu * 1 / (math.pi * (D / 2) ** 2)
+        self.Pr = 0.69  # PLACEHOLDER
+        self.f = (1.82 * math.log10(Re) - 1.64) ** (-2)
+        self.Nu = (
+            self.f
+            / 8
+            * (Re - 1000)
+            * self.Pr
+            / (1 + 12.7 * math.sqrt(self.f / 8) * (self.Pr**2 / 3 - 1))
+        )
+        eq = self.Nu * self.Mater.k / D - self.hco
+        return eq
+
+    def Run_for_Toperating1D(
+        self, Tr_array, hg, t, Prop, Mater, A, Ti_co, m_flow_fuel, L
+    ):
+        self.Prop = Prop
+        self.m_flow_fuel = m_flow_fuel
+        self.t = t
+        self.Mater = Mater
+
+        Twh = self.Mater.OpTemp_u
+
+        Tr = max(Tr_array)
+        index = Tr_array.index(Tr)
+
+        if Tr < Twh:
+            print(
+                "Temperature at the wall is smaller than operating temperature. No need for regenerative cooling"
+            )
+            return Ti_co, 0
+
+        self.hco = (Tr - Twh) / (
+            (Twh - Ti_co) * (1 / hg[index] + t[index] / self.Mater.k)
+            - (Tr - Ti_co) * t[index] / self.Mater.k
+        )
+
+        D0 = 0.001
+        D = scipy.optimize.fsolve(self.SolveForD, D0)
+
+        for i in range(index):
+            q = (Tr_array[i] - Ti_co) / (
+                1 / hg[i] + self.t[i] / self.Mater.k + 1 / self.hco
+            )
+            self.Q += q * A
+            Ti_co = Ti_co + q * A / (self.Prop.fcp * self.m_flow_fuel)
+
+        # Run twice to get better D approximation at throat
+        self.hco = (Tr - Twh) / (
+            (Twh - Ti_co) * (1 / hg[index] + t[index] / self.Mater.k)
+            - (Tr - Ti_co) * t[index] / self.Mater.k
+        )
+
+        D0 = 0.001
+        D = scipy.optimize.fsolve(self.SolveForD, D0)
+
+        for i in range(len(Tr_array)):
+            q = (Tr_array[i] - Ti_co) / (
+                1 / hg[i] + self.t[i] / self.Mater.k + 1 / self.hco
+            )
+            self.Q += q * A
+            Ti_co = Ti_co + q * A / (self.Prop.fcp * self.m_flow_fuel)
+
+        ploss = self.pressureloss(m_flow_fuel, D, L)
+        self.D = D
+        return Ti_co, ploss
