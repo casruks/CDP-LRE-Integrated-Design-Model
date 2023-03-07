@@ -54,7 +54,7 @@ class Propellant:
     #Propellant
     gama = 1.4
     tq = 0.9 #characteristic chemical time of propellant
-    MR = 3 #mixture ratio
+    MR = 5 #mixture ratio
 
     def __init__(self,type): #Placeholder
         if(type==1):
@@ -81,7 +81,7 @@ class Default:
 
     #Nozzle
     Nozzle_type = 0
-    MR = 0
+    MR = 5
     De_max = 2.5
     De_turbine_noz_max = 2.5
     Theta_con = 60
@@ -91,7 +91,7 @@ class Default:
     R_u_ratio=1
 
     #Turbomachinery
-    cycle_type = "EX"
+    cycle_type = "CB"
     Eff_t = 0.6 #Turbine efficiency
     Eff_p = 0.6 #Pump efficiency
     Eff_m = 0.95 #Mechanical efficiency between turbine and pumps

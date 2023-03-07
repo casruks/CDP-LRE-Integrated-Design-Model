@@ -62,7 +62,7 @@ def Turbine_nozzle(m_p,Pc,Prop,Pamb,Default,h_fuel,h_ox,rho_fuel,rho_ox):
 
             if difference>0.01:
 
-                Ae_2=Ae_1*Pe_1/Pamb # Change value for next iteration
+                Ae_2=Ae_1*(Pe_1/Pamb)**0.3 # Change value for next iteration
                 Ae_1=Ae_2;
             else:
                 Ae=Ae_1 # Finish iteration if we have reached the convergence
