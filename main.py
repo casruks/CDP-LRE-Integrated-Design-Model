@@ -201,7 +201,7 @@ def Main(Thrust, Thrust_time, Pamb):
     M = 0.00051*Thrust_**0.92068
     
     #Reusability:
-    Reuseability = Mt.Reusability(
+    Reuseability_chamber = Mt.Reusability(comb.Pc,chamber_material)
     
     print("Starting...")
     return p_new,Isp,m,150,Tc,Chamber_L
