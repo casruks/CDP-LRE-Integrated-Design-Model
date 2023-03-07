@@ -81,3 +81,8 @@ def MassChamb(len, diameter, t, materialchamb):
     masschamb = vol*materialchamb.density
     return masschamb
 
+def reusability(pc, material):
+    if pc > material.reusability:
+        print('Unsuitable for reusability')
+    else:
+        print('Material is suitable for reusability')
