@@ -15,7 +15,7 @@ def Reliability(t, cycle, Fnom, Fop, N, prop, val):
     
     # Data for Thrust Impact (effect of total thrust on reliability)
     delta = 0.1017
-    Fref = 2278*1000
+    Fref = 2278*1000   #SSME
     
     # Data for De-rating/Up-rating Impact (effect of operating at non-nominal thrust on reliability)
     RatingData = {}
@@ -35,25 +35,35 @@ def Reliability(t, cycle, Fnom, Fop, N, prop, val):
         Fop = total operating thrust \n
         N = number of engines \n
         prop = propellant code \n"""
+        cycles = ["Expander Cycle", "Staged Combustion Cycle", "Gas Generator Cycle"]
+        if not cycle in cycles:
+                raise Exception("Submitted Cycle Type is not valid. Valid Cycle Type Codes are: " + str(cycles))
+
+        if cycle == "Expander Cycle":
+            cycle = ['SP_EX']
+        elif cycle == "Staged Combustion Cycle":
+            cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC']
+        elif cycle == "Gas Generator Cycle":
+            cycle = ['S_FR_GG']
         
-        if not cycle in CyclesData.keys():
-            raise Exception("Submitted Cycle Type is not valid. Valid Cycle Type Codes are: " + str(CyclesData.keys()))
-        
-        # Cycle Impact
-        lambda_ref = CyclesData[cycle][0]
-        # Nominal Thrust Impact
-        Fnom_single = Fnom/N
-        lambda_1 = lambda_ref*(Fnom_single/Fref)**delta
-        # De-rating/Up-rating Impact
-        Fop_single = Fop/N
-        alpha = Fop_single/Fnom_single
-        if not prop in RatingData.keys():
-            raise Exception("Submitted Propellant Type is not valid. Valid Propellant Codes are: " + str(RatingData.keys()))
-        p, q, _ = RatingData[prop]
-        lambda_2 = lambda_1*((1 - p) + p*np.exp(-q*(1 - alpha)))
-        
+        lst = []
+        for i in range(len(cycle)):
+            # Cycle Impact
+            lambda_ref = CyclesData[cycle[i]][0]
+            # Nominal Thrust Impact
+            Fnom_single = Fnom/N
+            lambda_1 = lambda_ref*(Fnom_single/Fref)**delta
+            # De-rating/Up-rating Impact
+            Fop_single = Fop/N
+            alpha = Fop_single/Fnom_single
+            if not prop in RatingData.keys():
+                raise Exception("Submitted Propellant Type is not valid. Valid Propellant Codes are: " + str(RatingData.keys()))
+            p, q, _ = RatingData[prop]
+            lambda_2 = lambda_1*((1 - p) + p*np.exp(-q*(1 - alpha)))
+            R = np.exp(-N*lambda_2*t)
+            lst.append(R)
         # Number of Engines and Total Burn Time Impact
-        return np.exp(-N*lambda_2*t)
+        return lst    #list 
     
     if val == 1:
     # VALIDATION --> Yields the same figure as Fig.3 in Fernández et al. (2022)
@@ -73,4 +83,3 @@ def Reliability(t, cycle, Fnom, Fop, N, prop, val):
             plt.show()
         return validate(Fref)
     return reliability_general(t, cycle, Fnom, Fop, N, prop)
-

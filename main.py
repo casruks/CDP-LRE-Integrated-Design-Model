@@ -183,9 +183,11 @@ def Main(Thrust, Thrust_time, Pamb):
     print(D_o)
     print("Colling D: ",regCool.D)
     #Compute reliability
-    ## cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC', 'S_FR_GG', 'SP_EX']
-    ## Prop = ['LOX_LH2', 'LOX_RP1']
-    # Rel.Reliability(t, cycle, Fnom, Fop, N, prop, 0)
+    # USER INPUT:
+    cycle = ["Expander Cycle", "Staged Combustion Cycle", "Gas Generator Cycle"] #['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC', 'S_FR_GG', 'SP_EX']
+    Prop = ['LOX_LH2', 'LOX_RP1']
+    Fnom = Fop = Thrust
+    R = Rel.Reliability(Thrust_time, cycle[0], Fnom, Fop, N, prop[0], 0)  #Returns a list as to account for 4 SC types
 
     #Compute masses
     chamber_material = Mt.Rhenium
