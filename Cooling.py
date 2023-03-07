@@ -218,11 +218,14 @@ class RegenerativeCool:
                 "Temperature at the wall is smaller than operating temperature. No need for regenerative cooling"
             )
             return Ti_co, 0
+        if(Ti_co > Tr):
+            raise Exception("Ti_co > Tr, Ti_co: ", Ti_co) 
 
         self.hco = (Tr - Twh) / (
             (Twh - Ti_co) * (1 / hg + t / self.Mater.k)
             - (Tr - Ti_co) * t / self.Mater.k
         )
+        print("data: ",Tr - Twh)
 
         D0 = 0.00001
         D = scipy.optimize.fsolve(self.SolveForD, D0)
@@ -230,6 +233,8 @@ class RegenerativeCool:
         q = (Tr - Ti_co) / (1 / hg + self.t / self.Mater.k + 1 / self.hco)
         self.Q += q * A
         T_co_calcualted = Ti_co + q * A / (self.Prop.fcp * self.m_flow_fuel)
+        #T_co_calcualted = Ti_co + q * A / (2*10**6* self.m_flow_fuel)
+        
         ploss = self.pressureloss(m_flow_fuel, D, L)
 
         self.D = D
@@ -258,52 +263,43 @@ class RegenerativeCool:
         self.t = t
         self.Mater = Mater
 
-        Twh = self.Mater.OpTemp_u
+        zeroDcool = RegenerativeCool()
+        Ti_co_array = [0 for i in range(len(Tr_array) + 1)]
+        ploss = [0 for i in range(len(Tr_array))]
+        Ti_co_array[0] = Ti_co
+        D = 100000000000000000000
 
-        Tr = numpy.amax(Tr_array)
-        index = ((numpy.where(Tr_array == Tr))[0])[0]
-        print(index)
-
-        if Tr < Twh:
-            print(
-                "Temperature at the wall is smaller than operating temperature. No need for regenerative cooling"
-            )
-            return Ti_co, 0
-
-        self.hco = (Tr - Twh) / (
-            (Twh - Ti_co) * (1 / hg[index] + t[index] / self.Mater.k)
-            - (Tr - Ti_co) * t[index] / self.Mater.k
-        )
-
-        D0 = 0.001
-        D = float(scipy.optimize.fsolve(self.SolveForD, D0))
-
-        for i in range(index):
-            q = (Tr_array[i] - Ti_co) / (
-                1 / hg[i] + self.t[i] / self.Mater.k + 1 / self.hco
-            )
-            self.Q += q * A
-            Ti_co = Ti_co + q * A / (self.Prop.fcp * self.m_flow_fuel)
-
-        # Run twice to get better D approximation at throat
-        self.hco = (Tr - Twh) / (
-            (Twh - Ti_co) * (1 / hg[index] + t[index] / self.Mater.k)
-            - (Tr - Ti_co) * t[index] / self.Mater.k
-        )
-
-        D0 = 0.001
-        D = float(scipy.optimize.fsolve(self.SolveForD, D0))
         for i in range(len(Tr_array)):
-            q = (Tr_array[i] - Ti_co) / (
-                1 / hg[i] + self.t[i] / self.Mater.k + 1 / self.hco
+            A = D * L / len(Tr_array)
+            Ti_co_array[i + 1], ploss[i] = zeroDcool.Run_for_Toperating0D(
+                Tr_array[i],
+                hg[i],
+                t[i],
+                Prop,
+                Mater,
+                A,
+                Ti_co_array[i],
+                m_flow_fuel,
+                L / len(Tr_array),
             )
-            self.Q += q * A
-            Ti_co = Ti_co + q * A / (self.Prop.fcp * self.m_flow_fuel)
-
-        ploss = self.pressureloss(m_flow_fuel, D, L)
+            if zeroDcool.D < D:
+                D = zeroDcool.D
+                A = D * L / len(Tr_array)
+                zeroDcool.Q = 0
+                for j in range(i + 1):
+                    Ti_co_array[j + 1], ploss[j] = zeroDcool.Run_for_Toperating0D(
+                        Tr_array[j],
+                        hg[j],
+                        t[j],
+                        Prop,
+                        Mater,
+                        A,
+                        Ti_co_array[j],
+                        m_flow_fuel,
+                        L / len(Tr_array),
+                    )
         self.D = D
-        q = (Tr_array[index] - Ti_co) / (
-            1 / hg[index] + self.t[index] / self.Mater.k + 1 / self.hco
-        )
-        print("Twh: ", self.t[index] / self.Mater.k * q + Ti_co + q / self.hco)
-        return Ti_co, ploss
+        self.Q = zeroDcool.Q
+        print(Ti_co_array)
+
+        return Ti_co_array[len(Tr_array)], ploss

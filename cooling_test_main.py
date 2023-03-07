@@ -49,7 +49,8 @@ class Default:
 
     # Cooling
     Dr = 0.00001
-    A = 0.3
+    Leng = 1
+    A = 0.04 * Leng / 4
     T_fuel_tanks = 20
     T_ox_tanks = 60
 
@@ -114,15 +115,15 @@ bool = (
 # Main Function
 if __name__ == "__main__":
     Q = 0
-    Tw_ad_noz = numpy.array([2500, 2500, 2500])
-    h_c_noz = [500, 500, 500]
-    t_noz = [0.001, 0.001, 0.001]
+    Tw_ad_noz = numpy.array([1500, 2500, 3500, 3500])
+    h_c_noz = [3000, 3000, 3000, 3000]
+    t_noz = [0.001, 0.001, 0.001, 0.001]
     # Tw_ad_noz = 9000
     # h_c_noz = 1200
     # t_noz = 0.001
     L = 1
     Re_t = 1000000
-    m = 1000
+    m = 1
     O_F = 4
     A = default.A
     # default.A = [A for i in range(len(Tw_ad_noz))]
