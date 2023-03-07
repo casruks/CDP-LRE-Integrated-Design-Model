@@ -64,6 +64,9 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default):
                 MR_2=MR_curr;
             MR_prev=MR_curr;
         MR=MR_curr #Mixture ratio
+        c_star=c_star_curr;
+    else:
+        c_star=ispObj.get_Cstar(Pc=Pc;MR=MR);
 
     Tc=ispObj.get_Tcomb(Pc=Pc,MR=MR) # Function that returns the combustion chamber temperature
 
@@ -121,7 +124,7 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default):
         rhos=ispObj.get_Densities(Pc=Pc,MR=MR,eps=eps_actual,frozen=frozen_state,frozenAtThroat=frozen_state)
         rho_t=rhos[1]  # Density in the throat
 
-        m_p_it=rho_t*u_t*At # Mass flow rate from continuity equation in the throat
+        m_p_it=Pc*100000*At/c_star # Mass flow rate from continuity equation in the throat
 
         F_it=m_p_it*v_eff_it # Force computed at this iteration
     
@@ -129,7 +132,7 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default):
 
         if variation>toll_F_obj: # If we have to iterate again, we change the throat area
             mp2=m_p_it*(F/F_it);
-            At=mp2/(rho_t*u_t);
+            At=c_star*mp2/(Pc*100000);
     
         it=it+1;
         if it>Max_iterations_mass_flow:
