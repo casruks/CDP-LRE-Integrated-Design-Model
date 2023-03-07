@@ -180,6 +180,7 @@ def Main(Thrust, Thrust_time, Pamb):
     print(At)
     print(D_f)
     print(D_o)
+    print("Colling D: "regCool.D)
     #Compute reliability
     ## cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC', 'S_FR_GG', 'SP_EX']
     ## Prop = ['LOX_LH2', 'LOX_RP1']
