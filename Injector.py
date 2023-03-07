@@ -116,8 +116,8 @@ def injector2(v_iox, v_if, D_f, D_o, p_inj, C_d, rho_ox, rho_f):
 
 def validateInj():
     C_d = 0.8
-    m = 250
-    OF = 6
+    m = 673
+    OF = 3.55
     rho_ox = 1141
     rho_f = 71
     mu_prop = 2.69e-3    
