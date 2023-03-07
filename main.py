@@ -182,19 +182,19 @@ def Main(Thrust, Thrust_time, Pamb):
     print(D_o)
     print("Colling D: ",regCool.D)
     #Compute reliability
-    ## cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC', 'S_FR_GG', 'SP_EX']
-    ## Prop = ['LOX_LH2', 'LOX_RP1']
-    # Rel.Reliability(t, cycle, Fnom, Fop, N, prop, 0)
+    cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC', 'S_FR_GG', 'SP_EX']
+    Prop = ['LOX_LH2', 'LOX_RP1']
+    Reliability=Rel.Reliability(t, cycle, Fnom, Fop, N, prop, 0)
 
     #Compute masses
     chamber_material = Mt.Rhenium
     nozzle_material = Mt.Rhenium
     nozzlemass = Mt.Mass(x_noz,y_noz,t_noz,nozzle_material)
-    #chambermass = Comb.Mass
-    #totalmass = nozzlemass + chambermass
+    chambermass = Comb.Mass
+    totalmass = nozzlemass + chambermass
     
     #Computing costs:
-    #cost = Mt.chamber_material.cost*chambermass + Mt.nozzle_material.cost*nozzlemass
+    cost = Mt.chamber_material.cost*chambermass + Mt.nozzle_material.cost*nozzlemass
     
     print("Starting...")
     return p_new,Isp,m,150,Tc,Chamber_L
