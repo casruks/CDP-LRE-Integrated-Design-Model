@@ -2,6 +2,7 @@ import math
 from scipy.integrate import quad
 import scipy.optimize
 import scipy.constants
+import numpy
 
 
 # To do: calculate the mass flow required in order to end temperature to be equal to operating temperature!
@@ -203,12 +204,8 @@ class RegenerativeCool:
         # print(T_co_calcualted)
         return T_co_calcualted, T_wall_calcualted, ploss
 
-
-
-
-
-#These solvers size the hydralic diameter such that it runs at operating temperature
-#This is for only one tube along one wall, mass flow might have to be adjusted
+    # These solvers size the hydralic diameter such that it runs at operating temperature
+    # This is for only one tube along one wall, mass flow might have to be adjusted
     def Run_for_Toperating0D(self, Tr, hg, t, Prop, Mater, A, Ti_co, m_flow_fuel, L):
         self.Prop = Prop
         self.m_flow_fuel = m_flow_fuel
@@ -263,8 +260,9 @@ class RegenerativeCool:
 
         Twh = self.Mater.OpTemp_u
 
-        Tr = max(Tr_array)
-        index = Tr_array.index(Tr)
+        Tr = numpy.amax(Tr_array)
+        index = ((numpy.where(Tr_array == Tr))[0])[0]
+        print(index)
 
         if Tr < Twh:
             print(
@@ -278,7 +276,7 @@ class RegenerativeCool:
         )
 
         D0 = 0.001
-        D = scipy.optimize.fsolve(self.SolveForD, D0)
+        D = float(scipy.optimize.fsolve(self.SolveForD, D0))
 
         for i in range(index):
             q = (Tr_array[i] - Ti_co) / (
@@ -294,8 +292,7 @@ class RegenerativeCool:
         )
 
         D0 = 0.001
-        D = scipy.optimize.fsolve(self.SolveForD, D0)
-
+        D = float(scipy.optimize.fsolve(self.SolveForD, D0))
         for i in range(len(Tr_array)):
             q = (Tr_array[i] - Ti_co) / (
                 1 / hg[i] + self.t[i] / self.Mater.k + 1 / self.hco
@@ -305,4 +302,8 @@ class RegenerativeCool:
 
         ploss = self.pressureloss(m_flow_fuel, D, L)
         self.D = D
+        q = (Tr_array[index] - Ti_co) / (
+            1 / hg[index] + self.t[index] / self.Mater.k + 1 / self.hco
+        )
+        print("Twh: ", self.t[index] / self.Mater.k * q + Ti_co + q / self.hco)
         return Ti_co, ploss

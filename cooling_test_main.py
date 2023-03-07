@@ -1,5 +1,6 @@
 import Cooling
 import Materials as Mt
+import numpy
 
 p_a = 1.0e5
 Thrust = 15000
@@ -113,7 +114,7 @@ bool = (
 # Main Function
 if __name__ == "__main__":
     Q = 0
-    Tw_ad_noz = [1000, 2000, 3000]
+    Tw_ad_noz = numpy.array([2500, 2500, 2500])
     h_c_noz = [500, 500, 500]
     t_noz = [0.001, 0.001, 0.001]
     # Tw_ad_noz = 9000
