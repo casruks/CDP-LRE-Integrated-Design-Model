@@ -12,20 +12,19 @@ import math
 #Tc - Chamber Temperature
 #of - oxidizer/fuel ratio
 #bool - variable to say if this is on the pressure iteration loop
-class Propellant:
-    o_lamb = 1*10**(-6)
-    f_lamb = 1.41*10**(-5)
-    gama = 1.4
-    tq = 0.75*10**(-3)
-    o_dens = 1
-    f_dens_g = 1
-    ocp=1
-    fcp=1
-    omiu=1
-    fmiu=1
-class Material:
-    density = 1
-    yieldstress_l =1
+#class Propellant:
+ #   o_lamb = 1*10**(-6)
+  ## gama = 1.4
+   # tq = 0.75*10**(-3)
+   # o_dens = 1
+   # f_dens_g = 1
+   # ocp=1
+   # fcp=1
+   # omiu=1
+   # fmiu=1
+#class Material:
+ #   density = 1
+  #  yieldstress_l =1
 
 
 
@@ -91,10 +90,10 @@ def CombustionChamber (Pc,At,Propellant,Material,Safety,velocity,d0,Tc,of,bool,r
         return (heattransfer,dchamber,Thickness,LengthChamber,Re,Mass)
 
 
-prop = Propellant
-mat = Material
+#prop = Propellant
+#mat = Material
 
-ht,dc,t,lc,re = CombustionChamber(20300000,0.053,prop,mat,2,30,1.5*10**-4,3400,6,0)
+#ht,dc,t,lc,re = CombustionChamber(20300000,0.053,prop,mat,2,30,1.5*10**-4,3400,6,0)
 #print(dc,t,lc,)
 #At = 0.053
 #Ac = 2.96*At
