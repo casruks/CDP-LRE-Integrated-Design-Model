@@ -3,6 +3,11 @@ from scipy.integrate import quad
 import scipy.optimize
 import scipy.constants
 
+
+#To do: calculate the mass flow required in order to end temperature to be equal to operating temperature!
+
+
+
 # Holds all the functions to calculate the Heat tranfer in the rocket engine.
 
 # Goal:
@@ -148,7 +153,8 @@ class RegenerativeCool:
 
     def Inicialise(self, t, Prop, Mater, Dr, Re, m_flow_fuel):
         self.Q = 0
-        self.Pr = 4 * Prop.f_gamma / (9 * Prop.f_gamma - 5)
+        #self.Pr = 4 * Prop.f_gamma / (9 * Prop.f_gamma - 5)
+        self.Pr=0.69 #PLACEHOLDER
         self.f = (1.82 * math.log10(Re) - 1.64) ** (-2)
         self.Nu = (
             self.f
@@ -197,3 +203,12 @@ class RegenerativeCool:
             )
         print(T_co_calcualted)
         return T_co_calcualted, T_wall_calcualted, ploss
+
+    def Run_for_Toperating0D(self, Tr, hg, t, Prop, Mater, Dr, A, Ti_co, Re, m_flow_fuel, L):
+        self.Inicialise(t, Prop, Mater, Dr, Re, m_flow_fuel)
+
+        q = (Tr - Ti_co) / (1 / hg + self.t / self.Mater.k + 1 / self.hco)
+        self.Q += q * A
+        Tinext_co = Ti_co + q * A / (self.Prop.fcp * self.m_flow_fuel)
+        T_wall = self.t[ArrayCounter] / self.Mater.k * q + Ti_co + q / self.hco
+

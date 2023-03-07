@@ -47,7 +47,7 @@ class Default:
     SF = 1.0
 
     # Cooling
-    Dr = 0.01
+    Dr = 0.00001
     A = 0.0003
     T_fuel_tanks = 20
     T_ox_tanks = 60
