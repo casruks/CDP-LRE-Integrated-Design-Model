@@ -190,7 +190,7 @@ class RegenerativeCool:
     # Run function, but for 1D case
     def Run1D(self, Tr, hg, t, Prop, Mater, Dr, A, Ti_co, Re, m_flow_fuel, L):
         self.Inicialise(t, Prop, Mater, Dr, Re, m_flow_fuel)
-
+        self.D = Dr
         # T_co_calcualted, T_wall_calcualted = self.Tcalculation(Tr, Ti_co, A, hg)
         ploss = self.pressureloss(m_flow_fuel, Dr, L)
 
@@ -217,6 +217,7 @@ class RegenerativeCool:
             print(
                 "Temperature at the wall is smaller than operating temperature. No need for regenerative cooling"
             )
+            self.D = -404
             return Ti_co, 0
         if Ti_co > Tr:
             raise Exception("Ti_co > Tr, Ti_co: ", Ti_co)
@@ -225,7 +226,7 @@ class RegenerativeCool:
             (Twh - Ti_co) * (1 / hg + t / self.Mater.k)
             - (Tr - Ti_co) * t / self.Mater.k
         )
-        print("data: ", Tr - Twh)
+        print("data: ", self.Mater.k)
 
         D0 = 0.00001
         D = scipy.optimize.fsolve(self.SolveForD, D0)
@@ -233,17 +234,17 @@ class RegenerativeCool:
         q = (Tr - Ti_co) / (1 / hg + self.t / self.Mater.k + 1 / self.hco)
         self.Q += q * A
         T_co_calcualted = Ti_co + q * A / (self.Prop.fcp * self.m_flow_fuel)
+        print("h_co: ", self.hco)
         # T_co_calcualted = Ti_co + q * A / (2*10**6* self.m_flow_fuel)
 
         ploss = self.pressureloss(m_flow_fuel, D, L)
 
         self.D = D
-
         return T_co_calcualted, ploss
 
     def SolveForD(self, D):
         Re = self.m_flow_fuel * D / self.Prop.fmiu * 1 / (math.pi * (D / 2) ** 2)
-        self.Pr = 0.69  # PLACEHOLDER
+        self.Pr = 1  # PLACEHOLDER
         self.f = (1.82 * math.log10(Re) - 1.64) ** (-2)
         self.Nu = (
             self.f
@@ -262,6 +263,13 @@ class RegenerativeCool:
         self.m_flow_fuel = m_flow_fuel
         self.t = t
         self.Mater = Mater
+
+        if self.Mater.OpTemp_u > float(numpy.amax(Tr_array)):
+            print(
+                "Temperature at the wall is smaller than operating temperature. No need for regenerative cooling"
+            )
+            self.D = -404
+            return Ti_co, 0
 
         zeroDcool = RegenerativeCool()
         Ti_co_array = [0 for i in range(len(Tr_array) + 1)]

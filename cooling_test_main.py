@@ -1,6 +1,7 @@
 import Cooling
 import Materials as Mt
 import numpy
+import math
 
 p_a = 1.0e5
 Thrust = 15000
@@ -115,23 +116,25 @@ bool = (
 # Main Function
 if __name__ == "__main__":
     Q = 0
-    Tw_ad_noz = numpy.array([3000, 2500, 1500, 1500])
-    h_c_noz = [3000, 3000, 3000, 3000]
-    t_noz = [0.001, 0.001, 0.001, 0.001]
+    Tw_ad_noz = numpy.array([3300, 3300, 3300, 3300])
+    h_c_noz = [450, 450, 450, 450]
+    t_noz = [0.05, 0.05, 0.05, 0.05]
     # Tw_ad_noz = 9000
     # h_c_noz = 1200
     # t_noz = 0.001
-    L = 1
+    L = 4.3
     # Re_t = 1000000
-    m = 0.073
-    O_F = 4
-    A = default.A
+    m = 25
+    O_F = 6
+    # A = default.A
     # default.A = [A for i in range(len(Tw_ad_noz))]
     # Temperature after cooling
     T_w_after_cooling = 0
-    y = [0.019, 0.05, 0.1, 0.2]
+    y = [0.26, 2.30 / 3, 2.30 * 2 / 3, 2.30]
     # inicialise cooling
     regCool = Cooling.RegenerativeCool()
+
+    Mt.Rhenium.OpTemp_u = 700
 
     Tf_cool, dptcool = regCool.Run_for_Toperating1D(
         Tw_ad_noz,
@@ -141,7 +144,7 @@ if __name__ == "__main__":
         Mt.Rhenium,
         default.A,
         default.T_fuel_tanks,
-        m / (1 + O_F),
+        m,
         L,
         y,
     )
@@ -149,3 +152,23 @@ if __name__ == "__main__":
     print("Tf_cool: ", Tf_cool)
     # print("T_w_after_cooling: ", T_w_after_cooling)
     print("Q: ", regCool.Q)
+
+    # Tf_cool, Twall, dptcool = regCool.Run1D(
+    # Tw_ad_noz,
+    # h_c_noz,
+    # t_noz,
+    #  prop,
+    # Mt.Rhenium,
+    # 0.02,
+    # default.A,
+    # m,
+    #  m * 0.02 / prop.fmiu * 1 / (math.pi * (0.02 / 2) ** 2),
+    #  m,
+    #  L,
+# )
+
+# print("D: ", regCool.D)
+# print("Tf_cool: ", Tf_cool)
+# print("T_w_after_cooling: ", T_w_after_cooling)
+# print("Q: ", regCool.Q)
+# print("Twall: ", Twall)
