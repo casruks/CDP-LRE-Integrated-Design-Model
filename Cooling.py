@@ -226,7 +226,7 @@ class RegenerativeCool:
             (Twh - Ti_co) * (1 / hg + t / self.Mater.k)
             - (Tr - Ti_co) * t / self.Mater.k
         )
-        print("data: ", self.Mater.k)
+        #print("data: ", self.Mater.k)
 
         D0 = 0.00001
         D = scipy.optimize.fsolve(self.SolveForD, D0)
@@ -234,7 +234,7 @@ class RegenerativeCool:
         q = (Tr - Ti_co) / (1 / hg + self.t / self.Mater.k + 1 / self.hco)
         self.Q += q * A
         T_co_calcualted = Ti_co + q * A / (self.Prop.fcp * self.m_flow_fuel)
-        print("h_co: ", self.hco)
+        #print("h_co: ", self.hco)
         # T_co_calcualted = Ti_co + q * A / (2*10**6* self.m_flow_fuel)
 
         ploss = self.pressureloss(m_flow_fuel, D, L)
