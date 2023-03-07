@@ -25,7 +25,7 @@ class Default:
     toll_P_adapted = 0.01
     Safety_factor=1.3
     noz_res=0.01
-
+    lstar=0.8
     #Seeds
     Pres = 1e6
     inj_vel = 15
@@ -86,6 +86,7 @@ class Propellant:
     o_lamb = 1.0e-3
     o_nist_enthalpy_coef = [1, 1, 1, 1, 1, 1, 1, 1]  # for shomate equation
     omiu=1.0e-6
+    lstar=0.8
    
     #Fuel
     Fuel_name = "LH2" #Fuel name for rocketCEA
@@ -138,7 +139,7 @@ def Main(Thrust, Thrust_time, Pamb):
         Cd = 0.7
         v_iox, v_if, D_f, D_o = Inj.injector1(Cd, m, O_F, prop.o_dens, prop.f_dens_l, mu_prop, sig_prop, rho_prop)
         #Compute chamber - needs Chamber temperature + oxider to fuel ratio from previous functions (Tc and of)
-        h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF, inj_vel, D_o, Tc, O_F, bool,rho_c,cp_c,mu_c,k_c,Pr_c)
+        h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF, inj_vel, D_o, Tc, O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c)
 
         #COmpute nozzle (2)
         t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz,Re_t=Nz_2.Nozzle_loop(p_new/100000, Tc, prop, Mt.Rhenium, default.Nozzle_type, O_F, eps, At, m, Dc, default)
@@ -162,7 +163,7 @@ def Main(Thrust, Thrust_time, Pamb):
         #Tf_cool=450
         #dptcool=1000000
         #Compute Turbo
-        ptinj = Turbo.TurboM(default, prop, O_F, Pamb, Tf_cool[-1], dptcool, m)
+        ptinj = Turbo.TurboM(default, prop, O_F, Pamb, Tf_cool, dptcool[0], m)
 
         #Cmpute Injector (2)
         p_new, dp_ox, dp_f = Inj.injector2(v_iox, v_if, D_f, D_o, ptinj, Cd, prop.o_dens, prop.f_dens_l)

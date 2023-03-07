@@ -225,7 +225,7 @@ class RegenerativeCool:
             (Twh - Ti_co) * (1 / hg + t / self.Mater.k)
             - (Tr - Ti_co) * t / self.Mater.k
         )
-        print("data: ", Tr - Twh)
+        #print("data: ", Tr - Twh)
 
         D0 = 0.00001
         D = scipy.optimize.fsolve(self.SolveForD, D0)
@@ -300,6 +300,6 @@ class RegenerativeCool:
                     )
         self.D = D
         self.Q = zeroDcool.Q
-        print(Ti_co_array)
+        #print(Ti_co_array)
 
         return Ti_co_array[len(Tr_array)], ploss
