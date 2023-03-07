@@ -28,10 +28,11 @@ class Default:
 
     #Seeds
     Pres = 1e6
-    inj_vel = 15
+    inj_vel = 30
 
     #Injectors
     Cd = 0.7
+    d0 = 1.5*10**-4
 
     #Nozzle
     Nozzle_type = 0
@@ -63,7 +64,9 @@ class Default:
     T_ox_tanks = 60
 
     #Igniters
-    ignburntime = 4
+    ignburntime = 3.5
+    ignratio = 0.7
+    fudgefactor = 3.5 #change this number if igniters gives a mass to big, its the parameter to take into account the great model inaccuracy
 
     #Material
     material = "This"
@@ -83,9 +86,11 @@ class Propellant:
     o_dens = 1141.0 #Oxidizer density
     ocp = 14307.0 #oxidizer cp
     h_ox = -12.979 #oxidizer enthalpy
-    o_lamb = 1.0e-6
-    o_nist_enthalpy_coef = [1, 1, 1, 1, 1, 1, 1, 1]  # for shomate equation
+    o_lamb = 1*10**(-6)
+    o_nist_enthalpy_coef = [20.91, 10.72, -2.02, 0.1464, 9.2457, 5.338, 237.62, 0,
+                            31.33, -20.235, 57.87, -36.51, -0.007374, -8.9035, 246.79, 0]
     omiu=1.0e-6
+    ox_M = 32*10^-3 #molar mass
    
     #Fuel
     Fuel_name = "LH2" #Fuel name for rocketCEA
@@ -96,16 +101,18 @@ class Propellant:
     fcp = 14307.0 #fuel cp
     h_fuel = -9.012 # fuel enthalpy
     R_f = 4.1573 #fuel gas constant
-    f_lamb = 1.0e-6
+    f_lamb = 1.41*10**(-5)
     fmiu=1.0e-6
-    f_nist_enthalpy_coef = [1, 1, 1, 1, 1, 1, 1, 1]  # for shomate equation
+    f_M = 2*10^-3 #Molar mass
+    f_nist_enthalpy_coef =  [43.31,-4.293,1.27243,-0.096876,-20.5339,-38.5151,162.08,0,
+                           33.066,-11.363,11.4328,-2.773,-0.15856,-9.981,172.71,0]
     MR = 3 #mixture ratio
     
     Frozen_state=0
     
     #Propellant
     gama = 1.4
-    tq = 0.9 #characteristic chemical time of propellant
+    lstar = 0.95 #characteristic chemical time of propellant
 
     def __init__(self,type):
         match type:
@@ -138,7 +145,7 @@ def Main(Thrust, Thrust_time, Pamb):
         Cd = 0.7
         v_iox, v_if, D_f, D_o = Inj.injector1(Cd, m, O_F, prop.o_dens, prop.f_dens_l, mu_prop, sig_prop, rho_prop)
         #Compute chamber - needs Chamber temperature + oxider to fuel ratio from previous functions (Tc and of)
-        h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF, inj_vel, D_o, Tc, O_F, bool)
+        h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF, default.inj_vel, default.d0, Tc, O_F, bool)
         Dc=0.2
         Chamber_L=0.5
         #COmpute nozzle (2)
@@ -173,7 +180,7 @@ def Main(Thrust, Thrust_time, Pamb):
     bool = 1 #Shows the combustor it is out of the loop in order to compute mass!
     #Compute Ignitor - m is the mass flow, Hc is enthalpy of propelants at chamber exit, H0 is enthalpy of propelants at chamber entry
     #For further information on igniter output, see comments on first line of the igniters functions
-    # igniter_results = Igniters(m,prop,default,Tc,O_F)
+    # igniter_results = Igniters(m,prop,default,Tc,O_F,1/(default.ignratio+1),1/(O_F+1))
     #Compute Masses
     print(p_new)
     print(Isp)

@@ -50,9 +50,9 @@ def CombustionChamber (Pc,At,Propellant,Material,Safety,velocity,d0,Tc,of,bool):
         time = time_o
 
     LengthChamber = velocity*time
-    lstar = Propellant.tq * GAMA * math.sqrt(gama*Tc)
+    #lstar = Propellant.tq * GAMA * math.sqrt(gama*Tc)
 
-    lstar =  0.95
+    lstar =  Propellant.lstar
 
 
 
@@ -90,8 +90,8 @@ prop = Propellant
 mat = Material
 
 ht,dc,t,lc,re = CombustionChamber(20300000,0.053,prop,mat,2,30,1.5*10**-4,3400,6,0)
-print(dc,t,lc,)
-At = 0.053
-Ac = 2.96*At
-y=math.sqrt(Ac/math.pi)*2
-print(y)
+#print(dc,t,lc,)
+#At = 0.053
+#Ac = 2.96*At
+#y=math.sqrt(Ac/math.pi)*2
+#print(y)
