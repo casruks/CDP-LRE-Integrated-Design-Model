@@ -116,9 +116,10 @@ bool = (
 # Main Function
 if __name__ == "__main__":
     Q = 0
-    Tw_ad_noz = numpy.array([3300, 3300, 3300, 3300])
-    h_c_noz = [450, 450, 450, 450]
-    t_noz = [0.05, 0.05, 0.05, 0.05]
+    n = 20
+    Tw_ad_noz = numpy.array([3300 for i in range(n)])
+    h_c_noz = [1200 for i in range(n)]
+    t_noz = [0.05 for i in range(n)]
     # Tw_ad_noz = 9000
     # h_c_noz = 1200
     # t_noz = 0.001
@@ -130,12 +131,17 @@ if __name__ == "__main__":
     # default.A = [A for i in range(len(Tw_ad_noz))]
     # Temperature after cooling
     T_w_after_cooling = 0
-    y = [0.26, 2.30 / 3, 2.30 * 2 / 3, 2.30]
+    y = [2.30 / n * (n - i) for i in range(n)]
+    y[-1] = 0.26
+    y[-2] = 0.3
+    # y = [(2.30 - 0.26) / 2 for i in range(n)]
+
     # inicialise cooling
     regCool = Cooling.RegenerativeCool()
 
     Mt.Rhenium.OpTemp_u = 700
-
+    Mt.Rhenium.k = 45
+    default.T_fuel_tanks = 310
     Tf_cool, dptcool = regCool.Run_for_Toperating1D(
         Tw_ad_noz,
         h_c_noz,
@@ -172,3 +178,20 @@ if __name__ == "__main__":
 # print("T_w_after_cooling: ", T_w_after_cooling)
 # print("Q: ", regCool.Q)
 # print("Twall: ", Twall)
+
+Tf_cool, dptcool = regCool.Run_for_Toperating0D(
+    Tw_ad_noz[0],
+    h_c_noz[0],
+    t_noz[0],
+    prop,
+    Mt.Rhenium,
+    default.A,
+    default.T_fuel_tanks,
+    m,
+    L,
+)
+
+print("D: ", regCool.D)
+print("Tf_cool: ", Tf_cool)
+# print("T_w_after_cooling: ", T_w_after_cooling)
+print("Q: ", regCool.Q)
