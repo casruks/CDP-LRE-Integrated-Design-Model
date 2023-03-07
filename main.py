@@ -194,7 +194,10 @@ def Main(Thrust, Thrust_time, Pamb):
     totalmass = nozzlemass + chambermass
     
     #Computing costs:
-    cost = Mt.chamber_material.cost*chambermass + Mt.nozzle_material.cost*nozzlemass
+    cost = chamber_material.cost*chambermass + nozzle_material.cost*nozzlemass
+    
+    #Mass Estimation Funtion for Hydro-lox engines:
+    M = 0.00051*Thrust_**0.92068
     
     print("Starting...")
     return p_new,Isp,m,150,Tc,Chamber_L
