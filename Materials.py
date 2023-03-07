@@ -1,31 +1,31 @@
 import math as mth
 
 class Materials:
-    def __init__(self, material, density, yieldstress, Emod, OpTemp_u, Conductivity, cost):
+    def __init__(self, material, density, yieldstress_l, Emod, OpTemp_u, k, cost):
         self.material = material
         self.density = density
-        self.yieldstress = yieldstress
+        self.yieldstress_l = yieldstress_l
         self.Emod = Emod
         self.OpTemp_u = OpTemp_u
-        self.Conductivity = Conductivity
+        self.k = k
         self.cost = cost
 
-Rhenium                 =       Materials('Rhenium',                            21000,  2300*10**6, 471*10**9, 1270,   48,   938)
-Aluminium_7075_T6       =       Materials('Aluminium 7075 T6',                  2810,   505*10**6,  72*10**9,  373.15, 130,  3.97)
-Ti6Al4V                 =       Materials('Tungsten & Aluminium alloy',         4428,   110*10**6,  114*10**9, 693.15, 6.7,  23.8)
-Haynes_188              =       Materials('Nickel Alloy',                       8980,   464*10**6,  244*10**9, 1423,   10.8, 30.6)
-Inconel_X_750           =       Materials('Inconel-750, Nickel-Chromium Alloy', 8280,   850*10**6,  222*10**9, 1090,   12,   20.4)
-Inconel_600             =       Materials('Inconel-600, Nickel-Chromium Alloy', 8470,   290*10**6,  206*10**9, 982,    15.9, 20.2)
-Inconel_718             =       Materials('Inconel-718, Nickel-Chromium Alloy', 8190,   1036*10**6, 211*10**9, 825,    11.4, 16.6)
-Inconel_A_286           =       Materials('A-286_Nickel-Chromium Alloy',       7920,   7920*10**6, 201*10**9, 700,    23.9, 5.43)
-Columbium_c103          =       Materials('Niobium (Colombium) - cold rolled',  8600,   550*10**6,  130*10**9, 1255,   0.54, 225)
+Rhenium                 =       Materials('Rhenium',                            21000.0,  2300.0e6,   471.0e9, 1270.0,   48.0,   938.0)
+Aluminium_7075_T6       =       Materials('Aluminium 7075 T6',                  2810.0,   505.0e6,    72.0e9,  373.15,   130.0,  3.97)
+Ti6Al4V                 =       Materials('Tungsten & Aluminium alloy',         4428.0,   110.0e6,    114.0e9, 693.15,   6.7,  23.8)
+Haynes_188              =       Materials('Nickel Alloy',                       8980.0,   464.0e6,    244.0e9, 1423.0,   10.8, 30.6)
+Inconel_X_750           =       Materials('Inconel-750, Nickel-Chromium Alloy', 8280.0,   850.0e6,    222.0e9, 1090.0,   12.0,   20.4)
+Inconel_600             =       Materials('Inconel-600, Nickel-Chromium Alloy', 8470.0,   290.0e6,    206.0e9, 982.0,    15.9, 20.2)
+Inconel_718             =       Materials('Inconel-718, Nickel-Chromium Alloy', 8190.0,   1036.0e6,   211.0e9, 825.0,    11.4, 16.6)
+Inconel_A_286           =       Materials('A-286_Nickel-Chromium Alloy',        7920.0,   7920.0e6,   201.0e9, 700.0,    23.9, 5.43)
+Columbium_c103          =       Materials('Niobium (Colombium) - cold rolled',  8600.0,   550.0e6,    130.0e9, 1255.0,   0.54, 225.0)
 
 #Coating Materials:
-Copper                  =       Materials('Copper coating',                     8940,   0,          0,          573,    390,  6.4)
-Narloy_Z                =       Materials('Copper Alloy Coating',               9130,   0,          0,          740,    290,  6.4)
-GRCop_84                =       Materials('GRPCop_84 Copper alloy coating',     8756,   0,          0,          1000,   351,  6.4)
-Silica                  =       Materials('Scilica Coating',                    1700,   0,          0,          1200,   0.55, 6.4)
-Carbon                  =       Materials('Carbon-Carbon Matrix coating',       1950,   0,          0,          2400,   37.4, 6.4)
+Copper                  =       Materials('Copper coating',                     8940.0,   0,          0,          573.0,    390.0,  6.4)
+Narloy_Z                =       Materials('Copper Alloy Coating',               9130.0,   0,          0,          740.0,    290.0,  6.4)
+GRCop_84                =       Materials('GRPCop_84 Copper alloy coating',     8756.0,   0,          0,          1000.0,   351.0,  6.4)
+Silica                  =       Materials('Scilica Coating',                    1700.0,   0,          0,          1200.0,   0.55, 6.4)
+Carbon                  =       Materials('Carbon-Carbon Matrix coating',       1950.0,   0,          0,          2400.0,   37.4, 6.4)
 
 
 
@@ -38,9 +38,9 @@ def Material_Select(pressure,safety,temp):
     o = []
     Material = []
     for i in Select:
-        if ((i.yieldstress/safety >= pressure) and (i.OpTemp_u >= temp)):
+        if ((i.yieldstress_l/safety >= pressure) and (i.OpTemp_u >= temp)):
             o.append(i)
-        elif i.yieldstress >= pressure:
+        elif i.yieldstress_l >= pressure:
             o.append(i)
             for i in Select2:
                 if i.OpTemp_u >= temp:
@@ -48,7 +48,9 @@ def Material_Select(pressure,safety,temp):
                 for i in o:
                     if i not in Material:
                         Material.append(i)
-    return Material
+    sortedbymass = sorted(Material, key= lambda x: x.density, reverse=True)
+    sortedbycost = sorted(Material, key= lambda x: x.cost, reverse=True)
+    return sortedbymass, sortedbycost
 
 def Coating_Select(temp):
     Select2 = [Copper, Narloy_Z,GRCop_84,Silica,Carbon]
@@ -60,20 +62,11 @@ def Coating_Select(temp):
             
 
 ##Computing Mass nozzle: 
-#Form Coordinates (integration of nozzle & material)
-def coordinate(a,b):
-    if len(a) != len(b):
-        raise Exception("#x-coordinates not equal to #y-coordiates for nozzle") 
-    coordinate = []
-    for i in range(len(a)):
-        coordinate.append((a[i],b[i]))
-    return coordinate
-
 #Mass estimation function Nozzle: 
-def Mass(x,t,material):
+def Mass(x,R,t,material):
     total_dist = 0
     for i in range(len(x)-1):
-        total_dist += mth.dist(x[i+1],x[i])
+        total_dist += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])
     vol = total_dist*t*2*mth.pi
     Mass = vol*material.density
     return Mass
