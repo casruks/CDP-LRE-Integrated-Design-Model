@@ -83,7 +83,7 @@ class Propellant:
     o_dens = 1141.0 #Oxidizer density
     ocp = 14307.0 #oxidizer cp
     h_ox = -12.979 #oxidizer enthalpy
-    o_lamb = 1.0e-3
+    o_lamb = 1.0e-6
     o_nist_enthalpy_coef = [1, 1, 1, 1, 1, 1, 1, 1]  # for shomate equation
     omiu=1.0e-6
    
@@ -163,7 +163,7 @@ def Main(Thrust, Thrust_time, Pamb):
         #Tf_cool=450
         #dptcool=1000000
         #Compute Turbo
-        ptinj = Turbo.TurboM(default, prop, O_F, Pamb, Tf_cool[-1], dptcool, m)
+        ptinj = Turbo.TurboM(default, prop, O_F, Pamb, Tf_cool, dptcool, m)
 
         #Cmpute Injector (2)
         p_new, dp_ox, dp_f = Inj.injector2(v_iox, v_if, D_f, D_o, ptinj, Cd, prop.o_dens, prop.f_dens_l)
