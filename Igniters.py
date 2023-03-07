@@ -10,45 +10,69 @@ class Subs:
         self.heatingvalues = '42 is the answer to the whole universe'
         self.Compound = 0
         self.mass = 0
-def Enthalpy (Propellant,Tc,of):
-    Hc_ox = (Propellant.o_nist_enthalpy_coef[0] * Tc + Propellant.o_nist_enthalpy_coef[1] * Tc ** 2 / 2
-             + Propellant.o_nist_enthalpy_coef[2] * Tc ** 3 / 3 + Propellant.o_nist_enthalpy_coef[3] * Tc ** 4 / 4
-             - Propellant.o_nist_enthalpy_coef[4] / Tc + Propellant.o_nist_enthalpy_coef[5]
-             - Tc + Propellant.o_nist_enthalpy_coef[7])
-    Hc_fuel = (Propellant.f_nist_enthalpy_coef[0] * Tc + Propellant.f_nist_enthalpy_coef[1] * Tc ** 2 / 2
-               + Propellant.f_nist_enthalpy_coef[2] * Tc ** 3 / 3 + Propellant.f_nist_enthalpy_coef[3] * Tc ** 4 / 4
-               - Propellant.f_nist_enthalpy_coef[4] / Tc + Propellant.f_nist_enthalpy_coef[5]
-               - Tc + Propellant.f_nist_enthalpy_coef[7])
-    #nfuel+nox = 1 Nox/Nfuel=of nfuel = 1/(of+1) + nox = of/(of+1)
-    H = Hc_ox*1/(of+1)+ Hc_fuel*of/(of+1)
+
+
+def Enthalpy (Propellant,Tc,of,i,ratio):
+    Hc_ox = (Propellant.o_nist_enthalpy_coef[0+i] * Tc + Propellant.o_nist_enthalpy_coef[1+i] * Tc ** 2 / 2
+             + Propellant.o_nist_enthalpy_coef[2+i] * Tc ** 3 / 3 + Propellant.o_nist_enthalpy_coef[3+i] * Tc ** 4 / 4
+             - Propellant.o_nist_enthalpy_coef[4+i] / Tc + Propellant.o_nist_enthalpy_coef[5+i]
+             - Tc + Propellant.o_nist_enthalpy_coef[7+i])
+    print(Hc_ox)
+    Hc_ox = Hc_ox / Propellant.ox_M
+
+    Hc_fuel = (Propellant.f_nist_enthalpy_coef[0+i] * Tc + Propellant.f_nist_enthalpy_coef[1+i] * Tc ** 2 / 2
+               + Propellant.f_nist_enthalpy_coef[2+i] * Tc ** 3 / 3 + Propellant.f_nist_enthalpy_coef[3+i] * Tc ** 4 / 4
+               - Propellant.f_nist_enthalpy_coef[4+i] / Tc + Propellant.f_nist_enthalpy_coef[5+i]
+               - Tc + Propellant.f_nist_enthalpy_coef[7+i])
+    print(Hc_fuel)
+    Hc_fuel=Hc_fuel/ Propellant.f_M
+
+    H = Hc_fuel*(ratio)+Hc_ox*(1-ratio)
+
     return H
 
-def Igniters (m,Propellant,default,Tc,of):
+def Igniters (m,Propellant,default,Tc,of,ratioign,ratio):
+    Tc = Tc/1000
 
-    Hc = Enthalpy(Propellant,Tc,of)
-    H0 = Enthalpy(Propellant,298,of)
+    Hc = Enthalpy(Propellant,Tc,of,0,ratio)*10**3
 
+    #H0 = -6*10**3 *6/7 / Propellant.ox_M
+    H0 = 0
+    n = 6
     Power = m *(Hc-H0)
+    print(Power)
 
-    heatingvalues = [19.8*10**6,13.5*10**6,9.2*10**6,6.5*10**6,2.9*10**6,2.5*10**6]
-    heatingcompounds = ['hydrogenoxygen','methaneoxygen','magnesiumteflonviton','boronpotassiumnitratewax','blackpowder','hydrogenperoxide']
+    heatingvalues = [119.96*10**6*default.ignratio,13.5*10**6,9.2*10**6,6.5*10**6,2.9*10**6,2.5*10**6]
+    heatingcompounds = ['hydrogenoxygen_LHV','methaneoxygen','magnesiumteflonviton','boronpotassiumnitratewax','blackpowder','hydrogenperoxide']
     time = default.ignburntime  # Igniter burn time
     Compound = [Subs() for i in range(n)]
 
     for i in range(n):
         Compound[i].heatingvalues = heatingvalues[i]
         Compound[i].compounds = heatingcompounds[i]
-        Compound[i].mass = Power/Compound[i].heatingvalues*time/14
+        Compound[i].mass = Power/Compound[i].heatingvalues/default.fudgefactor*time
 
 
     return Compound[0]
 
+#class Default:
+ #   ignburntime = 3.5
 
-#n = 6
-#nH2 = 1/7
-#n0 = 6/7
-#ho = 0 * nH2 + -6*10**3 *n0 * 32*10**(-3)
-#hc = 110.1*10**3 * n0/(32*10**(-3)) + 99.97*10**3* nH2 /( 2*10**(-3))
-#Compound = Igniters(467,hc,ho)
-#for i in range(n):
-#   print(Compound[i].compounds,Compound[i].mass)
+#class Propellant:
+ #   f_nist_enthalpy_coef = [43.31,-4.293,1.27243,-0.096876,-20.5339,-38.5151,162.08,0,
+   #                        33.066,-11.363,11.4328,-2.773,-0.15856,-9.981,172.71,0]
+  #  o_nist_enthalpy_coef = [20.91,10.72,-2.02,0.1464,9.2457,5.338,237.62,0,
+    #                        31.33,-20.235,57.87,-36.51,-0.007374,-8.9035,246.79,0]
+   # ox_M = 32*10**(-3)
+    #f_M = 2*10**(-3)
+
+#prop = Propellant
+#default = Default
+#Tc = 3400
+#of = 6
+#ofign = 0.7
+# mox +mfuel = 467 mox/mfuel = 6 mox = mfuel *6, mfuel = 1/7
+#Compound = Igniters(467,prop,default,Tc,of,1/(ofign+1),1/(of+1))
+#print(Compound.mass)
+
+
