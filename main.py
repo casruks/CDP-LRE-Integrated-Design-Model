@@ -156,7 +156,7 @@ def Main(Thrust, Thrust_time, Pamb):
         #1200 nozzle
         #2500 combustion~
 
-        Tf_cool,dptcool=regCool.Run_for_Toperating1D(Tw_ad_noz, h_c_noz, t_noz,prop,Mt.Rhenium,default.A,default.T_fuel_tanks,m/(1+O_F)/default.n,x_noz[-1])
+        Tf_cool,dptcool=regCool.Run_for_Toperating1D(Tw_ad_noz, h_c_noz, t_noz,prop,Mt.Rhenium,default.A,default.T_fuel_tanks,m/(1+O_F)/default.n,x_noz[-1],y_noz)
         Tf_cool,dptcool_c=regCool.Run_for_Toperating0D(Tc, h_comb, ThicknessChamber,prop,Mt.Rhenium,Chamber_L*default.Dr,Tf_cool,m/(1+O_F)/default.n,Chamber_L)
         dptcool=dptcool+dptcool_c
         #Tf_cool=450

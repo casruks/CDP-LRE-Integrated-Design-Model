@@ -218,14 +218,14 @@ class RegenerativeCool:
                 "Temperature at the wall is smaller than operating temperature. No need for regenerative cooling"
             )
             return Ti_co, 0
-        if(Ti_co > Tr):
-            raise Exception("Ti_co > Tr, Ti_co: ", Ti_co) 
+        if Ti_co > Tr:
+            raise Exception("Ti_co > Tr, Ti_co: ", Ti_co)
 
         self.hco = (Tr - Twh) / (
             (Twh - Ti_co) * (1 / hg + t / self.Mater.k)
             - (Tr - Ti_co) * t / self.Mater.k
         )
-        print("data: ",Tr - Twh)
+        print("data: ", Tr - Twh)
 
         D0 = 0.00001
         D = scipy.optimize.fsolve(self.SolveForD, D0)
@@ -233,8 +233,8 @@ class RegenerativeCool:
         q = (Tr - Ti_co) / (1 / hg + self.t / self.Mater.k + 1 / self.hco)
         self.Q += q * A
         T_co_calcualted = Ti_co + q * A / (self.Prop.fcp * self.m_flow_fuel)
-        #T_co_calcualted = Ti_co + q * A / (2*10**6* self.m_flow_fuel)
-        
+        # T_co_calcualted = Ti_co + q * A / (2*10**6* self.m_flow_fuel)
+
         ploss = self.pressureloss(m_flow_fuel, D, L)
 
         self.D = D
@@ -256,7 +256,7 @@ class RegenerativeCool:
         return eq
 
     def Run_for_Toperating1D(
-        self, Tr_array, hg, t, Prop, Mater, A, Ti_co, m_flow_fuel, L
+        self, Tr_array, hg, t, Prop, Mater, A, Ti_co, m_flow_fuel, L, y
     ):
         self.Prop = Prop
         self.m_flow_fuel = m_flow_fuel
@@ -270,7 +270,7 @@ class RegenerativeCool:
         D = 100000000000000000000
 
         for i in range(len(Tr_array)):
-            A = D * L / len(Tr_array)
+            A = (2 * math.pi * y[i]) * L / len(Tr_array)
             Ti_co_array[i + 1], ploss[i] = zeroDcool.Run_for_Toperating0D(
                 Tr_array[i],
                 hg[i],
@@ -284,7 +284,7 @@ class RegenerativeCool:
             )
             if zeroDcool.D < D:
                 D = zeroDcool.D
-                A = D * L / len(Tr_array)
+                A = (2 * math.pi * y[i]) * L / len(Tr_array)
                 zeroDcool.Q = 0
                 for j in range(i + 1):
                     Ti_co_array[j + 1], ploss[j] = zeroDcool.Run_for_Toperating0D(

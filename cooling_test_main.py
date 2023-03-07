@@ -115,21 +115,21 @@ bool = (
 # Main Function
 if __name__ == "__main__":
     Q = 0
-    Tw_ad_noz = numpy.array([1500, 2500, 3500, 3500])
+    Tw_ad_noz = numpy.array([3000, 2500, 1500, 1500])
     h_c_noz = [3000, 3000, 3000, 3000]
     t_noz = [0.001, 0.001, 0.001, 0.001]
     # Tw_ad_noz = 9000
     # h_c_noz = 1200
     # t_noz = 0.001
     L = 1
-    Re_t = 1000000
-    m = 1
+    # Re_t = 1000000
+    m = 0.073
     O_F = 4
     A = default.A
     # default.A = [A for i in range(len(Tw_ad_noz))]
     # Temperature after cooling
     T_w_after_cooling = 0
-
+    y = [0.019, 0.05, 0.1, 0.2]
     # inicialise cooling
     regCool = Cooling.RegenerativeCool()
 
@@ -143,6 +143,7 @@ if __name__ == "__main__":
         default.T_fuel_tanks,
         m / (1 + O_F),
         L,
+        y,
     )
     print("D: ", regCool.D)
     print("Tf_cool: ", Tf_cool)
