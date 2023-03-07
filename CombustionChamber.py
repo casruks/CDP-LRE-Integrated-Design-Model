@@ -34,7 +34,7 @@ def CombustionChamber (Pc,At,Propellant,Material,Safety,velocity,d0,Tc,of,bool):
     else:
         time = time_o
 
-    LengthChamber = velocity/time
+    LengthChamber = velocity*time
     lstar = Propellant.tq * GAMA * math.sqrt(gama*Tc)
 
 

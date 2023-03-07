@@ -139,7 +139,8 @@ def Main(Thrust, Thrust_time, Pamb):
         v_iox, v_if, D_f, D_o = Inj.injector1(Cd, m, O_F, prop.o_dens, prop.f_dens_l, mu_prop, sig_prop, rho_prop)
         #Compute chamber - needs Chamber temperature + oxider to fuel ratio from previous functions (Tc and of)
         h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF, inj_vel, D_o, Tc, O_F, bool)
-
+        Dc=0.2
+        Chamber_L=0.5
         #COmpute nozzle (2)
         t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz,Re_t=Nz_2.Nozzle_loop(p_new/100000, Tc, prop, Mt.Rhenium, default.Nozzle_type, O_F, eps, At, m, Dc, default)
         
@@ -150,7 +151,7 @@ def Main(Thrust, Thrust_time, Pamb):
 
         #1D Nozzle + 0D chamber
         #placeholder Re
-        Re=10^5
+        Re=10**5
         Pr=1
         #400-600K
         #1200 nozzle
