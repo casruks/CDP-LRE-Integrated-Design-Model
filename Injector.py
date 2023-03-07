@@ -27,21 +27,17 @@ def injector1(C_d, m, OF, rho_ox, rho_f, mu_prop, sig_prop, rho_prop):
     m_ox, m_f = Massflow(m, OF)
     
     # placeholder for reasonable injection velocities
-    v_if = v_iox = 351
-    n_f = n_ox = 1 
-    A_if = A_iox = 0.25*np.pi*d_f**2    #Area for 1 orifice
-    while v_if > 320:
-        n_f += 1
-        v_if = m_f / (rho_f*n_f*A_if)
-        
-    while v_iox > 60:
-        n_ox += 1
-        v_iox = m_ox / (rho_ox*n_ox*A_iox)
+    v_if = 320
+    v_iox = 60
+    n_f = n_ox = 200
+    A_if =  m_f / (rho_f*n_f*v_if)
+    A_iox = m_ox / (rho_ox*n_ox*v_iox)
+    
     # print('v_if =',v_if)
     # print('n_f =', n_f)
     # print('n_ox =', n_ox)
     # print(m_ox/n_ox, m_f/n_f)
-    # print('A_f =',A_if*n_f, 'A_ox =', A_iox*n_ox, 'A_f/A_ox =', n_f/n_ox)
+    # print('A_f =',A_if*n_f, 'A_ox =', A_iox*n_ox, 'A_f/A_ox =', A_if/A_iox)
     p_center = p_j = 1
     if InjType == 'unlike': #liquid - liquid   
         mu_wax = 2.69e-3    # [lbm/(ft-s)], 1 lbm/(ft-s) = 1.4881639 Pa.s
@@ -89,7 +85,7 @@ def injector1(C_d, m, OF, rho_ox, rho_f, mu_prop, sig_prop, rho_prop):
         d_j = d_f
         v_j = (v_iox + v_if)/2
         D_f = D_o = (1.6e5*(v_j*3.28084)**(-1)*(p_center/p_j)**(-0.1)*(d_j*39.3701)**0.57*K_prop)*0.0254e-6
-        print(D_f)
+        # print(D_f)
     return v_iox, v_if, D_f, D_o
 
 def injector2(v_iox, v_if, D_f, D_o, p_inj, C_d, rho_ox, rho_f):
@@ -131,4 +127,4 @@ def validateInj():
     p_inj = 182.1e5
     print(injector1(C_d, m, OF, rho_ox, rho_f, mu_prop, sig_prop, rho_prop))
     print(injector2(v_iox, v_if, D_f, D_o, p_inj, C_d, rho_ox, rho_f))
-# validateInjx()
+# validateInj()
