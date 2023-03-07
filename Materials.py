@@ -19,6 +19,7 @@ Inconel_600             =       Materials('Inconel-600, Nickel-Chromium Alloy', 
 Inconel_718             =       Materials('Inconel-718, Nickel-Chromium Alloy', 8190.0,   1036.0e6,   211.0e9, 825.0,    11.4, 16.6)
 Inconel_A_286           =       Materials('A-286_Nickel-Chromium Alloy',        7920.0,   7920.0e6,   201.0e9, 700.0,    23.9, 5.43)
 Columbium_c103          =       Materials('Niobium (Colombium) - cold rolled',  8600.0,   550.0e6,    130.0e9, 1255.0,   0.54, 225.0)
+Coper                   =       Materials('Copper',                             8940.0,   40.0e6,     128.0e9, 573.0,    398.0, 5.60)   
 
 #Coating Materials:
 Copper                  =       Materials('Copper coating',                     8940.0,   0,          0,          573.0,    390.0,  6.4)
