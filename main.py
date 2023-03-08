@@ -8,6 +8,7 @@ import Nozzle_loop_2 as Nz_2
 import Nozzle_turbine as Nz_t
 import Cooling
 import Materials as Mt
+import numpy as np
 
 Thrust_ = 1860000 #= input("Introduce thrust")
 Thrust_time_ = 180 #= input("Introduce thrust time")
@@ -124,7 +125,6 @@ def Main(Thrust, Thrust_time, Pamb):
     p_new = default.Pres
     inj_vel = default.inj_vel
     bool = 0 #this variable is used to show the combustor function we are in the first loop
-    import numpy as np
 
     regCool=Cooling.RegenerativeCool();#inicialise cooling
     while abs(p_new-p_old)/p_new > default.pres_tol:
@@ -207,10 +207,10 @@ def Main(Thrust, Thrust_time, Pamb):
     M = 0.00051*Thrust_**0.92068
     
     #Reusability:
-    Reuseability_chamber = Mt.Reusability(comb.Pc,chamber_material)
+    #Reuseability_chamber = Mt.Reusability(comb.Pc,chamber_material)
     
     print("Starting...")
-    return p_new,Isp,m,150,Tc,Chamber_L
+    return p_new,Isp,m,m*Thrust_time,Tc,Chamber_L
 
 if __name__ == '__main__':
     Main(Thrust_, Thrust_time_, Pamb_)
