@@ -1,7 +1,7 @@
 import math as mth
 
 class Materials:
-    def __init__(self, material, density, yieldstress_l, Emod, OpTemp_u, k, cost):
+    def __init__(self, material, density, yieldstress_l, Emod, OpTemp_u, k, cost, reusability):
         self.material = material
         self.density = density
         self.yieldstress_l = yieldstress_l
