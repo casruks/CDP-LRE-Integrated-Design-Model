@@ -10,7 +10,7 @@ import Cooling
 import Materials as Mt
 import numpy as np
 
-Thrust_ = 1860000 #= input("Introduce thrust")
+Thrust_ = 1350000 #= input("Introduce thrust")
 Thrust_time_ = 180 #= input("Introduce thrust time")
 Pamb_ = 1000 #= input("Introudce ambient pressure (Pa)")
 
@@ -46,7 +46,7 @@ class Default:
     R_u_ratio=1
 
     #Turbomachinery
-    cycle_type = "CB"
+    cycle_type = "EX"
     Eff_t = 0.6 #Turbine efficiency
     Eff_p = 0.6 #Pump efficiency
     Eff_m = 0.95 #Mechanical efficiency between turbine and pumps
@@ -101,7 +101,7 @@ class Propellant:
     f_lamb = 1.0e-6
     fmiu=1.0e-6
     f_nist_enthalpy_coef = [1, 1, 1, 1, 1, 1, 1, 1]  # for shomate equation
-    MR = 3 #mixture ratio
+    MR = 6.042 #mixture ratio
     
     Frozen_state=0
     
@@ -182,6 +182,7 @@ def Main(Thrust, Thrust_time, Pamb):
     print(Isp)
     print(eps)
     print(At)
+    print(m)
     print(D_f)
     print(D_o)
     print("Colling D: ",regCool.D)

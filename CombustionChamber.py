@@ -31,7 +31,7 @@ import math
 def CombustionChamber (Pc,At,Propellant,Material,Safety,velocity,d0,Tc,of,bool,rho_c,cp_c,mu_c,k_c,Pr_c):
 
     Vi = 4.0/3.0*math.pi*(d0/2.0)**3.0
-    Vf = Vi * 0.1 #random value for now
+    Vf = Vi * 0.05 #random value for now
     d = (3.0/4.0*Vf/math.pi)**(1.0/3.0)*2.0
     time_f = -(d**2.0-d0**2.0)/Propellant.f_lamb #dquadrado
     time_o = -(d**2.0-d0**2.0)/Propellant.o_lamb
