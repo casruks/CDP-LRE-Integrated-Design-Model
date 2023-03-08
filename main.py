@@ -84,10 +84,10 @@ class Propellant:
     o_dens = 1141.0 #Oxidizer density
     ocp = 14307.0 #oxidizer cp
     h_ox = -12.979 #oxidizer enthalpy
-    o_lamb = 1.0e-3
+    o_lamb = 1.0e-6
     o_nist_enthalpy_coef = [1, 1, 1, 1, 1, 1, 1, 1]  # for shomate equation
     omiu=1.0e-6
-    lstar=0.8
+    lstar=0.9
    
     #Fuel
     Fuel_name = "LH2" #Fuel name for rocketCEA
@@ -170,7 +170,7 @@ def Main(Thrust, Thrust_time, Pamb):
         
         #Cmpute Injector (2)
         p_new, dp_ox, dp_f = Inj.injector2(v_iox, v_if, D_f, D_o, ptinj, Cd, prop.o_dens, prop.f_dens_l)
-        print(p_new)
+        print("P_new: " + str(p_new))
         
         
     bool = 1 #Shows the combustor it is out of the loop in order to compute mass!

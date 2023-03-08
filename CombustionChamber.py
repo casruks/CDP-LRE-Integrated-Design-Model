@@ -30,18 +30,18 @@ import math
 
 def CombustionChamber (Pc,At,Propellant,Material,Safety,velocity,d0,Tc,of,bool,rho_c,cp_c,mu_c,k_c,Pr_c):
 
-    Vi = 4/3*math.pi*(d0/2)**3
-    Vf = Vi * 0.3 #random value for now
-    d = (3/4*Vf/math.pi)**(1/3)*2
-    time_f = -(d**2-d0**2)/Propellant.f_lamb #dquadrado
-    time_o = -(d**2-d0**2)/Propellant.o_lamb
+    Vi = 4.0/3.0*math.pi*(d0/2.0)**3.0
+    Vf = Vi * 0.1 #random value for now
+    d = (3.0/4.0*Vf/math.pi)**(1.0/3.0)*2.0
+    time_f = -(d**2.0-d0**2.0)/Propellant.f_lamb #dquadrado
+    time_o = -(d**2.0-d0**2.0)/Propellant.o_lamb
     kloads = 1
 
-    nfuel = 1/(of+1)
-    nox = 1-nfuel
+    nfuel = 1.0/(of+1.0)
+    nox = 1.0-nfuel
 
     gama = Propellant.gama
-    GAMA = math.sqrt(gama)*(2/(gama+1))**((gama+1)/(2*gama-2))
+    GAMA = math.sqrt(gama)*(2.0/(gama+1.0))**((gama+1.0)/(2.0*gama-2.0))
 
     if time_f>time_o:
         time = time_f
@@ -57,9 +57,9 @@ def CombustionChamber (Pc,At,Propellant,Material,Safety,velocity,d0,Tc,of,bool,r
 
     Vchamber = lstar * At
     Achamber = Vchamber / LengthChamber
-    print(Achamber)
-    Rchamber = (Achamber/math.pi)**(1/2)
-    dchamber = Rchamber * 2
+    print("Achamber: " + str(Achamber))
+    Rchamber = (Achamber/math.pi)**(1.0/2.0)
+    dchamber = Rchamber * 2.0
 
 
 
