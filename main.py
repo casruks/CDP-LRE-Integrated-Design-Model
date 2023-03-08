@@ -29,7 +29,7 @@ class Default:
     lstar=0.8
     #Seeds
     Pres = 1e6
-    inj_vel = 15
+    inj_vel = 30
 
     #Injectors
     Cd = 0.7
@@ -56,6 +56,7 @@ class Default:
 
     #Combustion chamber
     SF = 1.0
+    D_0 = 1.50*10**-4
 
     #Cooling
     Dr = 0.01
@@ -140,7 +141,7 @@ def Main(Thrust, Thrust_time, Pamb):
         Cd = 0.7
         v_iox, v_if, D_f, D_o = Inj.injector1(Cd, m, O_F, prop.o_dens, prop.f_dens_l, mu_prop, sig_prop, rho_prop)
         #Compute chamber - needs Chamber temperature + oxider to fuel ratio from previous functions (Tc and of)
-        h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF, inj_vel, D_o, Tc, O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c)
+        h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF,default.inj_vel, default.D_o, Tc, O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c)
 
         #COmpute nozzle (2)
         t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz,Re_t=Nz_2.Nozzle_loop(p_new/100000, Tc, prop, Mt.Rhenium, default.Nozzle_type, O_F, eps, At, m, Dc, default)
