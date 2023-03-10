@@ -75,7 +75,19 @@ class Default:
     #Material
     material = "This"
     Safety_factor=1.3
-
+    
+    #Reliabiliy
+     # Should be implemented for selection in GUI
+    cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC', 'S_FR_GG', 'SP_EX']
+    Prop = ['LOX_LH2', 'LOX_RP1']
+    N = 1   # number of engines
+     # Defaults
+    delta = 0.1017
+    Fref =  2278e3
+        #Other parameters for reliablity [Fernandez, 2022] can be found in :
+        # - Reliability_Data/Cycle_Data.csv 
+        # - Reliability_Data/Propellant_Uprating_Data.csv
+        
     #Init
     def __init__(self,type):
         if(type==1):
@@ -181,7 +193,13 @@ class Data:
     #Ignitor
 
     #Material
-
+    
+    #Reliability
+    Reliability = [] # List with floats, to account for multiple SG cyle variants 
+    cycle = ""       # Data cycle selected
+    Prop = ""        # Propellant selected (only relevant for derating)
+    N = 0.0          # Number of engines
+    
     def __init__(self, Th, t, p):
         self.Thrust = Th
         self.time = t
@@ -310,12 +328,9 @@ def Main(d : Data):
     print(D_f)
     print(D_ox)
     print("Colling D: ",regCool.D)
-    #Compute reliability
-    cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC', 'S_FR_GG', 'SP_EX']
-    Prop = ['LOX_LH2', 'LOX_RP1']
-    t=d.time
-    Fnom=d.Thrust
-    #Reliability=Rel.Reliability(t, cycle, Fnom, Fop, N, prop, 0)
+    
+    #Compute reliability 
+    #Reliability=Rel.Reliability(default, d.time, d.Thrust, d.Thrust, 0)
 
     #Compute masses
     chamber_material = Mt.Rhenium
