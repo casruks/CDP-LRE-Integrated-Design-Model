@@ -298,7 +298,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     u_t=sound_speeds[1]
     Re_t=rho_t*u_t*R_t*2/mu_t
 
-    return t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz,Re_t;
+    return t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz;
 
 
 

@@ -222,8 +222,28 @@ def Main(d : Data):
         h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF, inj_vel, D_ox, Tc, O_F, bool,rho_c,cp_c,mu_c/10.0,k_c,Pr_c)
 
         #COmpute nozzle (2)
-        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz,Re_t=Nz_2.Nozzle_loop(p_new/100000.0, Tc, prop, Mt.Rhenium, default.Nozzle_type, O_F, eps, At, m, Dc, default)
+
+        #Inputs
+        ## Chamber pressure in bars
+        ## Combustion chamber temperature in K
+        ## Propellants class
+        ## Material properties through material class
+        ## Nozzle type (from default class)
+        ## O_F ratio
+        ## Expansion ratio
+        ## Throat area in m^2
+        ## Mass flow rate in kg/s
+        ## Combustion chamber diameter in m
+        ## Default class
+
+        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz=Nz_2.Nozzle_loop(p_new/100000.0, Tc, prop, Mt.Rhenium, default.Nozzle_type, O_F, eps, At, m, Dc, default)
         
+        #Outputs
+        ## Array of thickness at the discretized points in the nozzle (corresponding to x_noz) in m
+        ## Array of discretized positions in the nozzle where all variables and properties are calcualted (positions in m)
+        ## Array of radius in the nozzle at the various discretization points (corresponding to x_noz) in m
+        ## Array of adiabatic wall temperature at the various discretization points (corresopnding to x_noz) in K
+        ## Array of coefficients of convective heat transfer at the various discretization points (corresponding to x_noz) in W/(m^2K)
         #Compute regenerative
 
         #0D, nozzle (do not delete, in case 1D doesnt work)
