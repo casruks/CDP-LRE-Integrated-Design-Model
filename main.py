@@ -22,10 +22,10 @@ dat = aux.Data(Thrust_, Thrust_time_, Pamb_)
 def Main(d : aux.Data):
     p_old = 0.0
     p_new = default.Pres
-    inj_vel = default.inj_vel
     bool = 0 #this variable is used to show the combustor function we are in the first loop
+    regCool=Cooling.RegenerativeCool(); #inicialise cooling
 
-    regCool=Cooling.RegenerativeCool();#inicialise cooling
+    #First loop, pressure convergence
     while abs(p_new-p_old)/p_new > default.pres_tol:
         p_old = p_new
 
