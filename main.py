@@ -207,7 +207,7 @@ def Main(d : Data):
         ## Density of gas in comustion chamber kg/m^3
         ## Specific heat at constant pressure in chamber in J/kgK
         ## Viscosity (mu) in combustion chamber in Pa*s
-        ## Conduction constant in combustion chamber in 
+        ## Conduction constant in combustion chamber in W/(m*degC), it's in degC but as long as it is used with temperature differences it shouldn't make a difference
         ## Prandtl number in combustion chamber
         
         Data.m_nozz=m 
