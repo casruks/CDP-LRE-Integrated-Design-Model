@@ -15,7 +15,6 @@ Thrust_time_ = 180 #= input("Introduce thrust time")
 Pamb_ = 1000 #= input("Introudce ambient pressure (Pa)")
 
 
-
 #Default values
 class Default:
     #Tolerances
@@ -24,9 +23,8 @@ class Default:
     toll_F_obj = 0.01
     Max_iterations_mass_flow = 10000
     toll_P_adapted = 0.01
-    Safety_factor=1.3
     noz_res=0.01
-    lstar=0.8
+
     #Seeds
     Pres = 1e6
     inj_vel = 15
@@ -56,6 +54,7 @@ class Default:
 
     #Combustion chamber
     SF = 1.0
+    lstar=0.8
 
     #Cooling
     Dr = 0.01
@@ -68,6 +67,7 @@ class Default:
 
     #Material
     material = "This"
+    Safety_factor=1.3
 
     #Init
     def __init__(self,type):
@@ -75,6 +75,7 @@ class Default:
             self.Cd = 1.0
 
 default = Default(0)
+
 
 #Propellant class
 class Propellant:
@@ -101,7 +102,7 @@ class Propellant:
     f_lamb = 1.0e-6
     fmiu=1.0e-6
     f_nist_enthalpy_coef = [1, 1, 1, 1, 1, 1, 1, 1]  # for shomate equation
-    MR = 6.042 #mixture ratio
+    MR = 6.1 #mixture ratio
     
     Frozen_state=0
     
@@ -119,8 +120,50 @@ class Propellant:
                 f_name = "CH4"
 
 prop = Propellant(0)
+
+
+#Data class
+class Data:
+    #Global
+    Thrust = 0.0
+    time = 0.0
+    Pa = 0.0
+    O_F = 0.0
+
+    #Nozzle
+    Pc = 0.0
+    Isp = 0.0
+    m_nozz = 0.0
+
+    #Turbo
+    W_Opump = 0.0
+    W_Fpump = 0.0
+    W_turb = 0.0
+    fuel_frac = 0.0
+    Ptinj = 0.0
+    dptop = 0.0
+    dptfp = 0.0
+
+    #Combustion
+
+    #Cooling
+
+    #Injector
+
+    #Ignitor
+
+    #Material
+
+    def __init__(self, Th, t, p):
+        self.Thrust = Th
+        self.time = t
+        self.Pa = p
+
+dat = Data(Thrust_, Thrust_time_, Pamb_)
+
+
 #Main Function
-def Main(Thrust, Thrust_time, Pamb):
+def Main(d : Data):
     p_old = 0.0
     p_new = default.Pres
     inj_vel = default.inj_vel
@@ -130,7 +173,7 @@ def Main(Thrust, Thrust_time, Pamb):
     while abs(p_new-p_old)/p_new > default.pres_tol:
         p_old = p_new
         #Compute nozzle (1)
-        m,Tc,O_F,At,eps,Isp,rho_c,cp_c,mu_c,k_c,Pr_c = Nz_1.Nozzle_loop_1(p_new/100000,Thrust,Pamb/100000,prop,default)
+        m,Tc,O_F,At,eps,Isp,rho_c,cp_c,mu_c,k_c,Pr_c = Nz_1.Nozzle_loop_1(p_new/100000.0,d.Thrust,d.Pa/100000.0,prop,default)
 
         #Compute injector (1)
             # placeholders for propellant reference factor K_prop =1
@@ -140,10 +183,10 @@ def Main(Thrust, Thrust_time, Pamb):
         Cd = 0.7
         v_iox, v_if, D_f, D_o = Inj.injector1(Cd, m, O_F, prop.o_dens, prop.f_dens_l, mu_prop, sig_prop, rho_prop)
         #Compute chamber - needs Chamber temperature + oxider to fuel ratio from previous functions (Tc and of)
-        h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF, inj_vel, D_o, Tc, O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c)
+        h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF, inj_vel, D_o, Tc, O_F, bool,rho_c,cp_c,mu_c/10.0,k_c,Pr_c)
 
         #COmpute nozzle (2)
-        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz,Re_t=Nz_2.Nozzle_loop(p_new/100000, Tc, prop, Mt.Rhenium, default.Nozzle_type, O_F, eps, At, m, Dc, default)
+        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz,Re_t=Nz_2.Nozzle_loop(p_new/100000.0, Tc, prop, Mt.Rhenium, default.Nozzle_type, O_F, eps, At, m, Dc, default)
         
         #Compute regenerative
 
@@ -158,15 +201,15 @@ def Main(Thrust, Thrust_time, Pamb):
         #1200 nozzle
         #2500 combustion~
 
-        Tf_cool,dptcool=regCool.Run_for_Toperating1D(Tw_ad_noz, h_c_noz, t_noz,prop,Mt.Rhenium,default.A,default.T_fuel_tanks,m/(1+O_F)/default.n,x_noz[-1],y_noz)
-        Tf_cool,dptcool_c=regCool.Run_for_Toperating0D(Tc, h_comb, ThicknessChamber,prop,Mt.Rhenium,Chamber_L*default.Dr,Tf_cool,m/(1+O_F)/default.n,Chamber_L)
+        Tf_cool,dptcool=regCool.Run_for_Toperating1D(Tw_ad_noz, h_c_noz, t_noz,prop,Mt.Rhenium,default.A,default.T_fuel_tanks,m/(1.0+O_F)/default.n,x_noz[-1],y_noz)
+        Tf_cool,dptcool_c=regCool.Run_for_Toperating0D(Tc, h_comb, ThicknessChamber,prop,Mt.Rhenium,Chamber_L*default.Dr,Tf_cool,m/(1.0+O_F)/default.n,Chamber_L)
         dptcool=dptcool+dptcool_c
         #Tf_cool=450
         #dptcool=1000000
         #Compute Turbo
         dp_cool:float
         dp_cool=np.max(dptcool)
-        ptinj = Turbo.TurboM(default, prop, O_F, Pamb, Tf_cool, dp_cool, m)
+        ptinj = Turbo.TurboM(default, prop, O_F, d.Pa, Tf_cool, dp_cool, m)
         
         #Cmpute Injector (2)
         p_new, dp_ox, dp_f = Inj.injector2(v_iox, v_if, D_f, D_o, ptinj, Cd, prop.o_dens, prop.f_dens_l)
@@ -189,8 +232,8 @@ def Main(Thrust, Thrust_time, Pamb):
     #Compute reliability
     cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC', 'S_FR_GG', 'SP_EX']
     Prop = ['LOX_LH2', 'LOX_RP1']
-    t=Thrust_time
-    Fnom=Thrust
+    t=d.time
+    Fnom=d.Thrust
     #Reliability=Rel.Reliability(t, cycle, Fnom, Fop, N, prop, 0)
 
     #Compute masses
@@ -211,7 +254,7 @@ def Main(Thrust, Thrust_time, Pamb):
     #Reuseability_chamber = Mt.Reusability(comb.Pc,chamber_material)
     
     print("Starting...")
-    return p_new,Isp,m,m*Thrust_time,Tc,Chamber_L
+    return p_new,Isp,m,m*d.time,Tc,Chamber_L
 
 if __name__ == '__main__':
-    Main(Thrust_, Thrust_time_, Pamb_)
+    Main(dat)
