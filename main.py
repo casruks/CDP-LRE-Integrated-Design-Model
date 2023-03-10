@@ -166,7 +166,18 @@ class Data:
     #Cooling
 
     #Injector
-
+    v_iox = 0.0     # Injection velocity oxidizer [m/s]
+    v_if = 0.0      # Injection velocity fuel [m/s]
+    D_f = 0.0       # Droplet size fuel [m]
+    D_ox = 0.0      # Droplet size oxidizer [m]
+    dp = 0.0        # Pressure drop over injector [Pa]
+    eta_s = 0.0     # Stability criteria factor [-]
+    m_ox = 0.0      # Mass flow oxidizer per orifice [kg/s]
+    m_f = 0.0       # Mass flow fuel per orifice [kg/s]
+    n_ox = 0.0      # Number of oxidizer orifices 
+    n_f = 0.0       # Number of oxidizer orifices       
+    P_D = 0.0       # Momentum ratio [-]
+    
     #Ignitor
 
     #Material
@@ -218,7 +229,7 @@ def Main(d : Data):
         Data.Eps=eps
         Data.Isp_noz=Isp
         #Compute injector (1)
-        v_iox, v_if, D_f, D_ox, dp, eta_s = injector1(default, prop, p_c, m, OF)
+        v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, P_D = injector1(default, prop, p_c, m, OF)
         
         #Compute chamber - needs Chamber temperature + oxider to fuel ratio from previous functions (Tc and of)
         h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF, inj_vel, D_ox, Tc, O_F, bool,rho_c,cp_c,mu_c/10.0,k_c,Pr_c)

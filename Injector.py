@@ -75,8 +75,8 @@ def injector1(default, propellant, p_c, m, OF):
     A_f =  n_f*((np.pi/4) * d_f**2)
     A_ox = n_ox*((np.pi/4) * d_ox**2)  
     print('A_f =', A_f, 'A_ox =', A_ox)
-    return v_iox, v_if, D_f, D_ox, dp, eta_s
-
+    return v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, P_D 
+           
 def injector2(default, propellant, v_iox, v_if, D_f, D_ox, p_inj, eta_s):
     '''
     Computes chamber pressure after injector.
