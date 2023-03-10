@@ -129,11 +129,19 @@ class Data:
     time = 0.0
     Pa = 0.0
     O_F = 0.0
+    Total_mass=0.0 # Total mass of the engine [kg]
 
     #Nozzle
-    Pc = 0.0
-    Isp = 0.0
-    m_nozz = 0.0
+    Pc = 0.0 
+    Isp_noz = 0.0 #[s]
+    m_nozz = 0.0 #[kg/s]
+    L_div=0.0 # Length of the divergent part [m]
+    L_con=0.0 # Length of the convergent part [m]
+    A_t=0.0 # Throat area [m^2]
+    Eps=0.0 # Expansion ratio [-]
+    Dt=0.0 # Throat diameter [m]
+    De=0.0 # Exit diameter [m]
+
 
     #Turbo
     W_Opump = 0.0
@@ -173,8 +181,33 @@ def Main(d : Data):
     while abs(p_new-p_old)/p_new > default.pres_tol:
         p_old = p_new
         #Compute nozzle (1)
+
+        #Inputs: 
+        ## Chamber pressure in bars
+        ## Thrust in Newton
+        ## Ambient pressure in bars
+        ## Propellants class
+        ## Default class
         m,Tc,O_F,At,eps,Isp,rho_c,cp_c,mu_c,k_c,Pr_c = Nz_1.Nozzle_loop_1(p_new/100000.0,d.Thrust,d.Pa/100000.0,prop,default)
 
+        # Outputs:
+        ## mass flow rate in kg/s
+        ## Chamber temperatures in K
+        ## Oxidizer to fuel ratio
+        ## Throat area in m^2
+        ## Expansion ratio
+        ## Specific impulse in s
+        ## Density of gas in comustion chamber kg/m^3
+        ## Specific heat at constant pressure in chamber in J/kgK
+        ## Viscosity (mu) in combustion chamber in Pa*s
+        ## Conduction constant in combustion chamber in 
+        ## Prandtl number in combustion chamber
+        
+        Data.m_nozz=m 
+        Data.O_F=O_F
+        Data.A_t=At
+        Data.Eps=eps
+        Data.Isp_noz=Isp
         #Compute injector (1)
             # placeholders for propellant reference factor K_prop =1
         mu_prop = 2.69e-3    # [lbm/(ft-s)]
