@@ -119,6 +119,7 @@ def Main(d : aux.Data):
         p_new, dp_ox, dp_f = Inj.injector2(default, prop, d.v_iox, d.v_if, d.D_f, d.D_ox, d.ptinj, d.eta_s)
         print("P_new: " + str(p_new))
               
+    d.Pc = p_new
     bool = 1 #Shows the combustor it is out of the loop in order to compute mass!
 
     #Computes igniters mass

@@ -177,6 +177,7 @@ class Data:
     Chamber_L = 0.0 # Length of CC
     chambermass = 0.0 #mass of the CC
     Tc = 0.0 # [K] Combustion temperature
+    Mnoz = 0.0 # [kg] Total nozzle mass
 
     #Cooling
 
@@ -191,7 +192,7 @@ class Data:
     m_ox = 0.0      # Mass flow oxidizer per orifice [kg/s]
     m_f = 0.0       # Mass flow fuel per orifice [kg/s]
     n_ox = 0.0      # Number of oxidizer orifices 
-    n_f = 0.0       # Number of oxidizer orifices       
+    n_f = 0.0       # Number of fuel orifices       
     P_D = 0.0       # Momentum ratio [-]
     
     #Ignitor

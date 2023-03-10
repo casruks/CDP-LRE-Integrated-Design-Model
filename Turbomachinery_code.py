@@ -112,11 +112,10 @@ class EX:
         self.Wt = 1.0/(self.O_F+1.0) * self.m * self.eff_t * self.prop.fcp * self.Tf_cool * (1.0-(self.pt2/self.pt1)**((self.prop.f_gamma-1.0)/self.prop.f_gamma))
         
         #Check to see if results are coherent
-        if(abs(self.Wop+self.Wfp-self.Wt/self.eff_m) > 0.01 or self.Wop < 0.0 or self.Wfp < 0.0):
+        if(abs(self.Wop+self.Wfp-self.Wt/self.eff_m) > 0.01 or self.Wop < 0.0 or self.Wfp < 0.0 or (not res["success"])):
             br = True
 
         #Debugging information
-        print(res)
         print([self.dptop, self.dptfp, self.pt1, self.pt2, self.ptinj])
         print([self.Wop,self.Wfp,self.Wt])
 
@@ -206,11 +205,10 @@ class SC:
         self.Wt = (1.0+self.l*self.O_F)/(self.O_F+1.0) * self.m * self.eff_t * self.prop.fcp * self.T1t * (1.0-(self.pt2/self.pt1)**((self.prop.f_gamma-1.0)/self.prop.f_gamma))
         
         #Check to see if results are coherent
-        if(abs(self.Wop+self.Wfp-self.Wt/self.eff_m) > 0.01 or self.Wop < 0.0 or self.Wfp < 0.0):
+        if(abs(self.Wop+self.Wfp-self.Wt/self.eff_m) > 0.01 or self.Wop < 0.0 or self.Wfp < 0.0 or (not res["success"])):
             br = True
 
         #Debugging information
-        print(res)
         print([self.dptop, self.dptfp, self.pt1, self.pt2, self.ptinj])
         print([self.Wop,self.Wfp,self.Wt])
 
@@ -309,11 +307,10 @@ class CB:
         self.Wt = (self.l/(1.0-self.l)) * self.m_F * self.eff_t * self.prop.fcp * self.Tf_cool * (1.0-(self.pt2/self.pt1)**((self.prop.f_gamma-1.0)/self.prop.f_gamma))
         
         #Check to see if results are coherent
-        if(abs(self.Wop+self.Wfp-self.Wt/self.eff_m) > 0.01 or self.Wop < 0.0 or self.Wfp < 0.0):
+        if(abs(self.Wop+self.Wfp-self.Wt/self.eff_m) > 0.01 or self.Wop < 0.0 or self.Wfp < 0.0 or (not res["success"])):
             br = True
 
         #Debugging information
-        print(res)
         print([self.dptop, self.dptfp, self.pt1, self.pt2, self.l])
         print([self.Wop,self.Wfp,self.Wt])
 
@@ -534,10 +531,12 @@ Pa_ = 1.0e5 #[Pa] ambient pressure
 Tf_cool_ = 500.0 #[K] temperature after cooling
 dptcool_ = 1.0e5 #[Pa] pressure drop in cooling channel
 m_ = 2.0 #[kg/s] mass flow in the nozzle
+default = aux.Default(0)
+prop = aux.Propellant(0)
 
-#aux Function
-if __name__ == '__aux__':
+#main Function
+if __name__ == '__main__':
     print('Loading...')
-    aux.default.cycle_type = 0
-    print(TurboM(aux.default, aux.prop, O_F_, Pa_, Tf_cool_, dptcool_, m_))
+    default.cycle_type = 0
+    print(TurboM(default, prop, O_F_, Pa_, Tf_cool_, dptcool_, m_))
     print('\nProcess Terminated')
