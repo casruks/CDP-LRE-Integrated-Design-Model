@@ -20,7 +20,7 @@ class Default:
     
     #Seeds
     Pres = 1e6
-    inj_vel = 15
+    inj_vel = 20
 
     #Injectors
     Cd = 0.7
@@ -60,13 +60,16 @@ class Default:
     Wmotor = 1.0e6 #Power of the electric motor
 
     #Combustion chamber
-    SF = 1.0
-<<<<<<< Updated upstream
-    lstar=0.8
-=======
-    D_0 = 1.50*10**-4
-    kloads = 1
->>>>>>> Stashed changes
+    SF = 1.0 # Safety factor for thickness estimation, put on advanced inputs
+    a = 0.023 # Constant for Cornellise equation DOES NOT need to be put on advanced inputs (it is fixed)
+
+    D_0 = 1.50*10**-4 #this is just a placeholder, bc the values from the injectors were not okay, do not put on inputs
+    # DO NOT DELETE D_0, I've been reading literature, we cannot assume injector diameter == to droplet diameter as we have been doing so far. they have a very big difference
+
+    kloads = 1 #Correction factor for mass, put on advanced inputs
+    ConvergenceRatio_l = 1.5 #Minimum acceptable Convergence ratio
+    ConvergenceRatio_h = 3.5 #Maximum acceptable Convergence ratio
+    factor = 0.3  # this is the factor that correlates initial droplet volume to final droplet volume. final droplet Volume = initial droplet volume * factor
 
     #Cooling
     Dr = 0.01
@@ -74,8 +77,11 @@ class Default:
     T_fuel_tanks = 20
     T_ox_tanks = 60
     n=1
+
     #Igniters
-    ignburntime = 4
+    ignburntime = 4 #Put on advanced inputs, it is the ignition burn time.
+    ign_o_f=0.7 #fuel ratio of the igniter propellant
+    fudgefactor = 20 #factor to correct for mass overestimation
 
     #Material
     material = "This"
@@ -110,7 +116,8 @@ class Propellant:
     ocp = 14307.0 #oxidizer cp
     h_ox = -12.979 #oxidizer enthalpy
     o_lamb = 1.0e-6
-    o_nist_enthalpy_coef = [1, 1, 1, 1, 1, 1, 1, 1]  # for shomate equation
+    o_nist_enthalpy_coef = [20.91,10.72,-2.02,0.1464,9.2457,5.338,237.62,0,
+                            31.33,-20.235,57.87,-36.51,-0.007374,-8.9035,246.79,0]  # for shomate equation
     omiu=1.0e-6
     lstar=0.9
    
@@ -123,9 +130,10 @@ class Propellant:
     fcp = 14307.0 #fuel cp
     h_fuel = -9.012 # fuel enthalpy
     R_f = 4.1573 #fuel gas constant
-    f_lamb = 1.0e-6
+    f_lamb = 9.6e-6
     fmiu=1.0e-6
-    f_nist_enthalpy_coef = [1, 1, 1, 1, 1, 1, 1, 1]  # for shomate equation
+    f_nist_enthalpy_coef = [43.31,-4.293,1.27243,-0.096876,-20.5339,-38.5151,162.08,0,
+                           33.066,-11.363,11.4328,-2.773,-0.15856,-9.981,172.71,0]  # for shomate equation
     MR = 6.1 #mixture ratio
     
     Frozen_state=0 # Frozen state of the propellant 0=chemical equilibrium flow, 1=frozen flow (from throat onwards)
@@ -179,7 +187,11 @@ class Data:
     dptfp = 0.0
 
     #Combustion
-
+    h_comb = 0.0 #Conductive heat transfer coefficient in chamber
+    Dc = 0.00 #Diameter of Combustion Chamber
+    ThicknessChamber = 0.0  #Thickness of CC
+    Chamber_L = 0.0 # Length of CC
+    chambermass = 0.0 #mass of the CC
     #Cooling
 
     #Injector
@@ -196,7 +208,7 @@ class Data:
     P_D = 0.0       # Momentum ratio [-]
     
     #Ignitor
-
+    Igniter_compound = 0.0 #mass
     #Material
     
     #Reliability
@@ -253,13 +265,30 @@ def Main(d : Data):
         Data.Isp_noz=Isp
         #Compute injector (1)
         v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, P_D = injector1(default, prop, p_c, m, OF)
-        
-        #Compute chamber - needs Chamber temperature + oxider to fuel ratio from previous functions (Tc and of)
-<<<<<<< Updated upstream
-        h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF, inj_vel, D_ox, Tc, O_F, bool,rho_c,cp_c,mu_c/10.0,k_c,Pr_c)
-=======
-        h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default, Tc, O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c)
->>>>>>> Stashed changes
+
+        #Compute Chamber
+
+        #inputs
+        ## Pressure at chamber in bars
+        ## Throat area in m^2
+        ## Material
+        ## default
+        ## fuel injection velocity
+        ## oxidizer injection velocity
+        ## Chamber temperature in K
+        ## oxidizer to fuel ratio
+        ## bool variable that specifies if inside loop or not
+        ## density, cp, miu,k, prandlt - this all comes from nozzle just leave it like that
+        ## IMPORTANT - this function is currently using hardcoded droplet diameter, bc droplet diameter coming from injector does not make sense.
+        h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default,v_if,v_iox, Tc, O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c)
+
+        #outputs
+        ## conductive heat transfer coefficient
+        ## chamber diameter in m
+        ## chamber thickness in m
+        ## chamber length in m
+        ## reynolds number
+
 
         #COmpute nozzle (2)
 
@@ -327,7 +356,22 @@ def Main(d : Data):
     bool = 1 #Shows the combustor it is out of the loop in order to compute mass!
     #Compute Ignitor - m is the mass flow, Hc is enthalpy of propelants at chamber exit, H0 is enthalpy of propelants at chamber entry
     #For further information on igniter output, see comments on first line of the igniters functions
-    # igniter_results = Igniters(m,prop,default,Tc,O_F)
+
+    #Computes igniters mass
+
+    #inputs
+    ## massflow
+    ## propellant
+    ## default
+    ## chamber temperature
+    ## oxidizer to fuel ratio of main chamber
+
+    # igniter_compound = Igniters(m,prop,default,Tc,O_F)
+
+    #outputs
+    ## mass used for igniter
+
+
     #Compute Masses
     print(p_new)
     print(Isp)
@@ -345,7 +389,7 @@ def Main(d : Data):
     chamber_material = Mt.Rhenium
     nozzle_material = Mt.Rhenium
     nozzlemass = Mt.Mass(x_noz,y_noz,t_noz,nozzle_material)
-    h_comb, Dc, ThicknessChamber, Chamber_L,Re_c,chambermass= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF, inj_vel, D_o, Tc, O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c)
+    h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default,v_if,v_iox, Tc, O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c)
     #chambermass = Comb.Mass
     Data.Total_mass=totalmass
     totalmass = nozzlemass + chambermass
