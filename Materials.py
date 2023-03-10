@@ -11,7 +11,7 @@ class Materials:
         self.cost = cost
         #self.reusability = reusability
 
-Rhenium                 =       Materials('Rhenium',                            21000.0,  2300.0e6,   471.0e9, 1270.0,   48.0,   938.0)#, 1190.0e6)
+Rhenium                 =       Materials('Rhenium',                            21000.0,  2300.0e6,   471.0e9, 2200.0,   48.0,   938.0)#, 1190.0e6)
 Aluminium_7075_T6       =       Materials('Aluminium 7075 T6',                  2810.0,   505.0e6,    72.0e9,  373.15,   130.0,  3.97)#, 129.0e6)
 Ti6Al4V                 =       Materials('Tungsten & Aluminium alloy',         4428.0,   110.0e6,    114.0e9, 693.15,   6.7,  23.8)#, 409.0e6)
 Haynes_188              =       Materials('Nickel Alloy',                       8980.0,   464.0e6,    244.0e9, 1423.0,   10.8, 30.6)#, 0)
