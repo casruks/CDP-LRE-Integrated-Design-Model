@@ -137,6 +137,7 @@ class Data:
     Pa = 0.0
     O_F = 0.0
     Total_mass=0.0 # Total mass of the engine [kg]
+    Total_cost=0.0 #Total cost of the engine [Eur]
 
     #Nozzle
     Pc = 0.0 
@@ -311,13 +312,15 @@ def Main(d : Data):
     nozzlemass = Mt.Mass(x_noz,y_noz,t_noz,nozzle_material)
     h_comb, Dc, ThicknessChamber, Chamber_L,Re_c,chambermass= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF, inj_vel, D_o, Tc, O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c)
     #chambermass = Comb.Mass
+    Data.Total_mass=totalmass
     totalmass = nozzlemass + chambermass
     
     #Computing costs:
+    Data.Total_cost=cost
     cost = chamber_material.cost*chambermass + nozzle_material.cost*nozzlemass
     
     #Mass Estimation Funtion for Hydro-lox engines:
-    M = 0.00051*Thrust_**0.92068
+    #M = 0.00051*Thrust_**0.92068
     
     #Reusability:
     #Reuseability_chamber = Mt.Reusability(comb.Pc,chamber_material)
