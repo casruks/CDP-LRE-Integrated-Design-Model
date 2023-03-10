@@ -45,6 +45,8 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     R_u=R_t*Default.R_u_ratio
     con_ratio=Dc**2/((2*R_t)**2)
 
+    Dt=R_t*2;
+    De=Dt*(mth.sqrt(eps))
     if Nozzle_type==0:
         L_nozzle_div=((mth.sqrt(eps)-1)*R_t+R_u*(1/mth.cos(Theta_conical)-1))/mth.tan(Theta_conical)
         L_nozzle_con=((mth.sqrt(con_ratio)-1)*R_t+R_u*(1/mth.cos(theta_con)-1))/mth.tan(theta_con)
@@ -298,7 +300,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     u_t=sound_speeds[1]
     Re_t=rho_t*u_t*R_t*2/mu_t
 
-    return t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz;
+    return t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,Dt,De,L_nozzle_con,L_nozzle_div,L_tot;
 
 
 

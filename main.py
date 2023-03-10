@@ -144,6 +144,7 @@ class Data:
     m_nozz = 0.0 #[kg/s]
     L_div=0.0 # Length of the divergent part [m]
     L_con=0.0 # Length of the convergent part [m]
+    L_total=0.0 # Total length of the nozzle [m]
     A_t=0.0 # Throat area [m^2]
     Eps=0.0 # Expansion ratio [-]
     Dt=0.0 # Throat diameter [m]
@@ -236,7 +237,7 @@ def Main(d : Data):
         ## Combustion chamber diameter in m
         ## Default class
 
-        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz=Nz_2.Nozzle_loop(p_new/100000.0, Tc, prop, Mt.Rhenium, default.Nozzle_type, O_F, eps, At, m, Dc, default)
+        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,D_t,D_e,L_nozzle_con,L_nozzle_div,L_tot=Nz_2.Nozzle_loop(p_new/100000.0, Tc, prop, Mt.Rhenium, default.Nozzle_type, O_F, eps, At, m, Dc, default)
         
         #Outputs
         ## Array of thickness at the discretized points in the nozzle (corresponding to x_noz) in m
@@ -244,6 +245,18 @@ def Main(d : Data):
         ## Array of radius in the nozzle at the various discretization points (corresponding to x_noz) in m
         ## Array of adiabatic wall temperature at the various discretization points (corresopnding to x_noz) in K
         ## Array of coefficients of convective heat transfer at the various discretization points (corresponding to x_noz) in W/(m^2K)
+        ## Diameter of the throat in m
+        ## Exit diameter in m
+        ## Length of nozzle convergent in m
+        ## Length of nozzle divergent in m
+        ## Total length of the nozzle in m
+
+        Data.Dt=D_t
+        Data.De=D_e
+        Data.L_con=L_nozzle_con
+        Data.L_div=L_nozzle_div
+        Data.L_total=L_tot
+        
         #Compute regenerative
 
         #0D, nozzle (do not delete, in case 1D doesnt work)
