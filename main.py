@@ -9,224 +9,17 @@ import Nozzle_turbine as Nz_t
 import Cooling
 import Materials as Mt
 import numpy as np
+import Aux_classes as aux
 
 Thrust_ = 1350000 #= input("Introduce thrust")
 Thrust_time_ = 180 #= input("Introduce thrust time")
 Pamb_ = 1000 #= input("Introudce ambient pressure (Pa)")
-
-
-#Default values
-class Default:
-    
-    #Seeds
-    Pres = 1e6
-    inj_vel = 20
-
-    #Injectors
-    Cd = 0.7
-    d_ox = d_f = (0.0135 +0.281)*0.0254/2.0      # 3.74 mm http://libgen.rs/book/index.php?md5=3D236B9BDD4070690CA83952058D9A1F p.113
-    InjTypes = ['like', 'unlike', 'pintle']
-    InjType = InjTypes[2]
-    mu_prop = 2.69e-3       # [lbm/(ft-s)], 1 lbm/(ft-s) = 1.4881639 Pa.s
-    sig_prop = 17.0         # [dynes/cm], 1 dyn/cm = 1e-7 N/m     
-    rho_prop = 47.7         # [lbm/ft3], 1 lbm/ft3 = 16.0185 kg/m3
-    p_center = p_j = 1  #measured centerline pressure, measured mean jet pressure
-    
-    #Nozzle
-    Nozzle_type = 0 # Type of nozzle, 0=conical, 1=bell
-    MR = 0 # O_F ratio, 0=optimize for c*
-    De_max = 2.5 # Maximum exit diameter of the nozzle
-    De_turbine_noz_max = 2.5 # Maximum exit diameter for the turbine exhaust nozzle
-    Theta_con = 60 # Angle of the convergent part of the nozzle in degrees
-    Theta_conical = 15 # Angle of the divergent part for the conical nozzle, in degrees
-    Theta_bell = 55 # Angle of the divergent part for the bell nozzle, in degrees
-    TH_exit_bell = 3 # Exit angle for the bell nozzle, in degrees
-    R_u_ratio=1 # Ratio between curvature radius and throat radius (for convergent throat section in bell, and for whole throat section in conical)
-    R_u_bell=0.382 # Ratio between curvature radius and throat radius for divergent throat section in bell nozzle
-    #Tolerances (For the nozzle)
-    toll_c_star = 0.01 # Tollerance on the absolute difference between two iteration values of O_F ratio (Nozzle_1)
-    toll_F_obj = 0.01  # Tollerance on the normalized difference between thrust calculated in iteration and target thrust (Nozzle_1)
-    Max_iterations_mass_flow = 10000 # Maximum iteration for the third part of Nozzle_1 code (Nozzle_1)
-    toll_P_adapted = 0.01 # Tollerance on the normalized difference between exit pressure and ambient pressure (Nozzle_1)
-    noz_res=150 # Number of points in the discretization of the whole nozzle (Nozzle_2)
-
-    #Turbomachinery
-    cycle_type = "EX"
-    Eff_t = 0.6 #Turbine efficiency
-    Eff_p = 0.6 #Pump efficiency
-    Eff_m = 0.95 #Mechanical efficiency between turbine and pumps
-    p_to = 1.0e5 #oxidizer tank storage pressure
-    ptf = 1.0e5 #Fuel tank oxidizer pressure
-    Wmotor = 1.0e6 #Power of the electric motor
-
-    #Combustion chamber
-    SF = 1.0 # Safety factor for thickness estimation, put on advanced inputs
-    a = 0.023 # Constant for Cornellise equation DOES NOT need to be put on advanced inputs (it is fixed)
-
-    D_0 = 1.50*10**-4 #this is just a placeholder, bc the values from the injectors were not okay, do not put on inputs
-    # DO NOT DELETE D_0, I've been reading literature, we cannot assume injector diameter == to droplet diameter as we have been doing so far. they have a very big difference
-
-    kloads = 1 #Correction factor for mass, put on advanced inputs
-    ConvergenceRatio_l = 1.5 #Minimum acceptable Convergence ratio
-    ConvergenceRatio_h = 3.5 #Maximum acceptable Convergence ratio
-    factor = 0.3  # this is the factor that correlates initial droplet volume to final droplet volume. final droplet Volume = initial droplet volume * factor
-
-    #Cooling
-    Dr = 0.01
-    A=0.0003
-    T_fuel_tanks = 20
-    T_ox_tanks = 60
-    n=1
-
-    #Igniters
-    ignburntime = 4 #Put on advanced inputs, it is the ignition burn time.
-    ign_o_f=0.7 #fuel ratio of the igniter propellant
-    fudgefactor = 20 #factor to correct for mass overestimation
-
-    #Material
-    material = "This"
-    Safety_factor=1.3
-    
-    #Reliabiliy
-     # Should be implemented for selection in GUI
-    cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC', 'S_FR_GG', 'SP_EX']
-    Prop = ['LOX_LH2', 'LOX_RP1']
-    N = 1   # number of engines
-     # Defaults
-    delta = 0.1017
-    Fref =  2278e3
-        #Other parameters for reliablity [Fernandez, 2022] can be found in :
-        # - Reliability_Data/Cycle_Data.csv 
-        # - Reliability_Data/Propellant_Uprating_Data.csv
-        
-    #Init
-    def __init__(self,type):
-        if(type==1):
-            self.Cd = 1.0
-
-default = Default(0)
-
-
-#Propellant class
-class Propellant:
-    #Oxidizer
-    Ox_name = "LOX" #Oxidizer name for rocketCEA
-    Ox_composition = "O 2" #Composition of oxidizer for rocketcea
-    o_dens = 1141.0 #Oxidizer density
-    ocp = 14307.0 #oxidizer cp
-    h_ox = -12.979 #oxidizer enthalpy
-    o_lamb = 1.0e-6
-    o_nist_enthalpy_coef = [20.91,10.72,-2.02,0.1464,9.2457,5.338,237.62,0,
-                            31.33,-20.235,57.87,-36.51,-0.007374,-8.9035,246.79,0]  # for shomate equation
-    omiu=1.0e-6
-    lstar=0.9
-   
-    #Fuel
-    Fuel_name = "LH2" #Fuel name for rocketCEA
-    Fuel_composition = "H 2" #Composition of fuel for rocketcea
-    f_dens_l = 71.0 #liquid fuel density
-    f_dens_g = 1.0 #gaseous fuel density
-    f_gamma = 1.4 #fuel gamma
-    fcp = 14307.0 #fuel cp
-    h_fuel = -9.012 # fuel enthalpy
-    R_f = 4.1573 #fuel gas constant
-    f_lamb = 9.6e-6
-    fmiu=1.0e-6
-    f_nist_enthalpy_coef = [43.31,-4.293,1.27243,-0.096876,-20.5339,-38.5151,162.08,0,
-                           33.066,-11.363,11.4328,-2.773,-0.15856,-9.981,172.71,0]  # for shomate equation
-    MR = 6.1 #mixture ratio
-    
-    Frozen_state=0 # Frozen state of the propellant 0=chemical equilibrium flow, 1=frozen flow (from throat onwards)
-    
-    #Propellant
-    gama = 1.4
-    tq = 0.9 #characteristic chemical time of propellant
-
-    def __init__(self,type):
-        match type:
-            case 0:
-                f_name = "LH"
-                o_name = "LOX"
-
-            case 1:
-                f_name = "CH4"
-
-prop = Propellant(0)
-
-
-#Data class
-class Data:
-    #Global
-    Thrust = 0.0
-    time = 0.0
-    Pa = 0.0
-    O_F = 0.0
-    Total_mass=0.0 # Total mass of the engine [kg]
-    Total_cost=0.0 #Total cost of the engine [Eur]
-
-    #Nozzle
-    Pc = 0.0 
-    Isp_noz = 0.0 #[s]
-    m_nozz = 0.0 #[kg/s]
-    L_div=0.0 # Length of the divergent part [m]
-    L_con=0.0 # Length of the convergent part [m]
-    L_total=0.0 # Total length of the nozzle [m]
-    A_t=0.0 # Throat area [m^2]
-    Eps=0.0 # Expansion ratio [-]
-    Dt=0.0 # Throat diameter [m]
-    De=0.0 # Exit diameter [m]
-
-
-    #Turbo
-    W_Opump = 0.0
-    W_Fpump = 0.0
-    W_turb = 0.0
-    fuel_frac = 0.0
-    Ptinj = 0.0
-    dptop = 0.0
-    dptfp = 0.0
-
-    #Combustion
-    h_comb = 0.0 #Conductive heat transfer coefficient in chamber
-    Dc = 0.00 #Diameter of Combustion Chamber
-    ThicknessChamber = 0.0  #Thickness of CC
-    Chamber_L = 0.0 # Length of CC
-    chambermass = 0.0 #mass of the CC
-    #Cooling
-
-    #Injector
-    v_iox = 0.0     # Injection velocity oxidizer [m/s]
-    v_if = 0.0      # Injection velocity fuel [m/s]
-    D_f = 0.0       # Droplet size fuel [m]
-    D_ox = 0.0      # Droplet size oxidizer [m]
-    dp = 0.0        # Pressure drop over injector [Pa]
-    eta_s = 0.0     # Stability criteria factor [-]
-    m_ox = 0.0      # Mass flow oxidizer per orifice [kg/s]
-    m_f = 0.0       # Mass flow fuel per orifice [kg/s]
-    n_ox = 0.0      # Number of oxidizer orifices 
-    n_f = 0.0       # Number of oxidizer orifices       
-    P_D = 0.0       # Momentum ratio [-]
-    
-    #Ignitor
-    Igniter_compound = 0.0 #mass
-    #Material
-    
-    #Reliability
-    Reliability = [] # List with floats, to account for multiple SG cyle variants 
-    cycle = ""       # Data cycle selected
-    Prop = ""        # Propellant selected (only relevant for derating)
-    N = 0.0          # Number of engines
-    
-    def __init__(self, Th, t, p):
-        self.Thrust = Th
-        self.time = t
-        self.Pa = p
-
-dat = Data(Thrust_, Thrust_time_, Pamb_)
-
+prop = aux.Propellant(0)
+default = aux.Default(0)
+dat = aux.Data(Thrust_, Thrust_time_, Pamb_)
 
 #Main Function
-def Main(d : Data):
+def Main(d : aux.Data):
     p_old = 0.0
     p_new = default.Pres
     inj_vel = default.inj_vel
@@ -235,16 +28,15 @@ def Main(d : Data):
     regCool=Cooling.RegenerativeCool();#inicialise cooling
     while abs(p_new-p_old)/p_new > default.pres_tol:
         p_old = p_new
-        #Compute nozzle (1)
 
+        #Compute nozzle (1)
         #Inputs: 
         ## Chamber pressure in bars
         ## Thrust in Newton
         ## Ambient pressure in bars
         ## Propellants class
         ## Default class
-        m,Tc,O_F,At,eps,Isp,rho_c,cp_c,mu_c,k_c,Pr_c = Nz_1.Nozzle_loop_1(p_new/100000.0,d.Thrust,d.Pa/100000.0,prop,default)
-
+        d.m_nozz,d.Tc,d.O_F,d.At,d.eps,d.Isp,rho_c,cp_c,mu_c,k_c,Pr_c = Nz_1.Nozzle_loop_1(p_new/100000.0,d.Thrust,d.Pa/100000.0,prop,default)
         # Outputs:
         ## mass flow rate in kg/s
         ## Chamber temperatures in K
@@ -258,16 +50,12 @@ def Main(d : Data):
         ## Conduction constant in combustion chamber in W/(m*degC), it's in degC but as long as it is used with temperature differences it shouldn't make a difference
         ## Prandtl number in combustion chamber
         
-        Data.m_nozz=m 
-        Data.O_F=O_F
-        Data.A_t=At
-        Data.Eps=eps
-        Data.Isp_noz=Isp
+
         #Compute injector (1)
-        v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, P_D = injector1(default, prop, p_c, m, OF)
+        d.v_iox, d.v_if, d.D_f, d.D_ox, d.dp, d.eta_s, d.m_ox, d.m_f, d.n_ox, d.n_f, d.P_D = Inj.injector1(default, prop, p_new, d.m_nozz, d.O_F)
+
 
         #Compute Chamber
-
         #inputs
         ## Pressure at chamber in bars
         ## Throat area in m^2
@@ -280,8 +68,7 @@ def Main(d : Data):
         ## bool variable that specifies if inside loop or not
         ## density, cp, miu,k, prandlt - this all comes from nozzle just leave it like that
         ## IMPORTANT - this function is currently using hardcoded droplet diameter, bc droplet diameter coming from injector does not make sense.
-        h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default,v_if,v_iox, Tc, O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c)
-
+        d.h_comb, d.Dc, d.ThicknessChamber, d.Chamber_L, d.Re_c= Comb.CombustionChamber(p_new, d.At, prop, Mt.Rhenium, default, d.v_if, d.v_iox, d.Tc, d.O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c)
         #outputs
         ## conductive heat transfer coefficient
         ## chamber diameter in m
@@ -291,7 +78,6 @@ def Main(d : Data):
 
 
         #COmpute nozzle (2)
-
         #Inputs
         ## Chamber pressure in bars
         ## Combustion chamber temperature in K
@@ -304,9 +90,7 @@ def Main(d : Data):
         ## Mass flow rate in kg/s
         ## Combustion chamber diameter in m
         ## Default class
-
-        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,D_t,D_e,L_nozzle_con,L_nozzle_div,L_tot=Nz_2.Nozzle_loop(p_new/100000.0, Tc, prop, Mt.Rhenium, default.Nozzle_type, O_F, eps, At, m, Dc, default)
-        
+        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,d.D_t,d.D_e,d.L_nozzle_con,d.L_nozzle_div,d.L_tot=Nz_2.Nozzle_loop(p_new/100000.0, d.Tc, prop, Mt.Rhenium, default.Nozzle_type, d.O_F, d.eps, d.At, d.m_nozz, d.Dc, default)
         #Outputs
         ## Array of thickness at the discretized points in the nozzle (corresponding to x_noz) in m
         ## Array of discretized positions in the nozzle where all variables and properties are calcualted (positions in m)
@@ -319,93 +103,60 @@ def Main(d : Data):
         ## Length of nozzle divergent in m
         ## Total length of the nozzle in m
 
-        Data.Dt=D_t
-        Data.De=D_e
-        Data.L_con=L_nozzle_con
-        Data.L_div=L_nozzle_div
-        Data.L_total=L_tot
         
         #Compute regenerative
-
-        #0D, nozzle (do not delete, in case 1D doesnt work)
-        #Tf_cool, T_w_after_cooling,dptcool=regCool.Run(Tw_ad_noz[0], h_c_noz[0], t_noz[0],prop,Mt.Rhenium,default.Dr,default.A,default.T_fuel_tanks,Re_t,m/(1+O_F),x_noz[-1])
-
-        #1D Nozzle + 0D chamber
-        #placeholder Re
         Re=10^5
-        Pr=1
-        #400-600K
-        #1200 nozzle
-        #2500 combustion~
-
-        Tf_cool,dptcool=regCool.Run_for_Toperating1D(Tw_ad_noz, h_c_noz, t_noz,prop,Mt.Rhenium,default.A,default.T_fuel_tanks,m/(1.0+O_F)/default.n,x_noz[-1],y_noz)
-        Tf_cool,dptcool_c=regCool.Run_for_Toperating0D(Tc, h_comb, ThicknessChamber,prop,Mt.Rhenium,Chamber_L*default.Dr,Tf_cool,m/(1.0+O_F)/default.n,Chamber_L)
+        Tf_cool,dptcool=regCool.Run_for_Toperating1D(Tw_ad_noz, h_c_noz, t_noz,prop,Mt.Rhenium,default.A,default.T_fuel_tanks,d.m_nozz/(1.0+d.O_F)/default.n,x_noz[-1],y_noz)
+        Tf_cool,dptcool_c=regCool.Run_for_Toperating0D(d.Tc, h_comb, ThicknessChamber,prop,Mt.Rhenium,Chamber_L*default.Dr,Tf_cool,d.m_nozz/(1.0+d.O_F)/default.n,Chamber_L)
         dptcool=dptcool+dptcool_c
-        #Tf_cool=450
-        #dptcool=1000000
+
         #Compute Turbo
-        dp_cool:float
         dp_cool=np.max(dptcool)
-        ptinj = Turbo.TurboM(default, prop, O_F, d.Pa, Tf_cool, dp_cool, m)
+        d.ptinj, d.W_Opump, d.W_Fpump, d.W_turb, error = Turbo.TurboM(default, prop, d.O_F, d.Pa, Tf_cool, dp_cool, d.m_nozz)
+        if(error): return False
         
         #Cmpute Injector (2)
-        p_new, dp_ox, dp_f = Inj.injector2(default, prop, v_iox, v_if, D_f, D_ox, ptinj, eta_s)
+        p_new, dp_ox, dp_f = Inj.injector2(default, prop, d.v_iox, d.v_if, d.D_f, d.D_ox, d.ptinj, d.eta_s)
         print("P_new: " + str(p_new))
-        
-        
+              
     bool = 1 #Shows the combustor it is out of the loop in order to compute mass!
-    #Compute Ignitor - m is the mass flow, Hc is enthalpy of propelants at chamber exit, H0 is enthalpy of propelants at chamber entry
-    #For further information on igniter output, see comments on first line of the igniters functions
 
     #Computes igniters mass
-
     #inputs
     ## massflow
     ## propellant
     ## default
     ## chamber temperature
     ## oxidizer to fuel ratio of main chamber
-
-    # igniter_compound = Igniters(m,prop,default,Tc,O_F)
-
+    igniter_compound = Ign.Igniters(d.m_nozz,prop,default,d.Tc,d.O_F)
     #outputs
     ## mass used for igniter
 
 
-    #Compute Masses
-    print(p_new)
-    print(Isp)
-    print(eps)
-    print(At)
-    print(m)
-    print(D_f)
-    print(D_ox)
-    print("Colling D: ",regCool.D)
-    
     #Compute reliability 
     #Reliability=Rel.Reliability(default, d.time, d.Thrust, d.Thrust, 0)
+
 
     #Compute masses
     chamber_material = Mt.Rhenium
     nozzle_material = Mt.Rhenium
     nozzlemass = Mt.Mass(x_noz,y_noz,t_noz,nozzle_material)
-    h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default,v_if,v_iox, Tc, O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c)
+    h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, d.At, prop, Mt.Rhenium, default,d.v_if,d.v_iox, d.Tc, d.O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c)
     #chambermass = Comb.Mass
-    Data.Total_mass=totalmass
-    totalmass = nozzlemass + chambermass
+    #Data.Total_mass=totalmass
+    #totalmass = nozzlemass + chambermass
     
+
     #Computing costs:
-    Data.Total_cost=cost
-    cost = chamber_material.cost*chambermass + nozzle_material.cost*nozzlemass
+    #Data.Total_cost=cost
+    #cost = chamber_material.cost*chambermass + nozzle_material.cost*nozzlemass
     
-    #Mass Estimation Funtion for Hydro-lox engines:
-    #M = 0.00051*Thrust_**0.92068
     
     #Reusability:
     #Reuseability_chamber = Mt.Reusability(comb.Pc,chamber_material)
     
-    print("Starting...")
-    return p_new,Isp,m,m*d.time,Tc,Chamber_L
+    print("Calculations finished")
+    return True
 
 if __name__ == '__main__':
     Main(dat)
