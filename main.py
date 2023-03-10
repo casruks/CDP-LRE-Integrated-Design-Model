@@ -24,7 +24,14 @@ class Default:
 
     #Injectors
     Cd = 0.7
-
+    d_ox = d_f = (0.0135 +0.281)*0.0254/2.0      # 3.74 mm http://libgen.rs/book/index.php?md5=3D236B9BDD4070690CA83952058D9A1F p.113
+    InjTypes = ['like', 'unlike', 'pintle']
+    InjType = InjTypes[2]
+    mu_prop = 2.69e-3       # [lbm/(ft-s)], 1 lbm/(ft-s) = 1.4881639 Pa.s
+    sig_prop = 17.0         # [dynes/cm], 1 dyn/cm = 1e-7 N/m     
+    rho_prop = 47.7         # [lbm/ft3], 1 lbm/ft3 = 16.0185 kg/m3
+    p_center = p_j = 1  #measured centerline pressure, measured mean jet pressure
+    
     #Nozzle
     Nozzle_type = 0 # Type of nozzle, 0=conical, 1=bell
     MR = 0 # O_F ratio, 0=optimize for c*
@@ -209,14 +216,10 @@ def Main(d : Data):
         Data.Eps=eps
         Data.Isp_noz=Isp
         #Compute injector (1)
-            # placeholders for propellant reference factor K_prop =1
-        mu_prop = 2.69e-3    # [lbm/(ft-s)]
-        sig_prop = 17        # [dynes/cm]    
-        rho_prop = 47.7      # [lbm/ft3]
-        Cd = 0.7
-        v_iox, v_if, D_f, D_o = Inj.injector1(Cd, m, O_F, prop.o_dens, prop.f_dens_l, mu_prop, sig_prop, rho_prop)
+        v_iox, v_if, D_f, D_ox, dp, eta_s = injector1(default, prop, p_c, m, OF)
+        
         #Compute chamber - needs Chamber temperature + oxider to fuel ratio from previous functions (Tc and of)
-        h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF, inj_vel, D_o, Tc, O_F, bool,rho_c,cp_c,mu_c/10.0,k_c,Pr_c)
+        h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF, inj_vel, D_ox, Tc, O_F, bool,rho_c,cp_c,mu_c/10.0,k_c,Pr_c)
 
         #COmpute nozzle (2)
         t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz,Re_t=Nz_2.Nozzle_loop(p_new/100000.0, Tc, prop, Mt.Rhenium, default.Nozzle_type, O_F, eps, At, m, Dc, default)
@@ -245,7 +248,7 @@ def Main(d : Data):
         ptinj = Turbo.TurboM(default, prop, O_F, d.Pa, Tf_cool, dp_cool, m)
         
         #Cmpute Injector (2)
-        p_new, dp_ox, dp_f = Inj.injector2(v_iox, v_if, D_f, D_o, ptinj, Cd, prop.o_dens, prop.f_dens_l)
+        p_new, dp_ox, dp_f = Inj.injector2(default, prop, v_iox, v_if, D_f, D_ox, ptinj, eta_s)
         print("P_new: " + str(p_new))
         
         
@@ -260,7 +263,7 @@ def Main(d : Data):
     print(At)
     print(m)
     print(D_f)
-    print(D_o)
+    print(D_ox)
     print("Colling D: ",regCool.D)
     #Compute reliability
     cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC', 'S_FR_GG', 'SP_EX']
