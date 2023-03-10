@@ -104,7 +104,12 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default):
             difference=abs(Pe_1-Pamb)/Pamb 
 
             if difference>0.01:
-
+                
+                #g_it=ispObj.get_Chamber_MolWt_gamma(Pc=Pc,MR=MR,eps=eps_1)
+                #g_cur=g_it[1]
+                #G_cur=mth.sqrt(g_cur)*((2/(g_cur+1))**((g_cur+1)/2*(g_cur-1)))
+                #eps_it=G_cur/(mth.sqrt(2*g_cur/(g_cur-1)*(Pamb/Pc)**(2/g_cur)*(1-(Pamb/Pc)**((g-1)/g))))
+                #Ae_1=At*eps_it;
                 Ae_2=Ae_1*Pe_1/Pamb # Change value for next iteration
                 Ae_1=Ae_2;
             else:
