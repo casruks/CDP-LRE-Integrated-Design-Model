@@ -37,6 +37,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     Theta_conical=mth.radians(Default.Theta_conical)
     Theta_bell=mth.radians(Default.Theta_bell)
     TH_exit_bell=mth.radians(Default.TH_exit_bell)
+    Ru_bell=Default.R_u_bell
 
     noz_res=Default.noz_res
     # Definition of the geometry of the nozzle
@@ -91,8 +92,8 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         y_noz=geek.concatenate((y_con,y_throat1,y_throat2,y_div)) 
     else:
         ye=mth.sqrt(eps)*R_t
-        xp=0.382*R_t*mth.sin(Theta_bell)
-        yp=1.382*R_t-0.382*R_t*mth.cos(Theta_bell)
+        xp=Ru_bell*R_t*mth.sin(Theta_bell)
+        yp=(1+Ru_bell)*R_t-Ru_bell*R_t*mth.cos(Theta_bell)
         a=(mth.tan(mth.pi/2-TH_exit_bell)-mth.tan(mth.pi/2-Theta_bell))/(2*(ye-yp))
         b=mth.tan(mth.pi/2-Theta_bell)-2*(mth.tan(mth.pi/2-TH_exit_bell)-mth.tan(mth.pi/2-Theta_bell))/(2*(ye-yp))*yp
         c=xp-a*yp**2-b*yp
@@ -126,9 +127,9 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         th_step=[]
         y_throat2=[]
         for i in x_throat2:
-            th_step_cur=mth.asin((i-L_nozzle_con)/(0.382*R_t))
+            th_step_cur=mth.asin((i-L_nozzle_con)/(Ru_bell*R_t))
             th_step.append(th_step_cur)
-            y_cur=R_t+(1-mth.cos(th_step_cur))*R_t*0.382
+            y_cur=R_t+(1-mth.cos(th_step_cur))*R_t*Ru_bell
             y_throat2.append(y_cur)
 
         n3=round((L_tot-xp)/noz_res)

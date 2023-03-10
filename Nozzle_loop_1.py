@@ -116,12 +116,6 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default):
         Isp_it=ispObj.estimate_Ambient_Isp(Pc=Pc,MR=MR,eps=eps_actual,Pamb=Pamb,frozen=frozen_state,frozenAtThroat=frozen_state) # Calculates Isp for this iteration
         v_eff_it=Isp_it[0]*9.80665; # Calculates effective velocity for this iteration
 
-        sonic_vel_it=ispObj.get_SonicVelocities(Pc=Pc,MR=MR,eps=eps_actual,frozen=frozen_state,frozenAtThroat=frozen_state)
-        u_t=sonic_vel_it[1] # Velocity of sound in the throat
-
-        rhos=ispObj.get_Densities(Pc=Pc,MR=MR,eps=eps_actual,frozen=frozen_state,frozenAtThroat=frozen_state)
-        rho_t=rhos[1]  # Density in the throat
-
         m_p_it=Pc*100000*At/c_star # Mass flow rate from continuity equation in the throat
 
         F_it=m_p_it*v_eff_it # Force computed at this iteration

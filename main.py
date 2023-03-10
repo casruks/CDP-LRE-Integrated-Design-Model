@@ -17,13 +17,7 @@ Pamb_ = 1000 #= input("Introudce ambient pressure (Pa)")
 
 #Default values
 class Default:
-    #Tolerances
-    toll_c_star = 0.01 # Tollerance on the absolute difference between two iteration values of O_F ratio (Nozzle_1)
-    toll_F_obj = 0.01  # Tollerance on the normalized difference between thrust calculated in iteration and target thrust (Nozzle_1)
-    Max_iterations_mass_flow = 10000 # Maximum iteration for the third part of Nozzle_1 code (Nozzle_1)
-    toll_P_adapted = 0.01 # Tollerance on the normalized difference between exit pressure and ambient pressure (Nozzle_1)
-    noz_res=150 # Number of points in the discretization of the whole nozzle (Nozzle_2)
-
+    
     #Seeds
     Pres = 1e6
     inj_vel = 15
@@ -40,7 +34,14 @@ class Default:
     Theta_conical = 15 # Angle of the divergent part for the conical nozzle, in degrees
     Theta_bell = 55 # Angle of the divergent part for the bell nozzle, in degrees
     TH_exit_bell = 3 # Exit angle for the bell nozzle, in degrees
-    R_u_ratio=1 # Ratio between throat radius and curvature radius (for convergent throat section in bell, and for whole throat section in conical)
+    R_u_ratio=1 # Ratio between curvature radius and throat radius (for convergent throat section in bell, and for whole throat section in conical)
+    R_u_bell=0.382 # Ratio between curvature radius and throat radius for divergent throat section in bell nozzle
+    #Tolerances (For the nozzle)
+    toll_c_star = 0.01 # Tollerance on the absolute difference between two iteration values of O_F ratio (Nozzle_1)
+    toll_F_obj = 0.01  # Tollerance on the normalized difference between thrust calculated in iteration and target thrust (Nozzle_1)
+    Max_iterations_mass_flow = 10000 # Maximum iteration for the third part of Nozzle_1 code (Nozzle_1)
+    toll_P_adapted = 0.01 # Tollerance on the normalized difference between exit pressure and ambient pressure (Nozzle_1)
+    noz_res=150 # Number of points in the discretization of the whole nozzle (Nozzle_2)
 
     #Turbomachinery
     cycle_type = "EX"
