@@ -61,7 +61,12 @@ class Default:
 
     #Combustion chamber
     SF = 1.0
+<<<<<<< Updated upstream
     lstar=0.8
+=======
+    D_0 = 1.50*10**-4
+    kloads = 1
+>>>>>>> Stashed changes
 
     #Cooling
     Dr = 0.01
@@ -250,7 +255,11 @@ def Main(d : Data):
         v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, P_D = injector1(default, prop, p_c, m, OF)
         
         #Compute chamber - needs Chamber temperature + oxider to fuel ratio from previous functions (Tc and of)
+<<<<<<< Updated upstream
         h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default.SF, inj_vel, D_ox, Tc, O_F, bool,rho_c,cp_c,mu_c/10.0,k_c,Pr_c)
+=======
+        h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, At, prop, Mt.Rhenium, default, Tc, O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c)
+>>>>>>> Stashed changes
 
         #COmpute nozzle (2)
 
