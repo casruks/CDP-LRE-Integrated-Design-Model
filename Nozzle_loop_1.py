@@ -81,8 +81,6 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default):
  
     variation=10 # Value to enter the loop
 
-    #Ae_array=geek.linspace(At+0.001,Ae_max,num=1000) #Array of areas to be tried by the software
-
     while v_eff<0 or variation>toll_F_obj:
 
         eps_max=Ae_max/At # Maximum expansion ratio with this throat area

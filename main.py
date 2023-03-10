@@ -18,12 +18,11 @@ Pamb_ = 1000 #= input("Introudce ambient pressure (Pa)")
 #Default values
 class Default:
     #Tolerances
-    pres_tol = 0.01
-    toll_c_star = 0.01
-    toll_F_obj = 0.01
-    Max_iterations_mass_flow = 10000
-    toll_P_adapted = 0.01
-    noz_res=0.01
+    toll_c_star = 0.01 # Tollerance on the absolute difference between two iteration values of O_F ratio (Nozzle_1)
+    toll_F_obj = 0.01  # Tollerance on the normalized difference between thrust calculated in iteration and target thrust (Nozzle_1)
+    Max_iterations_mass_flow = 10000 # Maximum iteration for the third part of Nozzle_1 code (Nozzle_1)
+    toll_P_adapted = 0.01 # Tollerance on the normalized difference between exit pressure and ambient pressure (Nozzle_1)
+    noz_res=150 # Number of points in the discretization of the whole nozzle (Nozzle_2)
 
     #Seeds
     Pres = 1e6
@@ -33,15 +32,15 @@ class Default:
     Cd = 0.7
 
     #Nozzle
-    Nozzle_type = 0
-    MR = 6.03
-    De_max = 2.5
-    De_turbine_noz_max = 2.5
-    Theta_con = 60
-    Theta_conical = 15
-    Theta_bell = 55
-    TH_exit_bell = 3
-    R_u_ratio=1
+    Nozzle_type = 0 # Type of nozzle, 0=conical, 1=bell
+    MR = 0 # O_F ratio, 0=optimize for c*
+    De_max = 2.5 # Maximum exit diameter of the nozzle
+    De_turbine_noz_max = 2.5 # Maximum exit diameter for the turbine exhaust nozzle
+    Theta_con = 60 # Angle of the convergent part of the nozzle in degrees
+    Theta_conical = 15 # Angle of the divergent part for the conical nozzle, in degrees
+    Theta_bell = 55 # Angle of the divergent part for the bell nozzle, in degrees
+    TH_exit_bell = 3 # Exit angle for the bell nozzle, in degrees
+    R_u_ratio=1 # Ratio between throat radius and curvature radius (for convergent throat section in bell, and for whole throat section in conical)
 
     #Turbomachinery
     cycle_type = "EX"
@@ -104,7 +103,7 @@ class Propellant:
     f_nist_enthalpy_coef = [1, 1, 1, 1, 1, 1, 1, 1]  # for shomate equation
     MR = 6.1 #mixture ratio
     
-    Frozen_state=0
+    Frozen_state=0 # Frozen state of the propellant 0=chemical equilibrium flow, 1=frozen flow (from throat onwards)
     
     #Propellant
     gama = 1.4
