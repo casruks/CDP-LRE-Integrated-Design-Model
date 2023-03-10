@@ -37,7 +37,7 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default):
     Max_iterations_mass_flow=Default.Max_iterations_mass_flow
     toll_P_adapted=Default.toll_P_adapted
 
-    ispObj = CEA_Obj( oxName=Ox, fuelName=Fuel,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise')
+    ispObj = CEA_Obj( oxName=Ox, fuelName=Fuel,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise',thermal_cond_units='W/cm-degC')
 
     if MR==0:
         MR_1=0.01
@@ -143,7 +143,7 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default):
     rho_c=rhos[0]
     cp_c=Transp_c[0]
     mu_c=Transp_c[1]
-    k_c=Transp_c[2]
+    k_c=Transp_c[2]/100
     Pr_c=Transp_c[3]
 
     return m_p,Tc,MR,At,eps,Isp[0],rho_c,cp_c,mu_c,k_c,Pr_c
