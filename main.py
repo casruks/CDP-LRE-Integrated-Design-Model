@@ -90,7 +90,7 @@ def Main(d : aux.Data):
         ## Mass flow rate in kg/s
         ## Combustion chamber diameter in m
         ## Default class
-        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,d.D_t,d.D_e,d.L_nozzle_con,d.L_nozzle_div,d.L_tot=Nz_2.Nozzle_loop(p_new/100000.0, d.Tc, prop, Mt.Rhenium, default.Nozzle_type, d.O_F, d.eps, d.At, d.m_nozz, d.Dc, default)
+        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,d.D_t,d.D_e,d.L_nozzle_con,d.L_nozzle_div,d.L_tot,x_noz_cool,y_noz_cool=Nz_2.Nozzle_loop(p_new/100000.0, d.Tc, prop, Mt.Rhenium, default.Nozzle_type, d.O_F, d.eps, d.At, d.m_nozz, d.Dc, default)
         #Outputs
         ## Array of thickness at the discretized points in the nozzle (corresponding to x_noz) in m
         ## Array of discretized positions in the nozzle where all variables and properties are calcualted (positions in m)
@@ -102,6 +102,8 @@ def Main(d : aux.Data):
         ## Length of nozzle convergent in m
         ## Length of nozzle divergent in m
         ## Total length of the nozzle in m
+        ## Array of x coordinates used for the cooling properties
+        ## Array of y coordinates used for the cooling properties
 
         
         #Compute regenerative

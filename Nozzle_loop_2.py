@@ -373,8 +373,10 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     SF=Default.Safety_factor
 
     t_noz=SF*P_noz*y_noz/sig #Thickness of the wall in the nozzle
+    D_t=R_t*2;
+    D_e=mth.sqrt(eps)*D_t
 
-    return t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz,x_noz_cool,y_noz_cool;
+    return t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,D_t,D_e,L_nozzle_con,L_nozzle_div,L_tot,x_noz_cool,y_noz_cool;
 
 
 
