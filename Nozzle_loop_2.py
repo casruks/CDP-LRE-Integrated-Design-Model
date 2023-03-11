@@ -141,7 +141,9 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         n3=num_div
         x_div=geek.linspace(xp,L_tot,num=n3)
         Delta=b**2-4*a*(c-(x_div-L_nozzle_con))
-        y_div=(-b+mth.sqrt(Delta))/(2*a) # With this part we have defined the coordinates for the divergent part of the nozzle
+        y_div=geek.zeros(len(x_div))
+        for i in range(len(y_div)):
+            y_div[i]=(-b+mth.sqrt(Delta[i]))/(2*a) # With this part we have defined the coordinates for the divergent part of the nozzle
         
         x_noz=geek.concatenate((x_con, x_throat1, x_throat2, x_div))
         y_noz=geek.concatenate((y_con, y_throat1, y_throat2, y_div));
