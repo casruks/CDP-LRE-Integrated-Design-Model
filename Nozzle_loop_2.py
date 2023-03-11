@@ -87,15 +87,46 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
             th_step.append(th_step_cur)
             y_cur=R_t+(1-mth.cos(th_step_cur))*R_u
             y_throat2.append(y_cur)
-
+        
         n3=num_div
         x_div=geek.linspace(xp,L_tot,num=n3)
         a_div=(mth.sqrt(eps)*R_t-yp)/(L_tot-xp)
         y_div=yp+a_div*(x_div-xp) # With this part we have defined the coordinates for the divergent part of the nozzle
 
+        if (n2+n3)>90:
+            e_tran_Num=90
+            num_th_2=round(len(x_throat2)/x_2)*e_tran_Num
+            #A_div_cool=geek.linspace(A_div[0],A_div[-1],e_tran_Num)
+            x_th2_cool=geek.linspace(x_throat2[0],x_throat2[-1],num_th_2)
+            x_div_cool=geek.linspace(x_div[0],x_div[-1],(e_tran_Num-num_th_2))
+            y_th2_cool=[]
+            for i in x_th2_cool:
+                th_step_cur=mth.asin((i-L_nozzle_con)/R_u)
+                th_step.append(th_step_cur)
+                y_cur=R_t+(1-mth.cos(th_step_cur))*R_u
+                y_th2_cool.append(y_cur);
+            a_div_cool=(mth.sqrt(eps)*R_t-yp)/(L_tot-xp)
+            y_div_cool=yp+a_div_cool*(x_div_cool-xp);
+        else:
+            x_div_cool=geek.zeros(len(x_div))
+            for i in range(len(x_div_cool)):
+                x_div_cool[i]=x_div[i];
+            x_th2_cool=geek.zeros(len(x_th2_cool))
+            for i in range(len(x_th2_cool)):
+                x_th2_cool[i]=x_throat2[i];
+            y_th2_cool=geek.zeros(len(y_throat2))
+            for i in range(len(y_th2_cool)):
+                y_th2_cool[i]=y_throat2[i];
+            y_div_cool=geek.zeros(len(y_div))
+            for i in range(len(y_div_cool)):
+                y_div_cool[i]=y_div[i];
+        
 
         x_noz=geek.concatenate((x_con,x_throat1,x_throat2,x_div))
         y_noz=geek.concatenate((y_con,y_throat1,y_throat2,y_div)) 
+
+        x_noz_cool=geek.concatenate((x_con,x_throat1,x_th2_cool,x_div_cool))
+        y_noz_cool=geek.concatenate((y_con,y_throat1,y_th2_cool,y_div_cool))
     else:
         ye=mth.sqrt(eps)*R_t
         xp=Ru_bell*R_t*mth.sin(Theta_bell)
@@ -144,12 +175,46 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         y_div=geek.zeros(len(x_div))
         for i in range(len(y_div)):
             y_div[i]=(-b+mth.sqrt(Delta[i]))/(2*a) # With this part we have defined the coordinates for the divergent part of the nozzle
-        
+        x_2=geek.concatenate((x_throat2,x_div))
+        if (n2+n3)>90:
+            e_tran_Num=90
+            num_th_2=round(len(x_throat2)/len(x_2)*e_tran_Num)
+            #A_div_cool=geek.linspace(A_div[0],A_div[-1],e_tran_Num)
+            x_th2_cool=geek.linspace(x_throat2[0],x_throat2[-1],num_th_2)
+            x_div_cool=geek.linspace(x_div[0],x_div[-1],(e_tran_Num-num_th_2))
+            y_th2_cool=[]
+
+            for i in x_th2_cool:
+                th_step_cur=mth.asin((i-L_nozzle_con)/(Ru_bell*R_t))
+                th_step.append(th_step_cur)
+                y_cur=R_t+(1-mth.cos(th_step_cur))*R_t*Ru_bell
+                y_th2_cool.append(y_cur);
+            Delta_div=b**2-4*a*(c-(x_div_cool-L_nozzle_con))
+            y_div_cool=geek.zeros(len(x_div_cool))
+            for i in range(len(y_div_cool)):
+                y_div_cool[i]=(-b+mth.sqrt(Delta_div[i]))/(2*a)
+        else:
+            x_div_cool=geek.zeros(len(x_div))
+            for i in range(len(x_div_cool)):
+                x_div_cool[i]=x_div[i];
+            x_th2_cool=geek.zeros(len(x_th2_cool))
+            for i in range(len(x_th2_cool)):
+                x_th2_cool[i]=x_throat2[i];
+            y_th2_cool=geek.zeros(len(y_throat2))
+            for i in range(len(y_th2_cool)):
+                y_th2_cool[i]=y_throat2[i];
+            y_div_cool=geek.zeros(len(y_div))
+            for i in range(len(y_div_cool)):
+                y_div_cool[i]=y_div[i];
         x_noz=geek.concatenate((x_con, x_throat1, x_throat2, x_div))
         y_noz=geek.concatenate((y_con, y_throat1, y_throat2, y_div));
-    
-    A_noz=mth.pi*y_noz**2
 
+        x_noz_cool=geek.concatenate((x_con,x_throat1,x_th2_cool,x_div_cool))
+        y_noz_cool=geek.concatenate((y_con,y_throat1,y_th2_cool,y_div_cool))
+        
+    A_noz=mth.pi*y_noz**2
+    y2_cool=geek.concatenate((y_th2_cool,y_div_cool))
+    A_div_cool=mth.pi*y2_cool**2
     # We are now going to determine the pressure in each section of the nozzle
     
     Ts=ispObj.get_Temperatures(Pc=Pc,MR=MR,eps=eps,frozen=frozen_state,frozenAtThroat=frozen_state)
@@ -246,8 +311,9 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     k_div=[]
     Mach_div=[]
     g_pr=[]
+    
 
-    for i in A_div:
+    for i in A_div_cool:
         eps_it=i/At
         rhos_div=ispObj.get_Densities(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state,frozenAtThroat=frozen_state)
         gs_div=ispObj.get_exit_MolWt_gamma(Pc,MR,eps_it)
@@ -264,7 +330,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         mu_div_it=Transp[1]/10
         Pr_div_it=Transp[3]
         k_div_it=Transp[2]
-        g_pr_it=5*Pr_div_it/(9*Pr_div_it-4)
+        #g_pr_it=5*Pr_div_it/(9*Pr_div_it-4)
         rho_div.append(rho_div_it)
         cp_div.append(cp_div_it)
         g_div.append(g_div_it)
@@ -272,7 +338,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         mu_div.append(mu_div_it)
         Pr_div.append(Pr_div_it)
         Mach_div.append(Mach_n)
-        g_pr.append(g_pr_it)
+        #g_pr.append(g_pr_it)
         k_div.append(k_div_it);
     r_div=geek.zeros(len(Pr_div))
     Tw_ad_div=geek.zeros(len(Pr_div))
@@ -305,8 +371,14 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     sound_speeds=ispObj.get_SonicVelocities(Pc=Pc,MR=MR,eps=eps,frozen=frozen_state,frozenAtThroat=frozen_state)
     u_t=sound_speeds[1]
     Re_t=rho_t*u_t*R_t*2/mu_t
+    plt.plot(x_noz_cool,y_noz_cool)
+    plt.xlim(0, L_tot*1.1)
+    plt.ylim(0,y_noz[-1]*1.1)
+    ax = plt.gca()
+    ax.set_aspect('equal', adjustable='box')
+    plt.show()
 
-    return t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,Dt,De,L_nozzle_con,L_nozzle_div,L_tot;
+    return t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz,x_noz_cool,y_noz_cool;
 
 
 
