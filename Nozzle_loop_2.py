@@ -38,6 +38,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     Theta_bell=mth.radians(Default.Theta_bell)
     TH_exit_bell=mth.radians(Default.TH_exit_bell)
     Ru_bell=Default.R_u_bell
+    num_cool=Default.n_cool
 
     noz_res=Default.noz_res
     # Definition of the geometry of the nozzle
@@ -93,8 +94,8 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         a_div=(mth.sqrt(eps)*R_t-yp)/(L_tot-xp)
         y_div=yp+a_div*(x_div-xp) # With this part we have defined the coordinates for the divergent part of the nozzle
 
-        if (n2+n3)>90:
-            e_tran_Num=90
+        if (n2+n3)>num_cool:
+            e_tran_Num=num_cool
             num_th_2=round(len(x_throat2)/x_2)*e_tran_Num
             #A_div_cool=geek.linspace(A_div[0],A_div[-1],e_tran_Num)
             x_th2_cool=geek.linspace(x_throat2[0],x_throat2[-1],num_th_2)
@@ -176,8 +177,8 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         for i in range(len(y_div)):
             y_div[i]=(-b+mth.sqrt(Delta[i]))/(2*a) # With this part we have defined the coordinates for the divergent part of the nozzle
         x_2=geek.concatenate((x_throat2,x_div))
-        if (n2+n3)>90:
-            e_tran_Num=90
+        if (n2+n3)>num_cool:
+            e_tran_Num=num_cool
             num_th_2=round(len(x_throat2)/len(x_2)*e_tran_Num)
             #A_div_cool=geek.linspace(A_div[0],A_div[-1],e_tran_Num)
             x_th2_cool=geek.linspace(x_throat2[0],x_throat2[-1],num_th_2)
