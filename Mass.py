@@ -1,7 +1,7 @@
 import math as mth
 
 class Materials:
-    def __init__(self, material, density, yieldstress_l, Emod, OpTemp_u, k, cost,reusability):
+    def __init__(self, material, density, yieldstress_l, Emod, OpTemp_u, k, cost):
         self.material = material
         self.density = density
         self.yieldstress_l = yieldstress_l
@@ -9,7 +9,7 @@ class Materials:
         self.OpTemp_u = OpTemp_u
         self.k = k
         self.cost = cost
-        self.reusability = reusability
+        #self.reusability = reusability
 
 Rhenium                 =       Materials('Rhenium',                            21000.0,  2300.0e6,   471.0e9, 2200.0,   48.0,   938.0)#, 1190.0e6)
 Aluminium_7075_T6       =       Materials('Aluminium 7075 T6',                  2810.0,   505.0e6,    72.0e9,  373.15,   130.0,  3.97)#, 129.0e6)
@@ -30,59 +30,47 @@ Silica                  =       Materials('Scilica Coating',                    
 Carbon                  =       Materials('Carbon-Carbon Matrix coating',       1950.0,   0,          0,          2400.0,   37.4, 6.4)#, 0)
 
 
-
-
-        
-#Selecting Materials:
-def Material_Select(pressure,safety,temp):
-    Select = [Rhenium,Aluminium_7075_T6,Ti6Al4V,Haynes_188,Inconel_X_750,Inconel_600,Inconel_718,Inconel_A_286,Columbium_c103]
-    Select2 = [Copper, Narloy_Z,GRCop_84,Silica,Carbon]
-    o = []
-    Material = []
-    for i in Select:
-        if ((i.yieldstress_l/safety >= pressure) and (i.OpTemp_u >= temp)):
-            o.append(i)
-        elif i.yieldstress_l >= pressure:
-            o.append(i)
-            for i in Select2:
-                if i.OpTemp_u >= temp:
-                    o.append(i)
-                for i in o:
-                    if i not in Material:
-                        Material.append(i)
-    sortedbymass = sorted(Material, key= lambda x: x.density, reverse=True)
-    sortedbycost = sorted(Material, key= lambda x: x.cost, reverse=True)
-    return sortedbymass, sortedbycost
-
-def Coating_Select(temp):
-    Select2 = [Copper, Narloy_Z,GRCop_84,Silica,Carbon]
-    coating = []
-    for i in Select2:
-        if i.OpTemp_u > temp:
-            coating.append(i)
-    return coating
-            
-
 ##Computing Mass nozzle: 
-#Mass estimation function Nozzle: 
-def Mass(x,R,t,material):
+#Nozzle Surface Fucntion:
+def Nozzle_surface(x,R):
     total_dist = 0
     for i in range(len(x)-1):
         total_dist += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])
-    vol = total_dist*t*2*mth.pi
-    Mass = vol*material.density
-    return Mass
+    vol = total_dist*2*mth.pi
+    return vol
+
+##Expander Cycle:
+#Pressure Ratio             = (Pc/(3.20e3))
+#Density Ratio Inconel 718  = (material.density/Inconel_718.density)
+#Density Ratio Al_7075      = (material.density/Aluminium_7075_T6.density)
+#Stress Ratio Inconel 718   = ((material.yieldstress_l/FS)/(Inconel_718.yieldstress_l/1.1)
+#Stress Ratio Al_7075       = ((material.yieldstress_l/FS)/(Aluminium_7075_T6.yieldstress_l/1.1)
+#AreaRatio Ratio            = (arear/61.1)
+#ThroatArea Ratio           = (rt/0.076)
+#Propelant mass Ratio       = (mprop/16.85)
+#Propelant Density Ratio    = (rhoprop/x)
 
 
-##Computing Mass Chamber:
-def MassChamb(len, diameter, t, materialchamb):
-    masschamb = 0
-    vol = 2*mth.pi*(diameter/2)**2*t + t*2*mth.pi*(diameter/2)*len
-    masschamb = vol*materialchamb.density
-    return masschamb
 
-def reusability(pc, material):
-    if pc > material.reusability:
-        print('Unsuitable for reusability')
-    else:
-        print('Material is suitable for reusability')
+#Mass estimation function Nozzle Tubes:
+def Mass_Expander(Pc, material, arear, rt, mprop, FS, rhoprop,Ns):
+    x=5
+    y=5
+    #Nozzle Mass
+    TubeMass = ((Pc/(3.20e3))**1)*((material.density/Inconel_718.density)**1)*(((material.yieldstress_l/FS)/(Inconel_718.yieldstress_l/1.1))**(-1))*((arear/61.1)**1)*((rt/0.076)**2) #Dimensionless Nozzle Tube Mass
+    ManifoldMass = ((Pc/(3.20e3))**1)*((material.density/Inconel_718.density)**1)((mprop/16.85)**1)((material.yieldstress_l/Inconel_718.yieldstress_l)**(-1))*((rhoprop/x)**(-1))*((rt/0.076)**1) #Dimensionless Nozzle Manifold Mass
+    JacketMass = ((Pc/3.20e3)**1)*((material.density/Inconel_718.density)**1)*(((material.yieldstress_l/FS)/(Inconel_718.yieldstress_l/1.1))**(-1))*((arear/61.1)**1.5)*((rt/0.076)**3) #Dimensionless Nozzle Jacket Mass
+    
+    #Chamber Mass
+    ChamberMass = ((Pc/(3.20e3))**1)*((material.density/Inconel_718.density)**1)*(((material.yieldstress_l/FS)/(Inconel_718.yieldstress_l/1.1)**(-1)))*((rt/0.076)**1) 
+    
+    #TurboPump Mass
+    PumpMass = ((Pc/(3.20e3))**0.15)*((material.density/Aluminium_7075_T6.density)**1)*(((material.yieldstress_l/FS)/(Aluminium_7075_T6.yieldstress_l/1.1)*(-1)))*((mprop/16.85)**0.9)*((rhoprop/x)**(-0.45))*((Ns/y)**(-0.6))
+    
+    #Valves
+    ValveMass = ((Pc/(3.20e3))**1)*((material.density/Aluminium_7075_T6.density)**1)*(((material.yieldstress_l/FS)/(Aluminium_7075_T6.yieldstress_l/1.1)**(-1)))*((mprop/16.85)**1)*((rhoprop/x)**(-1))
+  
+    return TubeMass, ManifoldMass, JacketMass, ChamberMass, PumpMass, ValveMass
+
+
+

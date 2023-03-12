@@ -26,6 +26,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     import matplotlib.pyplot as plt
     import numpy as geek
     
+    # We begin by importing all the defaul values and the propellant properties, as well as setting the CEA environment
     Ox=Propellant.Ox_name
     Fuel=Propellant.Fuel_name
     frozen_state=Propellant.Frozen_state
@@ -37,30 +38,40 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     Theta_conical=mth.radians(Default.Theta_conical)
     Theta_bell=mth.radians(Default.Theta_bell)
     TH_exit_bell=mth.radians(Default.TH_exit_bell)
+    Ru_bell=Default.R_u_bell
+    num_cool=Default.n_cool
 
     noz_res=Default.noz_res
     # Definition of the geometry of the nozzle
-    R_t=mth.sqrt(At/(mth.pi))
-    R_u=R_t*Default.R_u_ratio
-    con_ratio=Dc**2/((2*R_t)**2)
+    R_t=mth.sqrt(At/(mth.pi)) #Throat radius
+    R_u=R_t*Default.R_u_ratio 
+    con_ratio=Dc**2/((2*R_t)**2) # Contraction ratio (from chamber to throat)
 
-    if Nozzle_type==0:
-        L_nozzle_div=((mth.sqrt(eps)-1)*R_t+R_u*(1/mth.cos(Theta_conical)-1))/mth.tan(Theta_conical)
-        L_nozzle_con=((mth.sqrt(con_ratio)-1)*R_t+R_u*(1/mth.cos(theta_con)-1))/mth.tan(theta_con)
-        L_tot=L_nozzle_con+L_nozzle_div
+    ## Subdivision of the discretization between the convergent, throat and divergent parts of the nozzle
+    num_con=round(0.15*noz_res)
+    num_th=round(0.25*noz_res)
+    num_div=round(0.6*noz_res)
 
-        xp=L_nozzle_con+R_u*mth.sin(Theta_conical)
-        yp=R_t+(1-mth.cos(Theta_conical))*R_u
+    Dt=R_t*2; # Throat diameter
+    De=Dt*(mth.sqrt(eps)) # Exit diameter
+    if Nozzle_type==0: # If to determine whether the nozzle is conical (==0) or bell (==1)
+        L_nozzle_div=((mth.sqrt(eps)-1)*R_t+R_u*(1/mth.cos(Theta_conical)-1))/mth.tan(Theta_conical) # Length of the divergent part of the nozzle for the conical nozzle
+        L_nozzle_con=((mth.sqrt(con_ratio)-1)*R_t+R_u*(1/mth.cos(theta_con)-1))/mth.tan(theta_con) # Length of the convergent part of the nozzle for the conical
+        L_tot=L_nozzle_con+L_nozzle_div # Total length of the nozzle
 
-        xp_con=L_nozzle_con-R_u*mth.sin(theta_con)
-        yp_con=R_t+(1-mth.cos(theta_con))*R_u
+        xp=L_nozzle_con+R_u*mth.sin(Theta_conical) # point P as defined in the documentation (x value)
+        yp=R_t+(1-mth.cos(Theta_conical))*R_u # point P as defined in the documentation (y value)
+
+        xp_con=L_nozzle_con-R_u*mth.sin(theta_con) # point P as defined in the documentation, but for the convergent(x value)
+        yp_con=R_t+(1-mth.cos(theta_con))*R_u # point P as defined in the documentation, but for the convergent(y value)
         
-        n=round(xp_con/noz_res)
-        x_con=geek.linspace(0,xp_con,num=n)
-        a_con=(yp_con-Dc/2)/(xp_con)
+        n=num_con 
+        x_con=geek.linspace(0,xp_con,num=n) # Discretization of points in the convergent
+        a_con=(yp_con-Dc/2)/(xp_con) # Coefficient for the convergent part
         y_con=Dc/2+a_con*x_con # With this part we have defined the coordinates for the convergent geometry
 
-        n1=round((L_nozzle_con-xp_con)/noz_res)
+        # Discretization of the first part of the throat (convergent section of the throat area)
+        n1=round(num_th/2)
         x_throat1=geek.linspace(xp_con,L_nozzle_con,num=n1)
         th_step=[]
         y_throat1=[]
@@ -68,9 +79,10 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
             th_step_cur=mth.asin((L_nozzle_con-i)/R_u)
             th_step.append(th_step_cur)
             y_cur=R_t+(1-mth.cos(th_step_cur))*R_u
-            y_throat1.append(y_cur) # With this part we have defined the coordinates for the first part of the throat
+            y_throat1.append(y_cur) # With this part we have defined the coordinates for the first part of the throat using the radius of curvature
 
-        n2=round((xp-L_nozzle_con)/noz_res)
+        # Same process of discretizaion but for the divergent section of the throat
+        n2=round(num_th/2)
         x_throat2=geek.linspace(L_nozzle_con,xp,num=n2)#With this part we have defined the coordinates for the second part of the throat
 
         th_step=[]
@@ -80,32 +92,68 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
             th_step.append(th_step_cur)
             y_cur=R_t+(1-mth.cos(th_step_cur))*R_u
             y_throat2.append(y_cur)
-
-        n3=round((L_tot-xp)/noz_res)
+        
+        # Discretization of the divergent part of the nozzle. Same processes as for the convergent, following documentation.
+        n3=num_div
         x_div=geek.linspace(xp,L_tot,num=n3)
         a_div=(mth.sqrt(eps)*R_t-yp)/(L_tot-xp)
         y_div=yp+a_div*(x_div-xp) # With this part we have defined the coordinates for the divergent part of the nozzle
+        x_2=geek.concatenate((x_throat2,x_div))
 
-
+        ## Limitation of the points in the divergent part to avoid reading CEA file too many times
+        if (n2+n3)>num_cool: # Check whether the number of points exceeds the limit set
+            e_tran_Num=num_cool
+            num_th_2=round(len(x_throat2)/len(x_2))*e_tran_Num
+            #A_div_cool=geek.linspace(A_div[0],A_div[-1],e_tran_Num)
+            x_th2_cool=geek.linspace(x_throat2[0],x_throat2[-1],num_th_2)
+            x_div_cool=geek.linspace(x_div[0],x_div[-1],(e_tran_Num-num_th_2)) #Re-discretization of the divergent for cooling properties
+            y_th2_cool=[]
+            for i in x_th2_cool:
+                th_step_cur=mth.asin((i-L_nozzle_con)/R_u)
+                th_step.append(th_step_cur)
+                y_cur=R_t+(1-mth.cos(th_step_cur))*R_u
+                y_th2_cool.append(y_cur);
+            a_div_cool=(mth.sqrt(eps)*R_t-yp)/(L_tot-xp)
+            y_div_cool=yp+a_div_cool*(x_div_cool-xp);
+        else:
+            x_div_cool=geek.zeros(len(x_div)) # If the number of points in the divergent does not exceed the limit, we keep the previous discretization
+            for i in range(len(x_div_cool)):
+                x_div_cool[i]=x_div[i];
+            x_th2_cool=geek.zeros(len(x_th2_cool))
+            for i in range(len(x_th2_cool)):
+                x_th2_cool[i]=x_throat2[i];
+            y_th2_cool=geek.zeros(len(y_throat2))
+            for i in range(len(y_th2_cool)):
+                y_th2_cool[i]=y_throat2[i];
+            y_div_cool=geek.zeros(len(y_div))
+            for i in range(len(y_div_cool)):
+                y_div_cool[i]=y_div[i];
+        
+        # Coordinates of the discretizaion of the nozzle (no limits for cooling)
         x_noz=geek.concatenate((x_con,x_throat1,x_throat2,x_div))
         y_noz=geek.concatenate((y_con,y_throat1,y_throat2,y_div)) 
-    else:
-        ye=mth.sqrt(eps)*R_t
-        xp=0.382*R_t*mth.sin(Theta_bell)
-        yp=1.382*R_t-0.382*R_t*mth.cos(Theta_bell)
-        a=(mth.tan(mth.pi/2-TH_exit_bell)-mth.tan(mth.pi/2-Theta_bell))/(2*(ye-yp))
+
+        # Coordinate of the discretizaion of the nozzle (limits for the cooling)
+        x_noz_cool=geek.concatenate((x_con,x_throat1,x_th2_cool,x_div_cool))
+        y_noz_cool=geek.concatenate((y_con,y_throat1,y_th2_cool,y_div_cool))
+    else: ## Definition of bell nozzle geometry
+        ye=mth.sqrt(eps)*R_t # y coordinate for the exit section of the nozzle
+        xp=Ru_bell*R_t*mth.sin(Theta_bell) #Point P as defined in the documentation (x value)
+        yp=(1+Ru_bell)*R_t-Ru_bell*R_t*mth.cos(Theta_bell)#Point P as defined in the documentation (y value)
+        a=(mth.tan(mth.pi/2-TH_exit_bell)-mth.tan(mth.pi/2-Theta_bell))/(2*(ye-yp)) # Definition of parabolic coefficients
         b=mth.tan(mth.pi/2-Theta_bell)-2*(mth.tan(mth.pi/2-TH_exit_bell)-mth.tan(mth.pi/2-Theta_bell))/(2*(ye-yp))*yp
         c=xp-a*yp**2-b*yp
-        L_nozzle_div=a*ye**2+b*ye+c
-        L_nozzle_con=((mth.sqrt(con_ratio)-1)*R_t+R_u*(1/mth.cos(theta_con)-1))/mth.tan(theta_con)
-        L_tot=L_nozzle_con+L_nozzle_div
+        L_nozzle_div=a*ye**2+b*ye+c # Length of divergent part of the nozzle
+        L_nozzle_con=((mth.sqrt(con_ratio)-1)*R_t+R_u*(1/mth.cos(theta_con)-1))/mth.tan(theta_con) # Length of convergent part of the nozzle
+        L_tot=L_nozzle_con+L_nozzle_div #Total length of the nozzle
         
+        ## Same discretization process as for the convergent, with same check for discretization points exceeding the cooling limit
         xp=xp+L_nozzle_con
 
         xp_con=L_nozzle_con-R_u*mth.sin(theta_con)
         yp_con=R_t+(1-mth.cos(theta_con))*R_u
         
-        n=round((xp_con)/noz_res)
+        n=num_con
         x_con=geek.linspace(0,xp_con,num=n)
         a_con=(yp_con-Dc/2)/(xp_con)
         y_con=Dc/2+a_con*x_con # With this we have defined the geometry of the convergent part
@@ -113,7 +161,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         y_throat1=[]
         th_step=[]
 
-        n1=round((L_nozzle_con-xp_con)/noz_res)
+        n1=round(num_th/2)
         x_throat1=geek.linspace(xp_con,L_nozzle_con,num=n1)
         for i in x_throat1:
             th_step_cur=mth.asin((L_nozzle_con-i)/R_u)
@@ -121,28 +169,65 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
             y_cur=R_t+(1-mth.cos(th_step_cur))*R_u
             y_throat1.append(y_cur) # With this part we have defined the coordinates for the first part of the throat
 
-        n2=round((xp-L_nozzle_con)/noz_res)
+        n2=round(num_th/2)
         x_throat2=geek.linspace(L_nozzle_con,xp,num=n2)
         th_step=[]
         y_throat2=[]
         for i in x_throat2:
-            th_step_cur=mth.asin((i-L_nozzle_con)/(0.382*R_t))
+            th_step_cur=mth.asin((i-L_nozzle_con)/(Ru_bell*R_t))
             th_step.append(th_step_cur)
-            y_cur=R_t+(1-mth.cos(th_step_cur))*R_t*0.382
+            y_cur=R_t+(1-mth.cos(th_step_cur))*R_t*Ru_bell
             y_throat2.append(y_cur)
 
-        n3=round((L_tot-xp)/noz_res)
+        n3=num_div
         x_div=geek.linspace(xp,L_tot,num=n3)
         Delta=b**2-4*a*(c-(x_div-L_nozzle_con))
-        y_div=(-b+mth.sqrt(Delta))/(2*a) # With this part we have defined the coordinates for the divergent part of the nozzle
-        
+        y_div=geek.zeros(len(x_div))
+        for i in range(len(y_div)):
+            y_div[i]=(-b+mth.sqrt(Delta[i]))/(2*a) # With this part we have defined the coordinates for the divergent part of the nozzle
+        x_2=geek.concatenate((x_throat2,x_div))
+        if (n2+n3)>num_cool:
+            e_tran_Num=num_cool
+            num_th_2=round(len(x_throat2)/len(x_2)*e_tran_Num)
+            #A_div_cool=geek.linspace(A_div[0],A_div[-1],e_tran_Num)
+            x_th2_cool=geek.linspace(x_throat2[0],x_throat2[-1],num_th_2)
+            x_div_cool=geek.linspace(x_div[0],x_div[-1],(e_tran_Num-num_th_2))
+            y_th2_cool=[]
+
+            for i in x_th2_cool:
+                th_step_cur=mth.asin((i-L_nozzle_con)/(Ru_bell*R_t))
+                th_step.append(th_step_cur)
+                y_cur=R_t+(1-mth.cos(th_step_cur))*R_t*Ru_bell
+                y_th2_cool.append(y_cur);
+            Delta_div=b**2-4*a*(c-(x_div_cool-L_nozzle_con))
+            y_div_cool=geek.zeros(len(x_div_cool))
+            for i in range(len(y_div_cool)):
+                y_div_cool[i]=(-b+mth.sqrt(Delta_div[i]))/(2*a)
+        else:
+            x_div_cool=geek.zeros(len(x_div))
+            for i in range(len(x_div_cool)):
+                x_div_cool[i]=x_div[i];
+            x_th2_cool=geek.zeros(len(x_th2_cool))
+            for i in range(len(x_th2_cool)):
+                x_th2_cool[i]=x_throat2[i];
+            y_th2_cool=geek.zeros(len(y_throat2))
+            for i in range(len(y_th2_cool)):
+                y_th2_cool[i]=y_throat2[i];
+            y_div_cool=geek.zeros(len(y_div))
+            for i in range(len(y_div_cool)):
+                y_div_cool[i]=y_div[i];
         x_noz=geek.concatenate((x_con, x_throat1, x_throat2, x_div))
         y_noz=geek.concatenate((y_con, y_throat1, y_throat2, y_div));
-    
-    A_noz=mth.pi*y_noz**2
 
+        x_noz_cool=geek.concatenate((x_con,x_throat1,x_th2_cool,x_div_cool))
+        y_noz_cool=geek.concatenate((y_con,y_throat1,y_th2_cool,y_div_cool))
+        
+    A_noz=mth.pi*y_noz**2
+    y2_cool=geek.concatenate((y_th2_cool,y_div_cool))
+    A_div_cool=mth.pi*y2_cool**2 # Divergent areas for cooling
     # We are now going to determine the pressure in each section of the nozzle
     
+    # Properties in chamber and throat do evaluate properites in the convergent, by taking a linearization from chamber to throat
     Ts=ispObj.get_Temperatures(Pc=Pc,MR=MR,eps=eps,frozen=frozen_state,frozenAtThroat=frozen_state)
     rhos=ispObj.get_Densities(Pc=Pc,MR=MR,eps=eps,frozen=frozen_state,frozenAtThroat=frozen_state)
     cps=ispObj.get_HeatCapacities(Pc=Pc,MR=MR,eps=eps,frozen=frozen_state,frozenAtThroat=frozen_state)
@@ -237,35 +322,30 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     k_div=[]
     Mach_div=[]
     g_pr=[]
-
-    for i in A_div:
+    
+# We loop in the divergent to get the properties in all the sections of the divergent from CEA functions
+    for i in A_div_cool:
         eps_it=i/At
-        rhos_div=ispObj.get_Densities(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state,frozenAtThroat=frozen_state)
-        gs_div=ispObj.get_exit_MolWt_gamma(Pc,MR,eps_it)
-        #gs_div=ispObj.get_IvacCstrTc_exitMwGam(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state,frozenAtThroat=frozen_state)
-        #u_sound=ispObj.get_SonicVelocities(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state,frozenAtThroat=frozen_state)
-        Mach_n=ispObj.get_MachNumber(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state,frozenAtThroat=frozen_state)
-        Transp=ispObj.get_Exit_Transport(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state)
+        rhos_div=ispObj.get_Densities(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state,frozenAtThroat=frozen_state) # from this the density
+        gs_div=ispObj.get_exit_MolWt_gamma(Pc,MR,eps_it)# From this the gamma value
+        Mach_n=ispObj.get_MachNumber(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state,frozenAtThroat=frozen_state) # From this the mach number
+        Transp=ispObj.get_Exit_Transport(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state) # Transport properties (cp, mu, Pr, k)
 
-       # u_it=u_sound[2]
-       # v_it=u_it*Mach_n
         rho_div_it=rhos_div[2]
         cp_div_it=Transp[0]
         g_div_it=gs_div[1]
         mu_div_it=Transp[1]/10
         Pr_div_it=Transp[3]
         k_div_it=Transp[2]
-        g_pr_it=5*Pr_div_it/(9*Pr_div_it-4)
         rho_div.append(rho_div_it)
         cp_div.append(cp_div_it)
         g_div.append(g_div_it)
-       # v_div.append(v_it)
         mu_div.append(mu_div_it)
         Pr_div.append(Pr_div_it)
         Mach_div.append(Mach_n)
-        g_pr.append(g_pr_it)
         k_div.append(k_div_it);
-    r_div=geek.zeros(len(Pr_div))
+    
+    r_div=geek.zeros(len(Pr_div)) # recovery factor to use in the definition of the adiabatic wall temperature
     Tw_ad_div=geek.zeros(len(Pr_div))
     T_f_div=geek.zeros(len(Pr_div))
     for i in range(len(Pr_div)):
@@ -278,6 +358,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
      # Film temperature in the divergent calculated as in Ziebland
     T_f_con=0.5*T_w+0.28*T_con+0.22*Tw_ad_con # Film temperature in convergent
 
+    # Using the Bartz relations we find the convective heat coefficient
     a_b=0.026
     h_c_div=geek.zeros(len(mu_div))
     for i in range(len(mu_div)):
@@ -292,12 +373,10 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     SF=Default.Safety_factor
 
     t_noz=SF*P_noz*y_noz/sig #Thickness of the wall in the nozzle
+    D_t=R_t*2;
+    D_e=mth.sqrt(eps)*D_t
 
-    sound_speeds=ispObj.get_SonicVelocities(Pc=Pc,MR=MR,eps=eps,frozen=frozen_state,frozenAtThroat=frozen_state)
-    u_t=sound_speeds[1]
-    Re_t=rho_t*u_t*R_t*2/mu_t
-
-    return t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,P_noz,T_noz,Re_t;
+    return t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,D_t,D_e,L_nozzle_con,L_nozzle_div,L_tot,x_noz_cool,y_noz_cool;
 
 
 

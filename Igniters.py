@@ -2,8 +2,9 @@
 #m - mass flow
 #Hc - enthalpy of propellants at the end of the combustion chamber
 #H0 - enthalpy of propellants at the beggining of the combustion chamber
-#The output of the igniters function consists of a vector of the Subs class (this is defined right after this comment). For each element of the vector,
-#a different combination of substances is used to compute the mass needed for the igniter
+#tc - chamber temperature
+#of - oxidizer to fuel ratio
+#The output of the igniters function consists of the igniter propellant mass.
 
 class Subs:
     def __init__(self):
@@ -27,14 +28,14 @@ def Enthalpy (Propellant,Tc,of,i,ratio):
     print(Hc_fuel)
     Hc_fuel=Hc_fuel/ Propellant.f_M
 
-    H = Hc_fuel*(ratio)+Hc_ox*(1-ratio)
+    H = Hc_fuel*(1/(of+1))+Hc_ox*(1-1/(of+1))
 
     return H
 
-def Igniters (m,Propellant,default,Tc,of,ratioign,ratio):
+def Igniters (m,Propellant,default,Tc,of):
     Tc = Tc/1000
 
-    Hc = Enthalpy(Propellant,Tc,of,0,ratio)*10**3
+    Hc = Enthalpy(Propellant,Tc,of,0)*10**3
 
     #H0 = -6*10**3 *6/7 / Propellant.ox_M
     H0 = 0
@@ -42,7 +43,7 @@ def Igniters (m,Propellant,default,Tc,of,ratioign,ratio):
     Power = m *(Hc-H0)
     print(Power)
 
-    heatingvalues = [119.96*10**6*default.ignratio,13.5*10**6,9.2*10**6,6.5*10**6,2.9*10**6,2.5*10**6]
+    heatingvalues = [119.96*10**6*(1/(default.ign_o_f+1)),13.5*10**6,9.2*10**6,6.5*10**6,2.9*10**6,2.5*10**6]
     heatingcompounds = ['hydrogenoxygen_LHV','methaneoxygen','magnesiumteflonviton','boronpotassiumnitratewax','blackpowder','hydrogenperoxide']
     time = default.ignburntime  # Igniter burn time
     Compound = [Subs() for i in range(n)]
@@ -53,7 +54,7 @@ def Igniters (m,Propellant,default,Tc,of,ratioign,ratio):
         Compound[i].mass = Power/Compound[i].heatingvalues/default.fudgefactor*time
 
 
-    return Compound[0]
+    return Compound[0].mass
 
 #class Default:
  #   ignburntime = 3.5
@@ -72,6 +73,7 @@ def Igniters (m,Propellant,default,Tc,of,ratioign,ratio):
 #of = 6
 #ofign = 0.7
 # mox +mfuel = 467 mox/mfuel = 6 mox = mfuel *6, mfuel = 1/7
+# mox+mfuel = m mox/mfuel = of mox = mfuel *of, mfuel = m/(1+of),
 #Compound = Igniters(467,prop,default,Tc,of,1/(ofign+1),1/(of+1))
 #print(Compound.mass)
 

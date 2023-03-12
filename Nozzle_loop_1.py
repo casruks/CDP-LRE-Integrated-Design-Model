@@ -1,4 +1,4 @@
-def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default):
+def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default,Nozzle_type):
     ## INPUTS:
     # Pc= Chamber pressure in bar
     # F=Thrust in Newtons
@@ -36,9 +36,18 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default):
     toll_F_obj=Default.toll_F_obj
     Max_iterations_mass_flow=Default.Max_iterations_mass_flow
     toll_P_adapted=Default.toll_P_adapted
+    theta_conical=mth.radians(Default.Theta_conical)
+    Theta_bell=mth.radians(Default.Theta_bell)
+    TH_exit_bell=mth.radians(Default.TH_exit_bell)
+    Ru_bell=Default.R_u_bell
 
-    ispObj = CEA_Obj( oxName=Ox, fuelName=Fuel,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise')
+    ispObj = CEA_Obj( oxName=Ox, fuelName=Fuel,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise',thermal_cond_units='W/cm-degC')
 
+     # Losses due to divergent part in conical nozzle
+    if Nozzle_type==0:
+        eps_loss=0.5*(1-mth.cos(theta_conical))
+        F=F_tar/(1-eps_loss);
+    
     if MR==0:
         MR_1=0.01
         MR_2=150
@@ -81,8 +90,6 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default):
  
     variation=10 # Value to enter the loop
 
-    #Ae_array=geek.linspace(At+0.001,Ae_max,num=1000) #Array of areas to be tried by the software
-
     while v_eff<0 or variation>toll_F_obj:
 
         eps_max=Ae_max/At # Maximum expansion ratio with this throat area
@@ -106,7 +113,12 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default):
             difference=abs(Pe_1-Pamb)/Pamb 
 
             if difference>0.01:
-
+                
+                #g_it=ispObj.get_Chamber_MolWt_gamma(Pc=Pc,MR=MR,eps=eps_1)
+                #g_cur=g_it[1]
+                #G_cur=mth.sqrt(g_cur)*((2/(g_cur+1))**((g_cur+1)/2*(g_cur-1)))
+                #eps_it=G_cur/(mth.sqrt(2*g_cur/(g_cur-1)*(Pamb/Pc)**(2/g_cur)*(1-(Pamb/Pc)**((g-1)/g))))
+                #Ae_1=At*eps_it;
                 Ae_2=Ae_1*Pe_1/Pamb # Change value for next iteration
                 Ae_1=Ae_2;
             else:
@@ -115,14 +127,22 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default):
             
         eps_actual=Ae/At;
         
+        # Divergence losses in case of a bell nozzle:
+        if Nozzle_type==1:
+            R_t=mth.sqrt(At/mth.pi)
+            ye=mth.sqrt(eps_actual)*R_t
+            xp=Ru_bell*R_t*mth.sin(Theta_bell)
+            yp=(1+Ru_bell)*R_t-Ru_bell*R_t*mth.cos(Theta_bell)
+            a=(mth.tan(mth.pi/2-TH_exit_bell)-mth.tan(mth.pi/2-Theta_bell))/(2*(ye-yp))
+            b=mth.tan(mth.pi/2-Theta_bell)-2*(mth.tan(mth.pi/2-TH_exit_bell)-mth.tan(mth.pi/2-Theta_bell))/(2*(ye-yp))*yp
+            c=xp-a*yp**2-b*yp
+            L_nozzle_div=a*ye**2+b*ye+c
+            alpha=mth.atan((ye-yp)/L_nozzle_div)
+            eps_loss=0.5*(1-mth.cos((alpha+TH_exit_bell)/2))
+            F=F_tar/(1-eps_loss);
+        
         Isp_it=ispObj.estimate_Ambient_Isp(Pc=Pc,MR=MR,eps=eps_actual,Pamb=Pamb,frozen=frozen_state,frozenAtThroat=frozen_state) # Calculates Isp for this iteration
-        v_eff_it=Isp_it[0]*9.80665; # Calculates effective velocity for this iteration
-
-        sonic_vel_it=ispObj.get_SonicVelocities(Pc=Pc,MR=MR,eps=eps_actual,frozen=frozen_state,frozenAtThroat=frozen_state)
-        u_t=sonic_vel_it[1] # Velocity of sound in the throat
-
-        rhos=ispObj.get_Densities(Pc=Pc,MR=MR,eps=eps_actual,frozen=frozen_state,frozenAtThroat=frozen_state)
-        rho_t=rhos[1]  # Density in the throat
+        v_eff_it=Isp_it[0]*9.80665*(1-eps_loss); # Calculates effective velocity for this iteration
 
         m_p_it=Pc*100000*At/c_star # Mass flow rate from continuity equation in the throat
 
@@ -151,10 +171,10 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default):
     rho_c=rhos[0]
     cp_c=Transp_c[0]
     mu_c=Transp_c[1]
-    k_c=Transp_c[2]
+    k_c=Transp_c[2]/100
     Pr_c=Transp_c[3]
 
-    return m_p,Tc,MR,At,eps,Isp[0],rho_c,cp_c,mu_c,k_c,Pr_c
+    return m_p,Tc,MR,At,eps,Isp[0]*(1-eps_loss),rho_c,cp_c,mu_c,k_c,Pr_c
 
 
 

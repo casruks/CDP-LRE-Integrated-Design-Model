@@ -2,7 +2,10 @@ import csv
 import numpy as np
 from matplotlib import pyplot as plt
 
-def Reliability(t, cycle, Fnom, Fop, N, prop, val):
+def Reliability(default, t, Fnom, Fop, val):
+    prop = default.prop
+    cycle = default.cycle
+    N = default.N
     # Data for Cycle Impact (effect of engine cycle on reliability)
     CyclesData = {}
     with open('Reliability_Data/Cycle_Data.csv', newline='') as csvfile:
@@ -14,8 +17,8 @@ def Reliability(t, cycle, Fnom, Fop, N, prop, val):
                 CyclesData[row[0]] = (float(row[1]), float(row[2]), row[4])
     
     # Data for Thrust Impact (effect of total thrust on reliability)
-    delta = 0.1017
-    Fref = 2278*1000   #SSME
+    delta = default.delta
+    Fref = default.Fref #SSME
     
     # Data for De-rating/Up-rating Impact (effect of operating at non-nominal thrust on reliability)
     RatingData = {}
