@@ -52,8 +52,9 @@ def Main(d : aux.Data):
         
 
         #Compute injector (1)
-        d.v_iox, d.v_if, d.D_f, d.D_ox, d.dp, d.eta_s, d.m_ox, d.m_f, d.n_ox, d.n_f, d.P_D = Inj.injector1(default, prop, p_new, d.m_nozz, d.O_F)
-
+        ## Added A_est, representing estimated total orifice area (A_ox+A_f) for sanity check with combustion chamber dimensions..
+        d.v_iox, d.v_if, d.D_f, d.D_ox, d.dp, d.eta_s, d.m_ox, d.m_f, d.n_ox, d.n_f, d.P_D, A_est, error = Inj.injector1(default, prop, p_new, d.m_nozz, d.O_F)
+        if(error): return False
 
         #Compute Chamber
         #inputs
@@ -118,7 +119,8 @@ def Main(d : aux.Data):
         if(error): return False
         
         #Cmpute Injector (2)
-        p_new, dp_ox, dp_f = Inj.injector2(default, prop, d.v_iox, d.v_if, d.D_f, d.D_ox, d.ptinj, d.eta_s)
+        p_new, dp_ox, dp_f, error = Inj.injector2(default, prop, d.v_iox, d.v_if, d.D_f, d.D_ox, d.ptinj, d.eta_s)
+        if(error): return False
         print("P_new: " + str(p_new))
               
     d.Pc = p_new

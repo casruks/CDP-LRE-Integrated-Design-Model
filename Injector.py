@@ -11,7 +11,10 @@ def injector1(default, propellant, p_c, m, OF):
     m = mass flow toward injector; \n
     OF = mass ratio. \n
     '''
-    
+
+    #Flags
+    br = False #If true the aux program breaks after this function (an error has occured)
+
     #Default variables
     d_ox = default.d_ox
     d_f = default.d_f
@@ -48,8 +51,10 @@ def injector1(default, propellant, p_c, m, OF):
     m_ox, m_f = Massflow(m, OF)    
     n_ox = m_ox / (rho_ox * v_iox * (np.pi/4) * d_ox**2)
     n_f = m_f / (rho_f * v_if * (np.pi/4) * d_f**2) 
-    print('n_f =', n_f, 'n_ox =', n_ox)
-    
+    if n_f or n_ox or v_iox or v_if <0:
+        print('n_f =', n_f, 'n_ox =', n_ox, 'v_if =', v_if, 'v_iox =', v_iox)
+        br = True
+        
     mu_wax = 2.69e-3        # [lbm/(ft-s)], 1 lbm/(ft-s) = 1.4881639 Pa.s
     sig_wax = 17.0          # [dynes/cm], 1 dyn/cm = 1e-7 N/m     
     rho_wax = 47.7          # [lbm/ft3], 1 lbm/ft3 = 16.0185 kg/m3
@@ -74,15 +79,22 @@ def injector1(default, propellant, p_c, m, OF):
     
     A_f =  n_f*((np.pi/4) * d_f**2)
     A_ox = n_ox*((np.pi/4) * d_ox**2)  
-    print('A_f =', A_f, 'A_ox =', A_ox)
-    return v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, P_D 
+    A_est = (A_f + A_ox) * 6/(np.pi*(3)**0.5)   #Estimated effective area of hexagonal circle packing eff = pi * sqrt(3)/6
+    #print('A_f =', A_f, 'A_ox =', A_ox)
+    if D_f or D_ox > 200e-6:
+        print('D_f, D_ox > 200e-6 m!')
+
+    return v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, P_D, A_est, br 
            
 def injector2(default, propellant, v_iox, v_if, D_f, D_ox, p_inj, eta_s):
     '''
     Computes chamber pressure after injector.
     
     ''' 
-    
+    #Currently no break condition for this function
+    #Flags
+    br = False #If true the aux program breaks after this function (an error has occured)
+
     #Default variables
     C_d = default.Cd
     InjType = default.InjType
@@ -101,8 +113,8 @@ def injector2(default, propellant, v_iox, v_if, D_f, D_ox, p_inj, eta_s):
         print('dp_ox (', InjType,') <', eta_s,' p_c!')
     elif (dp_f/p_c) < eta_s:
         print('dp_f (', InjType,') <', eta_s,' p_c!')
-        
-    return p_c, dp_ox, dp_f
+
+    return p_c, dp_ox, dp_f, br
 
 def validateInj():
     p_c = 180e5
