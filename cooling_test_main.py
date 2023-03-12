@@ -116,10 +116,10 @@ bool = (
 # Main Function
 if __name__ == "__main__":
     Q = 0
-    n = 20
-    Tw_ad_noz = numpy.array([3300 for i in range(n)])
+    n = 40
+    Tw_ad_noz = numpy.array([2000 for i in range(n)])
     h_c_noz = [1200 for i in range(n)]
-    t_noz = [0.05 for i in range(n)]
+    t_noz = [0.005 for i in range(n)]
     # Tw_ad_noz = 9000
     # h_c_noz = 1200
     # t_noz = 0.001
@@ -131,9 +131,8 @@ if __name__ == "__main__":
     # default.A = [A for i in range(len(Tw_ad_noz))]
     # Temperature after cooling
     T_w_after_cooling = 0
-    y = [2.30 / n * (n - i) for i in range(n)]
-    y[-1] = 0.26
-    y[-2] = 0.3
+    y = [(2.30 - 0.26) / (n - 1) * (n - 1 - i) + 0.26 for i in range(n)]
+
     # y = [(2.30 - 0.26) / 2 for i in range(n)]
 
     # inicialise cooling
@@ -141,7 +140,7 @@ if __name__ == "__main__":
 
     Mt.Rhenium.OpTemp_u = 700
     Mt.Rhenium.k = 45
-    default.T_fuel_tanks = 310
+    default.T_fuel_tanks = 20
     Tf_cool, dptcool = regCool.Run_for_Toperating1D(
         Tw_ad_noz,
         h_c_noz,
@@ -154,10 +153,12 @@ if __name__ == "__main__":
         L,
         y,
     )
+    print("Toperating1D")
     print("D: ", regCool.D)
     print("Tf_cool: ", Tf_cool)
     # print("T_w_after_cooling: ", T_w_after_cooling)
     print("Q: ", regCool.Q)
+    print("p loss", dptcool[len(dptcool) - 1])
 
     # Tf_cool, Twall, dptcool = regCool.Run1D(
     # Tw_ad_noz,
@@ -178,7 +179,8 @@ if __name__ == "__main__":
 # print("T_w_after_cooling: ", T_w_after_cooling)
 # print("Q: ", regCool.Q)
 # print("Twall: ", Twall)
-
+print("\nToperating0D")
+default.A = sum([L * math.pi * 2 * y[i] for i in range(len(y))])
 Tf_cool, dptcool = regCool.Run_for_Toperating0D(
     Tw_ad_noz[0],
     h_c_noz[0],
@@ -195,3 +197,48 @@ print("D: ", regCool.D)
 print("Tf_cool: ", Tf_cool)
 # print("T_w_after_cooling: ", T_w_after_cooling)
 print("Q: ", regCool.Q)
+
+
+Dr = 0.01
+
+default.A = [L / len(y) * math.pi * 2 * y[i] for i in range(len(y))]
+# print(default.A)
+Re = 4 * m / (prop.fmiu) * 4 / (math.pi * Dr)
+Tf_cool, Tw_wall_calculated, dptcool = regCool.Run1D(
+    Tw_ad_noz,
+    h_c_noz,
+    t_noz,
+    prop,
+    Mt.Rhenium,
+    Dr,
+    default.A,
+    default.T_fuel_tanks,
+    Re,
+    m,
+    L,
+)
+print("\nRun1D")
+print("Tf_cool: ", Tf_cool[-1])
+print("p loss", dptcool)
+print("Tw_wall_calculated", Tw_wall_calculated[-1])
+# print("y", y)
+
+
+m1, Tf_cool, Tw_wall_calculated, ploss = regCool.Run1D_iterative_for_m(
+    Tw_ad_noz,
+    h_c_noz,
+    t_noz,
+    prop,
+    Mt.Rhenium,
+    Dr,
+    default.A,
+    default.T_fuel_tanks,
+    Re,
+    L,
+)
+
+print("\nRun for mass flow")
+print("m", m1)
+print("Tf_cool: ", Tf_cool[-1])
+print("p loss", dptcool)
+print("Tw_wall_calculated", Tw_wall_calculated[-1])
