@@ -82,7 +82,7 @@ def injector1(default, propellant, p_c, m, OF):
     A_est = (A_f + A_ox) * 6/(np.pi*(3)**0.5)   #Estimated effective area of hexagonal circle packing eff = pi * sqrt(3)/6
     #print('A_f =', A_f, 'A_ox =', A_ox)
     if D_f or D_ox > 200e-6:
-        print('D_f, D_ox > 200e-6 m!')
+        print('Warning, D_f, D_ox > 200e-6 m!')
 
     return v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, P_D, A_est, br 
            

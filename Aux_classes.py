@@ -10,12 +10,13 @@ class Default:
     #Injectors
     Cd = 0.7
     d_ox = d_f = (0.0135 +0.281)*0.0254/2.0      # 3.74 mm http://libgen.rs/book/index.php?md5=3D236B9BDD4070690CA83952058D9A1F p.113
-    InjTypes = ['like', 'unlike', 'pintle']
-    InjType = InjTypes[2]
     mu_prop = 2.69e-3       # [lbm/(ft-s)], 1 lbm/(ft-s) = 1.4881639 Pa.s
     sig_prop = 17.0         # [dynes/cm], 1 dyn/cm = 1e-7 N/m     
     rho_prop = 47.7         # [lbm/ft3], 1 lbm/ft3 = 16.0185 kg/m3
     p_center = p_j = 1  #measured centerline pressure, measured mean jet pressure
+     # Should be implemented for selection in GUI
+    InjTypes = ['like', 'unlike', 'pintle']
+    InjType = InjTypes[2] #This one is placeholder
     
     #Nozzle
     Nozzle_type = 0 # Type of nozzle, 0=conical, 1=bell
@@ -76,9 +77,9 @@ class Default:
     
     #Reliabiliy
      # Should be implemented for selection in GUI
-    cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC', 'S_FR_GG', 'SP_EX']
-    Prop = ['LOX_LH2', 'LOX_RP1']
-    N = 1   # number of engines
+    cycles = ["Expander Cycle", "Staged Combustion Cycle", "Gas Generator Cycle"]
+    Prop = ['LOX_LH2', 'LOX_RP1'] #Only used for de-rating or up-rating, so does not impact general reliability.
+    N = 1   # number of engines, input range 1-inf.
      # Defaults
     delta = 0.1017
     Fref =  2278e3
