@@ -66,7 +66,7 @@ SSME    = ReferenceEngine(2.04e7, 2.28e6, 77.5,  0.138, 512.6, 6,      1.2, Inc_
 
 
 #Mass estimation function Nozzle Tubes:
-def Mass_Expander_Regenerative(Pc, material_N, material_C, material_V, arear, rt, mprop, FS, rhoprop, Cycle): #include Ns and material_P into input if design method is chosen
+def Mass_Regenerative(Pc, material_N, material_C, material_V, arear, rt, mprop, FS, rhoprop, Cycle): #include Ns and material_P into input if design method is chosen
     #y=
 
     reference = RL10
