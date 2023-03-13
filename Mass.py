@@ -66,8 +66,19 @@ SSME    = ReferenceEngine(2.04e7, 2.28e6, 77.5,  0.138, 512.6, 6,      1.2, Inc_
 
 
 #Mass estimation function Nozzle Tubes:
-def Mass_Expander_Regenerative(Pc, material_N, material_C, material_V, arear, rt, mprop, FS, rhoprop, reference): #include Ns and material_P into input if design method is chosen
+def Mass_Expander_Regenerative(Pc, material_N, material_C, material_V, arear, rt, mprop, FS, rhoprop, Cycle): #include Ns and material_P into input if design method is chosen
     #y=
+
+    reference = RL10
+    
+    if Cycle == 'EX':
+        reference = RL10
+    elif Cycle == 'CB':
+        reference = RL10
+    elif Cycle == 'SC':
+        reference = LE5
+    else:
+        reference = SSME
 
     #Nozzle Mass
     TubeMass = reference.mfrac_tube*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*(((material_N.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((arear/reference.arear)**1)*((rt/reference.rt)**2)) #Dimensionless Nozzle Tube Mass
@@ -108,4 +119,17 @@ def Cost(m_engine, R, n):
     TotalCost = TotalCost_MY*200e3
     return TotalCost
 
+RefEngines = [RL10, LE5, SSME]
 
+def Select_RefEngine(Cycle):
+        ReferenceEngine = 0
+        if Cycle == 'EX':
+            ReferenceEngine = RefEngines[0]
+        elif Cycle == 'CB':
+            ReferenceEngine = RefEngines[0]
+        elif Cycle == 'SC':
+            ReferenceEngine = RefEngines[1]
+        else:
+            ReferenceEngine = RefEngines[2]
+            return ReferenceEngine
+            
