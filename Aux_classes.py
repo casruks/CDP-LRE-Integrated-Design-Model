@@ -68,6 +68,7 @@ class Default:
     ignburntime = 4 #Put on advanced inputs, it is the ignition burn time.
     ign_o_f=0.7 #fuel ratio of the igniter propellant
     fudgefactor = 20 #factor to correct for mass overestimation
+    type = 0
 
     #Material
     material = "This"
@@ -117,7 +118,7 @@ class Propellant:
     fmiu=1.0e-6
     f_nist_enthalpy_coef = [43.31,-4.293,1.27243,-0.096876,-20.5339,-38.5151,162.08,0,
                            33.066,-11.363,11.4328,-2.773,-0.15856,-9.981,172.71,0]  # for shomate equation
-    
+    heatingvalue = 119.96*10**6 #for the fuel only!
     #Propellant
     gama = 1.4
     tq = 0.9 #characteristic chemical time of propellant

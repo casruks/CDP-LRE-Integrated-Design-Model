@@ -32,7 +32,7 @@ def Enthalpy (Propellant,Tc,of,i,ratio):
 
     return H
 
-def Igniters (m,Propellant,default,Tc,of):
+def Igniters (m,Propellant,default,Tc,of,type):
     Tc = Tc/1000
 
     Hc = Enthalpy(Propellant,Tc,of,0)*10**3
