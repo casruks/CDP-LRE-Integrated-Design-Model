@@ -7,7 +7,7 @@ import Nozzle_loop_1 as Nz_1
 import Nozzle_loop_2 as Nz_2
 import Nozzle_turbine as Nz_t
 import Cooling
-import Materials as Mt
+import Mass as Ms
 import numpy as np
 import Aux_classes as aux
 
