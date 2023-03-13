@@ -120,7 +120,7 @@ def Main(d : aux.Data):
         if(error): return False
         
         #Cmpute Injector (2)
-        p_new, dp_ox, dp_f, error = Inj.injector2(default, prop, d.v_iox, d.v_if, d.D_f, d.D_ox, d.ptinj, d.eta_s)
+        p_new, dp_ox, dp_f, error = Inj.injector2(default, prop, d.v_iox, d.v_if, d.ptinj, d.eta_s)
         if(error): return False
         print("P_new: " + str(p_new))
               

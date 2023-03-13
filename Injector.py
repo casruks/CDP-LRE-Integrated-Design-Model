@@ -15,6 +15,11 @@ def injector1(default, propellant, p_c, m, OF):
     #Flags
     br = False #If true the aux program breaks after this function (an error has occured)
 
+    #Input sanitize
+    if p_c <0 or m<0 or OF<0:
+        print('Error, p_c=',p_c,', m=', m, ', OF=', OF)
+        br = True
+
     #Default variables
     d_ox = default.d_ox
     d_f = default.d_f
@@ -86,7 +91,7 @@ def injector1(default, propellant, p_c, m, OF):
 
     return v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, P_D, A_est, br 
            
-def injector2(default, propellant, v_iox, v_if, D_f, D_ox, p_inj, eta_s):
+def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
     '''
     Computes chamber pressure after injector.
     
@@ -94,6 +99,10 @@ def injector2(default, propellant, v_iox, v_if, D_f, D_ox, p_inj, eta_s):
     #Currently no break condition for this function
     #Flags
     br = False #If true the aux program breaks after this function (an error has occured)
+
+    #Input sanitize
+    if p_inj < 0:
+        print('Error, p_inj=', p_inj)
 
     #Default variables
     C_d = default.Cd
