@@ -147,7 +147,7 @@ def Main(d : aux.Data):
     Mass = Ms.Mass_Regenerative()
 
     #Computing costs:
-    n_engine = 2
+    n_engine = 0
     Cost = Ms.Cost(Mass, Reliability, n_engine)
     
     
