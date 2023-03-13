@@ -70,7 +70,7 @@ def Main(d : aux.Data):
         ## bool variable that specifies if inside loop or not
         ## density, cp, miu,k, prandlt - this all comes from nozzle just leave it like that
         ## IMPORTANT - this function is currently using hardcoded droplet diameter, bc droplet diameter coming from injector does not make sense.
-        d.h_comb, d.Dc, d.ThicknessChamber, d.Chamber_L, d.Re_c= Comb.CombustionChamber(p_new, d.At, prop, Mt.Rhenium, default, d.v_if, d.v_iox, d.Tc, d.O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est)
+        d.h_comb, d.Dc, d.ThicknessChamber, d.Chamber_L, d.Re_c= Comb.CombustionChamber(p_new, d.At, prop, Ms.Rhenium, default, d.v_if, d.v_iox, d.Tc, d.O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est)
         #outputs
         ## conductive heat transfer coefficient
         ## chamber diameter in m
@@ -92,7 +92,7 @@ def Main(d : aux.Data):
         ## Mass flow rate in kg/s
         ## Combustion chamber diameter in m
         ## Default class
-        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,d.D_t,d.D_e,d.L_nozzle_con,d.L_nozzle_div,d.L_tot,x_noz_cool,y_noz_cool=Nz_2.Nozzle_loop(p_new/100000.0, d.Tc, prop, Mt.Rhenium, default.Nozzle_type, d.O_F, d.eps, d.At, d.m_nozz, d.Dc, default)
+        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,d.D_t,d.D_e,d.L_nozzle_con,d.L_nozzle_div,d.L_tot,x_noz_cool,y_noz_cool=Nz_2.Nozzle_loop(p_new/100000.0, d.Tc, prop, Ms.Rhenium, default.Nozzle_type, d.O_F, d.eps, d.At, d.m_nozz, d.Dc, default)
         #Outputs
         ## Array of thickness at the discretized points in the nozzle (corresponding to x_noz) in m
         ## Array of discretized positions in the nozzle where all variables and properties are calcualted (positions in m)
@@ -110,8 +110,8 @@ def Main(d : aux.Data):
         
         #Compute regenerative
         Re=10^5
-        Tf_cool,dptcool=regCool.Run_for_Toperating1D(Tw_ad_noz, h_c_noz, t_noz,prop,Mt.Rhenium,default.A,default.T_fuel_tanks,d.m_nozz/(1.0+d.O_F)/default.n,x_noz[-1],y_noz)
-        Tf_cool,dptcool_c=regCool.Run_for_Toperating0D(d.Tc, h_comb, ThicknessChamber,prop,Mt.Rhenium,Chamber_L*default.Dr,Tf_cool,d.m_nozz/(1.0+d.O_F)/default.n,Chamber_L)
+        Tf_cool,dptcool=regCool.Run_for_Toperating1D(Tw_ad_noz, h_c_noz, t_noz,prop,Ms.Rhenium,default.A,default.T_fuel_tanks,d.m_nozz/(1.0+d.O_F)/default.n,x_noz[-1],y_noz)
+        Tf_cool,dptcool_c=regCool.Run_for_Toperating0D(d.Tc, d.h_comb, d.ThicknessChamber,prop,Ms.Rhenium,d.Chamber_L*default.Dr,Tf_cool,d.m_nozz/(1.0+d.O_F)/default.n,d.Chamber_L)
         dptcool=dptcool+dptcool_c
 
         #Compute Turbo
