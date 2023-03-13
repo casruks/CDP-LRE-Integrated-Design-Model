@@ -151,7 +151,7 @@ def Main(d : aux.Data):
         if Cycle == 'EX':
             ReferenceEngine = RefEngines[0]
         elif Cycle == 'CB':
-            ReferenceEngine = RefEngine[0]
+            ReferenceEngine = RefEngines[0]
         elif Cycle == 'SC':
             ReferenceEngine = RefEngines[1]
         else:
