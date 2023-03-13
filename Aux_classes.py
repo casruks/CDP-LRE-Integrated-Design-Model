@@ -122,7 +122,7 @@ class Propellant:
     gama = 1.4
     tq = 0.9 #characteristic chemical time of propellant
     Frozen_state=0 # Frozen state of the propellant 0=chemical equilibrium flow, 1=frozen flow (from throat onwards)
-    lstar=0.9
+    lstar=[0.76,1.02]
 
     def __init__(self,type):
         match type:

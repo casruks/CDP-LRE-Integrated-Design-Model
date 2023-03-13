@@ -1,6 +1,8 @@
 #inputs: pc, At, Propellant, Material, safety factor, velocity,d0,Tc,of,bool
 #outputs: Thickness, Area of the Chamber, Conductive Heat transfer factor, Mass
 import math
+import warnings
+
 
 #Pc - Chamber Pressure
 #At - Throat Area
@@ -13,25 +15,13 @@ import math
 #of - oxidizer/fuel ratio
 #bool - variable to say if this is on the pressure iteration loop
 
-#class Propellant:
- #   o_lamb = 1*10**(-6)
-  ## gama = 1.4
-   # tq = 0.75*10**(-3)
-   # o_dens = 1
-   # f_dens_g = 1
-   # ocp=1
-   # fcp=1
-   # omiu=1
-   # fmiu=1
-#class Material:
- #   density = 1
-  #  yieldstress_l =1
+
     
 
 class Propellant:
     o_lamb = 1*10**(-6)
     f_lamb = 9.6*10**-6
-    lstar = 0.95
+    lstar = [0.76,1.02]
     o_dens = 1
     f_dens_g = 1
     ocp=1
@@ -44,33 +34,52 @@ class Material:
 
 class Default:
     SF = 1.0
-    D_0 = 120 * 10 ** -6
+    D_0 = 200 * 10 ** -6
     kloads = 1
     inj_velocity = 20
     ConvergenceRatio_l = 1.5
     ConvergenceRatio_h = 3.5
+    factor = 0.3
 
 
 
 
 def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,Tc,of,bool,rho_c,cp_c,mu_c,k_c,Pr_c):
 
+    Hevap = 13.9*10**3
+    Ts[0] = 283
+    dt = 0.01
+    h = 3267
+    t = 0
+    i = 0
+    while (t < 10):
+        Q = h *(Tc-Ts[i])
+        E = Q * dt
+        Ts[i+1] = Ts[i]-(E - Hevap*mass)/(mass*c)
+        i=i+1
+        t = t + dt
+
+
+
+
     factor = default.factor #this is the factor that correlates initial droplet volume to final droplet volume.
     #final droplet Volume = initial droplet volume * factor
-
+    Control_cycle_one = 0 #variable used to specify whether diminishing final volume of droplet is enough to reach convergence ratio
+    Control_cycle_two = 0 #same thing but increasing final volume of droplet
+    test = 0
     Safety = default.SF
     #velocity = default.inj_velocity
     d0 = default.D_0
     #Input Sanity Check
 
-    if(d0 < 120*10**-6):
+    if(d0 < 100*10**-6):
         quit("Diameter of droplet coming from injector is too small")
-    if(d0 > 0.5*10**-3):
+    if(d0 > 250*10**-6):
         quit("Diameter of droplet coming from injector is too large")
 
-    if(velocity_ox < 20):
+    if(velocity_ox < 15):
         quit("Velocity of oxidizer droplet coming from injector is too small")
-    if(velocity_ox > 60):
+    if(velocity_ox > 30):
         quit("Velocity of oxidizer droplet coming from injector is too large")
 
     if (velocity_f < 10):
@@ -83,6 +92,9 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
     Ac_high = At * default.ConvergenceRatio_h
     d_low = math.sqrt(Ac_low / math.pi) * 2
     d_high = math.sqrt(Ac_high / math.pi) * 2
+
+    #print("D_low:" +str(d_low))
+    #print("D_high."+ str(d_high))
 
     #first iteration for length and diameter
 
@@ -104,7 +116,7 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
 
     #print("LengthChamber:" + str(LengthChamber))
 
-    lstar = Propellant.lstar
+    lstar = (Propellant.lstar[0]+Propellant.lstar[1])/2
     Vchamber = lstar * At
     Achamber = Vchamber / LengthChamber
     Rchamber = (Achamber / math.pi) ** (1.0 / 2.0)
@@ -113,14 +125,14 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
 
     #sanity check for the outputs
     if (dchamber>d_high):
-        i = 1
       #  print("AHAHAHAHAH")
         while(dchamber>d_high):
 
             #factor measures the ratio between initial and final droplet volume
-            factor = 0.3 - 0.01*i
+            factor = factor - 0.01
             if (factor < 0):
-                quit("Cannot calculate chamber dimensions in the accepted boundaries")
+                Control_cycle_one = 1
+                break
             Vf = Vi * factor  # random value for now
             d = (3.0 / 4.0 * Vf / math.pi) ** (1.0 / 3.0) * 2.0
 
@@ -139,17 +151,41 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
             #print("dchamber: " + str(dchamber))
             Rchamber = (Achamber / math.pi) ** (1.0 / 2.0)
             dchamber = Rchamber * 2.0
-            i=i+1
-    factor = 0.3
+            print("Chamber Length" + str(LengthChamber))
+    if(Control_cycle_one == 1):
+        #print("MUAHAHAHAHAHAHHAHAHAHAHAH")
+        while (dchamber > d_high):
+            lstar = lstar - 0.01
+            #print(lstar)
+            if (lstar < Propellant.lstar[0]):
+                test = 1
+                break
+
+            Vchamber = lstar * At
+            Achamber = Vchamber / LengthChamber
+            Rchamber = (Achamber / math.pi) ** (1.0 / 2.0)
+            dchamber = Rchamber * 2.0
+            print(dchamber)
+
+    if(test == 1):
+        lstar = Propellant.lstar[0]
+        Vchamber = lstar * At
+        Achamber = Ac_high
+        Rchamber = (Achamber / math.pi) ** (1.0 / 2.0)
+        dchamber = Rchamber * 2.0
+        LengthChamber = Vchamber/ Achamber
+        warnings.warn("Chamber Length was increased more than what it takes to fully atomize propellant, so that chamber diameter fits convergence ratio parameters")
+
+    factor = default.factor
 
     if (dchamber < d_low):
-        i = 1
-        while (dchamber < d_low and factor<0.4):
+        while (dchamber < d_low):
             #print("EHEHEHEHEHEHE")
             # factor measures the ratio between initial and final droplet volume
-            factor = 0.3 + 0.01 * i
+            factor = factor + 0.01
             if (factor > 0.4):
-                quit("Cannot calculate chamber dimensions in the accepted boundaries")
+                Control_cycle_two = 1
+                break
             Vf = Vi * factor  # random value for now
             d = (3.0 / 4.0 * Vf / math.pi) ** (1.0 / 3.0) * 2.0
 
@@ -168,8 +204,22 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
             #print("dchamber loop 2: " + str(dchamber))
             Rchamber = (Achamber / math.pi) ** (1.0 / 2.0)
             dchamber = Rchamber * 2.0
-            i = i + 1
 
+    if (Control_cycle_two == 1):
+        #print("MUAHIHIHIHIHIHIH")
+        while (dchamber < d_low):
+            lstar = lstar + 0.01
+
+            Vchamber = lstar * At
+            Achamber = Vchamber / LengthChamber
+            Rchamber = (Achamber / math.pi) ** (1.0 / 2.0)
+            dchamber = Rchamber * 2.0
+            #print("dchamber:" + str(dchamber))
+
+    if (lstar > Propellant.lstar[1]):
+        warnings.warn(
+            "Cannot calculate chamber dimensions with current Lstar range, final diameter of the chamber is too small. As such program increased"
+            "Lstar to " + str(lstar))
 
     Thickness = Pc * Rchamber * Safety / Material.yieldstress_l
 
@@ -198,7 +248,7 @@ prop = Propellant
 mat = Material
 default = Default
 
-ht,dc,t,lc,re = CombustionChamber(20300000, 0.053, prop, mat, default,200,25, 3400, 6, 0, 1, 1, 1, 1, 1)
+ht,dc,t,lc,re = CombustionChamber(20300000, 0.053, prop, mat, default,300,15, 3400, 6, 0, 1, 1, 1, 1, 1)
 print(dc,lc)
 Ac_low = 0.053 * 1.5
 Ac_high = 0.053 * 3.5
