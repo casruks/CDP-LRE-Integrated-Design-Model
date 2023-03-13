@@ -52,7 +52,7 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default,Nozzle_type):
     # Target Thrust
     if F>1000000:
         print("Warning, the target thrust is higher than the range of thrusts this tool is intended for")
-    if F<0:
+    if F<=0:
         print("ERROR: Negative thrust")
         error=1;
         return 0,0,0,0,0,0,0,0,0,0,0,error
@@ -60,7 +60,7 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default,Nozzle_type):
     # Chamber pressure
     if Pc>300:
         print("Warning, the chamber pressure is very high, it might not be feasible")
-    if Pc<Pamb:
+    if Pc<=Pamb:
         print("ERROR, Chamber pressure lower than ambient pressure")
         error=1
         return 0,0,0,0,0,0,0,0,0,0,0,error
@@ -71,7 +71,7 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default,Nozzle_type):
         print("Warning, ambient pressure higher than sea level standard pressure");
     
     # MR
-    if MR<0:
+    if MR<=0:
         print("ERROR, mass flow rate is lower than zero")
         error=1
         return 0,0,0,0,0,0,0,0,0,0,0,error
@@ -214,32 +214,32 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default,Nozzle_type):
     ## Sanitizing outputs
 
     # Mass flow rate
-    if m_p<0:
+    if m_p<=0:
         print("ERROR: mass flow rate is lower than 0")
         error=1
 
     
     # Throat area
-    if At<0:
+    if At<=0:
         print("ERROR, throat area lower than 0")
         error=1
 
     
     # Expansion ratio
-    if eps<1:
+    if eps<=1:
         print("Error, expansion ratio is lower than 1")
         error=1
         
     
     # Isp
-    if Isp[0]<0:
+    if Isp[0]<=0:
         print("ERROR, Isp<0")
         error=1
         
     
     # chamber properties
 
-    if rho_c<0 or cp_c<0 or mu_c <0 or k_c<0 or Pr_c<0:
+    if rho_c<=0 or cp_c<=0 or mu_c <=0 or k_c<=0 or Pr_c<=0:
         print("ERROR, chamber properties have negative value")
         error=1
         

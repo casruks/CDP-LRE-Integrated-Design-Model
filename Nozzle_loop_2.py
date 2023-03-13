@@ -33,6 +33,77 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     
     ispObj = CEA_Obj( oxName=Ox, fuelName=Fuel,useFastLookup=0, makeOutput=0,isp_units='sec',cstar_units='m/sec',pressure_units='Bar',temperature_units='K', sonic_velocity_units='m/s',enthalpy_units='kJ/kg',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise',thermal_cond_units='W/cm-degC',fac_CR=None, make_debug_prints=False)
 
+    ## Sanitizing inputs
+    error=0;
+    # Angles
+    if Default.Theta_con>=90:
+        print("ERROR: Convergent angle higher than 90 degrees")
+        error=1
+        return 0,0,0,0,0,0,0,0,0,0,0,0,error;
+
+    if Default.Theta_con>70:
+        print("Warning: Convergent angle very high, might cause real life issues")
+    
+    if Default.Theta_conical>20:
+        print("Warning: Divergent angle too high, might cause flow separation")
+    
+    if Default.Theta_conical>=90:
+        print("ERROR: Divergent angle higher than 90 degrees")
+        error=1
+        return 0,0,0,0,0,0,0,0,0,0,0,0,error;
+
+    if Default.Theta_bell>65:
+        print("Warning: Divergent angle very high, might cause real life issues")
+    
+    if Default.Theta_bell>=90:
+        print("ERROR: Divergent angle higher than 90 degrees")
+        error=1
+        return 0,0,0,0,0,0,0,0,0,0,0,0,error;
+
+    if Default.TH_exit_bell>15:
+        print("Warning: exit angle is very high, might lead to high losses")
+    
+    if Default.TH_exit_bell>Default.Theta_bell:
+        print("ERROR: Exit angle higher than divergent angle")
+        error=1
+        return 0,0,0,0,0,0,0,0,0,0,0,0,error;
+
+    # Radius of curvature
+
+    if Default.R_u_bell > 1.5:
+        print("Warning: throat curvature angle very high")
+    
+    if Default.R_u_bell<=0:
+        print("ERROR: throat curvature angle lower than 0")
+        error=1
+        return 0,0,0,0,0,0,0,0,0,0,0,0,error;
+
+    if Default.R_u_bell<0.5:
+        print("Warning: throat curvature angle very low, might lead to flow separation")
+
+    # Chamber diameter
+    if (mth.pi*Dc**2/4)<At:
+        print("ERROR: chamber diameter smaller than throat diameter")
+        error=1
+        return 0,0,0,0,0,0,0,0,0,0,0,0,error;
+
+    # Nozzle resolution
+    if Default.noz_res<100:
+        print("Warning: nozzle resolution is low, might lead to inaccurate results")
+    
+    if Default.noz_res<10:
+        print("ERROR: nozzle resolution is too low")
+        error=1
+        return 0,0,0,0,0,0,0,0,0,0,0,0,error;
+
+    if Default.n_cool>99:
+        print("Warning, too many points for cooling properties resolution can slow down the code")
+    
+    if Default.n_cool<10:
+        print("ERROR: nozzle cooling resolution to low")
+        error=1
+        return 0,0,0,0,0,0,0,0,0,0,0,0,error;
+    
     T_w=Material.OpTemp_u
     theta_con=mth.radians(Default.Theta_con)
     Theta_conical=mth.radians(Default.Theta_conical)
@@ -376,7 +447,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     D_t=R_t*2;
     D_e=mth.sqrt(eps)*D_t
 
-    return t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,D_t,D_e,L_nozzle_con,L_nozzle_div,L_tot,x_noz_cool,y_noz_cool;
+    return t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,D_t,D_e,L_nozzle_con,L_nozzle_div,L_tot,x_noz_cool,y_noz_cool,error;
 
 
 
