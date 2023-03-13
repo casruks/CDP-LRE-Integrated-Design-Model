@@ -70,7 +70,7 @@ def Mass_Expander_Regenerative(Pc, material_N, material_C, material_V, arear, rt
     #y=
 
     reference = RL10
-    
+
     if Cycle == 'EX':
         reference = RL10
     elif Cycle == 'CB':
@@ -93,7 +93,7 @@ def Mass_Expander_Regenerative(Pc, material_N, material_C, material_V, arear, rt
     PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.53)*((mprop/reference.mprop)**0.53)*(rhoprop/reference.rhoprop)**(-0.53)) #Dimensionless mass of turbopump (historic data method)
 
     #Valves
-    ValveMass = reference.mfrac_Valve*(((Pc/reference.pc)**1)*((material_V.density/reference.Material_V.density)**1)*(((material_V.yieldstress_l/FS)/(reference.Material_V.yieldstress_l/reference.FS)**(-1)))*((mprop/reference.mprop)**1)*((rhoprop/reference.rhoprop)**(-1)))#Dimensionless mass of Valves
+    ValveMass = reference.mfrac_valve*(((Pc/reference.pc)**1)*((material_V.density/reference.Material_V.density)**1)*(((material_V.yieldstress_l/FS)/(reference.Material_V.yieldstress_l/reference.FS)**(-1)))*((mprop/reference.mprop)**1)*((rhoprop/reference.rhoprop)**(-1)))#Dimensionless mass of Valves
     
 
     #Total:
