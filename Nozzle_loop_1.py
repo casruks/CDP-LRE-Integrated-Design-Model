@@ -12,6 +12,7 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default,Nozzle_type):
     # Default.toll_F_obj= tollerance on the target force to be achieved during mass flow rate calculation
     # Default.Max_iterations_mass_flow= max iterations for the throat area and mass flow calculations
     # Default.toll_P_adapted= tollerance on difference between exit pressure and ambient pressure if nozzle can be adapted
+    # Nozzle_type= type of nozzle, 0== Conical, 1== Bell
 
     ## OUTPUTS:
     # m_p = mass flow rate kg/s
@@ -43,7 +44,36 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default,Nozzle_type):
 
     ispObj = CEA_Obj( oxName=Ox, fuelName=Fuel,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise',thermal_cond_units='W/cm-degC')
 
-     # Losses due to divergent part in conical nozzle
+
+    # Sanitizing the inputs
+
+    # Target Thrust
+    if F>1000000:
+        print("Warning, the target thrust is higher than the range of thrusts this tool is intended for")
+    if F<0:
+        print("ERROR: Negative thrust")
+        error=1;
+    
+    # Chamber pressure
+    if Pc>300:
+        print("Warning, the chamber pressure is very high, it might not be feasible")
+    if Pc<Pamb:
+        print("ERROR, Chamber pressure lower than ambient pressure")
+        error=1;
+    
+    # Ambient pressure
+    if Pamb>1.01325:
+        print("Warning, ambient pressure higher than sea level standard pressure");
+    
+    # MR
+    if MR<0:
+        print("ERROR, mass flow rate is lower than zero")
+        error=1;
+    if MR>20:
+        print("Warning, mass flow rate is very high, program might crash due to unphysical conditions")
+    
+
+    # Losses due to divergent part in conical nozzle
     if Nozzle_type==0:
         eps_loss=0.5*(1-mth.cos(theta_conical))
         F=F_tar/(1-eps_loss);
@@ -174,7 +204,35 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default,Nozzle_type):
     k_c=Transp_c[2]/100
     Pr_c=Transp_c[3]
 
-    return m_p,Tc,MR,At,eps,Isp[0]*(1-eps_loss),rho_c,cp_c,mu_c,k_c,Pr_c
+    ## Sanitizing outputs
+
+    # Mass flow rate
+    if m_p<0:
+        print("ERROR: mass flow rate is lower than 0")
+        error=1;
+    
+    # Throat area
+    if At<0:
+        print("ERROR, throat area lower than 0")
+        error=1;
+    
+    # Expansion ratio
+    if eps<1:
+        print("Error, expansion ratio is lower than 1")
+        error=1;
+    
+    # Isp
+    if Isp[0]<0:
+        print("ERROR, Isp<0")
+        error=1;
+    
+    # chamber properties
+
+    if rho_c<0 or cp_c<0 or mu_c <0 or k_c<0 or Pr_c<0:
+        print("ERROR, chamber properties have negative value")
+        error=1;
+    
+    return m_p,Tc,MR,At,eps,Isp[0]*(1-eps_loss),rho_c,cp_c,mu_c,k_c,Pr_c,error
 
 
 

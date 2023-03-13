@@ -36,7 +36,7 @@ def Main(d : aux.Data):
         ## Ambient pressure in bars
         ## Propellants class
         ## Default class
-        d.m_nozz,d.Tc,d.O_F,d.At,d.eps,d.Isp,rho_c,cp_c,mu_c,k_c,Pr_c = Nz_1.Nozzle_loop_1(p_new/100000.0,d.Thrust,d.Pa/100000.0,prop,default,default.Nozzle_type)
+        d.m_nozz,d.Tc,d.O_F,d.At,d.eps,d.Isp,rho_c,cp_c,mu_c,k_c,Pr_c,error = Nz_1.Nozzle_loop_1(p_new/100000.0,d.Thrust,d.Pa/100000.0,prop,default,default.Nozzle_type)
         # Outputs:
         ## mass flow rate in kg/s
         ## Chamber temperatures in K
@@ -49,7 +49,8 @@ def Main(d : aux.Data):
         ## Viscosity (mu) in combustion chamber in Pa*s
         ## Conduction constant in combustion chamber in W/(m*degC), it's in degC but as long as it is used with temperature differences it shouldn't make a difference
         ## Prandtl number in combustion chamber
-        
+        ## Error value: 1== there has been a fatal error
+        if(error==1): return False
 
         #Compute injector (1)
         ## Added A_est, representing estimated total orifice area (A_ox+A_f) for sanity check with combustion chamber dimensions..
