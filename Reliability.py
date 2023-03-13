@@ -31,7 +31,7 @@ def Reliability(default, t, Fnom, Fop, val):
                 RatingData[row[0]] = (float(row[1]), float(row[2]), row[4])
     
     # Calculates a first order estimate for LRE reliability based on basic engine parameters
-    def reliability_general(t, cycle, Fnom, Fop, N, prop):
+    def reliability_general(t, cycle, Fnom, Fop, N, prop): 
         """t = total burn time in seconds \n
         cycle = engine cycle type code \n
         Fnom = total nominal thrust \n

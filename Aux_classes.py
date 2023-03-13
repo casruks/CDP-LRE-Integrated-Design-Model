@@ -13,8 +13,8 @@ class Default:
     mu_prop = 2.69e-3       # [lbm/(ft-s)], 1 lbm/(ft-s) = 1.4881639 Pa.s
     sig_prop = 17.0         # [dynes/cm], 1 dyn/cm = 1e-7 N/m     
     rho_prop = 47.7         # [lbm/ft3], 1 lbm/ft3 = 16.0185 kg/m3
-    p_center = p_j = 1  #measured centerline pressure, measured mean jet pressure
-     # Should be implemented for selection in GUI
+    p_center = p_j = 1      #measured centerline pressure, measured mean jet pressure
+     # Should be implemented for GUI user input
     InjTypes = ['like', 'unlike', 'pintle']
     InjType = InjTypes[2] #This one is placeholder
     
@@ -76,10 +76,12 @@ class Default:
     Safety_factor=1.3
     
     #Reliabiliy
-     # Should be implemented for selection in GUI
+     # Should be implemented for GUI user input
+     # Fop should also be included, but commented out for now as to not mess with code
     cycles = ["Expander Cycle", "Staged Combustion Cycle", "Gas Generator Cycle"]
     Prop = ['LOX_LH2', 'LOX_RP1'] #Only used for de-rating or up-rating, so does not impact general reliability.
-    N = 1   # number of engines, input range 1-inf.
+    N = 1   # number of engines, input range: as long as it is >0.
+    #Fop = d.Thrust # operating thrust, so if theres de-rating or up-rating. 0.4*d.Thrust < Fop < 1.1*d.Thrust
      # Defaults
     delta = 0.1017
     Fref =  2278e3

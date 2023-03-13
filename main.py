@@ -138,10 +138,8 @@ def Main(d : aux.Data):
     #outputs
     ## mass used for igniter
 
-
     #Compute reliability 
-    #Reliability=Rel.Reliability(default, d.time, d.Thrust, d.Thrust, 0)
-
+    Reliability = Rel.Reliability(default, d.time, d.Thrust, d.Thrust, 0)
 
     #Compute Mass:
     Mass = Ms.Mass_Regenerative()
@@ -149,10 +147,7 @@ def Main(d : aux.Data):
     #Computing costs:
     n_engine = 0
     Cost = Ms.Cost(Mass, Reliability, n_engine)
-    
-    
-    
-    
+
     print("Calculations finished")
     return True
 
