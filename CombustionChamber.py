@@ -18,38 +18,38 @@ import warnings
 
     
 
-class Propellant:
-    o_lamb = 1*10**(-6)
-    f_lamb = 9.6*10**-6
-    lstar = [0.76,1.02]
-    o_dens = 1
-    f_dens_g = 1
-    ocp=1
-    fcp=1
-    omiu=1
-    fmiu=1
-class Material:
-    density = 1
-    yieldstress_l =1
+#class Propellant:
+    #o_lamb = 1*10**(-6)
+    #f_lamb = 9.6*10**-6
+    #lstar = [0.76,1.02]
+    #o_dens = 1
+    #f_dens_g = 1
+    #ocp=1
+    #fcp=1
+    #omiu=1
+    #fmiu=1
+#class Material:
+    #density = 1
+    #yieldstress_l =1
 
-class Default:
-    SF = 1.0
-    D_0 = 200 * 10 ** -6
-    kloads = 1
-    inj_velocity = 20
-    ConvergenceRatio_l = 1.5
-    ConvergenceRatio_h = 3.5
-    factor = 0.3
-
-
-
-
-def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,Tc,of,bool,rho_c,cp_c,mu_c,k_c,Pr_c):
-
-    
+#class Default:
+    #SF = 1.0
+    #D_0 = 200 * 10 ** -6
+    #kloads = 1
+    #inj_velocity = 20
+    #ConvergenceRatio_l = 1.5
+    #ConvergenceRatio_h = 3.5
+    #factor = 0.3
 
 
 
+
+def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,Tc,of,bool,rho_c,cp_c,mu_c,k_c,Pr_c,A_est):
+
+
+
+
+    A_minimum = A_est
     factor = default.factor #this is the factor that correlates initial droplet volume to final droplet volume.
     #final droplet Volume = initial droplet volume * factor
     Control_cycle_one = 0 #variable used to specify whether diminishing final volume of droplet is enough to reach convergence ratio
@@ -76,7 +76,14 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
         quit("Velocity of fuel droplet coming from injector is too large")
 
     #setting boundaries for chamber diameter based on expected convergence rate
-    Ac_low = At * default.ConvergenceRatio_l
+    Ac_low_1 = A_minimum
+    Ac_low_2=At * default.ConvergenceRatio_l
+
+    if Ac_low_1 > Ac_low_2:
+        Ac_low = Ac_low_1
+    else:
+        Ac_low = Ac_low_2
+
     Ac_high = At * default.ConvergenceRatio_h
     d_low = math.sqrt(Ac_low / math.pi) * 2
     d_high = math.sqrt(Ac_high / math.pi) * 2
@@ -232,17 +239,17 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
         return (heattransfer,dchamber,Thickness,LengthChamber,Re,Mass)
 
 
-prop = Propellant
-mat = Material
-default = Default
+#prop = Propellant
+#at = Material
+#default = Default
 
-ht,dc,t,lc,re = CombustionChamber(20300000, 0.053, prop, mat, default,300,15, 3400, 6, 0, 1, 1, 1, 1, 1)
-print(dc,lc)
-Ac_low = 0.053 * 1.5
-Ac_high = 0.053 * 3.5
-d_low = math.sqrt(Ac_low/math.pi)*2
-d_high = math.sqrt(Ac_high/math.pi)*2
-print(d_low,d_high)
+#ht,dc,t,lc,re = CombustionChamber(20300000, 0.053, prop, mat, default,300,15, 3400, 6, 0, 1, 1, 1, 1, 1)
+#print(dc,lc)
+#Ac_low = 0.053 * 1.5
+#Ac_high = 0.053 * 3.5
+#d_low = math.sqrt(Ac_low/math.pi)*2
+#d_high = math.sqrt(Ac_high/math.pi)*2
+#print(d_low,d_high)
 #At = 0.053
 #Ac = 2.96*At
 #y=math.sqrt(Ac/math.pi)*2
