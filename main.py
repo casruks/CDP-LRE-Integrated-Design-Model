@@ -144,18 +144,24 @@ def Main(d : aux.Data):
 
 
     #Compute masses
-    chamber_material = Mt.Rhenium
-    nozzle_material = Mt.Rhenium
-    nozzlemass = Mt.Mass(x_noz,y_noz,t_noz,nozzle_material)
-    h_comb, Dc, ThicknessChamber, Chamber_L,Re_c= Comb.CombustionChamber(p_new, d.At, prop, Mt.Rhenium, default,d.v_if,d.v_iox, d.Tc, d.O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c)
-    #chambermass = Comb.Mass
-    #Data.Total_mass=totalmass
-    #totalmass = nozzlemass + chambermass
+    RefEngines = [Ms.R1L0, Ms.LE5, Ms.SSME]
+    
+    def Select_RefEngine(Cycle):
+        ReferenceEngine = 0
+        if Cycle == 'EX':
+            ReferenceEngine = RefEngines[0]
+        elif Cycle == 'CB':
+            ReferenceEngine = RefEngine[0]
+        elif Cycle == 'SC':
+            ReferenceEngine = RefEngines[1]
+        else:
+            ReferenceEngine = RefEngines[2]
+            return ReferenceEngine
+            
     
 
     #Computing costs:
-    #Data.Total_cost=cost
-    #cost = chamber_material.cost*chambermass + nozzle_material.cost*nozzlemass
+    
     
     
     #Reusability:
