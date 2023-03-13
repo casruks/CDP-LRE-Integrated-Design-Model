@@ -82,18 +82,18 @@ def Mass_Regenerative(Pc, material_N, material_C, material_V, arear, rt, mprop, 
 
     #Nozzle Mass
     TubeMass = reference.mfrac_tube*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*(((material_N.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((arear/reference.arear)**1)*((rt/reference.rt)**2)) #Dimensionless Nozzle Tube Mass
-    ManifoldMass = reference.mfrac_manifold*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)((mprop/reference.mprop)**1)((material_N.yieldstress_l/reference.Material_NCG.yieldstress_l)**(-1))*((rhoprop/reference.rhoprop)**(-1))*((rt/reference.rt)**1)) #Dimensionless Nozzle Manifold Mass
+    ManifoldMass = reference.mfrac_manifold*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*((mprop/reference.mprop)**1)*((material_N.yieldstress_l/reference.Material_NCG.yieldstress_l)**(-1))*((rhoprop/reference.rhoprop)**(-1))*((rt/reference.rt)**1)) #Dimensionless Nozzle Manifold Mass
     JacketMass = reference.mfrac_jacket*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*(((material_N.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((arear/reference.arear)**1.5)*((rt/reference.rt)**3))#Dimensionless Nozzle Jacket Mass
     
     #Chamber Mass
-    ChamberMass = reference.mfrac_chamber*((Pc/reference.pc)**1)*((material_C.density/reference.Material_NCG.density)**1)*(((material_C.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS)**(-1)))*((rt/reference.rt)**1) #Dimensionless Mass of Combustion Chamber + Gas Generator(if applicable)
+    ChamberMass = reference.mfrac_chamber*((Pc/reference.pc)**1)*((material_C.density/reference.Material_NCG.density)**1)*(((material_C.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((rt/reference.rt)**1) #Dimensionless Mass of Combustion Chamber + Gas Generator(if applicable)
     
     #TurboPump Mass
     #PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.15)*((material_P.density/reference.material_P.density)**1)*(((material_P.yieldstress_l/FS)/(reference.Material_p.yieldstress_l/reference.FS)*(-1)))*((mprop/reference.mprop)**0.9)*((rhoprop/reference.rhoprop)**(-0.45))*((Ns/y)**(-0.6)))
     PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.53)*((mprop/reference.mprop)**0.53)*(rhoprop/reference.rhoprop)**(-0.53)) #Dimensionless mass of turbopump (historic data method)
 
     #Valves
-    ValveMass = reference.mfrac_valve*(((Pc/reference.pc)**1)*((material_V.density/reference.Material_V.density)**1)*(((material_V.yieldstress_l/FS)/(reference.Material_V.yieldstress_l/reference.FS)**(-1)))*((mprop/reference.mprop)**1)*((rhoprop/reference.rhoprop)**(-1)))#Dimensionless mass of Valves
+    ValveMass = reference.mfrac_valve*(((Pc/reference.pc)**1.0)*((material_V.density/reference.Material_V.density)**1)*(((material_V.yieldstress_l/FS)/(reference.Material_V.yieldstress_l/reference.FS))**(-1))*((mprop/reference.mprop)**1)*((rhoprop/reference.rhoprop)**(-1)))#Dimensionless mass of Valves
     
 
     #Total:
@@ -111,7 +111,7 @@ def Cost(m_engine, R, n):
     f4  = -0.0553*mth.log(n) + 1.0011
     a_m = 4.0
 
-    C_D = 1.1*f1*f2*f3*162*m_engine**0.58
+    C_D = 1.1*f1*f2*f3*m_engine**0.58
 
     F_E = a_m*f4*m_engine**0.46
 
@@ -119,17 +119,5 @@ def Cost(m_engine, R, n):
     TotalCost = TotalCost_MY*200e3
     return TotalCost
 
-RefEngines = [RL10, LE5, SSME]
-
-def Select_RefEngine(Cycle):
-        ReferenceEngine = 0
-        if Cycle == 'EX':
-            ReferenceEngine = RefEngines[0]
-        elif Cycle == 'CB':
-            ReferenceEngine = RefEngines[0]
-        elif Cycle == 'SC':
-            ReferenceEngine = RefEngines[1]
-        else:
-            ReferenceEngine = RefEngines[2]
-            return ReferenceEngine
-            
+# Mass = Mass_Regenerative(3.20e6,Inc_718,Inc_718,D6AC_Steel,61.1,0.076,16.85,1.1,351.91,'EX')
+# print(Mass)
