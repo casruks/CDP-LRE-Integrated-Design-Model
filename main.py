@@ -144,14 +144,14 @@ def Main(d : aux.Data):
 
 
     #Compute Mass:
-    
+    Mass = Ms.Mass_Regenerative()
 
     #Computing costs:
+    n_engine = 2
+    Cost = Ms.Cost(Mass, Reliability, n_engine)
     
     
     
-    #Reusability:
-    #Reuseability_chamber = Mt.Reusability(comb.Pc,chamber_material)
     
     print("Calculations finished")
     return True
