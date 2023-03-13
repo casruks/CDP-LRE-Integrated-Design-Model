@@ -46,19 +46,7 @@ class Default:
 
 def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,Tc,of,bool,rho_c,cp_c,mu_c,k_c,Pr_c):
 
-    Hevap = 13.9*10**3
-    Ts[0] = 283
-    dt = 0.01
-    h = 3267
-    t = 0
-    i = 0
-    while (t < 10):
-        Q = h *(Tc-Ts[i])
-        E = Q * dt
-        Ts[i+1] = Ts[i]-(E - Hevap*mass)/(mass*c)
-        i=i+1
-        t = t + dt
-
+    
 
 
 
