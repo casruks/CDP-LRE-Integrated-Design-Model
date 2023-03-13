@@ -143,21 +143,7 @@ def Main(d : aux.Data):
     #Reliability=Rel.Reliability(default, d.time, d.Thrust, d.Thrust, 0)
 
 
-    #Compute masses
-    RefEngines = [Ms.R1L0, Ms.LE5, Ms.SSME]
-    
-    def Select_RefEngine(Cycle):
-        ReferenceEngine = 0
-        if Cycle == 'EX':
-            ReferenceEngine = RefEngines[0]
-        elif Cycle == 'CB':
-            ReferenceEngine = RefEngines[0]
-        elif Cycle == 'SC':
-            ReferenceEngine = RefEngines[1]
-        else:
-            ReferenceEngine = RefEngines[2]
-            return ReferenceEngine
-            
+    #Compute Mass:
     
 
     #Computing costs:
