@@ -15,7 +15,7 @@ class Default:
     rho_prop = 47.7         # [lbm/ft3], 1 lbm/ft3 = 16.0185 kg/m3
     p_center = p_j = 1      #measured centerline pressure, measured mean jet pressure
      # Should be implemented for GUI user input
-    InjTypes = ['like', 'unlike', 'pintle']
+    InjTypes = ['like', 'unlike', 'pintle'] #Please keep this one in default as well. Used for Injector1() via Default.InjTypes 
     InjType = InjTypes[2] #This one is placeholder
     
     #Nozzle
