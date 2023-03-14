@@ -3,6 +3,14 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 def Reliability(default, t, Fnom, Fop, val):
+    '''
+    Determines the reliability of the LRE, based on LH2/LOX. \n
+    default: loads default values \n
+    t: Thrust time [s] \n
+    Fnom: Nominal designed thrust level [N] \n
+    val: True or False, for validation.
+    '''
+
     prop = default.prop
     cycle = default.cycle
     N = default.N
@@ -68,7 +76,7 @@ def Reliability(default, t, Fnom, Fop, val):
         # Number of Engines and Total Burn Time Impact
         return lst    #list 
     
-    if val == 1:
+    if val == True:
     # VALIDATION --> Yields the same figure as Fig.3 in Fernández et al. (2022)
         def validate(Fref):
             N = [4, 5, 6, 7, 8, 9]

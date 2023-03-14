@@ -137,7 +137,7 @@ def Main(d : aux.Data):
     ## mass used for igniter
 
     #Compute reliability 
-    Reliability = Rel.Reliability(default, d.time, d.Thrust, d.Thrust, 0)
+    Reliability = Rel.Reliability(default, d.time, d.Thrust, d.Thrust, default.val)
 
     #Compute Mass:
     Mass = Ms.Mass_Regenerative()

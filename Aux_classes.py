@@ -88,7 +88,7 @@ class Default:
         #Other parameters for reliablity [Fernandez, 2022] can be found in :
         # - Reliability_Data/Cycle_Data.csv 
         # - Reliability_Data/Propellant_Uprating_Data.csv
-        
+    val = False     # set to true for validation of figure with [fernandez, 2022]
     #Init
     def __init__(self,type):
         if(type==1):
