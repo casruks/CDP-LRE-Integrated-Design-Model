@@ -40,10 +40,12 @@ def injector1(default, propellant, p_c, m, OF):
     if p_c<0 or m<0 or OF<0:   #error 0...1, p_c, m or OF <0.
         print('Error, p_c=', p_c,', m=', m,', OF=', OF)
         er = er|(1<<0)
+        return 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, er, wr 
         
     if not InjType in InjTypes:
         print('Error, invalid injector type selected. Valid inputs:', InjTypes) 
         er = er|(1<<1) 
+        return 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, er, wr
     
     def Massflow(m, OF):
         m_ox = (OF/(OF+1.0))*m
@@ -69,9 +71,12 @@ def injector1(default, propellant, p_c, m, OF):
     if n_f<0 or n_ox<0 or v_iox<0 or v_if <0:
         er = er|(1<<2)
         print('Error, n_f =', n_f, 'n_ox =', n_ox, 'v_if =', v_if, 'v_iox =', v_iox)
+        return 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, er, wr
+    
     if v_iox>100 or v_if>100:
         wr = wr|(1<<0)
         print('Warning, v_if=,', v_if,' v_iox=,', v_iox)
+        return 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, er, wr
         
     mu_wax = 2.69e-3        # [lbm/(ft-s)], 1 lbm/(ft-s) = 1.4881639 Pa.s
     sig_wax = 17.0          # [dynes/cm], 1 dyn/cm = 1e-7 N/m     
@@ -102,6 +107,7 @@ def injector1(default, propellant, p_c, m, OF):
     if D_f or D_ox > 200e-6:
         print('Warning, D_f=,', D_f*1e6,'[E-6m] D_ox=,', D_ox*1e6, 'E-6m')
         wr = wr|(1<<1)
+        return 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, er, wr
 
     return v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, P_D, A_est, er, wr 
            
@@ -117,6 +123,7 @@ def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
     if p_inj < 0:
         er = er|(1<<0)
         print('Error, p_inj=', p_inj)
+        return 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, er, wr
 
     #Default variables
     C_d = default.Cd
@@ -133,8 +140,10 @@ def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
     dp_f = zeta * 0.5 * rho_f*v_if**2.0
     
     if (dp_ox/p_c) < eta_s:
+        wr = wr|(1<<0)
         print('dp_ox (', InjType,') <', eta_s,' p_c!')
     elif (dp_f/p_c) < eta_s:
+        wr = wr|(1<<1)
         print('dp_f (', InjType,') <', eta_s,' p_c!')
 
     return p_c, dp_ox, dp_f, er, wr
@@ -148,4 +157,4 @@ def validateInj():
     print(v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, P_D, A_est, er, wr)
     p_inj = 100e5
     print(injector2(Default, Propellant, v_iox, v_if, p_inj, eta_s))
-validateInj()
+#validateInj()
