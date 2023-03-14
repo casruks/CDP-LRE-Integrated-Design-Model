@@ -41,11 +41,6 @@ def injector1(default, propellant, p_c, m, OF):
         print('Error, p_c=', p_c,', m=', m,', OF=', OF)
         er = er|(1<<0)
         return 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, er, wr 
-        
-    if not InjType in InjTypes:
-        print('Error, invalid injector type selected. Valid inputs:', InjTypes) 
-        er = er|(1<<1) 
-        return 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, er, wr
     
     def Massflow(m, OF):
         m_ox = (OF/(OF+1.0))*m
@@ -69,14 +64,13 @@ def injector1(default, propellant, p_c, m, OF):
     n_ox = m_ox / (rho_ox * v_iox * (np.pi/4) * d_ox**2)
     n_f = m_f / (rho_f * v_if * (np.pi/4) * d_f**2) 
     if n_f<0 or n_ox<0 or v_iox<0 or v_if <0:
-        er = er|(1<<2)
+        er = er|(1<<1)
         print('Error, n_f =', n_f, 'n_ox =', n_ox, 'v_if =', v_if, 'v_iox =', v_iox)
         return 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, er, wr
     
     if v_iox>100 or v_if>100:
         wr = wr|(1<<0)
         print('Warning, v_if=,', v_if,' v_iox=,', v_iox)
-        return 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, er, wr
         
     mu_wax = 2.69e-3        # [lbm/(ft-s)], 1 lbm/(ft-s) = 1.4881639 Pa.s
     sig_wax = 17.0          # [dynes/cm], 1 dyn/cm = 1e-7 N/m     
@@ -107,7 +101,6 @@ def injector1(default, propellant, p_c, m, OF):
     if D_f or D_ox > 200e-6:
         print('Warning, D_f=,', D_f*1e6,'[E-6m] D_ox=,', D_ox*1e6, 'E-6m')
         wr = wr|(1<<1)
-        return 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, er, wr
 
     return v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, P_D, A_est, er, wr 
            
