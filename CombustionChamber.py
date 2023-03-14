@@ -48,7 +48,8 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
 
 
 
-
+    wr = 0
+    er = 0
     A_minimum = A_est
     factor = default.factor #this is the factor that correlates initial droplet volume to final droplet volume.
     #final droplet Volume = initial droplet volume * factor
@@ -60,20 +61,44 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
     d0 = default.D_0
     #Input Sanity Check
 
-    if(d0 < 100*10**-6):
-        quit("Diameter of droplet coming from injector is too small")
-    if(d0 > 250*10**-6):
-        quit("Diameter of droplet coming from injector is too large")
+    ##errors:
 
-    if(velocity_ox < 15):
-        quit("Velocity of oxidizer droplet coming from injector is too small")
+    if (d0 < 0):
+        er = er | (1 << 0)
+        # quit("Diameter of droplet coming from injector is too small")
+    if (d0 > 1 * 10 ** -5):
+        er = er | (1 << 1)
+        # quit("Diameter of droplet coming from injector is too large")
+
+    if (velocity_ox < 0):
+        er = er | (1 << 2)
+        # quit("Velocity of oxidizer droplet coming from injector is too small")
+
+    if (velocity_f < 0):
+        er = er | (1 << 3)
+        # quit("Velocity of fuel droplet coming from injector is too small")
+
+    ## warnings :
+    if(d0 < 100*10**-6):
+        wr = wr |(1<<0)
+        #quit("Diameter of droplet coming from injector is too small")
+    if(d0 > 250*10**-6):
+        wr = wr | (1 << 1)
+        #quit("Diameter of droplet coming from injector is too large")
+
+    if(velocity_ox < 10):
+        wr = wr |(1<<2)
+        #quit("Velocity of oxidizer droplet coming from injector is too small")
     if(velocity_ox > 30):
-        quit("Velocity of oxidizer droplet coming from injector is too large")
+        wr = wr | (1 << 3)
+        #quit("Velocity of oxidizer droplet coming from injector is too large")
 
     if (velocity_f < 10):
-        quit("Velocity of fuel droplet coming from injector is too small")
+        wr = wr | (1 << 4)
+        #quit("Velocity of fuel droplet coming from injector is too small")
     if (velocity_f > 300):
-        quit("Velocity of fuel droplet coming from injector is too large")
+        wr = wr | (1 << 5)
+        #quit("Velocity of fuel droplet coming from injector is too large")
 
     #setting boundaries for chamber diameter based on expected convergence rate
     Ac_low_1 = A_minimum
@@ -146,7 +171,7 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
             #print("dchamber: " + str(dchamber))
             Rchamber = (Achamber / math.pi) ** (1.0 / 2.0)
             dchamber = Rchamber * 2.0
-            print("Chamber Length" + str(LengthChamber))
+            #print("Chamber Length" + str(LengthChamber))
     if(Control_cycle_one == 1):
         #print("MUAHAHAHAHAHAHHAHAHAHAHAH")
         while (dchamber > d_high):
@@ -160,7 +185,7 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
             Achamber = Vchamber / LengthChamber
             Rchamber = (Achamber / math.pi) ** (1.0 / 2.0)
             dchamber = Rchamber * 2.0
-            print(dchamber)
+            #print(dchamber)
 
     if(test == 1):
         lstar = Propellant.lstar[0]
@@ -169,7 +194,8 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
         Rchamber = (Achamber / math.pi) ** (1.0 / 2.0)
         dchamber = Rchamber * 2.0
         LengthChamber = Vchamber/ Achamber
-        warnings.warn("Chamber Length was increased more than what it takes to fully atomize propellant, so that chamber diameter fits convergence ratio parameters")
+        wr = wr | (1 << 6)
+        #warnings.warn("Chamber Length was increased more than what it takes to fully atomize propellant, so that chamber diameter fits convergence ratio parameters")
 
     factor = default.factor
 
@@ -212,9 +238,10 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
             #print("dchamber:" + str(dchamber))
 
     if (lstar > Propellant.lstar[1]):
-        warnings.warn(
-            "Cannot calculate chamber dimensions with current Lstar range, final diameter of the chamber is too small. As such program increased"
-            "Lstar to " + str(lstar))
+        wr = wr | (1 << 7)
+        #warnings.warn(
+            #"Cannot calculate chamber dimensions with current Lstar range, final diameter of the chamber is too small. As such program increased"
+            #"Lstar to " + str(lstar))
 
     Thickness = Pc * Rchamber * Safety / Material.yieldstress_l
 
@@ -222,7 +249,7 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
         kloads = default.kloads
         Mass = kloads *(1/(LengthChamber/dchamber)+2)*Material.density*Safety/Material.yieldstress_l*Vchamber*Pc
 
-    a = 0.023
+    a = default.a
     ro = rho_c
     Pr = Pr_c
     cp = cp_c
@@ -233,10 +260,16 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
     heattransfer = a * ro**0.8 * velocity**0.8 * (1/(Rchamber*2))**0.2 * (k*Pr**0.33/niu**0.8)
 
     Re=velocity*ro*dchamber/niu
+
+    if LengthChamber > 1
+        wr = wr | (1<<8)
+    if LengthChamber > 2
+        er = er | (1<<4)
+
     if bool == 0:
-        return (heattransfer,dchamber,Thickness,LengthChamber,Re)
+        return (heattransfer,dchamber,Thickness,LengthChamber,Re,wr,er)
     else:
-        return (heattransfer,dchamber,Thickness,LengthChamber,Re,Mass)
+        return (heattransfer,dchamber,Thickness,LengthChamber,Re,Mass,wr,er)
 
 
 #prop = Propellant
