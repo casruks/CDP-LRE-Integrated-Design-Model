@@ -69,7 +69,7 @@ def Main(d : aux.Data):
         ## bool variable that specifies if inside loop or not
         ## density, cp, miu,k, prandlt - this all comes from nozzle just leave it like that
         ## IMPORTANT - this function is currently using hardcoded droplet diameter, bc droplet diameter coming from injector does not make sense.
-        d.h_comb, d.Dc, d.ThicknessChamber, d.Chamber_L, d.Re_c= Comb.CombustionChamber(p_new, d.At, prop, Ms.Rhenium, default, d.v_if, d.v_iox, d.Tc, d.O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est)
+        d.h_comb, d.Dc, d.ThicknessChamber, d.Chamber_L, d.Re_c,wr_comb,er_comb= Comb.CombustionChamber(p_new, d.At, prop, Ms.Rhenium, default, d.v_if, d.v_iox, d.Tc, d.O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est)
         #outputs
         ## conductive heat transfer coefficient
         ## chamber diameter in m
@@ -132,9 +132,10 @@ def Main(d : aux.Data):
     ## default
     ## chamber temperature
     ## oxidizer to fuel ratio of main chamber
-    igniter_compound = Ign.Igniters(d.m_nozz,prop,default,d.Tc,d.O_F,default.type)
+    Ign_propellant_mass, Ign_fuel_mass, Ign_ox_mass,wr_ign = Ign.Igniters(d.m_nozz,prop,default,d.Tc,d.O_F,default.type)
     #outputs
     ## mass used for igniter
+    ## By this order: igniter propellant total mass, igniter fuel mass, igniter oxidizer mass, warnings
 
     #Compute reliability 
     Reliability = Rel.Reliability(default, d.time, d.Thrust, d.Thrust, default.val)
