@@ -261,9 +261,9 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
 
     Re=velocity*ro*dchamber/niu
 
-    if LengthChamber > 1
+    if LengthChamber > 1:
         wr = wr | (1<<8)
-    if LengthChamber > 2
+    if LengthChamber > 2:
         er = er | (1<<4)
 
     if bool == 0:
