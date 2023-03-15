@@ -55,7 +55,7 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
     #if F<=0:
     #    print("ERROR: Negative thrust")
     #error=1;
-        return 0,0,0,0,0,0,0,0,0,0,0,error
+    #    return 0,0,0,0,0,0,0,0,0,0,0,error
     
     # Chamber pressure
     if Pc>300:

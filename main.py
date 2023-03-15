@@ -91,7 +91,7 @@ def Main(d : aux.Data):
         ## Mass flow rate in kg/s
         ## Combustion chamber diameter in m
         ## Default class
-        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,d.D_t,d.D_e,d.L_nozzle_con,d.L_nozzle_div,d.L_tot,x_noz_cool,y_noz_cool=Nz_2.Nozzle_loop(p_new/100000.0, d.Tc, prop, Ms.Rhenium, default.Nozzle_type, d.O_F, d.eps, d.At, d.m_nozz, d.Dc, default)
+        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,d.D_t,d.D_e,d.L_nozzle_con,d.L_nozzle_div,d.L_tot,x_noz_cool,y_noz_cool,error_nz2=Nz_2.Nozzle_loop(p_new/100000.0, d.Tc, prop, Ms.Rhenium, default.Nozzle_type, d.O_F, d.eps, d.At, d.m_nozz, d.Dc, default)
         #Outputs
         ## Array of thickness at the discretized points in the nozzle (corresponding to x_noz) in m
         ## Array of discretized positions in the nozzle where all variables and properties are calcualted (positions in m)
@@ -109,7 +109,7 @@ def Main(d : aux.Data):
         
         #Compute regenerative
         Re=10^5
-        Tf_cool,dptcool=regCool.Run_for_Toperating1D(Tw_ad_noz, h_c_noz, t_noz,prop,Ms.Rhenium,default.A,default.T_fuel_tanks,d.m_nozz/(1.0+d.O_F)/default.n,x_noz[-1],y_noz)
+        Tf_cool,dptcool=regCool.Run_for_Toperating1D(Tw_ad_noz, h_c_noz, t_noz,prop,Ms.Rhenium,default.A,default.T_fuel_tanks,d.m_nozz/(1.0+d.O_F)/default.n,x_noz_cool[-1],y_noz_cool)
         Tf_cool,dptcool_c=regCool.Run_for_Toperating0D(d.Tc, d.h_comb, d.ThicknessChamber,prop,Ms.Rhenium,d.Chamber_L*default.Dr,Tf_cool,d.m_nozz/(1.0+d.O_F)/default.n,d.Chamber_L)
         dptcool=dptcool+dptcool_c
 
