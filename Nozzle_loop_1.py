@@ -1,4 +1,4 @@
-def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default,Nozzle_type):
+def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
     ## INPUTS:
     # Pc= Chamber pressure in bar
     # F=Thrust in Newtons
@@ -71,7 +71,7 @@ def Nozzle_loop_1(Pc,F,Pamb,Propellant,Default,Nozzle_type):
         print("Warning, ambient pressure higher than sea level standard pressure");
     
     # MR
-    if MR<=0:
+    if MR<0:
         print("ERROR, mass flow rate is lower than zero")
         error=1
         return 0,0,0,0,0,0,0,0,0,0,0,error
