@@ -46,8 +46,10 @@ def Igniters (m,Propellant,default,Tc,of,type):
             mass_igniter = Power/heatingvalue * default.ignburntime /(default.fudgefactor)
             mfuel = mass_igniter/(1+default.ign_o_f)
             mox = default.ign_o_f *mass_igniter/ (1+default.ign_o_f)
-            if mass_igniter > 100:
-               wr = wr | (1<<0)
+            if mass_igniter > 100 and Propellant.fuelname == "LH2":
+                wr = wr | (1<<1)
+            elif mass_igniter > 100 and Propellant.fuelname != "LH2":
+                wr = wr | (1<<0)
             return mass_igniter,mfuel,mox,wr
         case '10':
             Hc = Enthalpy(Propellant, Tc, of) * 10 ** 3
@@ -67,7 +69,7 @@ def Igniters (m,Propellant,default,Tc,of,type):
             mfuel = mass_igniter / (1 + default.ign_o_f)
             mox = default.ign_o_f * mass_igniter / (1 + default.ign_o_f)
             if mass_igniter > 100:
-               wr = wr | (1<<0)
+               wr = wr | (1<<1)
             return mass_igniter, mfuel, mox,wr
         case '20':
             Hc = Enthalpy(Propellant, Tc, of) * 10 ** 3
