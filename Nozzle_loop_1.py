@@ -50,11 +50,11 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
     error=0;
 
     # Target Thrust
-    if F>1000000:
+    if F_tar>1000000:
         print("Warning, the target thrust is higher than the range of thrusts this tool is intended for")
-    if F<=0:
-        print("ERROR: Negative thrust")
-        error=1;
+    #if F<=0:
+    #    print("ERROR: Negative thrust")
+    #error=1;
         return 0,0,0,0,0,0,0,0,0,0,0,error
     
     # Chamber pressure
@@ -67,17 +67,17 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
     
     
     # Ambient pressure
-    if Pamb>1.01325:
+    #if Pamb>1.01325:
         print("Warning, ambient pressure higher than sea level standard pressure");
     
     # MR
-    if MR<0:
-        print("ERROR, mass flow rate is lower than zero")
-        error=1
-        return 0,0,0,0,0,0,0,0,0,0,0,error
+    #if MR<0:
+    #    print("ERROR, mass flow rate is lower than zero")
+    #    error=1
+    #    return 0,0,0,0,0,0,0,0,0,0,0,error
     
-    if MR>20:
-        print("Warning, mass flow rate is very high, program might crash due to unphysical conditions")
+    #if MR>20:
+    #    print("Warning, mass flow rate is very high, program might crash due to unphysical conditions")
     
 
     # Losses due to divergent part in conical nozzle
