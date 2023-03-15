@@ -31,14 +31,20 @@ Silica                  =       Materials('Scilica Coating',                    
 Carbon                  =       Materials('Carbon-Carbon Matrix coating',       1950.0,   0,          0,          2400.0,   37.4,   6.4)
 
 
-# ##Computing Mass nozzle: 
-# #Nozzle Surface Fucntion:
-# def Nozzle_surface(x,R):
-#     total_dist = 0
-#     for i in range(len(x)-1):
-#         total_dist += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])
-#     vol = total_dist*2*mth.pi
-#     return vol
+##Computing Mass nozzle: 
+#Nozzle Surface Fucntion:
+def Nozzle_mass(x,R,t,material):
+    total_dist = 0
+    for i in range(len(x)-1):
+        total_dist += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])
+    vol = total_dist*2*mth.pi*t
+    NozzleMass = vol*material.density
+    return NozzleMass
+
+##Computing Chamber Mass:
+def Chamber_mass(ChambR,ChambL,Chambt,material_C):
+    ChamberMass = (2*mth.pi()*ChambR*ChambL*Chambt + 2*mth.pi()*ChambR**2*Chambt)*material_C.density
+    return ChamberMass
 
 class ReferenceEngine:
     def __init__(self, pc, thrust, arear, rt, mprop, rhoprop, FS, Material_NCG, Material_P, Material_V, mfrac_tube, mfrac_manifold, mfrac_jacket, mfrac_chamber, mfrac_pump, mfrac_valve, RefMass):
@@ -65,39 +71,38 @@ LE5     = ReferenceEngine(3.65e6, 1.03e5, 140.0, 0.068, 23.33, 5.5,    1.1, Inc_
 SSME    = ReferenceEngine(2.04e7, 2.28e6, 77.5,  0.138, 512.6, 6,      1.2, Inc_718, D6AC_Steel, D6AC_Steel, 0.0907, 0.1984, 0.0737, 0.1955, 0.2763, 0.1654, 3177)#Stage Combustion Cycle Reference #fixrhoprop
 
 
+
+
 #Mass estimation function Nozzle Tubes:
-def Mass_Regenerative(Pc, material_N, material_C, material_V, arear, rt, mprop, FS, rhoprop, Cycle): #include Ns and material_P into input if design method is chosen
-    #y=
+def Mass(Pc, material_N, material_P, material_V, material_C, arear, rt, mprop, FS, rhoprop, Ns,  x, r, t, L, R, T): 
+    
+    y= 1
+    NozzleMass = 0
+    ChamberMass = 0
 
     reference = RL10
 
-    if Cycle == 'EX':
-        reference = RL10
-    elif Cycle == 'CB':
-        reference = RL10
-    elif Cycle == 'SC':
-        reference = LE5
-    else:
-        reference = SSME
-
-    #Nozzle Mass
+    #Nozzle Mass:
     TubeMass = reference.mfrac_tube*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*(((material_N.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((arear/reference.arear)**1)*((rt/reference.rt)**2)) #Dimensionless Nozzle Tube Mass
     ManifoldMass = reference.mfrac_manifold*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*((mprop/reference.mprop)**1)*((material_N.yieldstress_l/reference.Material_NCG.yieldstress_l)**(-1))*((rhoprop/reference.rhoprop)**(-1))*((rt/reference.rt)**1)) #Dimensionless Nozzle Manifold Mass
-    JacketMass = reference.mfrac_jacket*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*(((material_N.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((arear/reference.arear)**1.5)*((rt/reference.rt)**3))#Dimensionless Nozzle Jacket Mass
+    #JacketMass = reference.mfrac_jacket*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*(((material_N.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((arear/reference.arear)**1.5)*((rt/reference.rt)**3))#Dimensionless Nozzle Jacket Mass
+    NozzleMass = Nozzle_mass(x,r,t,material_N)
     
     #Chamber Mass
-    ChamberMass = reference.mfrac_chamber*((Pc/reference.pc)**1)*((material_C.density/reference.Material_NCG.density)**1)*(((material_C.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((rt/reference.rt)**1) #Dimensionless Mass of Combustion Chamber + Gas Generator(if applicable)
+    #ChamberMass = reference.mfrac_chamber*((Pc/reference.pc)**1)*((material_C.density/reference.Material_NCG.density)**1)*(((material_C.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((rt/reference.rt)**1) #Dimensionless Mass of Combustion Chamber + Gas Generator(if applicable)
+    ChamberMass = Chamber_mass(L, R, T, material_C)
     
+
     #TurboPump Mass
-    #PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.15)*((material_P.density/reference.material_P.density)**1)*(((material_P.yieldstress_l/FS)/(reference.Material_p.yieldstress_l/reference.FS)*(-1)))*((mprop/reference.mprop)**0.9)*((rhoprop/reference.rhoprop)**(-0.45))*((Ns/y)**(-0.6)))
-    PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.53)*((mprop/reference.mprop)**0.53)*(rhoprop/reference.rhoprop)**(-0.53)) #Dimensionless mass of turbopump (historic data method)
+    PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.15)*((material_P.density/reference.material_P.density)**1)*(((material_P.yieldstress_l/FS)/(reference.Material_p.yieldstress_l/reference.FS)*(-1)))*((mprop/reference.mprop)**0.9)*((rhoprop/reference.rhoprop)**(-0.45))*((Ns/y)**(-0.6)))
+    #PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.53)*((mprop/reference.mprop)**0.53)*(rhoprop/reference.rhoprop)**(-0.53)) #Dimensionless mass of turbopump (historic data method)
 
     #Valves
     ValveMass = reference.mfrac_valve*(((Pc/reference.pc)**1.0)*((material_V.density/reference.Material_V.density)**1)*(((material_V.yieldstress_l/FS)/(reference.Material_V.yieldstress_l/reference.FS))**(-1))*((mprop/reference.mprop)**1)*((rhoprop/reference.rhoprop)**(-1)))#Dimensionless mass of Valves
     
 
     #Total:
-    Total_Mass = (TubeMass + ManifoldMass + JacketMass + ChamberMass + PumpMass + ValveMass)*reference.RefMass 
+    Total_Mass = NozzleMass + ChamberMass + (ManifoldMass + TubeMass + PumpMass + ValveMass)*reference.RefMass 
 
     return Total_Mass
 
