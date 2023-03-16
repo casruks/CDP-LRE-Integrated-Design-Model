@@ -41,7 +41,8 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
     Theta_bell=mth.radians(Default.Theta_bell)
     TH_exit_bell=mth.radians(Default.TH_exit_bell)
     Ru_bell=Default.R_u_bell
-
+    eps_m=Default.Eps_max
+    
     ispObj = CEA_Obj( oxName=Ox, fuelName=Fuel,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise',thermal_cond_units='W/cm-degC')
 
 
@@ -119,24 +120,29 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
     v_eff=-1
     it=0
 
-    At=0.001 # Initial value for throat area, to be better defined !!!!!!!!!!!!!!
+    
 
    
     Ae_max=mth.pi*De_max**2/4 #Maximum exit area of the nozzle
 
- 
+    At=Ae_max/1000 # Initial value for throat area, to be better defined !!!!!!!!!!!!!!
+
     variation=10 # Value to enter the loop
 
     while v_eff<0 or variation>toll_F_obj:
 
         eps_max=Ae_max/At # Maximum expansion ratio with this throat area
+
+        if eps_max>eps_m:
+            eps_max=eps_m;
+        
         Pratio_max=ispObj.get_PcOvPe(Pc=Pc,MR=MR,eps=eps_max,frozen=frozen_state,frozenAtThroat=frozen_state)
         Pe_max=Pc/Pratio_max
 
         if Pe_max>Pamb:
             difference=0.001
             Pe=Pe_max
-            Ae=Ae_max; #In this case the maximum exit area cannot reach adapted conditions and we will simply take that
+            Ae=At*eps_max; #In this case the maximum exit area cannot reach adapted conditions and we will simply take that
         else:
             difference=0.1
             Ae_1=At+0.001; # In this case we enter the loop and start the iteration with Minimum exit area with this throat area

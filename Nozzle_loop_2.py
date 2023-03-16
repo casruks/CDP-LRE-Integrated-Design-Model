@@ -30,7 +30,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     Ox=Propellant.Ox_name
     Fuel=Propellant.Fuel_name
     frozen_state=Propellant.Frozen_state
-    
+
     ispObj = CEA_Obj( oxName=Ox, fuelName=Fuel,useFastLookup=0, makeOutput=0,isp_units='sec',cstar_units='m/sec',pressure_units='Bar',temperature_units='K', sonic_velocity_units='m/s',enthalpy_units='kJ/kg',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise',thermal_cond_units='W/cm-degC',fac_CR=None, make_debug_prints=False)
 
     ## Sanitizing inputs
