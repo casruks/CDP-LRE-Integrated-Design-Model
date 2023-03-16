@@ -7,7 +7,7 @@ import Nozzle_loop_1 as Nz_1
 import Nozzle_loop_2 as Nz_2
 import Nozzle_turbine as Nz_t
 import Cooling
-import Mass as Ms
+import Materials as Ms
 import numpy as np
 import Aux_classes as aux
 
@@ -141,7 +141,10 @@ def Main(d : aux.Data):
     Reliability = Rel.Reliability(default, d.time, d.Thrust, d.Thrust, default.val)
 
     #Compute Mass:
-    Mass = Ms.Mass_Regenerative()
+    NozzleMass = Ms.Nozzle_mass(x_noz,y_noz,t_noz,Ms.Rhenium)
+    ChamberMass = Comb.CombustionChamber(p_new, d.At, prop, Ms.Rhenium, default, d.v_if, d.v_iox, d.Tc, d.O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est)
+    IgnitorMass = Ign_propellant_mass
+    Mass = NozzleMass + +ChamberMass + IgnitorMass + Ms.Mass(d.Pc)
 
     #Computing costs:
     n_engine = 0
