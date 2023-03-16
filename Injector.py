@@ -150,4 +150,4 @@ def validateInj():
     print(v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, P_D, A_est, er, wr)
     p_inj = 100e5
     print(injector2(Default, Propellant, v_iox, v_if, p_inj, eta_s))
-validateInj()
+#validateInj()
