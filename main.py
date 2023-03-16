@@ -142,13 +142,13 @@ def Main(d : aux.Data):
 
     #Compute Mass:
     NozzleMass = Ms.Nozzle_mass(x_noz,y_noz,t_noz,Ms.Rhenium)
-    ChamberMass = Comb.CombustionChamber(p_new, d.At, prop, Ms.Rhenium, default, d.v_if, d.v_iox, d.Tc, d.O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est)
+    ChamberMass = Comb.CombustionChamber(p_new, d.At, prop, Ms.Rhenium, default, d.v_if, d.v_iox, d.Tc, d.O_F, 1,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est)[5]
     IgnitorMass = Ign_propellant_mass
-    Mass = NozzleMass + +ChamberMass + IgnitorMass + Ms.Mass(d.Pc)
+    Mass = NozzleMass + ChamberMass + IgnitorMass + Ms.Mass(p_new,Ms.Rhenium,Ms.Rhenium,Ms.Rhenium,d.Eps,d.A_t,0,aux.Default.Safety_factor,0,Turbo.Ns)
 
     #Computing costs:
-    n_engine = 0
-    Cost = Ms.Cost(Mass, Reliability, n_engine)
+    # n_engine = 0
+    # Cost = Ms.Cost(Mass, Reliability, n_engine)
 
     print("Calculations finished")
     return True

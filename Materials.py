@@ -74,11 +74,9 @@ SSME    = ReferenceEngine(2.04e7, 2.28e6, 77.5,  0.138, 512.6, 6,      1.2, Inc_
 
 
 #Mass estimation function Nozzle Tubes:
-def Mass(Pc, material_N, material_P, material_V, material_C, arear, rt, mprop, FS, rhoprop, Ns,  x, r, t, L, R, T): 
+def Mass(Pc, material_N, material_P, material_V, arear, rt, mprop, FS, rhoprop, Ns): 
     
     y= 1
-    NozzleMass = 0
-    ChamberMass = 0
 
     reference = RL10
 
@@ -87,9 +85,6 @@ def Mass(Pc, material_N, material_P, material_V, material_C, arear, rt, mprop, F
     ManifoldMass = reference.mfrac_manifold*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*((mprop/reference.mprop)**1)*((material_N.yieldstress_l/reference.Material_NCG.yieldstress_l)**(-1))*((rhoprop/reference.rhoprop)**(-1))*((rt/reference.rt)**1)) #Dimensionless Nozzle Manifold Mass
     #JacketMass = reference.mfrac_jacket*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*(((material_N.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((arear/reference.arear)**1.5)*((rt/reference.rt)**3))#Dimensionless Nozzle Jacket Mass
     
-    #Chamber Mass
-    #ChamberMass = reference.mfrac_chamber*((Pc/reference.pc)**1)*((material_C.density/reference.Material_NCG.density)**1)*(((material_C.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((rt/reference.rt)**1) #Dimensionless Mass of Combustion Chamber + Gas Generator(if applicable)
-    ChamberMass = Chamber_mass(L, R, T, material_C)
     
 
     #TurboPump Mass
@@ -101,9 +96,10 @@ def Mass(Pc, material_N, material_P, material_V, material_C, arear, rt, mprop, F
     
 
     #Total:
-    Total_Mass = NozzleMass + ChamberMass + (ManifoldMass + TubeMass + PumpMass + ValveMass)*reference.RefMass 
+    Total_Mass = (ManifoldMass + TubeMass + PumpMass + ValveMass)*reference.RefMass 
 
-    return Total_Mass
+    return Total_Mass, ValveMass
+
 
 
 ##Cost function 
