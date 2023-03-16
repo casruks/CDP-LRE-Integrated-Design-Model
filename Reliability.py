@@ -1,11 +1,8 @@
 import csv
 import numpy as np
 from matplotlib import pyplot as plt
-import Aux_classes as aux
-prop = aux.Propellant(0)
-default = aux.Default(0)
 
-def Reliability(default, t, Fnom, Fop, val):
+def Reliability(default, prop, t, Fnom, Fop, val):
     '''
     Determines the reliability of the LRE, based on LH2/LOX. \n
     default: loads default values \n
@@ -14,9 +11,8 @@ def Reliability(default, t, Fnom, Fop, val):
     val: True or False, for validation.
     '''
 
-    prop = default.Prop
+
     cycle = default.cycle
-    cycles = default.cycles
     N = default.N
     # Data for Cycle Impact (effect of engine cycle on reliability)
     CyclesData = {}
@@ -50,7 +46,7 @@ def Reliability(default, t, Fnom, Fop, val):
         Fop = total operating thrust \n
         N = number of engines \n
         prop = propellant code \n"""
-        
+        cycles = ["Expander Cycle", "Staged Combustion Cycle", "Gas Generator Cycle"]
         if not cycle in cycles:
                 raise Exception("Submitted Cycle Type is not valid. Valid Cycle Type Codes are: " + str(cycles))
 
@@ -98,5 +94,3 @@ def Reliability(default, t, Fnom, Fop, val):
             plt.show()
         return validate(Fref)
     return reliability_general(t, cycle, Fnom, Fop, N, prop)
-
-print(Reliability(default, 500, 200, 200, False))
