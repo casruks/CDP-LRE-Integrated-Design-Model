@@ -142,8 +142,7 @@ def Main(d : aux.Data):
     #Compute Mass:
     NozzleMass = Ms.Nozzle_mass(x_noz,y_noz,t_noz,Ms.Rhenium)
     ChamberMass = Comb.CombustionChamber(p_new, d.At, prop, Ms.Rhenium, default, d.v_if, d.v_iox, d.Tc, d.O_F, 1,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est)[5]
-    #IgnitorMass = Ign_propellant_mass 
-    IgnitorMass = 0
+    IgnitorMass, mfuel, mox, wr = Ign.Igniters
     Mass = NozzleMass + ChamberMass + IgnitorMass + Ms.Mass(p_new,Ms.Rhenium,Ms.Rhenium,Ms.Rhenium,d.Eps,d.A_t,0,aux.Default.Safety_factor,0,Turbo.Ns)
 
     #Computing costs:
