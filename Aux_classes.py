@@ -22,7 +22,7 @@ class Default:
     
     #Nozzle
     Nozzle_type = 0 # Type of nozzle, 0=conical, 1=bell
-    MR = 0 # O_F ratio, 0=optimize for c*
+    MR = 6.04 # O_F ratio, 0=optimize for c*
     De_max = 2.5 # Maximum exit diameter of the nozzle
     De_turbine_noz_max = 2.5 # Maximum exit diameter for the turbine exhaust nozzle
     Theta_con = 60 # Angle of the convergent part of the nozzle in degrees
@@ -81,8 +81,7 @@ class Default:
      # Should be implemented for GUI user input
      # Fop should also be included, but commented out for now as to not mess with code
     cycles = ["Expander Cycle", "Staged Combustion Cycle", "Gas Generator Cycle"]
-    cycle = "Expander Cycle"
-    Prop = ['LOX_LH2', 'LOX_RP1'][0] #Only used for de-rating or up-rating, so does not impact general reliability.
+    Prop = ['LOX_LH2', 'LOX_RP1'] #Only used for de-rating or up-rating, so does not impact general reliability.
     N = 1   # number of engines, input range: as long as it is >0.
     #Fop = d.Thrust # operating thrust, so if theres de-rating or up-rating. 0.4*d.Thrust < Fop < 1.1*d.Thrust
      # Defaults

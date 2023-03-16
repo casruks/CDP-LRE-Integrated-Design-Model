@@ -11,7 +11,7 @@ import Materials as Ms
 import numpy as np
 import Aux_classes as aux
 
-Thrust_ = 1350000 #= input("Introduce thrust")
+Thrust_ = 1860000 #= input("Introduce thrust")
 Thrust_time_ = 180 #= input("Introduce thrust time")
 Pamb_ = 1000 #= input("Introudce ambient pressure (Pa)")
 prop = aux.Propellant(0)
@@ -36,7 +36,7 @@ def Main(d : aux.Data):
         ## Ambient pressure in bars
         ## Propellants class
         ## Default class
-        d.m_nozz,d.Tc,d.O_F,d.At,d.eps,d.Isp,rho_c,cp_c,mu_c,k_c,Pr_c,error = Nz_1.Nozzle_loop_1(p_new/100000.0,d.Thrust,d.Pa/100000.0,prop,default,default.Nozzle_type)
+        d.m_nozz,d.Tc,d.O_F,d.At,d.eps,d.Isp,rho_c,cp_c,mu_c,k_c,Pr_c,errors_nz1,warnings_nz1 = Nz_1.Nozzle_loop_1(p_new/100000.0,d.Thrust,d.Pa/100000.0,prop,default,default.Nozzle_type)
         # Outputs:
         ## mass flow rate in kg/s
         ## Chamber temperatures in K
@@ -108,7 +108,7 @@ def Main(d : aux.Data):
 
         
         #Compute regenerative
-        Re=10^5
+       
         Tf_cool,dptcool=regCool.Run_for_Toperating1D(Tw_ad_noz, h_c_noz, t_noz,prop,Ms.Rhenium,default.A,default.T_fuel_tanks,d.m_nozz/(1.0+d.O_F)/default.n,x_noz_cool[-1],y_noz_cool)
         Tf_cool,dptcool_c=regCool.Run_for_Toperating0D(d.Tc, d.h_comb, d.ThicknessChamber,prop,Ms.Rhenium,d.Chamber_L*default.Dr,Tf_cool,d.m_nozz/(1.0+d.O_F)/default.n,d.Chamber_L)
         dptcool=dptcool+dptcool_c
@@ -132,13 +132,13 @@ def Main(d : aux.Data):
     ## default
     ## chamber temperature
     ## oxidizer to fuel ratio of main chamber
-    Ign_propellant_mass, Ign_fuel_mass, Ign_ox_mass,wr_ign = Ign.Igniters(d.m_nozz,prop,default,d.Tc,d.O_F,default.type)
+   # Ign_propellant_mass, Ign_fuel_mass, Ign_ox_mass,wr_ign = Ign.Igniters(d.m_nozz,prop,default,d.Tc,d.O_F,default.type)
     #outputs
     ## mass used for igniter
     ## By this order: igniter propellant total mass, igniter fuel mass, igniter oxidizer mass, warnings
 
     #Compute reliability 
-    Reliability = Rel.Reliability(default, d.time, d.Thrust, d.Thrust, default.val)
+    #Reliability = Rel.Reliability(default,prop, d.time, d.Thrust, d.Thrust, default.val)
 
     #Compute Mass:
     NozzleMass = Ms.Nozzle_mass(x_noz,y_noz,t_noz,Ms.Rhenium)
@@ -146,9 +146,12 @@ def Main(d : aux.Data):
     IgnitorMass = Ign.Igniters(d.m_nozz,prop,default,d.Tc,d.O_F,default.type)[0]
     Mass = NozzleMass + ChamberMass + IgnitorMass + Ms.Mass(p_new,Ms.Rhenium,Ms.Rhenium,Ms.Rhenium,d.Eps,d.A_t,0,aux.Default.Safety_factor,0,Turbo.Ns)
 
+    #Mass = Ms.Mass_Regenerative()
+
     #Computing costs:
-    # n_engine = 0
-    # Cost = Ms.Cost(Mass, Reliability, n_engine)
+    #n_engine = 0
+    #Cost = Ms.Cost(Mass, Reliability, n_engine)
+
 
     print("Calculations finished")
     return True
