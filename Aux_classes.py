@@ -107,7 +107,8 @@ class Propellant:
     o_nist_enthalpy_coef = [20.91,10.72,-2.02,0.1464,9.2457,5.338,237.62,0,
                             31.33,-20.235,57.87,-36.51,-0.007374,-8.9035,246.79,0]  # for shomate equation
     omiu=1.0e-6
-   
+    ox_M = 32e-3 #kg/mol
+
     #Fuel
     Fuel_name = "LH2" #Fuel name for rocketCEA
     Fuel_composition = "H 2" #Composition of fuel for rocketcea
@@ -122,6 +123,8 @@ class Propellant:
     f_nist_enthalpy_coef = [43.31,-4.293,1.27243,-0.096876,-20.5339,-38.5151,162.08,0,
                            33.066,-11.363,11.4328,-2.773,-0.15856,-9.981,172.71,0]  # for shomate equation
     heatingvalue = 119.96*10**6 #for the fuel only!
+    f_M = 2e-3  #
+    
     #Propellant
     gama = 1.4
     tq = 0.9 #characteristic chemical time of propellant
