@@ -11,6 +11,7 @@ import Mass as Ms
 import numpy as np
 import Aux_classes as aux
 import math
+import Materials as Mt
 
 Thrust_ = 1350000  # = input("Introduce thrust")
 Thrust_time_ = 180  # = input("Introduce thrust time")
@@ -172,6 +173,10 @@ def Main(d: aux.Data):
         # Tf_cool,dptcool=regCool.Run1D(Tw_ad_noz, h_c_noz, t_noz,default.default_coating_thickness,prop,Ms.Rhenium,default.default_coating,default.Dr,default.A,default.T_fuel_tanks,d.m_nozz/(1.0+d.O_F)/default.n,x_noz_cool[-1],y_noz_cool)
         # Tf_cool,dptcool_c=regCool.Run(d.Tc, d.h_comb, d.ThicknessChamber,prop,Ms.Rhenium,default.Dr,d.Chamber_L*default.Dr*math.pi,Tf_cool,d.m_nozz/(1.0+d.O_F)/default.n,d.Chamber_L)
         Coolobj = Cooling.CoolingClass()
+
+        nozzle_mass=Mt.Nozzle_mass(x_noz_cool,y_noz_cool,t_noz,Ms.Rhenium)
+        chamber_mass=Mt.Chamber_mass(d.Dc,d.Chamber_L,d.ThicknessChamber,Ms.Rhenium)
+
         (
             Tf_cool,
             Tw_wall_nozzle_calculated,
