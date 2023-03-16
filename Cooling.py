@@ -106,6 +106,7 @@ class CoolingClass:
             T0, mean(Tr), mean(hg), A_total, c, operationtime, m_casing, err
         )
         Tw_wall_calculated = [self.heatsink.T_calculated]
+        self.Q=self.heatsink.Q
 
         if err != 0:
             return T_co_calculated, Tw_wall_calculated, ploss, m_flow_fuel, err, warn
@@ -121,6 +122,7 @@ class CoolingClass:
                 mean(hg),
                 err,
             )
+            self.Q=self.radiationcool.Q
             T_co_calculated = Ti_co
             Tw_wall_calculated = [self.radiationcool.T_calculated]
             ploss = 1
@@ -161,14 +163,39 @@ class CoolingClass:
                     err,
                 )
 
-
+        self.Q=self.regencool.Q
         if (
-            check_positive_args(T_co_calculated, Tw_wall_calculated, ploss, m_flow_fuel)
-            == False
+            check_positive_args(T_co_calculated)
+            == False or T_co_calculated > 1000
         ):
             err = err | (1 << 7)
-        if(m_flow_fuel > 6000 or Tw_wall_calculated[-1] > 2000 or T_co_calculated > 1000 or ploss > 10**5):
-            warn=warn|(1<<1) 
+
+        if (
+            check_positive_args(Tw_wall_calculated)
+            == False or any(x < TestTemp for x in Tw_wall_calculated)
+        ):
+            err = err | (1 << 8)
+        if (
+            check_positive_args(ploss)
+            == False or ploss>10**5
+        ):
+            err = err | (1 << 9)
+        if (
+            check_positive_args(m_flow_fuel)
+            == False or m_flow_fuel>30
+        ):
+            err = err | (1 << 10)
+
+        if (
+            check_positive_args(self.Q)
+            == False
+        ):
+            err = err | (1 << 11)
+
+
+
+        #if(m_flow_fuel > 6000 or Tw_wall_calculated[-1] > 2000 or T_co_calculated > 1000 or ploss > 10**5):
+            #warn=warn|(1<<1) 
         if(T_co_calculated>Tw_wall_calculated[-1]):
             err=err|(1<<6)
         return T_co_calculated, Tw_wall_calculated, ploss, m_flow_fuel, err, warn
