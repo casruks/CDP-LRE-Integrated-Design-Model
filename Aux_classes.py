@@ -79,7 +79,8 @@ class Default:
      # Should be implemented for GUI user input
      # Fop should also be included, but commented out for now as to not mess with code
     cycles = ["Expander Cycle", "Staged Combustion Cycle", "Gas Generator Cycle"]
-    Prop = ['LOX_LH2', 'LOX_RP1'] #Only used for de-rating or up-rating, so does not impact general reliability.
+    cycle = "Expander Cycle"
+    Prop = ['LOX_LH2', 'LOX_RP1'][0] #Only used for de-rating or up-rating, so does not impact general reliability.
     N = 1   # number of engines, input range: as long as it is >0.
     #Fop = d.Thrust # operating thrust, so if theres de-rating or up-rating. 0.4*d.Thrust < Fop < 1.1*d.Thrust
      # Defaults
