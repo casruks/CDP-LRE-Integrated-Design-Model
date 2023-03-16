@@ -54,6 +54,8 @@ class Default:
     A = 0.04 * Leng / 4
     T_fuel_tanks = 20
     T_ox_tanks = 60
+    default_coating = Mt.Materials("default_coating", 0.0, 0.0, 0.0, 0.0, 1, 0)
+    default_coating_thickness = [0 for i in range(40)]
 
     # Igniters
     ignburntime = 4
@@ -141,12 +143,82 @@ if __name__ == "__main__":
     Mt.Rhenium.OpTemp_u = 700
     Mt.Rhenium.k = 45
     default.T_fuel_tanks = 20
-    Tf_cool, dptcool = regCool.Run_for_Toperating1D(
+    c = 340
+    operationtime = 3000000000000000
+    m_casing = 1000
+    eps = 0.7
+    overwriteA = False
+    case_run = 2
+    
+    cool = Cooling.CoolingClass()
+    (
+        T_co_calculated,
+        Tw_wall_calculated,
+        ploss,
+        m_flow_fuel,
+        err,
+        warn,
+    ) = cool.Run_cooling(
+        275,
+        c,
+        operationtime,
+        m_casing,
+        eps,
         Tw_ad_noz,
         h_c_noz,
         t_noz,
+        default.default_coating_thickness,
         prop,
         Mt.Rhenium,
+        default.default_coating,
+        default.Dr,
+        default.A,
+        default.T_fuel_tanks,
+        m,
+        L,
+        y,
+        overwriteA,
+        case_run,
+    )
+
+    """ (
+        T_co_calculated,
+        Tw_wall_calculated,
+        ploss,
+        m_flow_fuel,
+    ) = regCool.Main_regenerative_run_function(
+        Tw_ad_noz,
+        h_c_noz,
+        t_noz,
+        default.default_coating_thickness,
+        prop,
+        Mt.Rhenium,
+        default.default_coating,
+        default.Dr,
+        default.A,
+        default.T_fuel_tanks,
+        m,
+        L,
+        y,
+        overwriteA,
+        case_run,
+    ) """
+
+    print("\nRun", case_run)
+    print("Tf_cool: ", T_co_calculated)
+    print("p loss", ploss)
+    print("Tw_wall_calculated", Tw_wall_calculated[-1])
+    print("errors:", err)
+    print("warning", warn)
+
+    """ Tf_cool, dptcool = regCool.Run_for_Toperating1D(
+        Tw_ad_noz,
+        h_c_noz,
+        t_noz,
+        default.default_coating_thickness,
+        prop,
+        Mt.Rhenium,
+        default.default_coating,
         default.A,
         default.T_fuel_tanks,
         m,
@@ -208,17 +280,19 @@ Tf_cool, Tw_wall_calculated, dptcool = regCool.Run1D(
     Tw_ad_noz,
     h_c_noz,
     t_noz,
+    default.default_coating_thickness,
     prop,
     Mt.Rhenium,
+    default.default_coating,
     Dr,
     default.A,
     default.T_fuel_tanks,
-    Re,
     m,
     L,
+    y
 )
 print("\nRun1D")
-print("Tf_cool: ", Tf_cool[-1])
+print("Tf_cool: ", Tf_cool)
 print("p loss", dptcool)
 print("Tw_wall_calculated", Tw_wall_calculated[-1])
 # print("y", y)
@@ -228,17 +302,18 @@ m1, Tf_cool, Tw_wall_calculated, ploss = regCool.Run1D_iterative_for_m(
     Tw_ad_noz,
     h_c_noz,
     t_noz,
+    default.default_coating_thickness,
     prop,
     Mt.Rhenium,
+    default.default_coating,
     Dr,
-    default.A,
     default.T_fuel_tanks,
-    Re,
     L,
+    y
 )
 
 print("\nRun for mass flow")
 print("m", m1)
 print("Tf_cool: ", Tf_cool[-1])
 print("p loss", dptcool)
-print("Tw_wall_calculated", Tw_wall_calculated[-1])
+print("Tw_wall_calculated", Tw_wall_calculated[-1]) """
