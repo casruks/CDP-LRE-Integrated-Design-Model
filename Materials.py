@@ -10,6 +10,16 @@ class Materials:
         self.k = k
         self.cost = cost
         
+##Properties of Material Class:
+#material: Description of the materials
+#density: in [kg/m^3]
+#YieldStress_l: Yieldstress of the material in [Pa]
+#Emod: Young's Modulus of the material in [Pa]
+#OpTemp_u: Maximum Operational Temperature in [K]
+#k: Thermal Conductivity of the Material in [W/m*K]
+#cost: Cost per kilogram [Eur/kg] 
+
+
 
 Rhenium                 =       Materials('Rhenium',                            21000.0,  2300.0e6,   471.0e9, 2200.0,   48.0,   938.0)
 Al_7075_T6              =       Materials('Aluminium 7075 T6',                  2810.0,   505.0e6,    72.0e9,  373.15,   130.0,  3.97)

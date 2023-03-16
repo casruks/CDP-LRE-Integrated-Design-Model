@@ -1,4 +1,6 @@
 #Default values
+import Materials as Ms
+
 class Default:
     #Seeds
     Pres = 1e6
@@ -72,8 +74,8 @@ class Default:
     type = '00'
 
     #Material
-    material = "This"
-    Safety_factor=1.3
+    material = Ms.Rhenium #Default Material selected
+    Safety_factor = 1.3 #Default safety factor
     
     #Reliabiliy
      # Should be implemented for GUI user input
