@@ -69,7 +69,7 @@ class Default:
     ignburntime = 4 #Put on advanced inputs, it is the ignition burn time.
     ign_o_f=0.7 #fuel ratio of the igniter propellant
     fudgefactor = 20 #factor to correct for mass overestimation
-    type = 0
+    type = '00'
 
     #Material
     material = "This"
