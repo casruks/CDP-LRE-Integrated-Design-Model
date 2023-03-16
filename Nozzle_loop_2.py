@@ -126,8 +126,8 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     Dt=R_t*2; # Throat diameter
     De=Dt*(mth.sqrt(eps)) # Exit diameter
     if Nozzle_type==0: # If to determine whether the nozzle is conical (==0) or bell (==1)
-        L_nozzle_div=((mth.sqrt(eps)-1)*R_t+R_u*(1/mth.cos(Theta_conical)-1))/mth.tan(Theta_conical) # Length of the divergent part of the nozzle for the conical nozzle
-        L_nozzle_con=((mth.sqrt(con_ratio)-1)*R_t+R_u*(1/mth.cos(theta_con)-1))/mth.tan(theta_con) # Length of the convergent part of the nozzle for the conical
+        L_nozzle_div=(mth.sqrt(eps)*R_t-R_t-R_u*(1-mth.cos(mth.cos(Theta_conical))))/(mth.tan(Theta_conical))+R_u*mth.sin(Theta_conical) # Length of the divergent part of the nozzle for the conical nozzle
+        L_nozzle_con=(mth.sqrt(con_ratio)*R_t-R_t-R_u*(1-mth.cos(mth.cos(theta_con))))/(mth.tan(theta_con))+R_u*mth.sin(theta_con) # Length of the convergent part of the nozzle for the conical
         L_tot=L_nozzle_con+L_nozzle_div # Total length of the nozzle
 
         xp=L_nozzle_con+R_u*mth.sin(Theta_conical) # point P as defined in the documentation (x value)
