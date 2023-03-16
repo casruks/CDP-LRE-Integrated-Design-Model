@@ -50,7 +50,7 @@ def Main(d : aux.Data):
         ## Conduction constant in combustion chamber in W/(m*degC), it's in degC but as long as it is used with temperature differences it shouldn't make a difference
         ## Prandtl number in combustion chamber
         ## Error value: 1== there has been a fatal error
-        if(error==1): return False
+        #if(error==1): return False
 
         #Compute injector (1)
         ## Added A_est, representing estimated total orifice area (A_ox+A_f) for sanity check with combustion chamber dimensions..
