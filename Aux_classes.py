@@ -1,3 +1,5 @@
+import Materials as Ms
+
 #Default values
 class Default:
     #Seeds
@@ -59,11 +61,18 @@ class Default:
     factor = 0.3  # this is the factor that correlates initial droplet volume to final droplet volume. final droplet Volume = initial droplet volume * factor
 
     #Cooling
-    Dr = 0.01
-    A=0.0003
-    T_fuel_tanks = 20
-    T_ox_tanks = 60
-    n=1
+    Dr = 0.01 #[m] hydralic diameter of the coolant channel
+    A = 0.0003 #[m2] area of contact for each segment of the cooling
+    T_fuel_tanks = 20 #[K] temperature of the fuel tanks, considered the inicial coolant temperature
+    T_ox_tanks = 60 #[K] temperature of the oxidiser tanks
+    n = 1 #number of coolant chanels
+    default_coating = Ms.default #default coolant
+    default_coating_thickness = 0 #default coolant thickness
+    T0=293.5 #[k] default inicial temperature
+    eps=0.85 #default emissivity
+    overwriteA=False #option to overwrite the surface area calculated by the program with the input variable A, given by the user or default class
+    regenerative_case=0 #option of which function to use in regenerative cooling; 0 corresponds to the explicit function Run1D()
+    operationtime=10000000000000000 #[s] default operation time (large to imply infinite time)
 
     #Igniters
     ignburntime = 4 #Put on advanced inputs, it is the ignition burn time.
@@ -79,7 +88,6 @@ class Default:
      # Should be implemented for GUI user input
      # Fop should also be included, but commented out for now as to not mess with code
     cycles = ["Expander Cycle", "Staged Combustion Cycle", "Gas Generator Cycle"]
-    cycle = "Expander Cycle"
     Prop = ['LOX_LH2', 'LOX_RP1'] #Only used for de-rating or up-rating, so does not impact general reliability.
     N = 1   # number of engines, input range: as long as it is >0.
     #Fop = d.Thrust # operating thrust, so if theres de-rating or up-rating. 0.4*d.Thrust < Fop < 1.1*d.Thrust

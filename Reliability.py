@@ -12,7 +12,8 @@ def Reliability(default, prop, t, Fnom, Fop, val):
     '''
 
     cycles = default.cycles
-    cycle = default.cycle
+    cycle = default.cycle_type # 0:EX (expander) - 1:CB (coolant bleed) - 2:GG (gas generator) - 3:SC (staged combustion) - 4:EL (electrical) - 5:PF (pressure fed)
+    #cycle = default.cycle
     prop = default.Prop[0]
     N = default.N
     # Data for Cycle Impact (effect of engine cycle on reliability)
@@ -47,16 +48,15 @@ def Reliability(default, prop, t, Fnom, Fop, val):
         Fop = total operating thrust \n
         N = number of engines \n
         prop = propellant code \n"""
-        cycles = ["Expander Cycle", "Staged Combustion Cycle", "Gas Generator Cycle"]
-        if not cycle in cycles:
-                raise Exception("Submitted Cycle Type is not valid. Valid Cycle Type Codes are: " + str(cycles))
 
-        if cycle == "Expander Cycle":
+        if cycle == 0: #"Expander Cycle"
             cycle = ['SP_EX']
-        elif cycle == "Staged Combustion Cycle":
+        elif cycle == 3: #"Staged Combustion Cycle"
             cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC']
-        elif cycle == "Gas Generator Cycle":
+        elif cycle == 2: #"Gas Generator Cycle"
             cycle = ['S_FR_GG']
+        else: 
+            cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC']
         
         lst = []
         for i in range(len(cycle)):
