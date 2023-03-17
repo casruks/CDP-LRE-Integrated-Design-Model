@@ -1,3 +1,5 @@
+import Materials as Ms
+
 #Default values
 class Default:
     #Seeds
@@ -20,6 +22,7 @@ class Default:
     
     #Nozzle
     Nozzle_type = 0 # Type of nozzle, 0=conical, 1=bell
+
     MR = 0 # O_F ratio, 0=optimize for c* LIMIT: >=0
     De_max = 2.5 # Maximum exit diameter of the nozzle LIMIT: >0
     De_turbine_noz_max = 2.5 # Maximum exit diameter for the turbine exhaust nozzle LIMIT: >0
@@ -30,6 +33,7 @@ class Default:
     R_u_ratio=1 # Ratio between curvature radius and throat radius (for convergent throat section in bell, and for whole throat section in conical) LIMITS: RU>0
     R_u_bell=0.382 # Ratio between curvature radius and throat radius for divergent throat section in bell nozzle LIMITS: RU>0
     Eps_max=75 # Maximum expansion ratio. LIMITS: >1
+
     #Tolerances (For the nozzle)
     toll_c_star = 0.01 # Tollerance on the absolute difference between two iteration values of O_F ratio (Nozzle_1) LIMIT: >0
     toll_F_obj = 0.01  # Tollerance on the normalized difference between thrust calculated in iteration and target thrust (Nozzle_1) LIMIT: >0
@@ -60,11 +64,18 @@ class Default:
     factor = 0.3  # this is the factor that correlates initial droplet volume to final droplet volume. final droplet Volume = initial droplet volume * factor
 
     #Cooling
-    Dr = 0.01
-    A=0.0003
-    T_fuel_tanks = 20
-    T_ox_tanks = 60
-    n=1
+    Dr = 0.01 #[m] hydralic diameter of the coolant channel
+    A = 0.0003 #[m2] area of contact for each segment of the cooling
+    T_fuel_tanks = 20 #[K] temperature of the fuel tanks, considered the inicial coolant temperature
+    T_ox_tanks = 60 #[K] temperature of the oxidiser tanks
+    n = 1 #number of coolant chanels
+    default_coating = Ms.default #default coolant
+    default_coating_thickness = 0 #default coolant thickness
+    T0=293.5 #[k] default inicial temperature
+    eps=0.85 #default emissivity
+    overwriteA=False #option to overwrite the surface area calculated by the program with the input variable A, given by the user or default class
+    regenerative_case=0 #option of which function to use in regenerative cooling; 0 corresponds to the explicit function Run1D()
+    operationtime=10000000000000000 #[s] default operation time (large to imply infinite time)
 
     #Igniters
     ignburntime = 4 #Put on advanced inputs, it is the ignition burn time.
@@ -73,15 +84,21 @@ class Default:
     type = '00'
 
     #Material
-    material = "This"
+    material = Ms.Rhenium #Default Material selected
+    Safety_factor = 1.3 #Default safety factor
+    material_list = [Ms.Custom,Ms.Rhenium, Ms.Al_7075_T6, Ms.Ti6Al4V, Ms.Haynes_188, Ms.Inc_X_750, Ms.Inc_600, Ms.Inc_718, Ms.Inc_A_286,Ms.Columbium_c103,
+                     Ms.Copper_structural, Ms.D6AC_Steel]
+    coating_list = [Ms.Coat_Custom,Ms.Copper, Ms.Narloy_Z, Ms.GRCop_84, Ms.Silica, Ms.Carbon]
+    noz_mat_select = material_list[0]
+    chamber_mat_select = material_list[0]
     Safety_factor=1.3
-    
+    t = 1e-3 #m
+
     #Reliabiliy
      # Should be implemented for GUI user input
      # Fop should also be included, but commented out for now as to not mess with code
     cycles = ["Expander Cycle", "Staged Combustion Cycle", "Gas Generator Cycle"]
-    cycle = "Expander Cycle"
-    Prop = ['LOX_LH2', 'LOX_RP1'][0] #Only used for de-rating or up-rating, so does not impact general reliability.
+    Prop = ['LOX_LH2', 'LOX_RP1'] #Only used for de-rating or up-rating, so does not impact general reliability.
     N = 1   # number of engines, input range: as long as it is >0.
     #Fop = d.Thrust # operating thrust, so if theres de-rating or up-rating. 0.4*d.Thrust < Fop < 1.1*d.Thrust
      # Defaults
@@ -109,7 +126,8 @@ class Propellant:
     o_nist_enthalpy_coef = [20.91,10.72,-2.02,0.1464,9.2457,5.338,237.62,0,
                             31.33,-20.235,57.87,-36.51,-0.007374,-8.9035,246.79,0]  # for shomate equation
     omiu=1.0e-6
-   
+    ox_M = 32e-3 #kg/mol
+
     #Fuel
     Fuel_name = "LH2" #Fuel name for rocketCEA
     Fuel_composition = "H 2" #Composition of fuel for rocketcea
@@ -124,6 +142,8 @@ class Propellant:
     f_nist_enthalpy_coef = [43.31,-4.293,1.27243,-0.096876,-20.5339,-38.5151,162.08,0,
                            33.066,-11.363,11.4328,-2.773,-0.15856,-9.981,172.71,0]  # for shomate equation
     heatingvalue = 119.96*10**6 #for the fuel only!
+    f_M = 2e-3  #
+    
     #Propellant
     gama = 1.4
     tq = 0.9 #characteristic chemical time of propellant

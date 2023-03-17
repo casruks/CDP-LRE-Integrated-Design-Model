@@ -1,9 +1,8 @@
-def Turbine_nozzle(m_p,Pc,Prop,Pamb,Default,h_fuel,h_ox,rho_fuel,rho_ox):
+def Turbine_nozzle(m_p,Pc,Prop,Pamb,Default,h_fuel,h_ox,rho_fuel,rho_ox,MR):
 
     Ox=Prop.Ox_name
     Fuel=Prop.Fuel_name
     frozen_state=Prop.Frozen_state
-    MR=Prop.MR
     De_turbine_noz_max=Default.De_turbine_noz_max
     Ox_composition=Prop.Ox_composition
     Fuel_composition=Prop.Fuel_composition

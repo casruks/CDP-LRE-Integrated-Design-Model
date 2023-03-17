@@ -323,7 +323,7 @@ class CB:
     
     #Get Isp of aux nozzle
     def get_Isp_m(self,pinj): #temporaty, needs modification
-        return NT.Turbine_nozzle(self.m,pinj,self.prop,self.pa,self.df,self.prop.h_fuel,self.prop.h_ox,self.prop.f_dens_g,self.prop.o_dens)
+        return NT.Turbine_nozzle(self.m,pinj,self.prop,self.pa,self.df,self.prop.h_fuel,self.prop.h_ox,self.prop.f_dens_g,self.prop.o_dens,self.O_F)
     
     #get Isp of open cycle auxiliary nozzle
     def get_Isp_a(self,pt1,pt2,l):

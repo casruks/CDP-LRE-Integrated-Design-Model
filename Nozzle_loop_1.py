@@ -43,48 +43,60 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
     Ru_bell=Default.R_u_bell
     eps_m=Default.Eps_max
     
+
     ispObj = CEA_Obj( oxName=Ox, fuelName=Fuel,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise',thermal_cond_units='W/cm-degC')
 
 
     # Sanitizing the inputs
 
-    error=0;
+    errors=0
+    warnings=0
 
-    # Target Thrust
-    if F_tar>1000000:
-        print("Warning, the target thrust is higher than the range of thrusts this tool is intended for")
-    #if F<=0:
-    #    print("ERROR: Negative thrust")
-    #error=1;
-    #    return 0,0,0,0,0,0,0,0,0,0,0,error
     
     # Chamber pressure
     if Pc>300:
-        print("Warning, the chamber pressure is very high, it might not be feasible")
+        if (warnings & (1<<0))==False:
+            warnings=warnings|(1<<0);
+    elif warnings & (1<<0):
+        warnings=warnings & (~(1<<0));
     if Pc<=Pamb:
-        print("ERROR, Chamber pressure lower than ambient pressure")
-        error=1
-        return 0,0,0,0,0,0,0,0,0,0,0,error
+        errors=errors|(1<<0)
+        return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
     
+    # Angles
+    if Default.Theta_conical>18:
+        if (warnings & (1<<1))==False:
+            warnings=warnings|(1<<1);
+    elif warnings & (1<<1):
+        warnings=warnings & (~(1<<1));
     
-    # Ambient pressure
-    #if Pamb>1.01325:
-        print("Warning, ambient pressure higher than sea level standard pressure");
+    if Default.Theta_bell>65:
+        if (warnings & (1<<2))==False:
+            warnings=warnings|(1<<2);
+    elif warnings & (1<<2):
+        warnings=warnings & (~(1<<2));
     
-    # MR
-    #if MR<0:
-    #    print("ERROR, mass flow rate is lower than zero")
-    #    error=1
-    #    return 0,0,0,0,0,0,0,0,0,0,0,error
-    
-    #if MR>20:
-    #    print("Warning, mass flow rate is very high, program might crash due to unphysical conditions")
+    if Default.TH_exit_bell > 10:
+        if (warnings & (1<<3))==False:
+            warnings=warnings|(1<<3);
+    elif warnings & (1<<3):
+        warnings=warnings & (~(1<<3));
     
 
     # Losses due to divergent part in conical nozzle
     if Nozzle_type==0:
         eps_loss=0.5*(1-mth.cos(theta_conical))
         F=F_tar/(1-eps_loss);
+    
+    if eps_loss>=1:
+        errors=errors|(1<<7)
+        return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+    
+    if eps_loss>0.1:
+        if (warnings & (1<<5))==False:
+            warnings=warnings|(1<<5);
+    elif warnings & (1<<5):
+        warnings=warnings & (~(1<<5));
     
     if MR==0:
         MR_1=0.01
@@ -139,7 +151,7 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
         Pratio_max=ispObj.get_PcOvPe(Pc=Pc,MR=MR,eps=eps_max,frozen=frozen_state,frozenAtThroat=frozen_state)
         Pe_max=Pc/Pratio_max
 
-        if Pe_max>Pamb:
+        if Pe_max>Pamb or eps_max==eps_m:
             difference=0.001
             Pe=Pe_max
             Ae=At*eps_max; #In this case the maximum exit area cannot reach adapted conditions and we will simply take that
@@ -150,6 +162,7 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
         while difference>toll_P_adapted:
 
             eps_1= Ae_1/At # First expansion ratio 
+            
             Pratio_1=ispObj.get_PcOvPe(Pc=Pc,MR=MR,eps=eps_1,frozen=frozen_state,frozenAtThroat=frozen_state)
             Pe_1=Pc/Pratio_1 # Exit pressure 1
             
@@ -180,22 +193,33 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
             b=mth.tan(mth.pi/2-Theta_bell)-2*(mth.tan(mth.pi/2-TH_exit_bell)-mth.tan(mth.pi/2-Theta_bell))/(2*(ye-yp))*yp
             c=xp-a*yp**2-b*yp
             L_nozzle_div=a*ye**2+b*ye+c
+            if L_nozzle_div<=0:
+                errors=errors|(1<<8)
+                return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings;
             alpha=mth.atan((ye-yp)/L_nozzle_div)
             eps_loss=0.5*(1-mth.cos((alpha+TH_exit_bell)/2))
             F=F_tar/(1-eps_loss);
+        if eps_loss>=1:
+            errors=errors|(1<<7)
+            return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
         
         Isp_it=ispObj.estimate_Ambient_Isp(Pc=Pc,MR=MR,eps=eps_actual,Pamb=Pamb,frozen=frozen_state,frozenAtThroat=frozen_state) # Calculates Isp for this iteration
         v_eff_it=Isp_it[0]*9.80665*(1-eps_loss); # Calculates effective velocity for this iteration
 
         m_p_it=Pc*100000*At/c_star # Mass flow rate from continuity equation in the throat
-
+        if m_p_it<=0:
+            errors=errors|(1<<9)
+            return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
         F_it=m_p_it*v_eff_it # Force computed at this iteration
     
         variation=abs(F_it-F)/F # Variation from target force
 
         if variation>toll_F_obj: # If we have to iterate again, we change the throat area
             mp2=m_p_it*(F/F_it);
-            At=c_star*mp2/(Pc*100000);
+            At=c_star*mp2/(Pc*100000)
+            if At<=0:
+                errors=errors|(1<<10)
+                return 0,0,0,0,0,0,0,0,0,0,0,errors
     
         it=it+1;
         if it>Max_iterations_mass_flow:
@@ -221,36 +245,50 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
 
     # Mass flow rate
     if m_p<=0:
-        print("ERROR: mass flow rate is lower than 0")
-        error=1
-
+        errors=errors|(1<<1)
+        return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+    
+    # Chamber temperature
+    
+    if Tc<=0:
+        errors=errors|(1<<2)
+        return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
     
     # Throat area
     if At<=0:
-        print("ERROR, throat area lower than 0")
-        error=1
+        errors=errors|(1<<3)
+        return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
 
     
     # Expansion ratio
     if eps<=1:
-        print("Error, expansion ratio is lower than 1")
-        error=1
+        errors=errors|(1<<4)
+        return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
         
     
     # Isp
     if Isp[0]<=0:
-        print("ERROR, Isp<0")
-        error=1
+        errors=errors|(1<<5)
+        return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+    
+    if Isp[0]>550:
+        if (warnings & (1<<4))==False:
+            warnings=warnings|(1<<4);
+    elif warnings & (1<<4):
+        warnings=warnings & (~(1<<4));
         
     
     # chamber properties
 
     if rho_c<=0 or cp_c<=0 or mu_c <=0 or k_c<=0 or Pr_c<=0:
-        print("ERROR, chamber properties have negative value")
-        error=1
-        
-    
-    return m_p,Tc,MR,At,eps,Isp[0]*(1-eps_loss),rho_c,cp_c,mu_c,k_c,Pr_c,error
+        errors=errors|(1<<6)
+        return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+
+    print('Ae =', Ae, 'm2') 
+    print('De =', (4*Ae/mth.pi)**0.5)
+    print('At=', At, 'm2')
+    print('Dt =', (4*At/mth.pi)**0.5)
+    return m_p,Tc,MR,At,eps,Isp[0]*(1-eps_loss),rho_c,cp_c,mu_c,k_c,Pr_c,errors,warnings
 
 
 

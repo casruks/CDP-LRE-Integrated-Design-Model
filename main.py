@@ -7,13 +7,13 @@ import Nozzle_loop_1 as Nz_1
 import Nozzle_loop_2 as Nz_2
 import Nozzle_turbine as Nz_t
 import Cooling
-import Mass as Ms
+import Materials as Ms
 import numpy as np
 import Aux_classes as aux
 
-Thrust_ = 1350000 #= input("Introduce thrust")
-Thrust_time_ = 180 #= input("Introduce thrust time")
-Pamb_ = 1000 #= input("Introudce ambient pressure (Pa)")
+Thrust_ = 22e3 #= input("Introduce thrust")
+Thrust_time_ = 150 #= input("Introduce thrust time")
+Pamb_ = 1e5 #= input("Introudce ambient pressure (Pa)")
 prop = aux.Propellant(0)
 default = aux.Default(0)
 dat = aux.Data(Thrust_, Thrust_time_, Pamb_)
@@ -36,7 +36,7 @@ def Main(d : aux.Data):
         ## Ambient pressure in bars
         ## Propellants class
         ## Default class
-        d.m_nozz,d.Tc,d.O_F,d.At,d.eps,d.Isp,rho_c,cp_c,mu_c,k_c,Pr_c,error = Nz_1.Nozzle_loop_1(p_new/100000.0,d.Thrust,d.Pa/100000.0,prop,default,default.Nozzle_type)
+        d.m_nozz,d.Tc,d.O_F,d.At,d.eps,d.Isp,rho_c,cp_c,mu_c,k_c,Pr_c,errors_nz1,warnings_nz1 = Nz_1.Nozzle_loop_1(p_new/100000.0,d.Thrust,d.Pa/100000.0,prop,default,default.Nozzle_type)
         # Outputs:
         ## mass flow rate in kg/s
         ## Chamber temperatures in K
@@ -50,7 +50,7 @@ def Main(d : aux.Data):
         ## Conduction constant in combustion chamber in W/(m*degC), it's in degC but as long as it is used with temperature differences it shouldn't make a difference
         ## Prandtl number in combustion chamber
         ## Error value: 1== there has been a fatal error
-        if(error==1): return False
+        #if(error==1): return False
 
         #Compute injector (1)
         ## Added A_est, representing estimated total orifice area (A_ox+A_f) for sanity check with combustion chamber dimensions..
@@ -76,7 +76,6 @@ def Main(d : aux.Data):
         ## chamber thickness in m
         ## chamber length in m
         ## reynolds number
-
 
         #COmpute nozzle (2)
         #Inputs
@@ -108,7 +107,7 @@ def Main(d : aux.Data):
 
         
         #Compute regenerative
-        Re=10^5
+       
         Tf_cool,dptcool=regCool.Run_for_Toperating1D(Tw_ad_noz, h_c_noz, t_noz,prop,Ms.Rhenium,default.A,default.T_fuel_tanks,d.m_nozz/(1.0+d.O_F)/default.n,x_noz_cool[-1],y_noz_cool)
         Tf_cool,dptcool_c=regCool.Run_for_Toperating0D(d.Tc, d.h_comb, d.ThicknessChamber,prop,Ms.Rhenium,d.Chamber_L*default.Dr,Tf_cool,d.m_nozz/(1.0+d.O_F)/default.n,d.Chamber_L)
         dptcool=dptcool+dptcool_c
@@ -132,20 +131,27 @@ def Main(d : aux.Data):
     ## default
     ## chamber temperature
     ## oxidizer to fuel ratio of main chamber
-    Ign_propellant_mass, Ign_fuel_mass, Ign_ox_mass,wr_ign = Ign.Igniters(d.m_nozz,prop,default,d.Tc,d.O_F,default.type)
+    # Ign_propellant_mass, Ign_fuel_mass, Ign_ox_mass,wr_ign = Ign.Igniters(d.m_nozz,prop,default,d.Tc,d.O_F,default.type)
     #outputs
     ## mass used for igniter
     ## By this order: igniter propellant total mass, igniter fuel mass, igniter oxidizer mass, warnings
 
     #Compute reliability 
-    Reliability = Rel.Reliability(default, d.time, d.Thrust, d.Thrust, default.val)
-
+    Reliability = Rel.Reliability(default,prop, d.time, d.Thrust, d.Thrust, default.val)
+    
     #Compute Mass:
-    Mass = Ms.Mass_Regenerative()
-
+    NozzleMass = Ms.Nozzle_mass(default, x_noz,y_noz,t_noz,Ms.D6AC_Steel)
+    print('Nozzle mass =', NozzleMass)
+    ChamberMass = Comb.CombustionChamber(p_new, d.At, prop, Ms.D6AC_Steel, default, d.v_if, d.v_iox, d.Tc, d.O_F, 1,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est)[5]
+    IgnitorMass, mfuel, mox, wr = Ign.Igniters(d.m_nozz,prop,default,d.Tc,d.O_F,default.type)
+    #! Ns- pump specific speed not yet implemented
+    #Mass = ChamberMass + IgnitorMass #+ Ms.Mass(p_new,Ms.Rhenium,Ms.Rhenium,Ms.Rhenium,d.Eps,d.A_t,0,aux.Default.Safety_factor,0,Turbo.Ns)
+    rho_prop = Ms.RhoProp(aux.Propellant.f_dens_l,aux.Propellant.o_dens,aux.Data.O_F)
+    Mass = NozzleMass + ChamberMass + IgnitorMass #+ Ms.Mass(p_new,Ms.Rhenium,Ms.Rhenium,Ms.Rhenium,d.Eps,d.A_t,d.m_nozz,aux.Default.Safety_factor,rho_prop,Turbo.Ns)
+    #print(NozzleMass, ChamberMass, IgnitorMass) #kg
     #Computing costs:
-    n_engine = 0
-    Cost = Ms.Cost(Mass, Reliability, n_engine)
+    n_engine = 1
+    #Cost = Ms.Cost(Mass, Reliability, n_engine)
 
     print("Calculations finished")
     return True
