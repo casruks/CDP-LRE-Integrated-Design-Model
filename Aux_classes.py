@@ -73,18 +73,18 @@ class Default:
     factor = 0.3  # this is the factor that correlates initial droplet volume to final droplet volume. final droplet Volume = initial droplet volume * factor
 
     # Cooling
-    Dr = 0.01
-    A = 0.0003
-    T_fuel_tanks = 20
-    T_ox_tanks = 60
-    n = 1
-    default_coating = Mt.Materials("default_coating", 0.0, 0.0, 0.0, 0.0, 1, 0)
-    default_coating_thickness = 0
-    T0=293.5
-    eps=0.85
-    overwriteA=False
-    regenerative_case=0
-    operationtime=10000000000000000000
+    Dr = 0.01 #[m] hydralic diameter of the coolant channel
+    A = 0.0003 #[m2] area of contact for each segment of the cooling
+    T_fuel_tanks = 20 #[K] temperature of the fuel tanks, considered the inicial coolant temperature
+    T_ox_tanks = 60 #[K] temperature of the oxidiser tanks
+    n = 1 #number of coolant chanels
+    default_coating = Mt.Materials("default_coating", 0.0, 0.0, 0.0, 0.0, 1, 0) #default coolant
+    default_coating_thickness = 0 #default coolant thickness
+    T0=293.5 #[k] default inicial temperature
+    eps=0.85 #default emissivity
+    overwriteA=False #option to overwrite the surface area calculated by the program with the input variable A, given by the user or default class
+    regenerative_case=0 #option of which function to use in regenerative cooling; 0 corresponds to the explicit function Run1D()
+    operationtime=10000000000000000 #[s] default operation time (large to imply infinite time)
 
     # Igniters
     ignburntime = 4  # Put on advanced inputs, it is the ignition burn time.
@@ -261,6 +261,7 @@ class methane:
         
     ]  # for shomate equation
     heatingvalue =  -55511 # for the fuel only!
+    
 # Data class
 class Data:
     # Global in

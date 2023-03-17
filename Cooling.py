@@ -23,7 +23,7 @@ import Aux_classes
 #   Each class holds functions to calculate T at the wall:
 # Heatsink: Tcalculation()
 # RadiationCool: Tcalculation()
-# RegenerativeCool: Run()
+# RegenerativeCool: Main_regenerative_run_function()
 #   Other functions are defined in each class, which can be used to calculate the heat transmited
 #   Each class holds the T at the wall and the heat transmited as a class variable
 
@@ -105,6 +105,7 @@ class CoolingClass:
         err = self.heatsink.Tcalculation(
             T0, mean(Tr), mean(hg), A_total, c, operationtime, m_casing, err
         )
+
         Tw_wall_calculated = [self.heatsink.T_calculated]
         self.Q=self.heatsink.Q
 
@@ -748,6 +749,8 @@ class RegenerativeCool:
     ):
         if overwriteA == False:
             A = [self.FindA(y, L, len(y), i) for i in range(len(y))]
+        else:
+            A = [A for i in range(len(y))]
 
         match case_run:
             case 0:
