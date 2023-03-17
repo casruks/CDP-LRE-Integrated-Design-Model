@@ -281,8 +281,11 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
     if rho_c<=0 or cp_c<=0 or mu_c <=0 or k_c<=0 or Pr_c<=0:
         errors=errors|(1<<6)
         return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
-        
-    
+
+    print('Ae =', Ae, 'm2') 
+    print('De =', (4*Ae/mth.pi)**0.5)
+    print('At=', At, 'm2')
+    print('Dt =', (4*At/mth.pi)**0.5)
     return m_p,Tc,MR,At,eps,Isp[0]*(1-eps_loss),rho_c,cp_c,mu_c,k_c,Pr_c,errors,warnings
 
 
