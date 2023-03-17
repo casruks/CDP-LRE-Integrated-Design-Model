@@ -147,7 +147,7 @@ def Main(d : aux.Data):
     Mass = NozzleMass + ChamberMass + IgnitorMass #+ Ms.Mass(p_new,Ms.Rhenium,Ms.Rhenium,Ms.Rhenium,d.Eps,d.A_t,0,aux.Default.Safety_factor,0,Turbo.Ns)
 
     #Computing costs:
-    n_engine = 0
+    n_engine = 1
     Cost = Ms.Cost(Mass, Reliability, n_engine)
 
     print("Calculations finished")
