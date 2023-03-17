@@ -15,6 +15,17 @@ from rocketcea.cea_obj import CEA_Obj, add_new_fuel, add_new_oxidizer
 import Nozzle_turbine as NT
 import Aux_classes as aux
 
+# Errors
+    # 0: Cycle not recognized
+    # 1: Optimization did not converge
+    # 2: system could not be solved
+    # 3: pump potency does not equal turbine potency
+    # 4: pump or turbine potency is negative
+
+# Warnings
+    # Currently no warnings emitted
+
+
 #aux function, which calls the function for the selected cycle type
 def TurboM(Default : aux.Default, prop : aux.Propellant, O_F : float, p_a : float, Tf_cool : float, dptcool : float, m : float):
     # Default : [Default class object] contains information on the default values employed in the application
@@ -81,7 +92,7 @@ class EX:
     dptlines = 0.0 #[Pa] Total pressure losses in lines
 
     #Flags
-    br = False #If true the aux program breaks after this function (an error has occured)
+    br = 0 #If true the aux program breaks after this function (an error has occured)
 
     #Initialize values
     def __init__(self, DF : aux.Default, prop : aux.Propellant, O_F : float, Tf_cool : float, dptcool : float, m : float):
@@ -112,8 +123,12 @@ class EX:
         self.Wt = 1.0/(self.O_F+1.0) * self.m * self.eff_t * self.prop.fcp * self.Tf_cool * (1.0-(self.pt2/self.pt1)**((self.prop.f_gamma-1.0)/self.prop.f_gamma))
         
         #Check to see if results are coherent
-        if(abs(self.Wop+self.Wfp-self.Wt/self.eff_m) > 0.01 or self.Wop < 0.0 or self.Wfp < 0.0 or (not res["success"])):
-            br = True
+        if(abs(self.Wop+self.Wfp-self.Wt/self.eff_m) > 0.01 ):
+            self.br = self.br | 1<<3
+        if(self.Wop < 0.0 or self.Wfp < 0.0):
+            self.br = self.br | 1<<4
+        if(not res["success"]):
+            self.br = self.br | 1<<1
 
         #Debugging information
         print([self.dptop, self.dptfp, self.pt1, self.pt2, self.ptinj])
@@ -172,7 +187,7 @@ class SC:
     dptcomb = 0.0 #[Pa] pressure losses in combustion
 
     #Flags
-    br = False #If true the aux program breaks after this function (an error has occured)
+    br = 0 #If true the aux program breaks after this function (an error has occured)
 
     #Initialize values
     def __init__(self, DF : aux.Default, prop : aux.Propellant, O_F : float, p_a : float, Tf_cool : float, dptcool : float, m : float):
@@ -205,8 +220,12 @@ class SC:
         self.Wt = (1.0+self.l*self.O_F)/(self.O_F+1.0) * self.m * self.eff_t * self.prop.fcp * self.T1t * (1.0-(self.pt2/self.pt1)**((self.prop.f_gamma-1.0)/self.prop.f_gamma))
         
         #Check to see if results are coherent
-        if(abs(self.Wop+self.Wfp-self.Wt/self.eff_m) > 0.01 or self.Wop < 0.0 or self.Wfp < 0.0 or (not res["success"])):
-            br = True
+        if(abs(self.Wop+self.Wfp-self.Wt/self.eff_m) > 0.01 ):
+            self.br = self.br | 1<<3
+        if(self.Wop < 0.0 or self.Wfp < 0.0):
+            self.br = self.br | 1<<4
+        if(not res["success"]):
+            self.br = self.br | 1<<1
 
         #Debugging information
         print([self.dptop, self.dptfp, self.pt1, self.pt2, self.ptinj])
@@ -270,7 +289,7 @@ class CB:
     m_F = 1.0 #[kg/s] Fuel mass flow
 
     #Flags
-    br = False #If true the aux program breaks after this function (an error has occured)
+    br = 0 #If true the aux program breaks after this function (an error has occured)
 
     #Initialize values
     def __init__(self, DF : aux.Default, prop : aux.Propellant, O_F : float, p_a : float, Tf_cool : float, dptcool : float, m : float):
@@ -307,8 +326,12 @@ class CB:
         self.Wt = (self.l/(1.0-self.l)) * self.m_F * self.eff_t * self.prop.fcp * self.Tf_cool * (1.0-(self.pt2/self.pt1)**((self.prop.f_gamma-1.0)/self.prop.f_gamma))
         
         #Check to see if results are coherent
-        if(abs(self.Wop+self.Wfp-self.Wt/self.eff_m) > 0.01 or self.Wop < 0.0 or self.Wfp < 0.0 or (not res["success"])):
-            br = True
+        if(abs(self.Wop+self.Wfp-self.Wt/self.eff_m) > 0.01 ):
+            self.br = self.br | 1<<3
+        if(self.Wop < 0.0 or self.Wfp < 0.0):
+            self.br = self.br | 1<<4
+        if(not res["success"]):
+            self.br = self.br | 1<<1
 
         #Debugging information
         print([self.dptop, self.dptfp, self.pt1, self.pt2, self.l])
@@ -323,7 +346,7 @@ class CB:
     
     #Get Isp of aux nozzle
     def get_Isp_m(self,pinj): #temporaty, needs modification
-        return NT.Turbine_nozzle(self.m,pinj,self.prop,self.pa,self.df,self.prop.h_fuel,self.prop.h_ox,self.prop.f_dens_g,self.prop.o_dens,self.O_F)
+        return NT.Turbine_nozzle(self.m,pinj,self.prop,self.pa,self.df,self.prop.h_fuel,self.prop.h_ox,self.prop.f_dens_g,self.prop.o_dens)
     
     #get Isp of open cycle auxiliary nozzle
     def get_Isp_a(self,pt1,pt2,l):
@@ -375,7 +398,7 @@ class GG:
     m_F = 1.0 #[kg/s] Fuel mass flow
 
     #Flags
-    br = False #If true the aux program breaks after this function (an error has occured)
+    br = 0 #If true the aux program breaks after this function (an error has occured)
 
     #Initialize values
     def __init__(self, DF : aux.Default, prop : aux.Propellant, O_F : float, p_a : float, Tf_cool : float, dptcool : float, m : float):
@@ -431,7 +454,7 @@ class TO:
     m_F = 1.0 #[kg/s] Fuel mass flow
 
     #Flags
-    br = False #If true the aux program breaks after this function (an error has occured)
+    br = 0 #If true the aux program breaks after this function (an error has occured)
 
     #Initialize values
     def __init__(self, DF : aux.Default, prop : aux.Propellant, O_F : float, p_a : float, Tf_cool : float, dptcool : float, m : float):
@@ -481,7 +504,7 @@ class EL:
     dptlines = 0.0 #[Pa] Total pressure losses in lines
 
     #Flags
-    br = False #If true the aux program breaks after this function (an error has occured)
+    br = 0 #If true the aux program breaks after this function (an error has occured)
 
     #Initialize values
     def __init__(self, DF : aux.Default, prop : aux.Propellant, O_F : float, Tf_cool : float, dptcool : float, m : float):
@@ -508,8 +531,10 @@ class EL:
         self.Wfp = 1.0/(self.O_F+1.0) * self.m * self.dptfp / (self.eff_pf*self.prop.f_dens_l)
 
         #Check to see if results are coherent
-        if(abs(self.Wop+self.Wfp-self.Wt/self.eff_m) > 0.01 or self.Wop < 0.0 or self.Wfp < 0.0):
-            br = True
+        if(abs(self.Wop+self.Wfp-self.Wt/self.eff_m) > 0.01 ):
+            self.br = self.br | 1<<3
+        if(self.Wop < 0.0 or self.Wfp < 0.0):
+            self.br = self.br | 1<<4
 
         #Debugging information
         print([self.dptop, self.dptfp, self.ptinj])

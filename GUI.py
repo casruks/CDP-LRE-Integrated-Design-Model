@@ -26,6 +26,11 @@ class MainWindow(QMainWindow):
         self.tab_inputs.setCurrentIndex(0)
         self.tab_outputs.setCurrentIndex(0)
 
+        #Elements
+        self.line_O_F_2.hide()
+        self.label_O_F_2.hide()
+        self.label_O_F_no.hide()
+
         # Connects
         #Main
         self.line_thrust.editingFinished.connect(self.checkThrust);  self.checkThrust()
@@ -48,6 +53,8 @@ class MainWindow(QMainWindow):
 
         #Combustion chamber
         self.line_SF.editingFinished.connect(self.checkSF);  self.checkSF()
+        self.line_drop_ratio.editingFinished.connect(self.checkDropRat); self.checkDropRat()
+        self.line_kloads.editingFinished.connect(self.checkKloads); self.checkKloads()
 
         #Turbo
         self.cycle_changed(0)
@@ -59,13 +66,17 @@ class MainWindow(QMainWindow):
         self.line_valve_losses.editingFinished.connect(self.checkValveLoss);  self.checkValveLoss()
 
         #Cooling
-
+        self.line_OxTank_temp.editingFinished.connect(self.checkOTankTemp);  self.checkOTankTemp()
+        self.line_FuelTank_temp.editingFinished.connect(self.checkFTankTemp);  self.checkFTankTemp()
 
         #Injectors
+        self.Injector_changed(0)
         self.line_Cd.editingFinished.connect(self.checkCd);  self.checkCd()
 
         #Ignitors
         self.line_tign.editingFinished.connect(self.checktIgn);  self.checktIgn()
+        self.line_O_F_ign.editingFinished.connect(self.checkOFIgn);  self.checkOFIgn()
+        self.line_corr_ign.editingFinished.connect(self.checkCorrIgn);  self.checkCorrIgn()
 
         #Materials
 
@@ -94,6 +105,15 @@ class MainWindow(QMainWindow):
         self.line_reliability.setText(str(main.dat.rel))
 
         #Nozzle
+        if(self.check_O_F.isChecked()): 
+            self.line_O_F_2.setText(str(main.dat_O_F))
+            self.line_O_F_2.show()
+            self.label_O_F_2.show()
+            self.label_O_F_no.show()
+        else:
+            self.line_O_F_2.hide()
+            self.label_O_F_2.hide()
+            self.label_O_F_no.hide()
         self.line_Dt.setText(str(main.dat.Dt))
         self.line_De.setText(str(main.dat.De))
         self.line_eps.setText(str(main.dat.Eps))
@@ -169,6 +189,12 @@ class MainWindow(QMainWindow):
             self.line_par_0ang.setEnabled(True)
             self.line_par_fang.setEnabled(True)
             self.line_div_ang.setEnabled(False)
+
+    def Injector_changed(self, i : int):
+        main.default.InjType = main.default.InjTypes[i]
+
+    def igniter_changed(self, i : int):
+        main.default.type = i
 
     #Checks
     def checkThrust(self):
@@ -316,7 +342,7 @@ class MainWindow(QMainWindow):
 
     def checkEpsMax(self):
         var = float(self.line_eps_max.text())
-        if var > 0.0 and var <= 1000:
+        if var > 1.1 and var <= 1000:
             main.default.Eps_max = var;
         else:
             self.line_eps_max.setText("300")
@@ -415,13 +441,79 @@ class MainWindow(QMainWindow):
 
     def checktIgn(self):
         var = float(self.line_tign.text())
-        if var > 0.0 and var < 4000.0:
+        if var > 0.0 and var < 6.0:
             main.default.ignburntime = var;
         else:
             self.line_tign.setText("4")
             msg = QMessageBox()
             msg.setWindowTitle("Input error!")
-            msg.setText("Invalid ignitor burn time, try again.")
+            msg.setText("Invalid igniter burn time, try again.")
+            msg.exec_()
+
+    def checkOFIgn(self):
+        var = float(self.line_O_F_ign.text())
+        if var > 0.0 and var < 6.0:
+            main.default.ign_o_f = var;
+        else:
+            self.line_O_F_ign.setText("0.7")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid O/F of the igniter, try again.")
+            msg.exec_()
+
+    def checkCorrIgn(self):
+        var = float(self.line_corr_ign.text())
+        if var > 1.0 and var < 30.0:
+            main.default.fudgefactor = var;
+        else:
+            self.line_corr_ign.setText("20")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid igniter correction factor, try again.")
+            msg.exec_()
+
+    def checkDropRat(self):
+        var = float(self.line_drop_ratio.text())
+        if var > 0.0 and var < 0.3:
+            main.default.factor = var;
+        else:
+            self.line_drop_ratio.setText("0.2")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid final to initial droplet volume ratio, try again.")
+            msg.exec_()
+
+    def checkKloads(self):
+        var = float(self.line_kloads.text())
+        if var > 0.0:
+            main.default.kloads = var;
+        else:
+            self.line_kloads.setText("1")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid correction factor for mass, try again.")
+            msg.exec_()
+
+    def checkOTankTemp(self):
+        var = float(self.line_OxTank_temp.text())
+        if var > 0.0 and var < 2000:
+            main.default.T_ox_tanks = var;
+        else:
+            self.line_OxTank_temp.setText("60")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid temperature for oxidizer tank, try again.")
+            msg.exec_()
+
+    def checkFTankTemp(self):
+        var = float(self.line_FuelTank_temp.text())
+        if var > 0.0 and var < 2000:
+            main.default.T_fuel_tanks = var;
+        else:
+            self.line_FuelTank_temp.setText("20")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid temperature for fuel tank, try again.")
             msg.exec_()
 
 # Main
