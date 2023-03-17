@@ -141,10 +141,11 @@ def Main(d : aux.Data):
     #Reliability = Rel.Reliability(default,prop, d.time, d.Thrust, d.Thrust, default.val)
 
     #Compute Mass:
+    rho_prop = Ms.RhoProp(aux.Propellant.f_dens_l,aux.Propellant.o_dens,aux.Data.O_F)
     NozzleMass = Ms.Nozzle_mass(x_noz,y_noz,t_noz,Ms.Rhenium)
     ChamberMass = Comb.CombustionChamber(p_new, d.At, prop, Ms.Rhenium, default, d.v_if, d.v_iox, d.Tc, d.O_F, 1,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est)[5]
     IgnitorMass = Ign.Igniters(d.m_nozz,prop,default,d.Tc,d.O_F,default.type)[0]
-    Mass = NozzleMass + ChamberMass + IgnitorMass + Ms.Mass(p_new,Ms.Rhenium,Ms.Rhenium,Ms.Rhenium,d.Eps,d.A_t,d.m_nozz,aux.Default.Safety_factor,Ms.RhoProp,Turbo.Ns)
+    Mass = NozzleMass + ChamberMass + IgnitorMass + Ms.Mass(p_new,Ms.Rhenium,Ms.Rhenium,Ms.Rhenium,d.Eps,d.A_t,d.m_nozz,aux.Default.Safety_factor,rho_prop,Turbo.Ns)
 
     #Mass = Ms.Mass_Regenerative()
 
