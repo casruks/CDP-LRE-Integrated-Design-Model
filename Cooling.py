@@ -69,6 +69,7 @@ class CoolingClass:
         Tw_wall_calculated = [-1]
         ploss = 0
         m_flow_fuel = 0
+        type_variable=0
 
         if (
             check_positive_args(
@@ -113,6 +114,7 @@ class CoolingClass:
             return T_co_calculated, Tw_wall_calculated, ploss, m_flow_fuel, err, warn
 
         if self.heatsink.T_calculated > TestTemp:
+            type_variable=1
             err = self.radiationcool.Tcalculation(
                 700,
                 500,
@@ -139,6 +141,7 @@ class CoolingClass:
                 )
 
             if self.radiationcool.T_calculated > TestTemp:
+                type_variable=2
                 (
                     T_co_calculated,
                     Tw_wall_calculated,
@@ -199,7 +202,7 @@ class CoolingClass:
             #warn=warn|(1<<1) 
         if(T_co_calculated>Tw_wall_calculated[-1]):
             err=err|(1<<6)
-        return T_co_calculated, Tw_wall_calculated, ploss, m_flow_fuel, err, warn
+        return T_co_calculated, Tw_wall_calculated, ploss, m_flow_fuel, type_variable,err, warn
 
 
 # Heat sink model
@@ -479,7 +482,7 @@ class RegenerativeCool:
         err
     ):
         # check_positive_args(Tr, hg, t, A, Ti_co, m_flow_fuel, L)
-
+        
         # Inicicialise variables
         self.Prop = Prop
         self.m_flow_fuel = m_flow_fuel
