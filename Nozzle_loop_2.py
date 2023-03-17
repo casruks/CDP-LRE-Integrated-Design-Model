@@ -30,79 +30,23 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     Ox=Propellant.Ox_name
     Fuel=Propellant.Fuel_name
     frozen_state=Propellant.Frozen_state
-    
+
     ispObj = CEA_Obj( oxName=Ox, fuelName=Fuel,useFastLookup=0, makeOutput=0,isp_units='sec',cstar_units='m/sec',pressure_units='Bar',temperature_units='K', sonic_velocity_units='m/s',enthalpy_units='kJ/kg',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise',thermal_cond_units='W/cm-degC',fac_CR=None, make_debug_prints=False)
 
     ## Sanitizing inputs
-    error=0;
-    # Angles
-    if Default.Theta_con>=90:
-        print("ERROR: Convergent angle higher than 90 degrees")
-        error=1
-        return 0,0,0,0,0,0,0,0,0,0,0,0,error;
-
-    if Default.Theta_con>70:
-        print("Warning: Convergent angle very high, might cause real life issues")
+    errors=0;
+    warnings=0;
     
-    if Default.Theta_conical>20:
-        print("Warning: Divergent angle too high, might cause flow separation")
-    
-    if Default.Theta_conical>=90:
-        print("ERROR: Divergent angle higher than 90 degrees")
-        error=1
-        return 0,0,0,0,0,0,0,0,0,0,0,0,error;
-
-    if Default.Theta_bell>65:
-        print("Warning: Divergent angle very high, might cause real life issues")
-    
-    if Default.Theta_bell>=90:
-        print("ERROR: Divergent angle higher than 90 degrees")
-        error=1
-        return 0,0,0,0,0,0,0,0,0,0,0,0,error;
-
-    if Default.TH_exit_bell>15:
-        print("Warning: exit angle is very high, might lead to high losses")
-    
-    if Default.TH_exit_bell>Default.Theta_bell:
-        print("ERROR: Exit angle higher than divergent angle")
-        error=1
-        return 0,0,0,0,0,0,0,0,0,0,0,0,error;
-
-    # Radius of curvature
-
-    if Default.R_u_bell > 1.5:
-        print("Warning: throat curvature angle very high")
-    
-    if Default.R_u_bell<=0:
-        print("ERROR: throat curvature angle lower than 0")
-        error=1
-        return 0,0,0,0,0,0,0,0,0,0,0,0,error;
-
-    if Default.R_u_bell<0.5:
-        print("Warning: throat curvature angle very low, might lead to flow separation")
-
     # Chamber diameter
     if (mth.pi*Dc**2/4)<At:
-        print("ERROR: chamber diameter smaller than throat diameter")
-        error=1
-        return 0,0,0,0,0,0,0,0,0,0,0,0,error;
+        errors=errors|(1<<0)
+        return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
 
     # Nozzle resolution
-    if Default.noz_res<100:
-        print("Warning: nozzle resolution is low, might lead to inaccurate results")
-    
-    if Default.noz_res<10:
-        print("ERROR: nozzle resolution is too low")
-        error=1
-        return 0,0,0,0,0,0,0,0,0,0,0,0,error;
 
-    if Default.n_cool>99:
-        print("Warning, too many points for cooling properties resolution can slow down the code")
-    
     if Default.n_cool<10:
-        print("ERROR: nozzle cooling resolution to low")
-        error=1
-        return 0,0,0,0,0,0,0,0,0,0,0,0,error;
+        errors=errors|(1<<1)
+        return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
     
     T_w=Material.OpTemp_u
     theta_con=mth.radians(Default.Theta_con)
@@ -130,11 +74,23 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         L_nozzle_con=(mth.sqrt(con_ratio)*R_t-R_t-R_u*(1-mth.cos(mth.cos(theta_con))))/(mth.tan(theta_con))+R_u*mth.sin(theta_con) # Length of the convergent part of the nozzle for the conical
         L_tot=L_nozzle_con+L_nozzle_div # Total length of the nozzle
 
+        if L_nozzle_div <=0 or L_nozzle_con <=0:
+            errors=errors|(1<<9)
+            return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+        
         xp=L_nozzle_con+R_u*mth.sin(Theta_conical) # point P as defined in the documentation (x value)
         yp=R_t+(1-mth.cos(Theta_conical))*R_u # point P as defined in the documentation (y value)
-
+        
+        if xp<=0 or yp <=0:
+            errors=errors|(1<<10)
+            return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+        
         xp_con=L_nozzle_con-R_u*mth.sin(theta_con) # point P as defined in the documentation, but for the convergent(x value)
         yp_con=R_t+(1-mth.cos(theta_con))*R_u # point P as defined in the documentation, but for the convergent(y value)
+        
+        if xp_con<=0 or yp_con<=0:
+            errors=errors|(1<<11)
+            return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
         
         n=num_con 
         x_con=geek.linspace(0,xp_con,num=n) # Discretization of points in the convergent
@@ -218,11 +174,23 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         L_nozzle_con=((mth.sqrt(con_ratio)-1)*R_t+R_u*(1/mth.cos(theta_con)-1))/mth.tan(theta_con) # Length of convergent part of the nozzle
         L_tot=L_nozzle_con+L_nozzle_div #Total length of the nozzle
         
+        if L_nozzle_div <=0 or L_nozzle_con <=0:
+            errors=errors|(1<<9)
+            return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+        
         ## Same discretization process as for the convergent, with same check for discretization points exceeding the cooling limit
         xp=xp+L_nozzle_con
 
+        if xp<=0 or yp <=0:
+            errors=errors|(1<<10)
+            return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+        
         xp_con=L_nozzle_con-R_u*mth.sin(theta_con)
         yp_con=R_t+(1-mth.cos(theta_con))*R_u
+        
+        if xp_con<=0 or yp_con<=0:
+            errors=errors|(1<<11)
+            return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
         
         n=num_con
         x_con=geek.linspace(0,xp_con,num=n)
@@ -429,6 +397,10 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
      # Film temperature in the divergent calculated as in Ziebland
     T_f_con=0.5*T_w+0.28*T_con+0.22*Tw_ad_con # Film temperature in convergent
 
+    if min(T_f_con)<=0 or min(T_f_div)<=0:
+        errors=errors|(1<<12)
+        return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+    
     # Using the Bartz relations we find the convective heat coefficient
     a_b=0.026
     h_c_div=geek.zeros(len(mu_div))
@@ -447,7 +419,47 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     D_t=R_t*2;
     D_e=mth.sqrt(eps)*D_t
 
-    return t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,D_t,D_e,L_nozzle_con,L_nozzle_div,L_tot,x_noz_cool,y_noz_cool,error;
+    if min(t_noz)<=0:
+        errors=errors|(1<<2)
+        return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+    
+    if min(t_noz)<0.001:
+        if (warnings & (1<<0))==False:
+            warnings=warnings|(1<<0);
+    elif warnings & (1<<0):
+        warnings=warnings & (~(1<<0));
+    
+    if min(x_noz)<=0:
+        errors=errors|(1<<3)
+        return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+    
+    if min(y_noz)<=0:
+        errors=errors|(1<<4)
+        return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+    
+    if min(Tw_ad_noz)<=0:
+        errors=errors|(1<<5)
+        return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+    
+    if min(Tw_ad_noz)<273:
+        if (warnings & (1<<2))==False:
+            warnings=warnings|(1<<2);
+    elif warnings & (1<<2):
+        warnings=warnings & (~(1<<2));
+    
+    if min(h_c_noz)<=0:
+        errors=errors|(1<<6)
+        return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+    
+    if min(x_noz_cool)<=0:
+        errors=errors|(1<<7)
+        return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+    
+    if min(y_noz_cool)<=0:
+        errors=errors|(1<<8)
+        return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+
+    return t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,D_t,D_e,L_nozzle_con,L_nozzle_div,L_tot,x_noz_cool,y_noz_cool,errors, warnings;
 
 
 

@@ -71,6 +71,8 @@ def injector1(default, propellant, p_c, m, OF):
     if v_iox>100 or v_if>100:
         wr = wr|(1<<0)
         print('Warning, v_if=,', v_if,' v_iox=,', v_iox)
+    else:
+        wr = wr&(~(1<<0))
         
     mu_wax = 2.69e-3        # [lbm/(ft-s)], 1 lbm/(ft-s) = 1.4881639 Pa.s
     sig_wax = 17.0          # [dynes/cm], 1 dyn/cm = 1e-7 N/m     
@@ -99,8 +101,10 @@ def injector1(default, propellant, p_c, m, OF):
     A_est = (A_f + A_ox) * 6/(np.pi*(3)**0.5)   #Estimated effective area of hexagonal circle packing eff = pi * sqrt(3)/6
     #print('A_f =', A_f, 'A_ox =', A_ox)
     if D_f or D_ox > 200e-6:
-        print('Warning, D_f=,', D_f*1e6,'[E-6m] D_ox=,', D_ox*1e6, 'E-6m')
+        print('Warning, D_f=,', D_f*1e6,'[1E-6m] D_ox=,', D_ox*1e6, '[1E-6m]')
         wr = wr|(1<<1)
+    else:
+        wr = wr&(~(1<<1))
 
     return v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, P_D, A_est, er, wr 
            
@@ -135,9 +139,14 @@ def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
     if (dp_ox/p_c) < eta_s:
         wr = wr|(1<<0)
         print('dp_ox (', InjType,') <', eta_s,' p_c!')
-    elif (dp_f/p_c) < eta_s:
+    else:
+        wr = wr&(~(1<<0))
+
+    if (dp_f/p_c) < eta_s:
         wr = wr|(1<<1)
         print('dp_f (', InjType,') <', eta_s,' p_c!')
+    else:
+        wr = wr&(~(1<<1))
 
     return p_c, dp_ox, dp_f, er, wr
 
