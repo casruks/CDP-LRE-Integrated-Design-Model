@@ -10,7 +10,7 @@ class Materials:
         self.OpTemp_u = OpTemp_u
         self.k = k
         self.cost = cost
-
+       
 ##Properties of Material Class:
 #material: Description of the materials
 #density: in [kg/m^3]
@@ -18,7 +18,7 @@ class Materials:
 #Emod: Young's Modulus of the material in [Pa]
 #OpTemp_u: Maximum Operational Temperature in [K]
 #k: Thermal Conductivity of the Material in [W/m*K]
-#cost: Cost per kilogram [Eur/kg]         
+#cost: Cost per kilogram [Eur/kg]       
 
 Custom = Materials('Custom Material', 21000.0, 2300.0e6, 471.0e9, 2200.0, 48.0, 938.0)
 Rhenium                 =       Materials('Rhenium',                            21000.0,  2300.0e6,   471.0e9, 2200.0,   48.0,   938.0)
@@ -120,6 +120,11 @@ def Mass(Pc, material_N, material_P, material_V, arear, rt, mprop, FS, rhoprop, 
     return Total_Mass, ValveMass
 
 
+def RhoProp(O_prop, F_prop, OF):
+    rho_prop = 0
+    rho_prop = ((O_prop*F_prop)*(1+OF))/(F_prop*OF+O_prop)
+    return rho_prop
+
 
 ##Cost function 
 def Cost(m_engine, R, n):
@@ -132,10 +137,8 @@ def Cost(m_engine, R, n):
         f4  = -0.0553*mth.log(n) + 1.0011
         a_m = 4.0
 
-        C_D = 1.1*f1*f2*f3*m_engine**0.58
-
+        C_D = 1.1*f1*f2*f3*162*m_engine**0.58
         F_E = a_m*f4*m_engine**0.46
-
         TotalCost_MY = C_D + F_E
         TotalCost = TotalCost_MY*200e3
         lst.append(TotalCost)
@@ -147,6 +150,12 @@ def Reuseability(RA, Material, N_F):
     E_T = 3.5(Material.yieldstress_l/Material.Emod)*N_F**(-0.12) + (E_f**0.6)*N_F**(-0.6)
     return E_T
 
+
+##Reuseability:
+def Reuseability(RA, Material, N_F):
+    E_f = mth.log(100/(100-RA))
+    E_T = 3.5(Material.yieldstress_l/Material.Emod)*N_F**(-0.12) + (E_f**0.6)*N_F**(-0.6)
+    return E_T
 
 # Mass = Mass_Regenerative(3.20e6,Inc_718,Inc_718,D6AC_Steel,61.1,0.076,16.85,1.1,351.91,'EX')
 # print(Mass)

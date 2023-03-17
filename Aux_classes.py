@@ -1,6 +1,8 @@
 import Materials as Ms
 
 #Default values
+import Materials as Ms
+
 class Default:
     #Seeds
     Pres = 1e6
@@ -90,10 +92,9 @@ class Default:
                      Ms.Copper_structural, Ms.D6AC_Steel]
     coating_list = [Ms.Coat_Custom,Ms.Copper, Ms.Narloy_Z, Ms.GRCop_84, Ms.Silica, Ms.Carbon]
     noz_mat_select = material_list[0]
-    chamber_mat_select = material_list[0]
-    Safety_factor=1.3
+    chamber_mat_select = coating_list[0]
     t = 1e-3 #m
-
+    
     #Reliabiliy
      # Should be implemented for GUI user input
      # Fop should also be included, but commented out for now as to not mess with code

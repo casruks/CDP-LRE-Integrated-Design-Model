@@ -149,6 +149,7 @@ def Main(d : aux.Data):
     rho_prop = Ms.RhoProp(aux.Propellant.f_dens_l,aux.Propellant.o_dens,aux.Data.O_F)
     Mass = NozzleMass + ChamberMass + IgnitorMass #+ Ms.Mass(p_new,Ms.Rhenium,Ms.Rhenium,Ms.Rhenium,d.Eps,d.A_t,d.m_nozz,aux.Default.Safety_factor,rho_prop,Turbo.Ns)
     #print(NozzleMass, ChamberMass, IgnitorMass) #kg
+
     #Computing costs:
     n_engine = 1
     #Cost = Ms.Cost(Mass, Reliability, n_engine)
