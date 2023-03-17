@@ -10,8 +10,17 @@ class Materials:
         self.OpTemp_u = OpTemp_u
         self.k = k
         self.cost = cost
-        
 
+##Properties of Material Class:
+#material: Description of the materials
+#density: in [kg/m^3]
+#YieldStress_l: Yieldstress of the material in [Pa]
+#Emod: Young's Modulus of the material in [Pa]
+#OpTemp_u: Maximum Operational Temperature in [K]
+#k: Thermal Conductivity of the Material in [W/m*K]
+#cost: Cost per kilogram [Eur/kg]         
+
+Custom = Materials('Custom Material', 21000.0, 2300.0e6, 471.0e9, 2200.0, 48.0, 938.0)
 Rhenium                 =       Materials('Rhenium',                            21000.0,  2300.0e6,   471.0e9, 2200.0,   48.0,   938.0)
 Al_7075_T6              =       Materials('Aluminium 7075 T6',                  2810.0,   505.0e6,    72.0e9,  373.15,   130.0,  3.97)
 Ti6Al4V                 =       Materials('Tungsten & Aluminium alloy',         4428.0,   110.0e6,    114.0e9, 693.15,   6.7,    23.8)
@@ -26,6 +35,7 @@ D6AC_Steel              =       Materials('D6AC Steel Alloy',                   
 default                 =       Materials('default_coating',                       0.0,       0.0,        0.0,   0.0,        1,     0)
 
 #Coating Materials:
+Coat_Custom             =       Materials('Carbon-Carbon Matrix coating',       1950.0,   0,          0,          2400.0,   37.4,   6.4)
 Copper                  =       Materials('Copper coating',                     8940.0,   0,          0,          573.0,    390.0,  6.4)
 Narloy_Z                =       Materials('Copper Alloy Coating',               9130.0,   0,          0,          740.0,    290.0,  6.4)
 GRCop_84                =       Materials('GRPCop_84 Copper alloy coating',     8756.0,   0,          0,          1000.0,   351.0,  6.4)
@@ -46,8 +56,7 @@ def Nozzle_mass(default, x,R,t,material):
             for i in range(len(x)-1):
                 total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*1e-3*R[i+1]
     #vol = total_dist*2*mth.pi
-    
-    
+    print(total_surf*2*mth.pi)
     NozzleMass = total_surf*2*mth.pi*material.density
     return NozzleMass
 
@@ -86,7 +95,7 @@ SSME    = ReferenceEngine(2.04e7, 2.28e6, 77.5,  0.138, 512.6, 6,      1.2, Inc_
 #Mass estimation function Nozzle Tubes:
 def Mass(Pc, material_N, material_P, material_V, arear, rt, mprop, FS, rhoprop, Ns): 
     
-    y= 1
+    y= (31537*mth.sqrt(mprop))/(5172.15**(0.75))
 
     reference = RL10
 
@@ -131,6 +140,13 @@ def Cost(m_engine, R, n):
         TotalCost = TotalCost_MY*200e3
         lst.append(TotalCost)
     return lst
+
+##Reuseability:
+def Reuseability(RA, Material, N_F):
+    E_f = mth.log(100/(100-RA))
+    E_T = 3.5(Material.yieldstress_l/Material.Emod)*N_F**(-0.12) + (E_f**0.6)*N_F**(-0.6)
+    return E_T
+
 
 # Mass = Mass_Regenerative(3.20e6,Inc_718,Inc_718,D6AC_Steel,61.1,0.076,16.85,1.1,351.91,'EX')
 # print(Mass)
