@@ -13,7 +13,7 @@ import Aux_classes as aux
 
 Thrust_ = 22e3 #= input("Introduce thrust")
 Thrust_time_ = 150 #= input("Introduce thrust time")
-Pamb_ = 1000 #= input("Introudce ambient pressure (Pa)")
+Pamb_ = 1e5 #= input("Introudce ambient pressure (Pa)")
 prop = aux.Propellant(0)
 default = aux.Default(0)
 dat = aux.Data(Thrust_, Thrust_time_, Pamb_)
@@ -138,16 +138,17 @@ def Main(d : aux.Data):
 
     #Compute reliability 
     Reliability = Rel.Reliability(default,prop, d.time, d.Thrust, d.Thrust, default.val)
-
+    
     #Compute Mass:
-    #NozzleMass = Ms.Nozzle_mass(x_noz,y_noz,t_noz,Ms.Rhenium)
-    ChamberMass = Comb.CombustionChamber(p_new, d.At, prop, Ms.Rhenium, default, d.v_if, d.v_iox, d.Tc, d.O_F, 1,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est)[5]
+    NozzleMass = Ms.Nozzle_mass(default, x_noz,y_noz,t_noz,Ms.D6AC_Steel)
+    print('Nozzle mass =', NozzleMass)
+    ChamberMass = Comb.CombustionChamber(p_new, d.At, prop, Ms.D6AC_Steel, default, d.v_if, d.v_iox, d.Tc, d.O_F, 1,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est)[5]
     IgnitorMass, mfuel, mox, wr = Ign.Igniters(d.m_nozz,prop,default,d.Tc,d.O_F,default.type)
     #! Ns- pump specific speed not yet implemented
     #Mass = ChamberMass + IgnitorMass #+ Ms.Mass(p_new,Ms.Rhenium,Ms.Rhenium,Ms.Rhenium,d.Eps,d.A_t,0,aux.Default.Safety_factor,0,Turbo.Ns)
-    #rho_prop = Ms.RhoProp(aux.Propellant.f_dens_l,aux.Propellant.o_dens,aux.Data.O_F)
-    #Mass = ChamberMass + IgnitorMass + Ms.Mass(p_new,Ms.Rhenium,Ms.Rhenium,Ms.Rhenium,d.Eps,d.A_t,d.m_nozz,aux.Default.Safety_factor,rho_prop,Turbo.Ns)
-    #print(Mass)
+    rho_prop = Ms.RhoProp(aux.Propellant.f_dens_l,aux.Propellant.o_dens,aux.Data.O_F)
+    Mass = NozzleMass + ChamberMass + IgnitorMass #+ Ms.Mass(p_new,Ms.Rhenium,Ms.Rhenium,Ms.Rhenium,d.Eps,d.A_t,d.m_nozz,aux.Default.Safety_factor,rho_prop,Turbo.Ns)
+    #print(NozzleMass, ChamberMass, IgnitorMass) #kg
     #Computing costs:
     n_engine = 1
     #Cost = Ms.Cost(Mass, Reliability, n_engine)

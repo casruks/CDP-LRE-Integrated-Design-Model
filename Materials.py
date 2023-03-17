@@ -1,4 +1,5 @@
 import math as mth
+import Aux_classes as aux
 
 class Materials:
     def __init__(self, material, density, yieldstress_l, Emod, OpTemp_u, k, cost):
@@ -34,12 +35,20 @@ Carbon                  =       Materials('Carbon-Carbon Matrix coating',       
 
 ##Computing Mass nozzle: 
 #Nozzle Surface Fucntion:
-def Nozzle_mass(x,R,t,material):
-    total_dist = 0
-    for i in range(len(x)-1):
-        total_dist += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])
-    vol = total_dist*2*mth.pi*t[i+1]
-    NozzleMass = vol*material.density
+
+def Nozzle_mass(default, x,R,t,material):
+    total_surf = 0
+    for i in range(len(t)):
+        if t[i] > default.t:
+            for i in range(len(x)-1):
+                total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*t[i+1]*R[i+1]
+        else:
+            for i in range(len(x)-1):
+                total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*1e-3*R[i+1]
+    #vol = total_dist*2*mth.pi
+    
+    
+    NozzleMass = total_surf*2*mth.pi*material.density
     return NozzleMass
 
 ##Computing Chamber Mass:
@@ -125,4 +134,7 @@ def Cost(m_engine, R, n):
 
 # Mass = Mass_Regenerative(3.20e6,Inc_718,Inc_718,D6AC_Steel,61.1,0.076,16.85,1.1,351.91,'EX')
 # print(Mass)
-
+def RhoProp(O_prop, F_prop, OF):
+        rho_prop = 0
+        rho_prop = ((O_prop*F_prop)*(1+OF))/(F_prop*OF+O_prop)
+        return rho_prop

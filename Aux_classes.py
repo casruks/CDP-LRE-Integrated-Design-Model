@@ -83,7 +83,8 @@ class Default:
     #Material
     material = "This"
     Safety_factor=1.3
-    
+    t = 1e-3 #m
+
     #Reliabiliy
      # Should be implemented for GUI user input
      # Fop should also be included, but commented out for now as to not mess with code
