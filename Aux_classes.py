@@ -23,7 +23,7 @@ class Default:
     #Nozzle
     Nozzle_type = 0 # Type of nozzle, 0=conical, 1=bell
 
-    MR = 0 # O_F ratio, 0=optimize for c* LIMIT: >=0
+    MR = 6.04 # O_F ratio, 0=optimize for c* LIMIT: >=0
     De_max = 2.5 # Maximum exit diameter of the nozzle LIMIT: >0
     De_turbine_noz_max = 2.5 # Maximum exit diameter for the turbine exhaust nozzle LIMIT: >0
     Theta_con = 60 # Angle of the convergent part of the nozzle in degrees  LIMITS: 0<THETA<90
