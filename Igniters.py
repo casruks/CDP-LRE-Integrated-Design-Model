@@ -101,6 +101,26 @@ def Igniters (m,Propellant,default,Tc,of,type):
             if mass_igniter > 100:
                wr = wr | (1<<0)
             return mass_igniter, mfuel, mox,wr
+        case '32':
+            Hc = Enthalpy(Propellant, Tc, of) * 10 ** 3
+            Power = m * (Hc - H0)
+            heatingvalue = 28.326 * 10 ** 6 * (1 / (default.ign_o_f + 1))
+            mass_igniter = Power / heatingvalue * default.ignburntime / (default.fudgefactor)
+            mfuel = mass_igniter / (1 + default.ign_o_f)
+            mox = default.ign_o_f * mass_igniter / (1 + default.ign_o_f)
+            if mass_igniter > 100:
+                wr = wr | (1 << 0)
+            return mass_igniter, mfuel, mox, wr
+        case '33':
+            Hc = Enthalpy(Propellant, Tc, of) * 10 ** 3
+            Power = m * (Hc - H0)
+            heatingvalue = 32.94 * 10 ** 6 * (1 / (default.ign_o_f + 1))
+            mass_igniter = Power / heatingvalue * default.ignburntime / (default.fudgefactor)
+            mfuel = mass_igniter / (1 + default.ign_o_f)
+            mox = default.ign_o_f * mass_igniter / (1 + default.ign_o_f)
+            if mass_igniter > 100:
+                wr = wr | (1 << 0)
+            return mass_igniter, mfuel, mox, wr
 
     #heatingvalues = [119.96*10**6*(1/(default.ign_o_f+1)),13.5*10**6,9.2*10**6,6.5*10**6,2.9*10**6,2.5*10**6]
     #heatingcompounds = ['hydrogenoxygen_LHV','methaneoxygen','magnesiumteflonviton','boronpotassiumnitratewax','blackpowder','hydrogenperoxide']
