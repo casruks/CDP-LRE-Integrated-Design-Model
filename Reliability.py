@@ -11,8 +11,9 @@ def Reliability(default, prop, t, Fnom, Fop, val):
     val: True or False, for validation.
     '''
 
-
+    cycles = default.cycles
     cycle = default.cycle
+    prop = default.Prop[0]
     N = default.N
     # Data for Cycle Impact (effect of engine cycle on reliability)
     CyclesData = {}

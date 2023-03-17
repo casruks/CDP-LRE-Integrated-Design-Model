@@ -131,13 +131,13 @@ def Main(d : aux.Data):
     ## default
     ## chamber temperature
     ## oxidizer to fuel ratio of main chamber
-   # Ign_propellant_mass, Ign_fuel_mass, Ign_ox_mass,wr_ign = Ign.Igniters(d.m_nozz,prop,default,d.Tc,d.O_F,default.type)
+    # Ign_propellant_mass, Ign_fuel_mass, Ign_ox_mass,wr_ign = Ign.Igniters(d.m_nozz,prop,default,d.Tc,d.O_F,default.type)
     #outputs
     ## mass used for igniter
     ## By this order: igniter propellant total mass, igniter fuel mass, igniter oxidizer mass, warnings
 
     #Compute reliability 
-    #Reliability = Rel.Reliability(default,prop, d.time, d.Thrust, d.Thrust, default.val)
+    Reliability = Rel.Reliability(default,prop, d.time, d.Thrust, d.Thrust, default.val)
 
     #Compute Mass:
     NozzleMass = Ms.Nozzle_mass(x_noz,y_noz,t_noz,Ms.Rhenium)
@@ -147,8 +147,8 @@ def Main(d : aux.Data):
     Mass = NozzleMass + ChamberMass + IgnitorMass #+ Ms.Mass(p_new,Ms.Rhenium,Ms.Rhenium,Ms.Rhenium,d.Eps,d.A_t,0,aux.Default.Safety_factor,0,Turbo.Ns)
 
     #Computing costs:
-    #n_engine = 0
-    #Cost = Ms.Cost(Mass, Reliability, n_engine)
+    n_engine = 0
+    Cost = Ms.Cost(Mass, Reliability, n_engine)
 
     print("Calculations finished")
     return True
