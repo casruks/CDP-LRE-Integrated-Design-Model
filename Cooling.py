@@ -348,8 +348,8 @@ class RegenerativeCool:
             )
             self.D = -404
             return Ti_co, 0
-        #if Ti_co > Tr:
-        #    raise Exception("Ti_co > Tr, Ti_co: ", Ti_co)
+        if Ti_co > Tr:
+            raise Exception("Ti_co > Tr, Ti_co: ", Ti_co)
 
         # calculate the convection coefficient for the coolant
         self.hco = (Tr - Twh) / (
