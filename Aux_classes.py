@@ -81,7 +81,11 @@ class Default:
     type = '00'
 
     #Material
-    material = "This"
+    material_list = [Ms.Rhenium, Ms.Al_7075_T6, Ms.Ti6Al4V, Ms.Haynes_188, Ms.Inc_X_750, Ms.Inc_600, Ms.Inc_718, Ms.Inc_A_286,Ms.Columbium_c103,
+                     Ms.Copper_structural, Ms.D6AC_Steel]
+    coating_list = [Ms.Copper, Ms.Narloy_Z, Ms.GRCop_84, Ms.Silica, Ms.Carbon]
+    noz_mat_select = material_list[0]
+    chamber_mat_select = material_list[0]
     Safety_factor=1.3
     t = 1e-3 #m
 
