@@ -18,6 +18,9 @@ class MainWindow(QMainWindow):
         size = screen.size()
         fontSize = int(size.width()/100)
         self.setStyleSheet(''' font-size: ''' + str(fontSize) + '''px; ''')
+        self.ensurePolished()
+        self.label_inputs.setStyleSheet(''' font-size: ''' + str(fontSize+8) + '''px; ''')
+        self.label_outputs.setStyleSheet(''' font-size: ''' + str(fontSize+8) + '''px; ''')
 
         # Initialize graphics
 
@@ -145,6 +148,7 @@ class MainWindow(QMainWindow):
         self.line_n_finj.setText(str(main.dat.n_f))
         self.line_vel_ox.setText(str(main.dat.v_iox))
         self.line_vel_fuel.setText(str(main.dat.v_if))
+        self.line_inj_pres.setText(str(main.dat.dp))
 
         #Ignitors
         self.line_Mign.setText(str(main.dat.Igniter_compound))
@@ -375,7 +379,7 @@ class MainWindow(QMainWindow):
 
     def checkParAng0(self):
         var = float(self.line_par_0ang.text())
-        if var > 0.0 and var < 90:
+        if var > float(self.line_par_fang.text()) and var < 90:
             main.default.Theta_bell = var;
         else:
             self.line_par_0ang.setText("55")

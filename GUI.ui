@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>LRE Design Tool</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>LRE_icon.jpg</normaloff>LRE_icon.jpg</iconset>
+  </property>
   <widget class="QWidget" name="Central">
    <layout class="QHBoxLayout" name="horizontalLayout" stretch="10,10,10">
     <property name="leftMargin">
@@ -79,8 +83,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>503</width>
-               <height>365</height>
+               <width>549</width>
+               <height>380</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_4">
@@ -313,8 +317,13 @@
               <rect>
                <x>0</x>
                <y>0</y>
+<<<<<<< Updated upstream
                <width>421</width>
                <height>365</height>
+=======
+               <width>461</width>
+               <height>382</height>
+>>>>>>> Stashed changes
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_5">
@@ -541,8 +550,13 @@
               <rect>
                <x>0</x>
                <y>0</y>
+<<<<<<< Updated upstream
                <width>367</width>
                <height>365</height>
+=======
+               <width>446</width>
+               <height>351</height>
+>>>>>>> Stashed changes
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -643,8 +657,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>357</width>
-               <height>380</height>
+               <width>369</width>
+               <height>351</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_3">
@@ -808,8 +822,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>357</width>
-               <height>380</height>
+               <width>374</width>
+               <height>351</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_10">
@@ -889,8 +903,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>357</width>
-               <height>380</height>
+               <width>352</width>
+               <height>372</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_11">
@@ -975,8 +989,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>357</width>
-               <height>380</height>
+               <width>352</width>
+               <height>372</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_13">
@@ -1085,17 +1099,30 @@
             <widget class="QWidget" name="scrollAreaWidgetContents_7">
              <property name="geometry">
               <rect>
+<<<<<<< Updated upstream
                <x>0</x>
                <y>-187</y>
                <width>440</width>
                <height>552</height>
+=======
+               <x>-40</x>
+               <y>-231</y>
+               <width>525</width>
+               <height>582</height>
+>>>>>>> Stashed changes
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_15">
               <item row="5" column="3">
+<<<<<<< Updated upstream
                <widget class="QLabel" name="label_16">
                 <property name="text">
                  <string>TextLabel</string>
+=======
+               <widget class="QLabel" name="label_W_mK">
+                <property name="text">
+                 <string>[W/(m K)]</string>
+>>>>>>> Stashed changes
                 </property>
                </widget>
               </item>
@@ -1126,10 +1153,17 @@
                </spacer>
               </item>
               <item row="5" column="2">
+<<<<<<< Updated upstream
                <widget class="QLineEdit" name="lineEdit_7"/>
               </item>
               <item row="3" column="2">
                <widget class="QLineEdit" name="lineEdit_5"/>
+=======
+               <widget class="QLineEdit" name="line_k_nozz"/>
+              </item>
+              <item row="3" column="2">
+               <widget class="QLineEdit" name="line_E_nozz"/>
+>>>>>>> Stashed changes
               </item>
               <item row="4" column="3">
                <widget class="QLabel" name="label_K_5">
@@ -1202,9 +1236,15 @@
                <widget class="QLineEdit" name="line_cost_nozz"/>
               </item>
               <item row="5" column="1">
+<<<<<<< Updated upstream
                <widget class="QLabel" name="label_11">
                 <property name="text">
                  <string>TextLabel</string>
+=======
+               <widget class="QLabel" name="label_k_nozz">
+                <property name="text">
+                 <string>Conductivity</string>
+>>>>>>> Stashed changes
                 </property>
                </widget>
               </item>
@@ -1230,23 +1270,41 @@
                </widget>
               </item>
               <item row="3" column="1">
+<<<<<<< Updated upstream
                <widget class="QLabel" name="label_9">
                 <property name="text">
                  <string>TextLabel</string>
+=======
+               <widget class="QLabel" name="label_E_nozz">
+                <property name="text">
+                 <string>Elastic module</string>
+>>>>>>> Stashed changes
                 </property>
                </widget>
               </item>
               <item row="12" column="1">
+<<<<<<< Updated upstream
                <widget class="QLabel" name="label_22">
                 <property name="text">
                  <string>TextLabel</string>
+=======
+               <widget class="QLabel" name="label_k_cham">
+                <property name="text">
+                 <string>Conductivity</string>
+>>>>>>> Stashed changes
                 </property>
                </widget>
               </item>
               <item row="10" column="1">
+<<<<<<< Updated upstream
                <widget class="QLabel" name="label_20">
                 <property name="text">
                  <string>TextLabel</string>
+=======
+               <widget class="QLabel" name="label_E_cham">
+                <property name="text">
+                 <string>Elastic module</string>
+>>>>>>> Stashed changes
                 </property>
                </widget>
               </item>
@@ -1278,9 +1336,15 @@
                </widget>
               </item>
               <item row="2" column="3">
+<<<<<<< Updated upstream
                <widget class="QLabel" name="label_13">
                 <property name="text">
                  <string>TextLabel</string>
+=======
+               <widget class="QLabel" name="label_Pa_8">
+                <property name="text">
+                 <string>[Pa]</string>
+>>>>>>> Stashed changes
                 </property>
                </widget>
               </item>
@@ -1292,9 +1356,15 @@
                </widget>
               </item>
               <item row="3" column="3">
+<<<<<<< Updated upstream
                <widget class="QLabel" name="label_14">
                 <property name="text">
                  <string>TextLabel</string>
+=======
+               <widget class="QLabel" name="label_Pa_9">
+                <property name="text">
+                 <string>[Pa]</string>
+>>>>>>> Stashed changes
                 </property>
                </widget>
               </item>
@@ -1326,13 +1396,21 @@
                <widget class="QLineEdit" name="line_yield_cham"/>
               </item>
               <item row="10" column="2">
+<<<<<<< Updated upstream
                <widget class="QLineEdit" name="lineEdit_11"/>
+=======
+               <widget class="QLineEdit" name="line_E_cham"/>
+>>>>>>> Stashed changes
               </item>
               <item row="11" column="2">
                <widget class="QLineEdit" name="line_OpT_cham"/>
               </item>
               <item row="12" column="2">
+<<<<<<< Updated upstream
                <widget class="QLineEdit" name="lineEdit_13"/>
+=======
+               <widget class="QLineEdit" name="line_k_cham"/>
+>>>>>>> Stashed changes
               </item>
               <item row="13" column="2">
                <widget class="QLineEdit" name="line_cost_cham"/>
@@ -1345,16 +1423,28 @@
                </widget>
               </item>
               <item row="9" column="3">
+<<<<<<< Updated upstream
                <widget class="QLabel" name="label_25">
                 <property name="text">
                  <string>TextLabel</string>
+=======
+               <widget class="QLabel" name="label_Pa_10">
+                <property name="text">
+                 <string>[Pa]</string>
+>>>>>>> Stashed changes
                 </property>
                </widget>
               </item>
               <item row="10" column="3">
+<<<<<<< Updated upstream
                <widget class="QLabel" name="label_26">
                 <property name="text">
                  <string>TextLabel</string>
+=======
+               <widget class="QLabel" name="label_Pa_11">
+                <property name="text">
+                 <string>[Pa]</string>
+>>>>>>> Stashed changes
                 </property>
                </widget>
               </item>
@@ -1366,9 +1456,15 @@
                </widget>
               </item>
               <item row="12" column="3">
+<<<<<<< Updated upstream
                <widget class="QLabel" name="label_28">
                 <property name="text">
                  <string>TextLabel</string>
+=======
+               <widget class="QLabel" name="label_W_mK_2">
+                <property name="text">
+                 <string>[W/(m K)]</string>
+>>>>>>> Stashed changes
                 </property>
                </widget>
               </item>
@@ -1390,7 +1486,7 @@
       <item>
        <widget class="QPushButton" name="but_run">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -1452,12 +1548,12 @@
      </layout>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="Layout_right" stretch="8,92">
+     <layout class="QVBoxLayout" name="Layout_right" stretch="8,84,8">
       <item>
        <widget class="QLabel" name="label_outputs">
         <property name="font">
          <font>
-          <pointsize>14</pointsize>
+          <pointsize>18</pointsize>
           <bold>true</bold>
          </font>
         </property>
@@ -1477,7 +1573,11 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
+<<<<<<< Updated upstream
          <number>7</number>
+=======
+         <number>5</number>
+>>>>>>> Stashed changes
         </property>
         <property name="elideMode">
          <enum>Qt::ElideNone</enum>
@@ -1500,8 +1600,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>357</width>
-               <height>428</height>
+               <width>352</width>
+               <height>372</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout">
@@ -1706,8 +1806,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>357</width>
-               <height>428</height>
+               <width>352</width>
+               <height>372</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_6">
@@ -1913,8 +2013,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>357</width>
-               <height>428</height>
+               <width>376</width>
+               <height>351</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_8">
@@ -2078,8 +2178,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>357</width>
-               <height>428</height>
+               <width>352</width>
+               <height>372</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_2">
@@ -2201,8 +2301,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>357</width>
-               <height>428</height>
+               <width>352</width>
+               <height>372</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_9">
@@ -2255,13 +2355,40 @@
             <widget class="QWidget" name="scrollAreaWidgetContents_14">
              <property name="geometry">
               <rect>
-               <x>0</x>
+               <x>-50</x>
                <y>0</y>
-               <width>357</width>
-               <height>428</height>
+               <width>415</width>
+               <height>351</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_12">
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="line_vel_fuel">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <spacer name="verticalSpacer_10">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>253</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="2">
+               <widget class="QLabel" name="label_ms_2">
+                <property name="text">
+                 <string>[m/s]</string>
+                </property>
+               </widget>
+              </item>
               <item row="0" column="1">
                <widget class="QLineEdit" name="line_n_oxinj">
                 <property name="readOnly">
@@ -2276,10 +2403,38 @@
                 </property>
                </widget>
               </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_vel_ox">
+                <property name="text">
+                 <string>Oxidizer injector velocity</string>
+                </property>
+               </widget>
+              </item>
               <item row="1" column="1">
                <widget class="QLineEdit" name="line_n_finj">
                 <property name="readOnly">
                  <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="line_vel_ox">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_vel_fuel">
+                <property name="text">
+                 <string>Fuel injector velocity</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QLabel" name="label_ms_3">
+                <property name="text">
+                 <string>[m/s]</string>
                 </property>
                </widget>
               </item>
@@ -2297,19 +2452,6 @@
                 </property>
                </widget>
               </item>
-              <item row="4" column="0">
-               <spacer name="verticalSpacer_10">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>253</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
               <item row="0" column="0">
                <widget class="QLabel" name="label_n_oxinj">
                 <property name="text">
@@ -2317,45 +2459,20 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_vel_ox">
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_inj_pres">
                 <property name="text">
-                 <string>Oxidizer injector velocity</string>
+                 <string>Pressure drop over injector</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_vel_fuel">
+              <item row="4" column="1">
+               <widget class="QLineEdit" name="line_inj_pres"/>
+              </item>
+              <item row="4" column="2">
+               <widget class="QLabel" name="label_Pa_7">
                 <property name="text">
-                 <string>Fuel injector velocity</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="2">
-               <widget class="QLabel" name="label_ms_2">
-                <property name="text">
-                 <string>[m/s]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="2">
-               <widget class="QLabel" name="label_ms_3">
-                <property name="text">
-                 <string>[m/s]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="line_vel_ox">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QLineEdit" name="line_vel_fuel">
-                <property name="readOnly">
-                 <bool>true</bool>
+                 <string>[Pa]</string>
                 </property>
                </widget>
               </item>
@@ -2380,8 +2497,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>357</width>
-               <height>428</height>
+               <width>352</width>
+               <height>372</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_14">
@@ -2440,8 +2557,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>357</width>
-               <height>428</height>
+               <width>352</width>
+               <height>372</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_16">
@@ -2483,6 +2600,16 @@
         </widget>
        </widget>
       </item>
+      <item>
+       <widget class="QComboBox" name="comboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
    </layout>
@@ -2493,7 +2620,7 @@
      <x>0</x>
      <y>0</y>
      <width>1206</width>
-     <height>24</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

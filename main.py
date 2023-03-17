@@ -108,13 +108,13 @@ def Main(d : aux.Data):
         
         #Compute regenerative
        
-        Tf_cool,dptcool=regCool.Run_for_Toperating1D(Tw_ad_noz, h_c_noz, t_noz,prop,Ms.Rhenium,default.A,default.T_fuel_tanks,d.m_nozz/(1.0+d.O_F)/default.n,x_noz_cool[-1],y_noz_cool)
-        Tf_cool,dptcool_c=regCool.Run_for_Toperating0D(d.Tc, d.h_comb, d.ThicknessChamber,prop,Ms.Rhenium,d.Chamber_L*default.Dr,Tf_cool,d.m_nozz/(1.0+d.O_F)/default.n,d.Chamber_L)
+        Tf_cool,dptcool=regCool.Run_for_Toperating1D(Tw_ad_noz, h_c_noz, t_noz,prop,Ms.Rhenium,default.A,default.T_fuel_tanks,d.m_nozz/(1.0+d.O_F)/default.n/d.fuel_frac,x_noz_cool[-1],y_noz_cool)
+        Tf_cool,dptcool_c=regCool.Run_for_Toperating0D(d.Tc, d.h_comb, d.ThicknessChamber,prop,Ms.Rhenium,d.Chamber_L*default.Dr,Tf_cool,d.m_nozz/(1.0+d.O_F)/default.n/d.fuel_frac,d.Chamber_L)
         dptcool=dptcool+dptcool_c
 
         #Compute Turbo
         dp_cool=np.max(dptcool)
-        d.ptinj, d.W_Opump, d.W_Fpump, d.W_turb, error = Turbo.TurboM(default, prop, d.O_F, d.Pa, Tf_cool, dp_cool, d.m_nozz)
+        d.ptinj, d.W_Opump, d.W_Fpump, d.W_turb, d.fuel_frac, error = Turbo.TurboM(default, prop, d.O_F, d.Pa, Tf_cool, dp_cool, d.m_nozz)
         if(error): return False
         
         #Compute Injector (2)

@@ -57,7 +57,7 @@ def TurboM(Default : aux.Default, prop : aux.Propellant, O_F : float, p_a : floa
             return [0, 0, 0, 0, 1] #Returns 1 in last position, indicating aux to break
     
     turbo.results();
-    return [turbo.ptinj, turbo.Wop, turbo.Wfp, turbo.Wt, turbo.br] #Returns 0 in last position, indicating aux to continue
+    return [turbo.ptinj, turbo.Wop, turbo.Wfp, turbo.Wt, turbo.l, turbo.br] #Returns 0 in last position, indicating aux to continue
 
 
 #Function that computes the expander cycle
@@ -86,6 +86,7 @@ class EX:
     Wt : float #[W] Turbine power
     Wop : float #[W] Oxidizer pump power
     Wfp : float #[W] Fuel pump power
+    l = 1.0 #[-] fraction of fuel for bleed
 
     #Auxiliary
     dptvalve = 0.0 #[Pa] Total pressure losses in valves
@@ -498,6 +499,7 @@ class EL:
     ptinj : float #[Pa] Total pressure at injector inlet
     Wop : float #[W] Oxidizer pump power
     Wfp : float #[W] Fuel pump power
+    l = 1.0 #[-] fraction of fuel for bleed
 
     #Auxiliary
     dptvalve = 0.0 #[Pa] Total pressure losses in valves
