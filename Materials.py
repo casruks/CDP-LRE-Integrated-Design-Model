@@ -105,19 +105,22 @@ def Mass(Pc, material_N, material_P, material_V, arear, rt, mprop, FS, rhoprop, 
 ##Cost function 
 def Cost(m_engine, R, n):
     TotalCost = 0
-    f1  = 1.0
-    f2  = 0.27+1.075*R**46.994
-    f3  = 1
-    f4  = -0.0553*mth.log(n) + 1.0011
-    a_m = 4.0
+    lst = []
+    for i in range(len(R)):
+        f1  = 1.0
+        f2  = 0.27+1.075*R[i]**46.994
+        f3  = 1
+        f4  = -0.0553*mth.log(n) + 1.0011
+        a_m = 4.0
 
-    C_D = 1.1*f1*f2*f3*m_engine**0.58
+        C_D = 1.1*f1*f2*f3*m_engine**0.58
 
-    F_E = a_m*f4*m_engine**0.46
+        F_E = a_m*f4*m_engine**0.46
 
-    TotalCost_MY = C_D + F_E
-    TotalCost = TotalCost_MY*200e3
-    return TotalCost
+        TotalCost_MY = C_D + F_E
+        TotalCost = TotalCost_MY*200e3
+        lst.append(TotalCost)
+    return lst
 
 # Mass = Mass_Regenerative(3.20e6,Inc_718,Inc_718,D6AC_Steel,61.1,0.076,16.85,1.1,351.91,'EX')
 # print(Mass)
