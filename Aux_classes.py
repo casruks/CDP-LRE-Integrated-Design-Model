@@ -122,14 +122,14 @@ class Default:
 # Propellant class
 class Propellant:
     # Oxidizer
-    def Oxigen():
-        Ox_name = "LOX"  # Oxidizer name for rocketCEA
-        Ox_composition = "O 2"  # Composition of oxidizer for rocketcea
-        o_dens = 1141.0  # Oxidizer density
-        ocp = 14307.0  # oxidizer cp
-        h_ox = -12.979  # oxidizer enthalpy
-        o_lamb = 1.0e-6
-        o_nist_enthalpy_coef = [
+    def Oxigen(self):
+        self.Ox_name = "LOX"  # Oxidizer name for rocketCEA
+        self.Ox_composition = "O 2"  # Composition of oxidizer for rocketcea
+        self.o_dens = 1141.0  # Oxidizer density
+        self.ocp = 14307.0  # oxidizer cp
+        self.h_ox = -12.979  # oxidizer enthalpy
+        self.o_lamb = 1.0e-6
+        self.o_nist_enthalpy_coef = [
             20.91,
             10.72,
             -2.02,
@@ -147,21 +147,21 @@ class Propellant:
             246.79,
             0,
         ]  # for shomate equation
-        omiu = 1.0e-6
+        self.omiu = 1.0e-6
 
     # Fuel
-    def LH():
-        Fuel_name = "LH2"  # Fuel name for rocketCEA
-        Fuel_composition = "H 2"  # Composition of fuel for rocketcea
-        f_dens_l = 71.0  # liquid fuel density
-        f_dens_g = 1.0  # gaseous fuel density
-        f_gamma = 1.4  # fuel gamma
-        fcp = 14307.0  # fuel cp
-        h_fuel = -9.012  # fuel enthalpy
-        R_f = 4.1573  # fuel gas constant
-        f_lamb = 9.6e-6
-        fmiu = 1.0e-6
-        f_nist_enthalpy_coef = [
+    def LH(self):
+        self.Fuel_name = "LH2"  # Fuel name for rocketCEA
+        self.Fuel_composition = "H 2"  # Composition of fuel for rocketcea
+        self.f_dens_l = 71.0  # liquid fuel density
+        self.f_dens_g = 1.0  # gaseous fuel density
+        self.f_gamma = 1.4  # fuel gamma
+        self.fcp = 14307.0  # fuel cp
+        self.h_fuel = -9.012  # fuel enthalpy
+        self.R_f = 4.1573  # fuel gas constant
+        self.f_lamb = 9.6e-6
+        self.fmiu = 1.0e-6
+        self.f_nist_enthalpy_coef = [
             43.31,
             -4.293,
             1.27243,
@@ -179,12 +179,12 @@ class Propellant:
             172.71,
             0,
         ]  # for shomate equation
-        heatingvalue = 119.96 * 10**6  # for the fuel only!
+        self.heatingvalue = 119.96 * 10**6  # for the fuel only!
         # Propellant
-        gama = 1.4
-        tq = 0.9  # characteristic chemical time of propellant
-        Frozen_state = 0  # Frozen state of the propellant 0=chemical equilibrium flow, 1=frozen flow (from throat onwards)
-        lstar = [0.76, 1.02]
+    gama = 1.4
+    tq = 0.9  # characteristic chemical time of propellant
+    Frozen_state = 0  # Frozen state of the propellant 0=chemical equilibrium flow, 1=frozen flow (from throat onwards)
+    lstar = [0.76, 1.02]
 
     def __init__(self, type):
         match type:
@@ -216,70 +216,70 @@ class Propellant:
                 self.Oxigen() 
 
 
-    def Rp1():
-        Fuel_name = "RP1"  # Fuel name for rocketCEA
-        Fuel_composition = "C 1 H 1.95"  # Composition of fuel for rocketcea
-        f_dens_l = 804.59  # liquid fuel density
-        f_dens_g = "does not exist in literature"   # gaseous fuel density
-        f_gamma = 1.24 # fuel gamma
-        fcp = 1.88  # fuel cp
-        h_fuel = -1758.456  # fuel enthalpy
-        R_f = 4.75 # fuel gas constant
-        f_lamb = 115e-3
-        fmiu = 2.166e-6
-        f_nist_enthalpy_coef = [
+    def Rp1(self):
+        self.Fuel_name = "RP1"  # Fuel name for rocketCEA
+        self.Fuel_composition = "C 1 H 1.95"  # Composition of fuel for rocketcea
+        self.f_dens_l = 804.59  # liquid fuel density
+        self.f_dens_g = "does not exist in literature"   # gaseous fuel density
+        self.f_gamma = 1.24 # fuel gamma
+        self.fcp = 1.88  # fuel cp
+        self.h_fuel = -1758.456  # fuel enthalpy
+        self.R_f = 4.75 # fuel gas constant
+        self.f_lamb = 115e-3
+        self.fmiu = 2.166e-6
+        self.f_nist_enthalpy_coef = [
             
         ]  # for shomate equation
-        heatingvalue =  -43100 # for the fuel only!
+        self.heatingvalue =  -43100 # for the fuel only!
 
-    def Ethanol():
-        Fuel_name = "Ethanol"  # Fuel name for rocketCEA
-        Fuel_composition = "C 2 H 6 O 1"  # Composition of fuel for rocketcea
-        f_dens_l =  789 # liquid fuel density
-        f_dens_g = 1.59 # gaseous fuel density
-        f_gamma = 1.13  # fuel gamma
-        fcp = 111.7/46.0684*10**3  # fuel cp
-        h_fuel = -234  # fuel enthalpy
-        R_f = 8.314/46.0684*10**3 # fuel gas constant
-        f_lamb = 166.4e-3
-        fmiu = 1199.4e-6
-        f_nist_enthalpy_coef = [
+    def Ethanol(self):
+        self.Fuel_name = "Ethanol"  # Fuel name for rocketCEA
+        self.Fuel_composition = "C 2 H 6 O 1"  # Composition of fuel for rocketcea
+        self.f_dens_l =  789 # liquid fuel density
+        self.f_dens_g = 1.59 # gaseous fuel density
+        self.f_gamma = 1.13  # fuel gamma
+        self.fcp = 111.7/46.0684*10**3  # fuel cp
+        self.h_fuel = -234  # fuel enthalpy
+        self.R_f = 8.314/46.0684*10**3 # fuel gas constant
+        self.f_lamb = 166.4e-3
+        self.fmiu = 1199.4e-6
+        self.f_nist_enthalpy_coef = [
             
         ]  # for shomate equation
-        heatingvalue =  -29672 # for the fuel only!
+        self.heatingvalue =  -29672 # for the fuel only!
 
-    def UDMH():
-        Fuel_name = "UDMH"  # Fuel name for rocketCEA
-        Fuel_composition = "C 2 H 8 N 2"  # Composition of fuel for rocketcea
+    def UDMH(self):
+        self.Fuel_name = "UDMH"  # Fuel name for rocketCEA
+        self.Fuel_composition = "C 2 H 8 N 2"  # Composition of fuel for rocketcea
 
-        f_dens_l = 793#IDK YET  # liquid fuel density
+        self.f_dens_l = 793#IDK YET  # liquid fuel density
 
-        f_dens_g = "does not exist in literature" # gaseous fuel density
-        f_gamma = 1.152 # fuel gamma
-        fcp = 164.05/60.098*10**3  # fuel cp
-        h_fuel = 83.3*10**3/60.0983  # fuel enthalpy
-        R_f = 8.314/60.0983*10**3 # fuel gas constant
-        f_lamb = 168e-3
-        fmiu = 1.1071e-05
-        f_nist_enthalpy_coef = [
+        self.f_dens_g = "does not exist in literature" # gaseous fuel density
+        self.f_gamma = 1.152 # fuel gamma
+        self.fcp = 164.05/60.098*10**3  # fuel cp
+        self.h_fuel = 83.3*10**3/60.0983  # fuel enthalpy
+        self.R_f = 8.314/60.0983*10**3 # fuel gas constant
+        self.f_lamb = 168e-3
+        self.fmiu = 1.1071e-05
+        self.f_nist_enthalpy_coef = [
             
         ]  # for shomate equation
-        heatingvalue = -32928 # for the fuel only!
+        self.heatingvalue = -32928 # for the fuel only!
 
-    def methane():
-        Fuel_name = "Methane"  # Fuel name for rocketCEA
-        Fuel_composition = "C 1 H 4"  # Composition of fuel for rocketcea
+    def methane(self):
+        self.Fuel_name = "Methane"  # Fuel name for rocketCEA
+        self.Fuel_composition = "C 1 H 4"  # Composition of fuel for rocketcea
 
-        f_dens_l = 451.13 #IDK YET  # liquid fuel density
+        self.f_dens_l = 451.13 #IDK YET  # liquid fuel density
 
-        f_dens_g = 0.64861 # gaseous fuel density
-        f_gamma = 2.2313/1.7082	 # fuel gamma
-        fcp = 2231  # fuel cp
-        h_fuel = -74.87	  # fuel enthalpy
-        R_f = 8.314/16.0425*10**3 # fuel gas constant
-        f_lamb = 0.033937
-        fmiu = 480e-6
-        f_nist_enthalpy_coef = [85.81217,
+        self.f_dens_g = 0.64861 # gaseous fuel density
+        self.f_gamma = 2.2313/1.7082	 # fuel gamma
+        self.fcp = 2231  # fuel cp
+        self.h_fuel = -74.87	  # fuel enthalpy
+        self.R_f = 8.314/16.0425*10**3 # fuel gas constant
+        self.f_lamb = 0.033937
+        self.fmiu = 480e-6
+        self.f_nist_enthalpy_coef = [85.81217,
             11.26467,
             -2.114146,
             0.13819,
@@ -288,17 +288,17 @@ class Propellant:
             224.4143,
             -74.8731   
         ]  # for shomate equation
-        heatingvalue =  -55511 # for the fuel only!
+        self.heatingvalue =  -55511 # for the fuel only!
 
 
-    def NTO():
-        Ox_name = "NTO"  # Oxidizer name for rocketCEA
-        Ox_composition = "N 2 O 4"  # Composition of oxidizer for rocketcea
-        o_dens = 1442.46  # Oxidizer density
-        ocp = 1.549*10**3  # oxidizer cp
-        h_ox = -19.56/92.0110*10**3	 # oxidizer enthalpy in liquid phase. Gas phase is +9.08/92.0110*10**3
-        o_lamb = 131*10**(-3)
-        o_nist_enthalpy_coef = [ 128.6220,
+    def NTO(self):
+        self.Ox_name = "NTO"  # Oxidizer name for rocketCEA
+        self.Ox_composition = "N 2 O 4"  # Composition of oxidizer for rocketcea
+        self.o_dens = 1442.46  # Oxidizer density
+        self.ocp = 1.549*10**3  # oxidizer cp
+        self.h_ox = -19.56/92.0110*10**3	 # oxidizer enthalpy in liquid phase. Gas phase is +9.08/92.0110*10**3
+        self.o_lamb = 131*10**(-3)
+        self.o_nist_enthalpy_coef = [ 128.6220,
             2.524345,
             -0.520883,
             0.03663,
@@ -307,7 +307,7 @@ class Propellant:
             417.0444,
             9.078988        
         ]  # for shomate equation
-        omiu = 393*10**(-6)
+        self.omiu = 393*10**(-6)
 
 
 # Data class
