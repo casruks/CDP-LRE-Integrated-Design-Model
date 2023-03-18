@@ -66,7 +66,11 @@
          </font>
         </property>
         <property name="currentIndex">
+<<<<<<< Updated upstream
          <number>7</number>
+=======
+         <number>5</number>
+>>>>>>> Stashed changes
         </property>
         <widget class="QWidget" name="global">
          <attribute name="title">
@@ -318,11 +322,16 @@
                <x>0</x>
                <y>0</y>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                <width>421</width>
                <height>365</height>
 =======
                <width>461</width>
                <height>382</height>
+>>>>>>> Stashed changes
+=======
+               <width>421</width>
+               <height>365</height>
 >>>>>>> Stashed changes
               </rect>
              </property>
@@ -551,11 +560,16 @@
                <x>0</x>
                <y>0</y>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                <width>367</width>
                <height>365</height>
 =======
                <width>446</width>
                <height>351</height>
+>>>>>>> Stashed changes
+=======
+               <width>367</width>
+               <height>365</height>
 >>>>>>> Stashed changes
               </rect>
              </property>
@@ -828,6 +842,58 @@
              </property>
              <layout class="QGridLayout" name="gridLayout_10">
               <item row="2" column="0">
+<<<<<<< Updated upstream
+=======
+               <widget class="QLabel" name="label_T0_wall">
+                <property name="text">
+                 <string>Initial wall temperature</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_K_2">
+                <property name="text">
+                 <string>[K]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_DH">
+                <property name="text">
+                 <string>Hydraulic diameter</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_FuelTank_temp">
+                <property name="text">
+                 <string>Fuel tank temperature</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="label_coating_thick">
+                <property name="text">
+                 <string>Coating thickness</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="line_OxTank_temp">
+                <property name="text">
+                 <string>60</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_OxTank_temp">
+                <property name="text">
+                 <string>Oxidizer tank temperature</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="0">
+>>>>>>> Stashed changes
                <spacer name="verticalSpacer_7">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
@@ -840,13 +906,19 @@
                 </property>
                </spacer>
               </item>
+<<<<<<< Updated upstream
               <item row="0" column="2">
                <widget class="QLabel" name="label_K_2">
+=======
+              <item row="1" column="2">
+               <widget class="QLabel" name="label_K_3">
+>>>>>>> Stashed changes
                 <property name="text">
                  <string>[K]</string>
                 </property>
                </widget>
               </item>
+<<<<<<< Updated upstream
               <item row="0" column="0">
                <widget class="QLabel" name="label_OxTank_temp">
                 <property name="text">
@@ -870,15 +942,97 @@
               </item>
               <item row="1" column="2">
                <widget class="QLabel" name="label_K_3">
+=======
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="line_FuelTank_temp">
+                <property name="text">
+                 <string>20</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_coating">
+                <property name="text">
+                 <string>Coating material</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1" colspan="2">
+               <widget class="QComboBox" name="combo_coating">
+                <item>
+                 <property name="text">
+                  <string>Copper</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Narloy Z</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>GRCop 84</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>SIlica</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Carbon</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="line_T0_wall">
+                <property name="text">
+                 <string>298</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="line_DH">
+                <property name="text">
+                 <string>0.01</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QLineEdit" name="line_coating_thick">
+                <property name="text">
+                 <string>0</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="QLabel" name="label_K_4">
+>>>>>>> Stashed changes
                 <property name="text">
                  <string>[K]</string>
                 </property>
                </widget>
               </item>
+<<<<<<< Updated upstream
               <item row="1" column="1">
                <widget class="QLineEdit" name="line_FuelTank_temp">
                 <property name="text">
                  <string>20</string>
+=======
+              <item row="3" column="2">
+               <widget class="QLabel" name="label_m_12">
+                <property name="text">
+                 <string>[m]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="2">
+               <widget class="QLabel" name="label_m_11">
+                <property name="text">
+                 <string>[m]</string>
+>>>>>>> Stashed changes
                 </property>
                </widget>
               </item>
@@ -908,6 +1062,7 @@
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_11">
+<<<<<<< Updated upstream
               <item row="1" column="1">
                <widget class="QLineEdit" name="line_Cd">
                 <property name="text">
@@ -916,13 +1071,53 @@
                </widget>
               </item>
               <item row="1" column="0">
+=======
+              <item row="2" column="0">
+>>>>>>> Stashed changes
                <widget class="QLabel" name="label_Cd">
                 <property name="text">
                  <string>Discharge coefficient</string>
                 </property>
                </widget>
               </item>
+<<<<<<< Updated upstream
               <item row="2" column="0">
+=======
+              <item row="0" column="1" colspan="2">
+               <widget class="QComboBox" name="combo_injType">
+                <item>
+                 <property name="text">
+                  <string>like</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>unlike</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>pintle</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="line_Cd">
+                <property name="text">
+                 <string>0.7</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="QLabel" name="label_no_8">
+                <property name="text">
+                 <string>[-]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+>>>>>>> Stashed changes
                <spacer name="verticalSpacer_9">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
@@ -935,10 +1130,36 @@
                 </property>
                </spacer>
               </item>
+<<<<<<< Updated upstream
               <item row="1" column="2">
                <widget class="QLabel" name="label_no_8">
+=======
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_injType">
                 <property name="text">
-                 <string>[-]</string>
+                 <string>Injector type</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QCheckBox" name="check_inj_dp">
+>>>>>>> Stashed changes
+                <property name="text">
+                 <string>User-defined pressure drop</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="line_inj_dp">
+                <property name="text">
+                 <string>0.2</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QLabel" name="label_Pc_2">
+                <property name="text">
+                 <string>[Pc]</string>
                 </property>
                </widget>
               </item>
@@ -989,6 +1210,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
+<<<<<<< Updated upstream
                <width>352</width>
                <height>372</height>
               </rect>
@@ -1037,12 +1259,61 @@
                </widget>
               </item>
               <item row="1" column="0">
+=======
+               <width>513</width>
+               <height>365</height>
+              </rect>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_13">
+              <item row="3" column="2">
+               <widget class="QLabel" name="label_s_3">
+                <property name="text">
+                 <string>[s]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="label_corr_ign">
+                <property name="text">
+                 <string>Igniter correction factor</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1" colspan="2">
+               <widget class="QComboBox" name="combo_Ign_type">
+                <item>
+                 <property name="text">
+                  <string>Torch igniter</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Catalytic</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Hypergolic</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_Ign_type">
+                <property name="text">
+                 <string>Igniter type</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+>>>>>>> Stashed changes
                <widget class="QLabel" name="label_tign">
                 <property name="text">
                  <string>Igniter burn time</string>
                 </property>
                </widget>
               </item>
+<<<<<<< Updated upstream
               <item row="1" column="1">
                <widget class="QLineEdit" name="line_tign">
                 <property name="text">
@@ -1058,6 +1329,16 @@
                </widget>
               </item>
               <item row="4" column="0">
+=======
+              <item row="4" column="1">
+               <widget class="QLineEdit" name="line_O_F_ign">
+                <property name="text">
+                 <string>0.7</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="0">
+>>>>>>> Stashed changes
                <spacer name="verticalSpacer_11">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
@@ -1070,15 +1351,93 @@
                 </property>
                </spacer>
               </item>
+<<<<<<< Updated upstream
               <item row="0" column="0">
                <widget class="QLabel" name="label_Ign_type">
+=======
+              <item row="4" column="2">
+               <widget class="QLabel" name="label_no_13">
+                <property name="text">
+                 <string>[-]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QLineEdit" name="line_corr_ign">
+                <property name="text">
+                 <string>20</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="line_tign">
+>>>>>>> Stashed changes
                 <property name="text">
                  <string>Igniter type</string>
                 </property>
                </widget>
               </item>
+<<<<<<< Updated upstream
               <item row="0" column="1" colspan="2">
                <widget class="QComboBox" name="combo_Ign_type"/>
+=======
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_O_F_ign">
+                <property name="text">
+                 <string>O/F of the igniter</string>
+                </property>
+               </widget>
+>>>>>>> Stashed changes
+              </item>
+              <item row="5" column="2">
+               <widget class="QLabel" name="label_no_14">
+                <property name="text">
+                 <string>[-]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1" colspan="2">
+               <widget class="QComboBox" name="combo_torch">
+                <item>
+                 <property name="text">
+                  <string>Main propellant</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Methane-oxygen</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Hydrogen-oxygen</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="2" column="1" colspan="2">
+               <widget class="QComboBox" name="combo_hypergolic">
+                <item>
+                 <property name="text">
+                  <string>oxygen with triethylaluminium</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>aniline</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>NTO with mono-methylhydrazine</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Unsymmetrical dimethylhydrazine</string>
+                 </property>
+                </item>
+               </widget>
               </item>
              </layout>
             </widget>
@@ -1101,6 +1460,7 @@
               <rect>
 <<<<<<< Updated upstream
                <x>0</x>
+<<<<<<< Updated upstream
                <y>-187</y>
                <width>440</width>
                <height>552</height>
@@ -1110,10 +1470,16 @@
                <width>525</width>
                <height>582</height>
 >>>>>>> Stashed changes
+=======
+               <y>0</y>
+               <width>520</width>
+               <height>552</height>
+>>>>>>> Stashed changes
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_15">
               <item row="5" column="3">
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
                <widget class="QLabel" name="label_16">
                 <property name="text">
@@ -1123,11 +1489,24 @@
                 <property name="text">
                  <string>[W/(m K)]</string>
 >>>>>>> Stashed changes
+=======
+               <widget class="QLabel" name="label_W_mK_nozz">
+                <property name="text">
+                 <string>[W/(m K)]</string>
+>>>>>>> Stashed changes
                 </property>
                </widget>
               </item>
               <item row="4" column="2">
+<<<<<<< Updated upstream
                <widget class="QLineEdit" name="line_OpT_nozz"/>
+=======
+               <widget class="QLineEdit" name="line_OpT_nozz">
+                <property name="text">
+                 <string>2200</string>
+                </property>
+               </widget>
+>>>>>>> Stashed changes
               </item>
               <item row="8" column="1">
                <widget class="QLabel" name="label_dens_cham">
@@ -1154,6 +1533,7 @@
               </item>
               <item row="5" column="2">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                <widget class="QLineEdit" name="lineEdit_7"/>
               </item>
               <item row="3" column="2">
@@ -1167,13 +1547,38 @@
               </item>
               <item row="4" column="3">
                <widget class="QLabel" name="label_K_5">
+=======
+               <widget class="QLineEdit" name="line_k_nozz">
+                <property name="text">
+                 <string>48</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QLineEdit" name="line_E_nozz">
+                <property name="text">
+                 <string>471e9</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="3">
+               <widget class="QLabel" name="label_K_nozz">
+>>>>>>> Stashed changes
                 <property name="text">
                  <string>[K]</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="2">
+<<<<<<< Updated upstream
                <widget class="QLineEdit" name="line_dens_nozz"/>
+=======
+               <widget class="QLineEdit" name="line_dens_nozz">
+                <property name="text">
+                 <string>21000</string>
+                </property>
+               </widget>
+>>>>>>> Stashed changes
               </item>
               <item row="1" column="1">
                <widget class="QLabel" name="label_dens_nozz">
@@ -1204,13 +1609,75 @@
                 </item>
                 <item>
                  <property name="text">
+<<<<<<< Updated upstream
                   <string>option1</string>
+=======
+                  <string>Rhenium</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Aluminium L_7075_T6</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Tungsten Ti6AL4V</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Haynes_188</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Inc_X_750</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Inc_600</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Inc_718</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Inc_A_286</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Colombium_c103</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Structural copper</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Steel D6AC</string>
+>>>>>>> Stashed changes
                  </property>
                 </item>
                </widget>
               </item>
               <item row="2" column="2">
+<<<<<<< Updated upstream
                <widget class="QLineEdit" name="line_yield_nozz"/>
+=======
+               <widget class="QLineEdit" name="line_yield_nozz">
+                <property name="text">
+                 <string>2300e6</string>
+                </property>
+               </widget>
+>>>>>>> Stashed changes
               </item>
               <item row="0" column="2" colspan="2">
                <widget class="QComboBox" name="combo_mat_nozz">
@@ -1227,12 +1694,67 @@
                 </item>
                 <item>
                  <property name="text">
+<<<<<<< Updated upstream
                   <string>option1</string>
+=======
+                  <string>Rhenium</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Aluminium L_7075_T6</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Tungsten Ti6AL4V</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Haynes_188</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Inc_X_750</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Inc_600</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Inc_718</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Inc_A_286</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Colombium_c103</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Structural copper</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Steel D6AC</string>
+>>>>>>> Stashed changes
                  </property>
                 </item>
                </widget>
               </item>
               <item row="6" column="2">
+<<<<<<< Updated upstream
                <widget class="QLineEdit" name="line_cost_nozz"/>
               </item>
               <item row="5" column="1">
@@ -1241,6 +1763,18 @@
                 <property name="text">
                  <string>TextLabel</string>
 =======
+               <widget class="QLabel" name="label_k_nozz">
+                <property name="text">
+                 <string>Conductivity</string>
+>>>>>>> Stashed changes
+=======
+               <widget class="QLineEdit" name="line_cost_nozz">
+                <property name="text">
+                 <string>938</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
                <widget class="QLabel" name="label_k_nozz">
                 <property name="text">
                  <string>Conductivity</string>
@@ -1256,7 +1790,11 @@
                </widget>
               </item>
               <item row="1" column="3">
+<<<<<<< Updated upstream
                <widget class="QLabel" name="label_kg_m3_2">
+=======
+               <widget class="QLabel" name="label_kg_m3_nozz">
+>>>>>>> Stashed changes
                 <property name="text">
                  <string>[kg/m^3]</string>
                 </property>
@@ -1271,9 +1809,15 @@
               </item>
               <item row="3" column="1">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                <widget class="QLabel" name="label_9">
                 <property name="text">
                  <string>TextLabel</string>
+=======
+               <widget class="QLabel" name="label_E_nozz">
+                <property name="text">
+                 <string>Elastic module</string>
+>>>>>>> Stashed changes
 =======
                <widget class="QLabel" name="label_E_nozz">
                 <property name="text">
@@ -1284,9 +1828,15 @@
               </item>
               <item row="12" column="1">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                <widget class="QLabel" name="label_22">
                 <property name="text">
                  <string>TextLabel</string>
+=======
+               <widget class="QLabel" name="label_k_cham">
+                <property name="text">
+                 <string>Conductivity</string>
+>>>>>>> Stashed changes
 =======
                <widget class="QLabel" name="label_k_cham">
                 <property name="text">
@@ -1297,9 +1847,15 @@
               </item>
               <item row="10" column="1">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                <widget class="QLabel" name="label_20">
                 <property name="text">
                  <string>TextLabel</string>
+=======
+               <widget class="QLabel" name="label_E_cham">
+                <property name="text">
+                 <string>Elastic module</string>
+>>>>>>> Stashed changes
 =======
                <widget class="QLabel" name="label_E_cham">
                 <property name="text">
@@ -1329,7 +1885,11 @@
                </widget>
               </item>
               <item row="6" column="3">
+<<<<<<< Updated upstream
                <widget class="QLabel" name="label_eur_kg_2">
+=======
+               <widget class="QLabel" name="label_eur_kg_nozz">
+>>>>>>> Stashed changes
                 <property name="text">
                  <string>[EUR/kg]</string>
                 </property>
@@ -1337,11 +1897,17 @@
               </item>
               <item row="2" column="3">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                <widget class="QLabel" name="label_13">
                 <property name="text">
                  <string>TextLabel</string>
 =======
                <widget class="QLabel" name="label_Pa_8">
+                <property name="text">
+                 <string>[Pa]</string>
+>>>>>>> Stashed changes
+=======
+               <widget class="QLabel" name="label_Pa_nozz">
                 <property name="text">
                  <string>[Pa]</string>
 >>>>>>> Stashed changes
@@ -1357,11 +1923,17 @@
               </item>
               <item row="3" column="3">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                <widget class="QLabel" name="label_14">
                 <property name="text">
                  <string>TextLabel</string>
 =======
                <widget class="QLabel" name="label_Pa_9">
+                <property name="text">
+                 <string>[Pa]</string>
+>>>>>>> Stashed changes
+=======
+               <widget class="QLabel" name="label_Pa_nozz_2">
                 <property name="text">
                  <string>[Pa]</string>
 >>>>>>> Stashed changes
@@ -1390,6 +1962,7 @@
                </widget>
               </item>
               <item row="8" column="2">
+<<<<<<< Updated upstream
                <widget class="QLineEdit" name="line_dens_cham"/>
               </item>
               <item row="9" column="2">
@@ -1417,12 +1990,58 @@
               </item>
               <item row="8" column="3">
                <widget class="QLabel" name="label_kg_m3">
+=======
+               <widget class="QLineEdit" name="line_dens_cham">
+                <property name="text">
+                 <string>21000</string>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="2">
+               <widget class="QLineEdit" name="line_yield_cham">
+                <property name="text">
+                 <string>2300e6</string>
+                </property>
+               </widget>
+              </item>
+              <item row="10" column="2">
+               <widget class="QLineEdit" name="line_E_cham">
+                <property name="text">
+                 <string>471e9</string>
+                </property>
+               </widget>
+              </item>
+              <item row="11" column="2">
+               <widget class="QLineEdit" name="line_OpT_cham">
+                <property name="text">
+                 <string>2200</string>
+                </property>
+               </widget>
+              </item>
+              <item row="12" column="2">
+               <widget class="QLineEdit" name="line_k_cham">
+                <property name="text">
+                 <string>48</string>
+                </property>
+               </widget>
+              </item>
+              <item row="13" column="2">
+               <widget class="QLineEdit" name="line_cost_cham">
+                <property name="text">
+                 <string>938</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="3">
+               <widget class="QLabel" name="label_kg_m3_cham">
+>>>>>>> Stashed changes
                 <property name="text">
                  <string>[kg/m^3]</string>
                 </property>
                </widget>
               </item>
               <item row="9" column="3">
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
                <widget class="QLabel" name="label_25">
                 <property name="text">
@@ -1432,10 +2051,16 @@
                 <property name="text">
                  <string>[Pa]</string>
 >>>>>>> Stashed changes
+=======
+               <widget class="QLabel" name="label_Pa_cham">
+                <property name="text">
+                 <string>[Pa]</string>
+>>>>>>> Stashed changes
                 </property>
                </widget>
               </item>
               <item row="10" column="3">
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
                <widget class="QLabel" name="label_26">
                 <property name="text">
@@ -1445,17 +2070,27 @@
                 <property name="text">
                  <string>[Pa]</string>
 >>>>>>> Stashed changes
+=======
+               <widget class="QLabel" name="label_Pa_cham_2">
+                <property name="text">
+                 <string>[Pa]</string>
+>>>>>>> Stashed changes
                 </property>
                </widget>
               </item>
               <item row="11" column="3">
+<<<<<<< Updated upstream
                <widget class="QLabel" name="label_K_4">
+=======
+               <widget class="QLabel" name="label_K_cham">
+>>>>>>> Stashed changes
                 <property name="text">
                  <string>[K]</string>
                 </property>
                </widget>
               </item>
               <item row="12" column="3">
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
                <widget class="QLabel" name="label_28">
                 <property name="text">
@@ -1465,11 +2100,20 @@
                 <property name="text">
                  <string>[W/(m K)]</string>
 >>>>>>> Stashed changes
+=======
+               <widget class="QLabel" name="label_W_mK_cham">
+                <property name="text">
+                 <string>[W/(m K)]</string>
+>>>>>>> Stashed changes
                 </property>
                </widget>
               </item>
               <item row="13" column="3">
+<<<<<<< Updated upstream
                <widget class="QLabel" name="label_eur_kg">
+=======
+               <widget class="QLabel" name="label_eur_kg_cham">
+>>>>>>> Stashed changes
                 <property name="text">
                  <string>[EUR/kg]</string>
                 </property>
@@ -1600,8 +2244,13 @@
               <rect>
                <x>0</x>
                <y>0</y>
+<<<<<<< Updated upstream
                <width>352</width>
                <height>372</height>
+=======
+               <width>357</width>
+               <height>380</height>
+>>>>>>> Stashed changes
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout">
@@ -1806,8 +2455,13 @@
               <rect>
                <x>0</x>
                <y>0</y>
+<<<<<<< Updated upstream
                <width>352</width>
                <height>372</height>
+=======
+               <width>357</width>
+               <height>380</height>
+>>>>>>> Stashed changes
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_6">
@@ -2013,8 +2667,13 @@
               <rect>
                <x>0</x>
                <y>0</y>
+<<<<<<< Updated upstream
                <width>376</width>
                <height>351</height>
+=======
+               <width>357</width>
+               <height>380</height>
+>>>>>>> Stashed changes
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_8">
@@ -2178,8 +2837,13 @@
               <rect>
                <x>0</x>
                <y>0</y>
+<<<<<<< Updated upstream
                <width>352</width>
                <height>372</height>
+=======
+               <width>357</width>
+               <height>380</height>
+>>>>>>> Stashed changes
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_2">
@@ -2301,8 +2965,13 @@
               <rect>
                <x>0</x>
                <y>0</y>
+<<<<<<< Updated upstream
                <width>352</width>
                <height>372</height>
+=======
+               <width>357</width>
+               <height>380</height>
+>>>>>>> Stashed changes
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_9">
@@ -2357,8 +3026,13 @@
               <rect>
                <x>-50</x>
                <y>0</y>
+<<<<<<< Updated upstream
                <width>415</width>
                <height>351</height>
+=======
+               <width>357</width>
+               <height>380</height>
+>>>>>>> Stashed changes
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_12">
@@ -2497,8 +3171,13 @@
               <rect>
                <x>0</x>
                <y>0</y>
+<<<<<<< Updated upstream
                <width>352</width>
                <height>372</height>
+=======
+               <width>357</width>
+               <height>380</height>
+>>>>>>> Stashed changes
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_14">
@@ -2542,6 +3221,7 @@
           </item>
          </layout>
         </widget>
+<<<<<<< Updated upstream
         <widget class="QWidget" name="mat">
          <attribute name="title">
           <string>Materials</string>
@@ -2598,6 +3278,18 @@
           </item>
          </layout>
         </widget>
+=======
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="combo_run">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+>>>>>>> Stashed changes
        </widget>
       </item>
       <item>
@@ -2747,6 +3439,121 @@
     </hint>
    </hints>
   </connection>
+<<<<<<< Updated upstream
+=======
+  <connection>
+   <sender>combo_mat_nozz</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>GUI</receiver>
+   <slot>nozz_mat_changed(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>403</x>
+     <y>151</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>602</x>
+     <y>296</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>combo_mat_comb</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>GUI</receiver>
+   <slot>cham_mat_changed(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>403</x>
+     <y>431</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>602</x>
+     <y>296</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>combo_coating</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>GUI</receiver>
+   <slot>coating_changed(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>319</x>
+     <y>308</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>602</x>
+     <y>296</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>combo_hypergolic</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>GUI</receiver>
+   <slot>hypergolic_changed(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>309</x>
+     <y>232</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>602</x>
+     <y>296</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>combo_torch</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>GUI</receiver>
+   <slot>torch_changed(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>309</x>
+     <y>194</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>602</x>
+     <y>296</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>combo_run</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>GUI</receiver>
+   <slot>Output(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>993</x>
+     <y>550</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>602</x>
+     <y>296</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>check_inj_dp</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>GUI</receiver>
+   <slot>define_inj_dp(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>166</x>
+     <y>194</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>602</x>
+     <y>296</y>
+    </hint>
+   </hints>
+  </connection>
+>>>>>>> Stashed changes
  </connections>
  <slots>
   <slot>Run()</slot>
@@ -2755,5 +3562,15 @@
   <slot>nozzle_changed(int)</slot>
   <slot>Injector_changed(int)</slot>
   <slot>igniter_changed(int)</slot>
+<<<<<<< Updated upstream
+=======
+  <slot>nozz_mat_changed(int)</slot>
+  <slot>cham_mat_changed(int)</slot>
+  <slot>coating_changed(int)</slot>
+  <slot>torch_changed(int)</slot>
+  <slot>hypergolic_changed(int)</slot>
+  <slot>Output(int)</slot>
+  <slot>define_inj_dp(bool)</slot>
+>>>>>>> Stashed changes
  </slots>
 </ui>
