@@ -279,10 +279,36 @@ class Propellant:
         R_f = 8.314/16.0425*10**3 # fuel gas constant
         f_lamb = 0.033937
         fmiu = 480e-6
-        f_nist_enthalpy_coef = [-0.703029,108.4773,-42.52157,5.862788,0.678565,-76.84376,224.4143,-74.87310	
-            
+        f_nist_enthalpy_coef = [85.81217,
+            11.26467,
+            -2.114146,
+            0.13819,
+            -26.42221,
+            -153.5327,
+            224.4143,
+            -74.8731   
         ]  # for shomate equation
         heatingvalue =  -55511 # for the fuel only!
+
+
+    def NTO():
+        Ox_name = "NTO"  # Oxidizer name for rocketCEA
+        Ox_composition = "N 2 O 4"  # Composition of oxidizer for rocketcea
+        o_dens = 1442.46  # Oxidizer density
+        ocp = 1.549*10**3  # oxidizer cp
+        h_ox = -19.56/92.0110*10**3	 # oxidizer enthalpy in liquid phase. Gas phase is +9.08/92.0110*10**3
+        o_lamb = 131*10**(-3)
+        o_nist_enthalpy_coef = [ 128.6220,
+            2.524345,
+            -0.520883,
+            0.03663,
+            -11.55704,
+            -59.22619,
+            417.0444,
+            9.078988        
+        ]  # for shomate equation
+        omiu = 393*10**(-6)
+
 
 # Data class
 class Data:
