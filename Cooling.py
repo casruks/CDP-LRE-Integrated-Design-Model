@@ -63,6 +63,8 @@ class CoolingClass:
         overwriteA : bool,
         case_run : int,
     ):
+        
+        #Inicialise variables, namely output ones
         err = 0
         warn = 0
         T_co_calculated = Ti_co
@@ -71,6 +73,7 @@ class CoolingClass:
         m_flow_fuel = 0
         type_variable=0
 
+        #Check if input variables are positive
         if (
             check_positive_args(
                 T0,
@@ -96,13 +99,17 @@ class CoolingClass:
             err = err | (1 << 0)
             return T_co_calculated, Tw_wall_calculated, ploss, m_flow_fuel, err, warn
 
+
+        #Calculate total contact area for cooling system
         A_total = sum([self.regencool.FindA(y, L, len(y), i) for i in range(len(y))])
 
+        #Determine which operating temperature to use
         if coating.OpTemp_u == 0:
             TestTemp = Mater.OpTemp_u
         else:
             TestTemp = coating.OpTemp_u
 
+        #Calculate the heatsink solution
         err = self.heatsink.Tcalculation(
             T0, mean(Tr), mean(hg), A_total, c, operationtime, m_casing, err
         )
@@ -114,7 +121,9 @@ class CoolingClass:
             return T_co_calculated, Tw_wall_calculated, ploss, m_flow_fuel, err, warn
 
         if self.heatsink.T_calculated > TestTemp:
+
             type_variable=1
+            #Calculate the radiation cooling solution
             err = self.radiationcool.Tcalculation(
                 700,
                 500,
@@ -141,7 +150,9 @@ class CoolingClass:
                 )
 
             if self.radiationcool.T_calculated > TestTemp:
+
                 type_variable=2
+                #Calculate the Regenerative Cooling Solution
                 (
                     T_co_calculated,
                     Tw_wall_calculated,
@@ -167,7 +178,10 @@ class CoolingClass:
                     err,
                 )
 
+        #Update heat extracted by cooling
         self.Q=self.regencool.Q
+
+        #Check if output variables are within reason
         if (
             check_positive_args(T_co_calculated)
             == False or T_co_calculated > 1000
