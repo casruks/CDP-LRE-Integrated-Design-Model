@@ -19,7 +19,8 @@ class Default:
      # Should be implemented for GUI user input
     InjTypes = ['like', 'unlike', 'pintle'] #Please keep this one in default as well. Used for Injector1() via Default.InjTypes 
     InjType = InjTypes[2] #This one is placeholder
-    
+    dp_user = 0.0 #bar, used when user specifies a pressure drop.
+    dp_state = False #If False, user did not specify dp, if True user did specifiy dp.
     #Nozzle
     Nozzle_type = 0 # Type of nozzle, 0=conical, 1=bell
 
