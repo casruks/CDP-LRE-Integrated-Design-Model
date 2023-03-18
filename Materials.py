@@ -20,7 +20,7 @@ class Materials:
 #k: Thermal Conductivity of the Material in [W/m*K]
 #cost: Cost per kilogram [Eur/kg]       
 
-Custom = Materials('Custom Material', 21000.0, 2300.0e6, 471.0e9, 2200.0, 48.0, 938.0)
+Custom                  =       Materials('Custom Material',                    21000.0,  2300.0e6,   471.0e9, 2200.0,   48.0,   938.0)
 Rhenium                 =       Materials('Rhenium',                            21000.0,  2300.0e6,   471.0e9, 2200.0,   48.0,   938.0)
 Al_7075_T6              =       Materials('Aluminium 7075 T6',                  2810.0,   505.0e6,    72.0e9,  373.15,   130.0,  3.97)
 Ti6Al4V                 =       Materials('Tungsten & Aluminium alloy',         4428.0,   110.0e6,    114.0e9, 693.15,   6.7,    23.8)
@@ -45,7 +45,6 @@ Carbon                  =       Materials('Carbon-Carbon Matrix coating',       
 
 ##Computing Mass nozzle: 
 #Nozzle Surface Fucntion:
-
 def Nozzle_mass(default, x,R,t,material):
     total_surf = 0
     for i in range(len(t)):
@@ -151,7 +150,24 @@ def RhoProp(O_prop, F_prop, OF):
         return rho_prop
 
 ##Reuseability:
-def Reuseability(RA, Material, N_F):
-    E_f = mth.log(100/(100-RA))
-    E_T = 3.5(Material.yieldstress_l/Material.Emod)*N_F**(-0.12) + (E_f**0.6)*N_F**(-0.6)
-    return E_T
+def Reuseability(material):
+    ep_pl1 = 0
+    ep_pl2 = 0
+    ep_pl2_DT = 0
+    def_tot = 0
+    def1 = 0
+    def2 = 0
+    mu = 0
+    l = 0
+    p = 0
+
+    ep_pl1 = material.k*((T1_max - T0_max) - (T1_min - T0_min)) - (2*material.yieldstress_l/material.Emod)
+    ep_pl2 = (material.Emod*(material.k*ep_pl2_DT)**2)/(12*material.yieldstress_l*(1-mu)**2)
+    ep_1 = 2*(ep_pl1+ep_pl2)
+
+    def1 = 2*((H/ep_1) - mth.sqrt((H/ep_1)**2 - (l/4)**2))
+    def2 = (ep_1*p*l**2)/(4*H*material.yieldstress_l)
+    def_tot = def1 + def2
+
+    
+
