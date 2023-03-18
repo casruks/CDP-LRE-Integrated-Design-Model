@@ -1,7 +1,5 @@
 import csv
-from dataclasses import dataclass
 
-@dataclass
 class Data:
     #Global in
     Thrust = 0.0 #[N]
