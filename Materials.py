@@ -144,22 +144,14 @@ def Cost(m_engine, R, n):
         lst.append(TotalCost)
     return lst
 
-##Reuseability:
-def Reuseability(RA, Material, N_F):
-    E_f = mth.log(100/(100-RA))
-    E_T = 3.5(Material.yieldstress_l/Material.Emod)*N_F**(-0.12) + (E_f**0.6)*N_F**(-0.6)
-    return E_T
 
-
-##Reuseability:
-def Reuseability(RA, Material, N_F):
-    E_f = mth.log(100/(100-RA))
-    E_T = 3.5(Material.yieldstress_l/Material.Emod)*N_F**(-0.12) + (E_f**0.6)*N_F**(-0.6)
-    return E_T
-
-# Mass = Mass_Regenerative(3.20e6,Inc_718,Inc_718,D6AC_Steel,61.1,0.076,16.85,1.1,351.91,'EX')
-# print(Mass)
 def RhoProp(O_prop, F_prop, OF):
         rho_prop = 0
         rho_prop = ((O_prop*F_prop)*(1+OF))/(F_prop*OF+O_prop)
         return rho_prop
+
+##Reuseability:
+def Reuseability(RA, Material, N_F):
+    E_f = mth.log(100/(100-RA))
+    E_T = 3.5(Material.yieldstress_l/Material.Emod)*N_F**(-0.12) + (E_f**0.6)*N_F**(-0.6)
+    return E_T
