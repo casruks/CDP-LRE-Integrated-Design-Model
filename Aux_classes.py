@@ -218,9 +218,9 @@ class Propellant:
 
     def Rp1():
         Fuel_name = "RP1"  # Fuel name for rocketCEA
-        Fuel_composition = ""  # Composition of fuel for rocketcea
+        Fuel_composition = "C 1 H 1.95"  # Composition of fuel for rocketcea
         f_dens_l = 804.59  # liquid fuel density
-        f_dens_g = ""  # gaseous fuel density
+        f_dens_g = "does not exist in literature"   # gaseous fuel density
         f_gamma = 1.24 # fuel gamma
         fcp = 1.88  # fuel cp
         h_fuel = -1758.456  # fuel enthalpy
@@ -234,7 +234,7 @@ class Propellant:
 
     def Ethanol():
         Fuel_name = "Ethanol"  # Fuel name for rocketCEA
-        Fuel_composition = ""  # Composition of fuel for rocketcea
+        Fuel_composition = "C 2 H 6 O 1"  # Composition of fuel for rocketcea
         f_dens_l =  789 # liquid fuel density
         f_dens_g = 1.59 # gaseous fuel density
         f_gamma = 1.13  # fuel gamma
@@ -250,11 +250,11 @@ class Propellant:
 
     def UDMH():
         Fuel_name = "UDMH"  # Fuel name for rocketCEA
-        Fuel_composition = ""  # Composition of fuel for rocketcea
+        Fuel_composition = "C 2 H 8 N 2"  # Composition of fuel for rocketcea
 
         f_dens_l = 793#IDK YET  # liquid fuel density
 
-        f_dens_g = "" # gaseous fuel density
+        f_dens_g = "does not exist in literature" # gaseous fuel density
         f_gamma = 1.152 # fuel gamma
         fcp = 164.05/60.098*10**3  # fuel cp
         h_fuel = 83.3*10**3/60.0983  # fuel enthalpy
@@ -268,7 +268,7 @@ class Propellant:
 
     def methane():
         Fuel_name = "Methane"  # Fuel name for rocketCEA
-        Fuel_composition = ""  # Composition of fuel for rocketcea
+        Fuel_composition = "C 1 H 4"  # Composition of fuel for rocketcea
 
         f_dens_l = 451.13 #IDK YET  # liquid fuel density
 
