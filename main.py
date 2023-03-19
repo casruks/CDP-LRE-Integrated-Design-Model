@@ -154,8 +154,34 @@ def Main(d: aux.Data):
         ## Mass flow rate in kg/s
         ## Combustion chamber diameter in m
         ## Default class
-        t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,d.D_t,d.D_e,d.L_nozzle_con,d.L_nozzle_div,d.L_tot,x_noz_cool,y_noz_cool,error_nz2=Nz_2.Nozzle_loop(p_new/100000.0, d.Tc, prop, Ms.Rhenium, default.Nozzle_type, d.O_F, d.eps, d.At, d.m_nozz, d.Dc, default)
-        #Outputs
+        (
+            t_noz,
+            x_noz,
+            y_noz,
+            Tw_ad_noz,
+            h_c_noz,
+            d.D_t,
+            d.D_e,
+            d.L_nozzle_con,
+            d.L_nozzle_div,
+            d.L_tot,
+            x_noz_cool,
+            y_noz_cool,
+            error_nz2,
+        ) = Nz_2.Nozzle_loop(
+            p_new / 100000.0,
+            d.Tc,
+            prop,
+            Ms.Rhenium,
+            default.Nozzle_type,
+            d.O_F,
+            d.eps,
+            d.At,
+            d.m_nozz,
+            d.Dc,
+            default,
+        )
+        # Outputs
         ## Array of thickness at the discretized points in the nozzle (corresponding to x_noz) in m
         ## Array of discretized positions in the nozzle where all variables and properties are calcualted (positions in m)
         ## Array of radius in the nozzle at the various discretization points (corresponding to x_noz) in m
@@ -175,28 +201,30 @@ def Main(d: aux.Data):
         Coolobj = Cooling.CoolingClass()
         Coolobj_c = Cooling.CoolingClass()
 
-        nozzle_mass=Mt.Nozzle_mass(x_noz_cool,y_noz_cool,t_noz,Ms.Rhenium)
-        chamber_mass=Mt.Chamber_mass(d.Dc,d.Chamber_L,d.ThicknessChamber,Ms.Rhenium)
-        
-        #Inputs 
-        #Inicial temperature in K
+        nozzle_mass = Mt.Nozzle_mass(x_noz_cool, y_noz_cool, t_noz, Ms.Rhenium)
+        chamber_mass = Mt.Chamber_mass(
+            d.Dc, d.Chamber_L, d.ThicknessChamber, Ms.Rhenium
+        )
+
+        # Inputs
+        # Inicial temperature in K
         # heat capacitance of the material in J/K
-        #operation time in seconds
-        #mass of the nozzle in kg
-        #emissivity
-        #adiabatic wall temperature of the nozzle np.array
-        #convection coefficient in W/(m2 K) np.array
-        #Thickness of the nozzle in m np.array
-        #coating thickness in m 
-        #propellant
-        #material of the nozzle
-        #material of the coating
-        #Hydralic diamter of the cooling system piping in m 
-        #Segment area of contact in m2
-        #inicial coolant temperature in K
-        #coolant mass flow in kg/s
-        #length of the nozzle in m
-        #Radius of the nozzle in m
+        # operation time in seconds
+        # mass of the nozzle in kg
+        # emissivity
+        # adiabatic wall temperature of the nozzle np.array
+        # convection coefficient in W/(m2 K) np.array
+        # Thickness of the nozzle in m np.array
+        # coating thickness in m
+        # propellant
+        # material of the nozzle
+        # material of the coating
+        # Hydralic diamter of the cooling system piping in m
+        # Segment area of contact in m2
+        # inicial coolant temperature in K
+        # coolant mass flow in kg/s
+        # length of the nozzle in m
+        # Radius of the nozzle in m
         # Option to overwrite area with input area bool
         # which regenerative function to call (default 0, do not change!)
         #
@@ -220,7 +248,7 @@ def Main(d: aux.Data):
             default.default_coating_thickness,
             prop,
             Ms.Rhenium,
-            default.default_coating,
+            np.array([default.default_coating_thickness for i in range(len(t_noz))]),
             default.Dr,
             default.A,
             default.T_fuel_tanks,
@@ -230,33 +258,33 @@ def Main(d: aux.Data):
             default.overwriteA,
             default.regenerative_case,
         )
-        #Outputs
-        #end temperature of the coolant in K
-        #wall temperature array
-        #pressure loss
-        #_
-        #errors
-        #warnings
+        # Outputs
+        # end temperature of the coolant in K
+        # wall temperature array
+        # pressure loss
+        # _
+        # errors
+        # warnings
 
-        #Inputs
-        #Inicial temperature in K
+        # Inputs
+        # Inicial temperature in K
         # heat capacitance of the material in J/K
-        #operation time in seconds
-        #mass of the chamber in kg
-        #emissivity
-        #adiabatic wall temperature of the chamber np.array
-        #convection coefficient in W/(m2 K) np.array
-        #Thickness of the chamber in m np.array
-        #default thickness of the coating to
-        #propellant
-        #material of the chamber
-        #deafult material of the coating
-        #Hydralic diamter of the cooling system piping in m 
-        #Segment area of contact in m2
-        #inicial coolant temperature in K
-        #coolant mass flow in kg/s
-        #length of the chamber in m
-        #Radius of the chamber in m~
+        # operation time in seconds
+        # mass of the chamber in kg
+        # emissivity
+        # adiabatic wall temperature of the chamber np.array
+        # convection coefficient in W/(m2 K) np.array
+        # Thickness of the chamber in m np.array
+        # default thickness of the coating to
+        # propellant
+        # material of the chamber
+        # deafult material of the coating
+        # Hydralic diamter of the cooling system piping in m
+        # Segment area of contact in m2
+        # inicial coolant temperature in K
+        # coolant mass flow in kg/s
+        # length of the chamber in m
+        # Radius of the chamber in m~
         # Option to overwrite area with input area bool
         # which regenerative function to call (default 0, do not change!)
         (
@@ -273,29 +301,29 @@ def Main(d: aux.Data):
             default.operationtime,
             chamber_mass,
             default.eps,
-            d.Tc,
-            d.h_comb,
-            d.ThicknessChamber,
+            np.array([d.Tc]),
+            np.array([d.h_comb]),
+            np.array([d.ThicknessChamber]),
             default.default_coating_thickness,
             prop,
             Ms.Rhenium,
-            default.default_coating,
+            np.array([default.default_coating]),
             default.Dr,
-            [d.Chamber_L * d.Dc * math.pi],
+            np.array([d.Chamber_L * d.Dc * math.pi]),
             Tf_cool,
             d.m_nozz / (1.0 + d.O_F) / default.n,
-            [d.Chamber_L],
-            d.Dc / 2,
+            d.Chamber_L,
+            np.array([d.Dc / 2]),
             True,
             default.regenerative_case,
         )
-        #Outputs
-        #end temperature of the coolant in K
-        #wall temperature array
-        #pressure loss
-        #_
-        #errors
-        #warnings
+        # Outputs
+        # end temperature of the coolant in K
+        # wall temperature array
+        # pressure loss
+        # _
+        # errors
+        # warnings
         dptcool = dptcool + dptcool_c
 
         # Compute Turbo
