@@ -1,7 +1,8 @@
 import Cooling
 import Materials as Mt
-import numpy
+import numpy as np
 import math
+import Mass as Ms
 
 p_a = 1.0e5
 Thrust = 15000
@@ -49,13 +50,18 @@ class Default:
     SF = 1.0
 
     # Cooling
-    Dr = 0.00001
-    Leng = 1
-    A = 0.04 * Leng / 4
-    T_fuel_tanks = 20
-    T_ox_tanks = 60
-    default_coating = Mt.Materials("default_coating", 0.0, 0.0, 0.0, 0.0, 1, 0)
-    default_coating_thickness = [0 for i in range(40)]
+    Dr = 0.01 #[m] hydralic diameter of the coolant channel
+    A = 0.0003 #[m2] area of contact for each segment of the cooling
+    T_fuel_tanks = 20 #[K] temperature of the fuel tanks, considered the inicial coolant temperature
+    #T_ox_tanks = 60 #[K] temperature of the oxidiser tanks
+    n = 1 #number of coolant chanels
+    default_coating = Mt.Materials("default_coating", 0.0, 0.0, 0.0, 0.0, 1, 0) #default coolant
+    default_coating_thickness = 0 #default coolant thickness
+    T0=293.5 #[k] default inicial temperature
+    eps=0.85 #default emissivity
+    overwriteA=False #option to overwrite the surface area calculated by the program with the input variable A, given by the user or default class
+    regenerative_case=0 #option of which function to use in regenerative cooling; 0 corresponds to the explicit function Run1D()
+    operationtime=10000000000000000 #[s] default operation time (large to imply infinite time)
 
     # Igniters
     ignburntime = 4
@@ -119,7 +125,7 @@ bool = (
 if __name__ == "__main__":
     Q = 0
     n = 40
-    Tw_ad_noz = numpy.array([2000 for i in range(n)])
+    Tw_ad_noz = np.array([2000 for i in range(n)])
     h_c_noz = [1200 for i in range(n)]
     t_noz = [0.005 for i in range(n)]
     # Tw_ad_noz = 9000
@@ -148,10 +154,54 @@ if __name__ == "__main__":
     m_casing = 1000
     eps = 0.7
     overwriteA = False
-    case_run = 2
-    
+    case_run = 0
+
+    Coolobj_c = Cooling.CoolingClass()
+
+    Tc = 1
+    h_comb = 3000
+    ThicknessChamber = 0.003
+    m_nozz = 25
+    Chamber_L = 0.8
+    Dc = 0.4
+    O_F = 2
+    Tf_cool = 20
+
+    chamber_mass = Mt.Chamber_mass(Dc, Chamber_L, ThicknessChamber, Ms.Rhenium)
+
     cool = Cooling.CoolingClass()
     (
+        Tf_cool,
+        Tw_wall_chamber_calculated,
+        dptcool_c,
+        _,
+        type_variable_chamber,
+        err_chamber_cooling,
+        warn_chamber_cooling,
+    ) = Coolobj_c.Run_cooling(
+        default.T0,
+        c,
+        default.operationtime,
+        chamber_mass,
+        default.eps,
+        np.array([Tc]),
+        np.array([h_comb]),
+        np.array([ThicknessChamber]),
+        default.default_coating_thickness,
+        prop,
+        Ms.Rhenium,
+        np.array([default.default_coating]),
+        default.Dr,
+        np.array([Chamber_L * Dc * math.pi]),
+        Tf_cool,
+        m_nozz / (1.0 + O_F) / default.n,
+        Chamber_L,
+        np.array([Dc / 2]),
+        True,
+        default.regenerative_case,
+    )
+
+    """(
         T_co_calculated,
         Tw_wall_calculated,
         ploss,
@@ -181,7 +231,7 @@ if __name__ == "__main__":
         case_run,
     )
 
-    """ (
+     (
         T_co_calculated,
         Tw_wall_calculated,
         ploss,

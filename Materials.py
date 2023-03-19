@@ -43,7 +43,7 @@ def Nozzle_mass(x,R,t,material):
 
 ##Computing Chamber Mass:
 def Chamber_mass(ChambR,ChambL,Chambt,material_C):
-    ChamberMass = (2*mth.pi()*ChambR*ChambL*Chambt + 2*mth.pi()*ChambR**2*Chambt)*material_C.density
+    ChamberMass = (2*mth.pi*ChambR*ChambL*Chambt + 2*mth.pi*ChambR**2*Chambt)*material_C.density
     return ChamberMass
 
 class ReferenceEngine:
