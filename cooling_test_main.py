@@ -3,6 +3,7 @@ import Materials as Mt
 import numpy as np
 import math
 import Mass as Ms
+import statistics
 
 p_a = 1.0e5
 Thrust = 15000
@@ -50,7 +51,7 @@ class Default:
     SF = 1.0
 
     # Cooling
-    Dr = 0.01  # [m] hydralic diameter of the coolant channel
+    Dr = 0.05  # [m] hydralic diameter of the coolant channel
     A = 0.0003  # [m2] area of contact for each segment of the cooling
     T_fuel_tanks = 20  # [K] temperature of the fuel tanks, considered the inicial coolant temperature
     # T_ox_tanks = 60 #[K] temperature of the oxidiser tanks
@@ -160,22 +161,72 @@ if __name__ == "__main__":
     overwriteA = False
     case_run = 0
 
+    Coolobj = Cooling.CoolingClass()
     Coolobj_c = Cooling.CoolingClass()
-
-    Tc = 5000
+    Tc = 3000
     h_comb = 1500
     ThicknessChamber = 0.003
     m_nozz = 25
     Chamber_L = 0.8
     Dc = 0.4
-    O_F = 4
+    O_F = 2
     Tf_cool = 20
 
     chamber_mass = Mt.Chamber_mass(Dc, Chamber_L, ThicknessChamber, Ms.Rhenium)
     err_chamber_cooling = 0
     warn_err_chamber_cooling = 0
 
-    cool = Cooling.CoolingClass()
+    y_noz_cool = np.array(
+        [(2.30 - 0.26) / (n - 1) * (n - 1 - i) + 0.26 for i in range(n)]
+    )
+    x_noz_cool = np.array([3])
+    # cool = Cooling.CoolingClass()
+    nozzle_mass = Mt.Nozzle_mass(
+        x_noz_cool, y_noz_cool, statistics.mean(t_noz), Ms.Rhenium
+    )
+    Ms.Rhenium.OpTemp_u = 700
+    (
+        Tf_cool,
+        Tw_wall_nozzle_calculated,
+        dptcool,
+        _,
+        type_variable_nozzle,
+        err_nozzle_cooling,
+        warn_nozzle_cooling,
+    ) = Coolobj.Run_cooling(
+        default.T0,
+        c,
+        default.operationtime,
+        nozzle_mass,
+        default.eps,
+        Tw_ad_noz,
+        h_c_noz,
+        t_noz,
+        np.array([default.default_coating_thickness for i in range(len(t_noz))]),
+        prop,
+        Ms.Rhenium,
+        default.default_coating,
+        default.Dr,
+        default.A,
+        default.T_fuel_tanks,
+        m_nozz / (1.0 + O_F) / default.n,
+        x_noz_cool[-1],
+        y_noz_cool,
+        default.overwriteA,
+        default.regenerative_case,
+    )
+
+    print("\nRun", case_run)
+    print("Tf_cool: ", Tf_cool)
+    print(
+        "p loss",
+        dptcool,
+    )
+    print("Tw_wall_calculated", Tw_wall_nozzle_calculated[-1])
+    print("errors:", err_nozzle_cooling)
+    print("warning", warn_nozzle_cooling)
+    print("type: ", type_variable_nozzle)
+
     (
         Tf_cool,
         Tw_wall_chamber_calculated,
@@ -206,7 +257,6 @@ if __name__ == "__main__":
         True,
         default.regenerative_case,
     )
-
     print("\nRun", case_run)
     print("Tf_cool: ", Tf_cool)
     print(
@@ -216,9 +266,9 @@ if __name__ == "__main__":
     print("Tw_wall_calculated", Tw_wall_chamber_calculated[-1])
     print("errors:", err_chamber_cooling)
     print("warning", warn_chamber_cooling)
-    print("type: ", type_variable_chamber)
 
-    """(
+    """
+    (
         T_co_calculated,
         Tw_wall_calculated,
         ploss,

@@ -42,38 +42,38 @@ class CoolingClass:
 
     def Run_cooling(
         self,
-        T0 : float,
-        c : float,
-        operationtime : float,
-        m_casing : float,
-        eps : float,
-        Tr : np.array,
-        hg : float,
-        thickness : float,
-        coating_thickness : float,
-        prop : Aux_classes.Propellant,
-        Mater : Mt.Materials,
+        T0: float,
+        c: float,
+        operationtime: float,
+        m_casing: float,
+        eps: float,
+        Tr: np.array,
+        hg: float,
+        thickness: float,
+        coating_thickness: float,
+        prop: Aux_classes.Propellant,
+        Mater: Mt.Materials,
         coating: Mt.Materials,
-        Dr : float,
-        A : float,
-        Ti_co : float,
-        m : float,
-        L : float,
-        y : np.array,
-        overwriteA : bool,
-        case_run : int,
+        Dr: float,
+        A: float,
+        Ti_co: float,
+        m: float,
+        L: float,
+        y: np.array,
+        overwriteA: bool,
+        case_run: int,
     ):
-        
-        #Inicialise variables, namely output ones
+
+        # Inicialise variables, namely output ones
         err = 0
         warn = 0
         T_co_calculated = Ti_co
         Tw_wall_calculated = [-1]
         ploss = 0
         m_flow_fuel = 0
-        type_variable=0
+        type_variable = 0
 
-        #Check if input variables are positive
+        # Check if input variables are positive
         if (
             check_positive_args(
                 T0,
@@ -99,31 +99,35 @@ class CoolingClass:
             err = err | (1 << 0)
             return T_co_calculated, Tw_wall_calculated, ploss, m_flow_fuel, err, warn
 
+        # Calculate total contact area for cooling system
+        if overwriteA == False:
+            A_total = sum(
+                [self.regencool.FindA(y, L, len(y), i) for i in range(len(y))]
+            )
+        else:
+            A_total = A
 
-        #Calculate total contact area for cooling system
-        A_total = sum([self.regencool.FindA(y, L, len(y), i) for i in range(len(y))])
-
-        #Determine which operating temperature to use
+        # Determine which operating temperature to use
         if coating.OpTemp_u == 0:
             TestTemp = Mater.OpTemp_u
         else:
             TestTemp = coating.OpTemp_u
 
-        #Calculate the heatsink solution
+        # Calculate the heatsink solution
         err = self.heatsink.Tcalculation(
             T0, mean(Tr), mean(hg), A_total, c, operationtime, m_casing, err
         )
 
         Tw_wall_calculated = [self.heatsink.T_calculated]
-        self.Q=self.heatsink.Q
+        self.Q = self.heatsink.Q
 
         if err != 0:
             return T_co_calculated, Tw_wall_calculated, ploss, m_flow_fuel, err, warn
 
         if self.heatsink.T_calculated > TestTemp:
 
-            type_variable=1
-            #Calculate the radiation cooling solution
+            type_variable = 1
+            # Calculate the radiation cooling solution
             err = self.radiationcool.Tcalculation(
                 700,
                 500,
@@ -134,7 +138,7 @@ class CoolingClass:
                 mean(hg),
                 err,
             )
-            self.Q=self.radiationcool.Q
+            self.Q = self.radiationcool.Q
             T_co_calculated = Ti_co
             Tw_wall_calculated = [self.radiationcool.T_calculated]
             ploss = 0
@@ -151,8 +155,8 @@ class CoolingClass:
 
             if self.radiationcool.T_calculated > TestTemp:
 
-                type_variable=2
-                #Calculate the Regenerative Cooling Solution
+                type_variable = 2
+                # Calculate the Regenerative Cooling Solution
                 (
                     T_co_calculated,
                     Tw_wall_calculated,
@@ -178,45 +182,38 @@ class CoolingClass:
                     err,
                 )
 
-        #Update heat extracted by cooling
-        self.Q=self.regencool.Q
+        # Update heat extracted by cooling
+        self.Q = self.regencool.Q
 
-        #Check if output variables are within reason
-        if (
-            check_positive_args(T_co_calculated)
-            == False or T_co_calculated > 1000
-        ):
+        # Check if output variables are within reason
+        if check_positive_args(T_co_calculated) == False or T_co_calculated > 1000:
             err = err | (1 << 7)
 
-        if (
-            check_positive_args(Tw_wall_calculated)
-            == False or any(x > TestTemp for x in Tw_wall_calculated)
+        if check_positive_args(Tw_wall_calculated) == False or any(
+            x > TestTemp for x in Tw_wall_calculated
         ):
             err = err | (1 << 8)
-        if (
-            check_positive_args(ploss)
-            == False or ploss>10**5
-        ):
+        if check_positive_args(ploss) == False or ploss > 10**5:
             err = err | (1 << 9)
-        if (
-            check_positive_args(m_flow_fuel)
-            == False or m_flow_fuel>30
-        ):
+        if check_positive_args(m_flow_fuel) == False or m_flow_fuel > 30:
             err = err | (1 << 10)
 
-        if (
-            check_positive_args(self.Q)
-            == False
-        ):
+        if check_positive_args(self.Q) == False:
             err = err | (1 << 11)
 
-
-
-        #if(m_flow_fuel > 6000 or Tw_wall_calculated[-1] > 2000 or T_co_calculated > 1000 or ploss > 10**5):
-            #warn=warn|(1<<1) 
-        if(T_co_calculated>Tw_wall_calculated[-1]):
-            err=err|(1<<6)
-        return T_co_calculated, Tw_wall_calculated, ploss, m_flow_fuel, type_variable,err, warn
+        # if(m_flow_fuel > 6000 or Tw_wall_calculated[-1] > 2000 or T_co_calculated > 1000 or ploss > 10**5):
+        # warn=warn|(1<<1)
+        if T_co_calculated > Tw_wall_calculated[-1]:
+            err = err | (1 << 6)
+        return (
+            T_co_calculated,
+            Tw_wall_calculated,
+            ploss,
+            m_flow_fuel,
+            type_variable,
+            err,
+            warn,
+        )
 
 
 # Heat sink model
@@ -493,10 +490,10 @@ class RegenerativeCool:
         Ti_co,
         m_flow_fuel,
         L,
-        err
+        err,
     ):
         # check_positive_args(Tr, hg, t, A, Ti_co, m_flow_fuel, L)
-        
+
         # Inicicialise variables
         self.Prop = Prop
         self.m_flow_fuel = m_flow_fuel
@@ -511,8 +508,8 @@ class RegenerativeCool:
             self.D = -404
             return Ti_co, 0
         if Ti_co > Tr:
-            err=err|(1<<6)
-            return T_co_calcualted, 0,err
+            err = err | (1 << 6)
+            return T_co_calcualted, 0, err
 
         # calculate the convection coefficient for the coolant
         self.hco = (Tr - Twh) / (
@@ -538,7 +535,7 @@ class RegenerativeCool:
 
         self.D = D
         check_positive_args(T_co_calcualted, ploss)
-        return T_co_calcualted, ploss,err
+        return T_co_calcualted, ploss, err
 
     # Find the hydralic diameter which gives the correct convection coefficient for the coolant
     def SolveForD(self, D: float):
@@ -611,7 +608,7 @@ class RegenerativeCool:
                 D = 0.1
 
             # optimise for D, to get operating temperature
-            Ti_co_array[i + 1], ploss[i],err = zeroDcool.Run_for_Toperating0D(
+            Ti_co_array[i + 1], ploss[i], err = zeroDcool.Run_for_Toperating0D(
                 Tr_array[i],
                 hg[i],
                 t[i],
@@ -621,7 +618,7 @@ class RegenerativeCool:
                 Ti_co_array[i],
                 m_flow_fuel,
                 L / len(Tr_array),
-                err
+                err,
             )
             if zeroDcool.D < D:
                 D = zeroDcool.D
@@ -630,7 +627,7 @@ class RegenerativeCool:
                 if D > 0.1:
                     D = 0.1
                 for j in range(i + 1):
-                    Ti_co_array[j + 1], ploss[j],err = zeroDcool.Run_for_Toperating0D(
+                    Ti_co_array[j + 1], ploss[j], err = zeroDcool.Run_for_Toperating0D(
                         Tr_array[j],
                         hg[j],
                         t[j],
@@ -640,7 +637,7 @@ class RegenerativeCool:
                         Ti_co_array[j],
                         m_flow_fuel,
                         L / len(Tr_array),
-                        err
+                        err,
                     )
         self.D = D
         self.Q = zeroDcool.Q
