@@ -47,20 +47,20 @@ Carbon                  =       Materials('Carbon-Carbon Matrix coating',       
 #Nozzle Surface Fucntion:
 def Nozzle_mass(x,R,t,material):
     total_surf = 0
-    error = 0
-    warnings = 0
+    nozmass_error = 0
+    nozmass_warnings = 0
     
     # Warning 0: "The thickness is lower than 1mm, a default thickness of 1mm has been used"
     # Warning 1: "The material density is lower than 0"
     # Warning 2: "The nozzle mass is lower than 0
 
     if t < 0.001:
-        warnings=warnings|(1<<0)
-        return 0,error,warnings
+        nozmass_warnings=nozmass_warnings|(1<<0)
+        return 0,nozmass_error,nozmass_warnings
     
     if material.density < 0:
-        warnings=warnings|(1<<1)
-        return 0,error,warnings
+        nozmass_warnings=nozmass_warnings|(1<<1)
+        return 0,nozmass_warnings,nozmass_warnings
 
     for i in range(len(x)-1):
         total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*t[i]*R[i]
@@ -69,9 +69,10 @@ def Nozzle_mass(x,R,t,material):
     NozzleMass = total_surf*2*mth.pi*material.density
 
     if NozzleMass < 0:
-        warnings=warnings|(1<<2)
-        return 0,error,warnings
-    return NozzleMass,error,warnings
+        nozmass_warnings=nozmass_warnings|(1<<2)
+        return 0,nozmass_error,nozmass_warnings
+    
+    return NozzleMass,nozmass_error,nozmass_warnings
 
 class ReferenceEngine:
     def __init__(self, pc, thrust, arear, rt, mprop, rhoprop, FS, Material_NCG, Material_P, Material_V, mfrac_tube, mfrac_manifold, mfrac_jacket, mfrac_chamber, mfrac_pump, mfrac_valve, RefMass):
@@ -101,31 +102,94 @@ SSME    = ReferenceEngine(2.04e7, 2.28e6, 77.5,  0.138, 512.6, 6,      1.2, Inc_
 
 
 #Mass estimation function Nozzle Tubes:
-def Mass(Pc, material_N, material_P, material_V, arear, rt, mprop, FS, rhoprop, Ns): 
+def Mass(Pc, material_N, material_V, arear, rt, mprop, FS, rhoprop, cycle):
+
+   
+
+    # Mass_warnings = 0
+    # Mass_error = 0
+
+    # if Pc < 0:
+    #     Mass_warnings=Mass_warnings|(1<<0)
+    #     return 0, Mass_error,Mass_warnings
     
-    y= (31537*mth.sqrt(mprop))/(5172.15**(0.75))
+    # if material_N.density < 0:
+    #     Mass_warnings=Mass_warnings|(1<<1)
+    #     return 0, Mass_error,Mass_warnings
+    
+    # if material_P.density < 0:
+    #     Mass_warnings=Mass_warnings|(1<<2)
+    #     return 0, Mass_error,Mass_warnings
+    
+    # if material_V.density < 0:
+    #     Mass_warnings=Mass_warnings|(1<<3)
+    #     return 0, Mass_error,Mass_warnings
+    
+    # if arear < 0:
+    #     Mass_warnings=Mass_warnings|(1<<4)
+    #     return 0, Mass_error,Mass_warnings
+    
+    # if rt < 0:
+    #     Mass_warnings=Mass_warnings|(1<<5)
+    #     return 0, Mass_error,Mass_warnings
+    
+    # if mprop < 0:
+    #     Mass_warnings=Mass_warnings|(1<<6)
+    #     return 0, Mass_error,Mass_warnings
+    
+    # if FS < 0:
+    #     Mass_warnings=Mass_warnings|(1<<7)
+    #     return 0, Mass_error,Mass_warnings
+    
+    # if rhoprop < 0:
+    #     Mass_warnings=Mass_warnings|(1<<8)
+    #     return 0, Mass_error,Mass_warnings
+    
+    # if Ns < 0:
+    #     Mass_warnings=Mass_warnings|(1<<9)
+    #     return 0, Mass_error,Mass_warnings 
+
+    
+    Ns0= (31537*mth.sqrt(mprop))/(5172.15**(0.75))
 
     reference = RL10
 
-    #Nozzle Mass:
+    if cycle == 'SC':
+        reference = SSME
+    elif cycle == 'EX':
+        reference == RL10
+    else:
+        reference == LE5
+
+
+    #Cooling Mass:
     TubeMass = reference.mfrac_tube*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*(((material_N.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((arear/reference.arear)**1)*((rt/reference.rt)**2)) #Dimensionless Nozzle Tube Mass
     ManifoldMass = reference.mfrac_manifold*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*((mprop/reference.mprop)**1)*((material_N.yieldstress_l/reference.Material_NCG.yieldstress_l)**(-1))*((rhoprop/reference.rhoprop)**(-1))*((rt/reference.rt)**1)) #Dimensionless Nozzle Manifold Mass
-    #JacketMass = reference.mfrac_jacket*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*(((material_N.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((arear/reference.arear)**1.5)*((rt/reference.rt)**3))#Dimensionless Nozzle Jacket Mass
-    
-    
+
+    # if TubeMass + ManifoldMass < 0:
+        # Mass_warnings=Mass_warnings|(1<<10)
+        # return 0, Mass_error,Mass_warnings
 
     #TurboPump Mass
-    PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.15)*((material_P.density/reference.material_P.density)**1)*(((material_P.yieldstress_l/FS)/(reference.Material_p.yieldstress_l/reference.FS)*(-1)))*((mprop/reference.mprop)**0.9)*((rhoprop/reference.rhoprop)**(-0.45))*((Ns/y)**(-0.6)))
-    #PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.53)*((mprop/reference.mprop)**0.53)*(rhoprop/reference.rhoprop)**(-0.53)) #Dimensionless mass of turbopump (historic data method)
+    #PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.15)*((material_P.density/reference.material_P.density)**1)*(((material_P.yieldstress_l/FS)/(reference.Material_p.yieldstress_l/reference.FS)*(-1)))*((mprop/reference.mprop)**0.9)*((rhoprop/reference.rhoprop)**(-0.45))*((Ns/Ns0)**(-0.6)))
+    PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.53)*((mprop/reference.mprop)**0.53)*(rhoprop/reference.rhoprop)**(-0.53)) #Dimensionless mass of turbopump (historic data method)
+    
+    # if PumpMass < 0:
+        # Mass_warnings=Mass_warnings|(1<<11)
+        # return 0, Mass_error,Mass_warnings
+
 
     #Valves
     ValveMass = reference.mfrac_valve*(((Pc/reference.pc)**1.0)*((material_V.density/reference.Material_V.density)**1)*(((material_V.yieldstress_l/FS)/(reference.Material_V.yieldstress_l/reference.FS))**(-1))*((mprop/reference.mprop)**1)*((rhoprop/reference.rhoprop)**(-1)))#Dimensionless mass of Valves
     
-
+    # if ValveMass < 0:
+        # Mass_warnings=Mass_warnings|(1<<11)
+        # return 0, Mass_error,Mass_warnings
+    
     #Total:
     Total_Mass = (ManifoldMass + TubeMass + PumpMass + ValveMass)*reference.RefMass 
 
-    return Total_Mass, ValveMass
+    return Total_Mass
 
 
 def RhoProp(O_prop, F_prop, OF):
@@ -200,6 +264,8 @@ def Reuseability(material):
     ep_c2 = ep_c1avg
     ep_c_tot = (2/mth.sqrt(3))*mth.sqrt((ep_c1**2 + ep_c1*ep_c2 + ep_c2**2))
 
-    #Life Prediction
+    #Life Prediction:
+    N_T = 750*q**(1.25)
+
     return N_Life
     
