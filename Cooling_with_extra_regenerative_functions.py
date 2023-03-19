@@ -404,7 +404,266 @@ class RegenerativeCool:
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    
+    # One of the Main functions for regenerative cooling
+    # These solvers size the hydralic diameter such that it runs at operating temperature
+    # This is for only one tube along one wall, mass flow might have to be adjusted
+    # Currently, does not work for coating, as it is mainly used as an auxiliary function for 1D
+    def Run_for_Toperating0D(
+        self,
+        Tr: np.array,
+        hg: float,
+        t: float,
+        Prop: Aux_classes.Propellant,
+        Mater: Mt.Materials,
+        A,
+        Ti_co,
+        m_flow_fuel,
+        L,
+        err,
+    ):
+        # check_positive_args(Tr, hg, t, A, Ti_co, m_flow_fuel, L)
+
+        # Inicicialise variables
+        self.Prop = Prop
+        self.m_flow_fuel = m_flow_fuel
+        self.t = t
+        self.Mater = Mater
+
+        Twh = self.Mater.OpTemp_u
+        if Tr < Twh:
+            print(
+                "Temperature at the wall is smaller than operating temperature. No need for regenerative cooling"
+            )
+            self.D = -404
+            return Ti_co, 0
+        if Ti_co > Tr:
+            err = err | (1 << 6)
+            return T_co_calcualted, 0, err
+
+        # calculate the convection coefficient for the coolant
+        self.hco = (Tr - Twh) / (
+            (Twh - Ti_co) * (1 / hg + t / self.Mater.k)
+            - (Tr - Ti_co) * t / self.Mater.k
+        )
+
+        # print("data: ", self.hco)
+
+        # Find the hydralic diameter which gives the correct convection coefficient for the coolant
+        D0 = 0.00001
+        D = scipy.optimize.fsolve(self.SolveForD, D0)
+
+        # Update coolant temperature
+        q = (Tr - Ti_co) / (1 / hg + self.t / self.Mater.k + 1 / self.hco)
+        self.Q += q * A
+        T_co_calcualted = Ti_co + q * A / (self.Prop.fcp * self.m_flow_fuel)
+        # print("h_co: ", self.hco)
+        # T_co_calcualted = Ti_co + q * A / (2*10**6* self.m_flow_fuel)
+
+        # Calculate Pressure loss
+        ploss = self.pressureloss(m_flow_fuel, D, L)
+
+        self.D = D
+        check_positive_args(T_co_calcualted, ploss)
+        return T_co_calcualted, ploss, err
+
+    # Find the hydralic diameter which gives the correct convection coefficient for the coolant
+    def SolveForD(self, D: float):
+
+        # Calculate the required parameters to calculate the h_co
+        Re = self.m_flow_fuel / self.Prop.fmiu * 4 / (math.pi * D)
+        self.Pr = 1  # PLACEHOLDER
+        self.f = (1.82 * math.log10(Re) - 1.64) ** (-2)
+        self.Nu = (
+            self.f
+            / 8
+            * (Re - 1000)
+            * self.Pr
+            / (1 + 12.7 * math.sqrt(self.f / 8) * (self.Pr ** (2 / 3) - 1))
+        )
+
+        # Compare the calculate h_co with the correct one
+        eq = self.Nu * self.Mater.k / D - self.hco
+        return eq
+
+    # One of the Main functions for regenerative cooling
+    def Run_for_Toperating1D(
+        self,
+        Tr_array: np.array,
+        hg: float,
+        t: float,
+        t_coating: float,
+        Prop: Aux_classes.Propellant,
+        Mater: Mt.Materials,
+        Mater_coating: Mt.Materials,
+        A,
+        Ti_co,
+        m_flow_fuel,
+        L,
+        err,
+    ):
+        # check_positive_args(Tr_array, hg, t, A, Ti_co, m_flow_fuel, L)
+
+        self.Prop = Prop
+        self.m_flow_fuel = m_flow_fuel
+
+        self.t = t * Mater_coating.k + t_coating * Mater.k
+        self.Mater = Mater
+        self.Mater.k = Mater.k * Mater_coating.k
+        if Mater_coating.OpTemp_u != 0:
+            self.Mater.OpTemp_u = Mater_coating.OpTemp_u
+
+        if self.Mater.OpTemp_u > float(np.amax(Tr_array)):
+            print(
+                "Temperature at the wall is smaller than operating temperature. No need for regenerative cooling"
+            )
+            self.D = -404
+            return Ti_co, 0
+
+        zeroDcool = RegenerativeCool()
+        Ti_co_array = [0 for i in range(len(Tr_array) + 1)]
+        ploss = [0 for i in range(len(Tr_array))]
+        Ti_co_array[0] = Ti_co
+        D = 100000000000000000000
+
+        # Iterative loop
+        # Find the coolant temperature and the pressure loss along the wall
+        # optimise for D, to get operating temperature
+        # if the a new calculated D is smaller than the old one, update all values from the begining before continuing
+        for i in range(len(Tr_array)):
+            # update the surface area for each node along the wall, for each iteration
+            # A = (2 * math.pi * y[i]) * L / len(Tr_array)
+
+            if D > 0.1:
+                D = 0.1
+
+            # optimise for D, to get operating temperature
+            Ti_co_array[i + 1], ploss[i], err = zeroDcool.Run_for_Toperating0D(
+                Tr_array[i],
+                hg[i],
+                t[i],
+                Prop,
+                self.Mater,
+                A[i],
+                Ti_co_array[i],
+                m_flow_fuel,
+                L / len(Tr_array),
+                err,
+            )
+            if zeroDcool.D < D:
+                D = zeroDcool.D
+                # A = (2 * math.pi * y[i]) * L / len(Tr_array)
+                zeroDcool.Q = 0
+                if D > 0.1:
+                    D = 0.1
+                for j in range(i + 1):
+                    Ti_co_array[j + 1], ploss[j], err = zeroDcool.Run_for_Toperating0D(
+                        Tr_array[j],
+                        hg[j],
+                        t[j],
+                        Prop,
+                        self.Mater,
+                        A,
+                        Ti_co_array[j],
+                        m_flow_fuel,
+                        L / len(Tr_array),
+                        err,
+                    )
+        self.D = D
+        self.Q = zeroDcool.Q
+        # print(Ti_co_array)
+        if check_positive_args(Ti_co_array[len(Ti_co_array) - 1], ploss) == False:
+            err = err | (1 << 4)
+        return Ti_co_array[len(Ti_co_array) - 1], float(ploss[-1]), err
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    # It's an auxiliary function
+    # hence coating not being defined here
+    def R1D_findm_for_TOp(
+        self,
+        m_flow_fuel: float,
+        Tr: float,
+        hg: float,
+        t: float,
+        Prop: Aux_classes.Propellant,
+        Mater: Mt.Materials,
+        Dr: float,
+        A: float,
+        Ti_co: float,
+        # Re: float,
+        L: float,
+    ):
+        check_positive_args(Tr, hg, t, Dr, A, Ti_co, L)
+        Re = m_flow_fuel / Prop.fmiu * 4 / (math.pi * Dr)
+        # Inicialise variables, namely those required for heat transfer, such as Nu, Pr, hco,...
+        self.Inicialise(t, Prop, Mater, Dr, Re, m_flow_fuel)
+        self.D = Dr
+        # T_co_calcualted, T_wall_calcualted = self.Tcalculation(Tr, Ti_co, A, hg)
+
+        T_co_calcualted = [0 for i in range(len(Tr) + 1)]
+        T_co_calcualted[0] = Ti_co
+        T_wall_calculated = [0 for i in range(len(Tr))]
+
+        # Calculate the wall temperature and the coolant temperature for each point along the wall
+        for i in range(len(Tr)):
+            T_co_calcualted[i + 1], T_wall_calculated[i] = self.Tcalculation1D(
+                Tr[i], T_co_calcualted[i], A, hg[i], i
+            )
+        # print(T_co_calcualted)
+        self.T_col = T_co_calcualted
+        self.Tw_wall_calculated = T_wall_calculated
+        # ploss = self.pressureloss(m_flow_fuel, Dr, L)
+        return max(T_wall_calculated) - Mater.OpTemp_u
+
+    # One of the Main functions for regenerative cooling
+    # Finds the mass flow for the wall to be at operation temperature
+    # returns the mass flow, the coolant temperature, the wall temperature, and the pressure loss ( ploss as a float)
+    def Run1D_iterative_for_m(
+        self,
+        Tr: np.array,
+        hg: float,
+        t: float,
+        t_coating: float,
+        Prop: Aux_classes.Propellant,
+        Mater: Mt.Materials,
+        Mater_coating: Mt.Materials,
+        Dr: float,
+        A: float,
+        Ti_co: float,
+        L: float,
+        err,
+    ):
+        m_flow_fuel_guess = 1
+
+        # check_positive_args(Tr, hg, t, Dr, A, Ti_co, L)
+
+        self.t = t * Mater_coating.k + t_coating * Mater.k
+        self.Mater = Mater
+        self.Mater.k = Mater.k * Mater_coating.k
+
+        # Optimise mass flow for operating wall temperature
+        m_flow_fuel = scipy.optimize.fsolve(
+            self.R1D_findm_for_TOp,
+            m_flow_fuel_guess,
+            args=(Tr, hg, self.t, Prop, self.Mater, Dr, A, Ti_co, L),
+        )
+
+        # Calculate pressure loss; ploss is a float
+        ploss = self.pressureloss(m_flow_fuel, Dr, L)
+
+        if (
+            check_positive_args(m_flow_fuel, self.T_col, self.Tw_wall_calculated, ploss)
+            == False
+        ):
+            err = err | (1 << 5)
+
+        return (
+            m_flow_fuel,
+            float(self.T_col[-1]),
+            self.Tw_wall_calculated,
+            float(ploss),
+            err,
+        )
 
     def FindA(self, y, L, l, i):
         return (2 * math.pi * y[i]) * L / l
@@ -450,6 +709,43 @@ class RegenerativeCool:
                     A,
                     Ti_co,
                     m_flow_fuel,
+                    L,
+                    err,
+                )
+            case 1:
+                T_co_calculated, ploss, err = self.Run_for_Toperating1D(
+                    Tr,
+                    hg,
+                    t,
+                    t_coating,
+                    Prop,
+                    Mater,
+                    Mater_coating,
+                    A,
+                    Ti_co,
+                    m_flow_fuel,
+                    L,
+                    err,
+                )
+                Tw_wall_calculated = [self.Mater.OpTemp_u]
+            case 2:
+                (
+                    m_flow_fuel,
+                    T_co_calculated,
+                    Tw_wall_calculated,
+                    ploss,
+                    err,
+                ) = self.Run1D_iterative_for_m(
+                    Tr,
+                    hg,
+                    t,
+                    t_coating,
+                    Prop,
+                    Mater,
+                    Mater_coating,
+                    Dr,
+                    A,
+                    Ti_co,
                     L,
                     err,
                 )
