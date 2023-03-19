@@ -236,27 +236,6 @@ class Heatsink:
             err = err | (1 << 1)
         return err
 
-    # Heat absorved assuming a certain nozzle mass
-    def Qcalculation(self, T0, Tf, h, A, c, dt, m):
-        check_positive_args(T0, Tf, h, A, c, dt, m)
-
-        Q_int_arg = (
-            lambda time: h
-            * (Tf - ((T0 - Tf) * math.e ** (-h * A / (m * c) * time) + Tf))
-            * A
-        )
-        self.Q = quad(Q_int_arg, 0, dt)
-        check_positive_args(self.Q)
-
-    # mass such that the nozzle doesn't melt, assiming Tmelt as the wall temperature
-    def mcalculation(self, T0, Tf, h, A, Tmelt, c, dt):
-        if Tmelt == Tf:
-            raise ValueError(
-                "T_melt==Tf, error in mass calculation, for this equality only works after infinite time has passed"
-            )
-        self.m = h * A * dt / (-math.log((Tmelt - Tf) / (T0 - Tf)) * c)
-        check_positive_args(self.m)
-
 
 # Ratiation cool
 # Calculates the equilibrium temperature, taking into account radiated heat
@@ -269,18 +248,6 @@ class RadiationCool:
         # thickness
         self.T_calculated = -1
 
-    # Calculate the necessary thickness, assuming that the end temperature inside is Tmelt
-    def thickcalculation(self, Tmelt, Tr, eps, k, h):
-        check_positive_args(Tr, eps, k, Tmelt, h)
-
-        self.t = (
-            (h * (Tr - Tmelt) / (eps * scipy.constants.sigma) ** (1 / 4) - Tmelt)
-            / (Tr - Tmelt)
-            * k
-            / h
-        )
-        self.Q = h(Tr - Tmelt)
-        check_positive_args(self.Q, self.t)
 
     # Defines system of equations required in order to find the end temperature. Auxiliary function
     def Tcalculation_system(self, x, Tr, eps, k, t, h):
@@ -330,19 +297,7 @@ class RegenerativeCool:
     # ----------------------------------------------------------------------------------------------------------------
 
     # Calculates and returns equilibrium wall temperature, and end coolant temperature
-    # 0D
-    # auxiliary function of Run()
-    def Tcalculation(self, Tr: float, Ti_co: float, A: float, hg: float):
-
-        q = (Tr - Ti_co) / (1 / hg + self.t / self.Mater.k + 1 / self.hco)
-        self.Q += q * A
-        Tinext_co = Ti_co + q * A / (self.Prop.fcp * self.m_flow_fuel)
-        T_wall = self.t / self.Mater.k * q + Ti_co + q / self.hco
-
-        # Tinext_co: end coolant temperature
-        # T_wall: wall temperature
-        check_positive_args(Tinext_co, T_wall)
-        return Tinext_co, T_wall
+    
 
     def Tcalculation1D(
         self, Tr: float, Ti_co: float, A: float, hg: float, ArrayCounter: int
@@ -399,32 +354,6 @@ class RegenerativeCool:
     # Takes material properties, flow properties, and coolant pipe properties
     # Returns end wall temperature, end coolant temperature, pressure drop
     # Saves/Updates Q
-    def Run(
-        self,
-        Tr: np.array,
-        hg: float,
-        t: float,
-        Prop: Aux_classes.Propellant,
-        Mater: Mt.Materials,
-        Dr: float,
-        A: float,
-        Ti_co: float,
-        m_flow_fuel: float,
-        L: float,
-    ):
-        check_positive_args(Tr, hg, t, Dr, A, Ti_co, m_flow_fuel, L)
-        Re = self.m_flow_fuel / self.Prop.fmiu * 4 / (math.pi * Dr)
-
-        self.Inicialise(t, Prop, Mater, Dr, Re, m_flow_fuel)
-        T_co_calcualted, T_wall_calcualted = self.Tcalculation(Tr, Ti_co, A, hg)
-        ploss = self.pressureloss(m_flow_fuel, Dr, L)
-
-        # T_co_list=[0 for i in range(len(Tr))]
-        # T_co_list[0]=Ti_co
-        # for i in Tr:
-        #   T_co_calcualted[i], T_wall_calcualted[i] = self.Tcalculation(Tr[i],T_co_list[i],A[i])
-        check_positive_args(T_co_calcualted, T_wall_calcualted, ploss)
-        return T_co_calcualted, T_wall_calcualted, ploss
 
     # Run function, but for 1D case
     def Run1D(
