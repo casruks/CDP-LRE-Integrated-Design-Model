@@ -144,15 +144,16 @@ def Main(d : aux.Data):
     print('Nozzle mass =', NozzleMass)
     ChamberMass = Comb.CombustionChamber(p_new, d.At, prop, Ms.D6AC_Steel, default, d.v_if, d.v_iox, d.Tc, d.O_F, 1,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est)[5]
     IgnitorMass, mfuel, mox, wr = Ign.Igniters(d.m_nozz,prop,default,d.Tc,d.O_F,default.type)
-    #! Ns- pump specific speed not yet implemented
-    #Mass = ChamberMass + IgnitorMass #+ Ms.Mass(p_new,Ms.Rhenium,Ms.Rhenium,Ms.Rhenium,d.Eps,d.A_t,0,aux.Default.Safety_factor,0,Turbo.Ns)
-    rho_prop = Ms.RhoProp(aux.Propellant.f_dens_l,aux.Propellant.o_dens,aux.Data.O_F)
-    Mass = NozzleMass + ChamberMass + IgnitorMass #+ Ms.Mass(p_new,Ms.Rhenium,Ms.Rhenium,Ms.Rhenium,d.Eps,d.A_t,d.m_nozz,aux.Default.Safety_factor,rho_prop,Turbo.Ns)
-    #print(NozzleMass, ChamberMass, IgnitorMass) #kg
+    
 
-    #Computing costs:
-    n_engine = 1
-    #Cost = Ms.Cost(Mass, Reliability, n_engine)
+    rho_prop = Ms.RhoProp(aux.Propellant.f_dens_l,aux.Propellant.o_dens,aux.Data.O_F)
+    Mass = ChamberMass + IgnitorMass +NozzleMass + Ms.Mass(p_new,Ms.Rhenium,Ms.Rhenium,d.Eps,d.A_t, d.m_nozz ,aux.Default.Safety_factor,rho_prop,'SC')
+   
+    
+
+    # #Computing costs:
+    # n_engine = 1
+    # #Cost = Ms.Cost(Mass, Reliability, n_engine)
 
     print("Calculations finished")
     return True
