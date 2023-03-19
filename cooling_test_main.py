@@ -50,18 +50,22 @@ class Default:
     SF = 1.0
 
     # Cooling
-    Dr = 0.01 #[m] hydralic diameter of the coolant channel
-    A = 0.0003 #[m2] area of contact for each segment of the cooling
-    T_fuel_tanks = 20 #[K] temperature of the fuel tanks, considered the inicial coolant temperature
-    #T_ox_tanks = 60 #[K] temperature of the oxidiser tanks
-    n = 1 #number of coolant chanels
-    default_coating = Mt.Materials("default_coating", 0.0, 0.0, 0.0, 0.0, 1, 0) #default coolant
-    default_coating_thickness = 0 #default coolant thickness
-    T0=293.5 #[k] default inicial temperature
-    eps=0.85 #default emissivity
-    overwriteA=False #option to overwrite the surface area calculated by the program with the input variable A, given by the user or default class
-    regenerative_case=0 #option of which function to use in regenerative cooling; 0 corresponds to the explicit function Run1D()
-    operationtime=10000000000000000 #[s] default operation time (large to imply infinite time)
+    Dr = 0.01  # [m] hydralic diameter of the coolant channel
+    A = 0.0003  # [m2] area of contact for each segment of the cooling
+    T_fuel_tanks = 20  # [K] temperature of the fuel tanks, considered the inicial coolant temperature
+    # T_ox_tanks = 60 #[K] temperature of the oxidiser tanks
+    n = 1  # number of coolant chanels
+    default_coating = Mt.Materials(
+        "default_coating", 0.0, 0.0, 0.0, 0.0, 1, 0
+    )  # default coolant
+    default_coating_thickness = 0  # default coolant thickness
+    T0 = 293.5  # [k] default inicial temperature
+    eps = 0.85  # default emissivity
+    overwriteA = False  # option to overwrite the surface area calculated by the program with the input variable A, given by the user or default class
+    regenerative_case = 0  # option of which function to use in regenerative cooling; 0 corresponds to the explicit function Run1D()
+    operationtime = (
+        10000000000000000  # [s] default operation time (large to imply infinite time)
+    )
 
     # Igniters
     ignburntime = 4
@@ -158,16 +162,18 @@ if __name__ == "__main__":
 
     Coolobj_c = Cooling.CoolingClass()
 
-    Tc = 1
-    h_comb = 3000
+    Tc = 5000
+    h_comb = 1500
     ThicknessChamber = 0.003
     m_nozz = 25
     Chamber_L = 0.8
     Dc = 0.4
-    O_F = 2
+    O_F = 4
     Tf_cool = 20
 
     chamber_mass = Mt.Chamber_mass(Dc, Chamber_L, ThicknessChamber, Ms.Rhenium)
+    err_chamber_cooling = 0
+    warn_err_chamber_cooling = 0
 
     cool = Cooling.CoolingClass()
     (
@@ -187,10 +193,10 @@ if __name__ == "__main__":
         np.array([Tc]),
         np.array([h_comb]),
         np.array([ThicknessChamber]),
-        default.default_coating_thickness,
+        np.array([default.default_coating_thickness]),
         prop,
         Ms.Rhenium,
-        np.array([default.default_coating]),
+        default.default_coating,
         default.Dr,
         np.array([Chamber_L * Dc * math.pi]),
         Tf_cool,
@@ -200,6 +206,17 @@ if __name__ == "__main__":
         True,
         default.regenerative_case,
     )
+
+    print("\nRun", case_run)
+    print("Tf_cool: ", Tf_cool)
+    print(
+        "p loss",
+        dptcool_c,
+    )
+    print("Tw_wall_calculated", Tw_wall_chamber_calculated[-1])
+    print("errors:", err_chamber_cooling)
+    print("warning", warn_chamber_cooling)
+    print("type: ", type_variable_chamber)
 
     """(
         T_co_calculated,
@@ -253,13 +270,6 @@ if __name__ == "__main__":
         overwriteA,
         case_run,
     ) """
-
-    print("\nRun", case_run)
-    print("Tf_cool: ", T_co_calculated)
-    print("p loss", ploss)
-    print("Tw_wall_calculated", Tw_wall_calculated[-1])
-    print("errors:", err)
-    print("warning", warn)
 
     """ Tf_cool, dptcool = regCool.Run_for_Toperating1D(
         Tw_ad_noz,

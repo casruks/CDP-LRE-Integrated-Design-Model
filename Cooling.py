@@ -137,7 +137,7 @@ class CoolingClass:
             self.Q=self.radiationcool.Q
             T_co_calculated = Ti_co
             Tw_wall_calculated = [self.radiationcool.T_calculated]
-            ploss = 1
+            ploss = 0
             m_flow_fuel = 0
             if err != 0:
                 return (
@@ -190,7 +190,7 @@ class CoolingClass:
 
         if (
             check_positive_args(Tw_wall_calculated)
-            == False or any(x < TestTemp for x in Tw_wall_calculated)
+            == False or any(x > TestTemp for x in Tw_wall_calculated)
         ):
             err = err | (1 << 8)
         if (
