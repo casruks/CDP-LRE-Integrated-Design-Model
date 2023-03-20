@@ -234,6 +234,7 @@ def Main(d: aux.Data):
             dptcool,
             _,
             type_variable_nozzle,
+            T_outer_wall_nozzle,
             err_nozzle_cooling,
             warn_nozzle_cooling,
         ) = Coolobj.Run_cooling(
@@ -293,6 +294,7 @@ def Main(d: aux.Data):
             dptcool_c,
             _,
             type_variable_chamber,
+            T_outer_wall_chamber,
             err_chamber_cooling,
             warn_chamber_cooling,
         ) = Coolobj_c.Run_cooling(

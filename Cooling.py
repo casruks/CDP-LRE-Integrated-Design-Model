@@ -72,7 +72,7 @@ class CoolingClass:
         ploss = 0
         m_flow_fuel = 0
         type_variable = 0
-
+        T_outer_wall=0
         # Check if input variables are positive
         if (
             check_positive_args(
@@ -97,7 +97,7 @@ class CoolingClass:
             == False
         ):
             err = err | (1 << 0)
-            return T_co_calculated, Tw_wall_calculated, ploss, m_flow_fuel, err, warn
+            return T_co_calculated, Tw_wall_calculated, ploss, m_flow_fuel, T_outer_wall,err, warn
 
         # Calculate total contact area for cooling system
         if overwriteA == False:
@@ -119,10 +119,11 @@ class CoolingClass:
         )
 
         Tw_wall_calculated = [self.heatsink.T_calculated]
+        T_outer_wall=[Tw_wall_calculated]
         self.Q = self.heatsink.Q
 
         if err != 0:
-            return T_co_calculated, Tw_wall_calculated, ploss, m_flow_fuel, err, warn
+            return T_co_calculated, Tw_wall_calculated, ploss, m_flow_fuel, T_outer_wall,err, warn
 
         if self.heatsink.T_calculated > TestTemp:
 
@@ -141,6 +142,7 @@ class CoolingClass:
             self.Q = self.radiationcool.Q
             T_co_calculated = Ti_co
             Tw_wall_calculated = [self.radiationcool.T_calculated]
+            T_outer_wall=[self.radiationcool.T_outer_wall]
             ploss = 0
             m_flow_fuel = 0
             if err != 0:
@@ -181,7 +183,7 @@ class CoolingClass:
                     case_run,
                     err,
                 )
-
+                T_outer_wall=self.Main_regenerative_run_function.T_out_wall
         # Update heat extracted by cooling
         self.Q = self.regencool.Q
 
@@ -193,13 +195,16 @@ class CoolingClass:
             x > TestTemp for x in Tw_wall_calculated
         ):
             err = err | (1 << 8)
-        if check_positive_args(ploss) == False or ploss > 10**5:
+        if check_positive_args(ploss) == False or ploss > 10**6:
             err = err | (1 << 9)
         if check_positive_args(m_flow_fuel) == False or m_flow_fuel > 30:
             err = err | (1 << 10)
 
         if check_positive_args(self.Q) == False:
             err = err | (1 << 11)
+
+        if check_positive_args(T_outer_wall) == False:
+            err = err | (1 << 12)
 
         # if(m_flow_fuel > 6000 or Tw_wall_calculated[-1] > 2000 or T_co_calculated > 1000 or ploss > 10**5):
         # warn=warn|(1<<1)
@@ -211,6 +216,7 @@ class CoolingClass:
             ploss,
             m_flow_fuel,
             type_variable,
+            T_outer_wall,
             err,
             warn,
         )
@@ -253,7 +259,7 @@ class RadiationCool:
     def Tcalculation_system(self, x, Tr, eps, k, t, h):
         Ti, Tout = x
         return [
-            h * (Tr - Ti) - (Tout - Ti) * k / t,
+            h * (Tr - Ti) - (Ti - Tout) * k / t,
             eps * scipy.constants.sigma * Tout**4 - h * (Tr - Ti),
         ]
 
@@ -266,7 +272,8 @@ class RadiationCool:
         sol = scipy.optimize.fsolve(
             self.Tcalculation_system, x0, args=(Tr, eps, k, t, h)
         )
-        self.T_calculated = sol[0]
+        self.T_calculated = sol[1]
+        self.T_outer_wall= sol[0]
 
         if check_positive_args(self.T_calculated) == False:
             err = err | (1 << 2)
@@ -311,6 +318,7 @@ class RegenerativeCool:
         # print("self.hco", self.hco)
         # T_wall = self.t[ArrayCounter] / self.Mater.k * q + Ti_co + q / self.hco
         T_wall = Tr - q / hg
+        self.T_outer_Wall=T_wall-self.Mater.k/self.t[ArrayCounter]*q
         # Tinext_co: end coolant temperature
         # T_wall: wall temperature
         check_positive_args(Tinext_co, T_wall)
@@ -391,12 +399,13 @@ class RegenerativeCool:
         T_co_calcualted = [0 for i in range(len(Tr) + 1)]
         T_co_calcualted[0] = Ti_co
         T_wall_calcualted = [0 for i in range(len(Tr))]
-
+        self.T_out_wall = [0 for i in range(len(Tr))]
         # Calculate the wall temperature and the coolant temperature for each point along the wall
         for i in range(len(Tr)):
             T_co_calcualted[i + 1], T_wall_calcualted[i] = self.Tcalculation1D(
                 Tr[i], T_co_calcualted[i], A, hg[i], i
             )
+            self.T_out_wall[i]=self.Tcalculation1D.T_outer_Wall
         # print(T_co_calcualted)
         if check_positive_args(T_co_calcualted, T_wall_calcualted, ploss) == False:
             err = err | (1 << 3)
