@@ -47,20 +47,22 @@ Carbon                  =       Materials('Carbon-Carbon Matrix coating',       
 #Nozzle Surface Fucntion:
 def Nozzle_mass(x,R,t,material):
     total_surf = 0
-    # nozmass_error = 0
-    # nozmass_warnings = 0
+    nozmass_error = 0
+    nozmass_warnings = 0
     
     # Warning 0: "The thickness is lower than 1mm, a default thickness of 1mm has been used"
     # Warning 1: "The material density is lower than 0"
     # Warning 2: "The nozzle mass is lower than 0
 
-    # if t < 0.001:
-    #     nozmass_warnings=nozmass_warnings|(1<<0)
-    #     return 0,nozmass_error, nozmass_warnings
+    if t < 0.001:
+        nozmass_warnings=nozmass_warnings|(1<<0)
+    else:
+        nozmass_warnings=0
+        return 0,nozmass_error, nozmass_warnings
     
-    # if material.density < 0:
-    #     nozmass_warnings=nozmass_warnings|(1<<1)
-    #     return 0,nozmass_warnings,nozmass_warnings
+    if material.density < 0:
+        nozmass_warnings=nozmass_warnings|(1<<1)
+        return 0,nozmass_warnings,nozmass_warnings
 
     for i in range(len(x)-1):
         total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*t[i]*R[i]
@@ -198,22 +200,16 @@ def RhoProp(O_prop, F_prop, OF):
 
 
 ##Cost function 
-def Cost(m_engine, R, n):
-    TotalCost = 0
-    lst = []
-    for i in range(len(R)):
-        f1  = 1.0
-        f2  = 0.27+1.075*R[i]**46.994
-        f3  = 1
-        f4  = -0.0553*mth.log(n) + 1.0011
-        a_m = 4.0
-
-        C_D = 1.1*f1*f2*f3*162*m_engine**0.58
-        F_E = a_m*f4*m_engine**0.46
-        TotalCost_MY = C_D + F_E
-        TotalCost = TotalCost_MY*200e3
-        lst.append(TotalCost)
-    return lst
+def Cost(m_engine,f1,R,f3,n,a_m):
+    TotalCost_MY = 0
+    f2  = 0.27+1.075*R**46.994
+    f4  = -0.0553*mth.log(n) + 1.0011
+    C_D = 1.1*f1*f2*f3*162*m_engine**0.58
+    F_E = a_m*f4*m_engine**0.46
+    TotalCost_MY = C_D + F_E
+    #TotalCost = TotalCost_MY*200e3
+    
+    return TotalCost_MY
 
 
 def RhoProp(O_prop, F_prop, OF):
@@ -222,51 +218,51 @@ def RhoProp(O_prop, F_prop, OF):
         return rho_prop
 
 ##Reuseability:
-def Reuseability(material, Twg, Twc, DT, H, Chanel_width, P_chamber, P_channel, mu, N):
-    T1 = (Twg + Twc)/2
-    T0 = 0.35*T1 #The 0.35 comes from the assumption that the cooling channels are rectangular in shape. This needs to be changed for any other cross section. 
-    # T1_min = 0
-    # T0_min = 0.35*T0_max #The 0.35 comes from the assumption that the cooling channels are rectangular in shape. This needs to be changed for any other cross section. 
+#Thinning of the coolant pipe wall after 1 cycle
+
+def Reuseability(material, Twg_max, Twc_max, Twg_min, Twc_min, DT, H, Chanel_width, P_chamber, P_channel, mu, N):
+    Ti_max = (Twg_max + Twc_max)/2
+    T0_max = 0.35*Ti_max #The 0.35 comes from the assumption that the cooling channels are rectangular in shape. This needs to be changed for any other cross section. 
+    
+    Ti_min = (Twg_min + Twc_min)/2
+    T0_min = 0.35*Ti_min 
+    
     DT_ep_pl2 = DT
-    # mu = 0
     l = Chanel_width
     w = l
     p = P_channel - P_chamber
-    # N = 0 
-    # Ti = 0
-    # T0 = 0
-    # N_Life = 0
+    Reuseability = 'Not Reuseable'
 
     #Inelastic Strain:
-    ep_pl1 = (material.k*(T1 - T0)) - (2*material.yieldstress_l/material.Emod)
-    ep_pl2 = (material.Emod*(material.k*DT_ep_pl2)**2)/(12*material.yieldstress_l*(1-mu)**2)
+    ep_pl1 = (material.k*(Ti_max - T0_max) - (Ti_min - T0_min)) - (2*material.yieldstress_l/material.Emod)
+    ep_pl2 = ((material.k*DT_ep_pl2)**2)/(12*material.yieldstress_l*(1-mu)**2)
     ep_1 = 2*(ep_pl1+ep_pl2)
 
     #Deflection:
-    def1 = 2*((H/ep_1) - mth.sqrt((H/ep_1)**2 - (l/4)**2))
+    def1 = 2*((H/ep_1) - mth.sqrt(((H/ep_1)**2) - ((l/4)**2)))
     def2 = (ep_1*p*l**2)/(4*H*material.yieldstress_l)
     def_tot = def1 + def2
 
     #Ligament Deformation:
-    #t_N = (N*w*def_tot)/(l*w)
-    t_N_min = (2*H*(l+w) - N*w*def_tot)/(l+w)
+    # t_N_min = (2*H*(l+w) - N*w*def_tot)/(l+w)
     t_N_max = (2*H*(l+w)**2 + N*w*l*def_tot)/(l+w)**2
 
-    #Fatigue and Creep Rupture Damage:
-    q = 0.2*((material.ustress - material.yieldstress_l)/material.yieldstress_l)**(0.6)
-    ep_c1avg = material.k*(T1 - T0)
-    ep_c1 = ep_c1avg*(((q-1)/q)*((t_N_min/t_N_max) - 1))*((t_N_min/t_N_max)**((q-1)/q) - 1)**(-1)
-    ep_c2 = ep_c1avg
-    ep_c_tot = (2/mth.sqrt(3))*mth.sqrt((ep_c1**2 + ep_c1*ep_c2 + ep_c2**2))
+    # #Fatigue and Creep Rupture Damage: Funtion does not seem to work when creep is 
+    q = 0.2*((160e6 - material.yieldstress_l)/material.yieldstress_l)**(0.6)
+    # ep_c1avg = material.k*(T1 - T0)
+    # ep_c1 = ep_c1avg*(((q-1)/q)*((t_N_min/t_N_max) - 1))*((t_N_min/t_N_max)**((q-1)/q) - 1)**(-1)
+    # ep_c2 = ep_c1avg
+    # ep_c_tot = (2/mth.sqrt(3))*mth.sqrt((ep_c1**2 + ep_c1*ep_c2 + ep_c2**2))
+    
+    #Critical Thickness:
+    tcr = 2*H*(1-mth.e**(-q))
 
-    #Life Prediction:
-    RA = (2*H*l)-(0.5*def_tot*l)/(2*H*l)
-    ef = mth.log((100/(100-RA)))
-    et = 3.5*(material.ustress/material.Emod)*N**(-0.12) + (ef**0.6)*(N**(-0.6))
+    if t_N_max > tcr:
+        Reuseability = 'Not Reuseable after selected amount of cycles'
+    else:
+        Reuseability = 'Reuseable System'
 
-    return N
-
-
+    return Reuseability
 
 
 

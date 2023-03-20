@@ -93,11 +93,20 @@ class Default:
     coating_list = [Ms.Coat_Custom,Ms.Copper, Ms.Narloy_Z, Ms.GRCop_84, Ms.Silica, Ms.Carbon]
     noz_mat_select = material_list[0]
     chamber_mat_select = coating_list[0]
-    t = 1e-3 #m
+  
     
     #Mass:
     noz_material = Ms.D6AC_Steel
     Valves_material = Ms.D6AC_Steel
+    t = 1e-3 #Default thickness of the nozzle
+
+    #Cost:
+    f1  = 1.0
+    R   = 0.9
+    f3  = 1
+    n_engines  =  0
+    a_m = 4.0
+
 
     #Reliabiliy
      # Should be implemented for GUI user input

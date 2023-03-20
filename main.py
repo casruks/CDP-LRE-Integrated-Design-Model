@@ -159,9 +159,8 @@ def Main(d : aux.Data):
    
     
 
-    # #Computing costs:
-    # n_engine = 1
-    # #Cost = Ms.Cost(Mass, Reliability, n_engine)
+    #Computing costs:
+    Cost = Ms.Cost(Mass, aux.Default.f1, aux.Default.R, aux.Default.f3, aux.Default.n_engines,aux.Default.a_m)
 
     print("Calculations finished")
     return True
