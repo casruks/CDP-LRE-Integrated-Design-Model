@@ -139,15 +139,23 @@ def Main(d : aux.Data):
     #Compute reliability 
     Reliability = Rel.Reliability(default,prop, d.time, d.Thrust, d.Thrust, default.val)
     
-    #Compute Mass:
-    NozzleMass = Ms.Nozzle_mass(default, x_noz,y_noz,t_noz,Ms.D6AC_Steel)
-    print('Nozzle mass =', NozzleMass)
+    #Compute Mass: Function location in Materials Document
+    #Inputs Nozzle Mass Function:
+    #X-coordinates of the nozzle fuction
+    #Y-coordinates of the nozzle function
+    #Thickness of the nozzle
+    #Material for nozzle
+    NozzleMass = Ms.Nozzle_mass(x_noz,y_noz,t_noz,aux.Default.noz_material)
+    #Output:
+    #NozzleMass
+    
+
     ChamberMass = Comb.CombustionChamber(p_new, d.At, prop, Ms.D6AC_Steel, default, d.v_if, d.v_iox, d.Tc, d.O_F, 1,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est)[5]
     IgnitorMass, mfuel, mox, wr = Ign.Igniters(d.m_nozz,prop,default,d.Tc,d.O_F,default.type)
     
 
     rho_prop = Ms.RhoProp(aux.Propellant.f_dens_l,aux.Propellant.o_dens,aux.Data.O_F)
-    Mass = ChamberMass + IgnitorMass +NozzleMass + Ms.Mass(p_new,Ms.Rhenium,Ms.Rhenium,d.Eps,d.A_t, d.m_nozz ,aux.Default.Safety_factor,rho_prop,'SC')
+    Mass = ChamberMass + IgnitorMass + NozzleMass + Ms.Mass(p_new,Ms.Rhenium,Ms.Rhenium,d.Eps,d.A_t, d.m_nozz ,aux.Default.Safety_factor,rho_prop,'SC')
    
     
 
