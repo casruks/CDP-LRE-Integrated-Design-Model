@@ -95,6 +95,10 @@ class Default:
     chamber_mat_select = coating_list[0]
     t = 1e-3 #m
     
+    #Mass:
+    noz_material = Ms.D6AC_Steel
+    Valves_material = Ms.D6AC_Steel
+
     #Reliabiliy
      # Should be implemented for GUI user input
      # Fop should also be included, but commented out for now as to not mess with code

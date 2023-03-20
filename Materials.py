@@ -47,20 +47,20 @@ Carbon                  =       Materials('Carbon-Carbon Matrix coating',       
 #Nozzle Surface Fucntion:
 def Nozzle_mass(x,R,t,material):
     total_surf = 0
-    nozmass_error = 0
-    nozmass_warnings = 0
+    # nozmass_error = 0
+    # nozmass_warnings = 0
     
     # Warning 0: "The thickness is lower than 1mm, a default thickness of 1mm has been used"
     # Warning 1: "The material density is lower than 0"
     # Warning 2: "The nozzle mass is lower than 0
 
-    if t < 0.001:
-        nozmass_warnings=nozmass_warnings|(1<<0)
-        return 0,nozmass_error,nozmass_warnings
+    # if t < 0.001:
+    #     nozmass_warnings=nozmass_warnings|(1<<0)
+    #     return 0,nozmass_error,nozmass_warnings
     
-    if material.density < 0:
-        nozmass_warnings=nozmass_warnings|(1<<1)
-        return 0,nozmass_warnings,nozmass_warnings
+    # if material.density < 0:
+    #     nozmass_warnings=nozmass_warnings|(1<<1)
+    #     return 0,nozmass_warnings,nozmass_warnings
 
     for i in range(len(x)-1):
         total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*t[i]*R[i]
@@ -68,11 +68,11 @@ def Nozzle_mass(x,R,t,material):
         total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*aux.Default.t*R[i]
     NozzleMass = total_surf*2*mth.pi*material.density
 
-    if NozzleMass < 0:
-        nozmass_warnings=nozmass_warnings|(1<<2)
-        return 0,nozmass_error,nozmass_warnings
+    # if NozzleMass < 0:
+    #     nozmass_warnings=nozmass_warnings|(1<<2)
+    #     return 0,nozmass_error,nozmass_warnings
     
-    return NozzleMass,nozmass_error,nozmass_warnings
+    return NozzleMass
 
 class ReferenceEngine:
     def __init__(self, pc, thrust, arear, rt, mprop, rhoprop, FS, Material_NCG, Material_P, Material_V, mfrac_tube, mfrac_manifold, mfrac_jacket, mfrac_chamber, mfrac_pump, mfrac_valve, RefMass):
@@ -95,8 +95,8 @@ class ReferenceEngine:
         self.RefMass = RefMass
 
 RL10    = ReferenceEngine(3.20e6, 7.34e4, 61.1,  0.076, 16.85, 351.91, 1.1, Inc_718, D6AC_Steel, D6AC_Steel, 0.0903, 0.2575, 0.0484, 0.2281, 0.3096, 0.0661, 138) #Expander Cycle Reference
-LE5     = ReferenceEngine(3.65e6, 1.03e5, 140.0, 0.068, 23.33, 5.5,    1.1, Inc_718, Al_7075_T6, Al_7075_T6, 0.1419, 0.0578, 0.1021, 0.2804, 0.3042, 0.1136, 255)#Gas Generator Cycle Reference #fix rhoprop
-SSME    = ReferenceEngine(2.04e7, 2.28e6, 77.5,  0.138, 512.6, 6,      1.2, Inc_718, D6AC_Steel, D6AC_Steel, 0.0907, 0.1984, 0.0737, 0.1955, 0.2763, 0.1654, 3177)#Stage Combustion Cycle Reference #fixrhoprop
+LE5     = ReferenceEngine(3.65e6, 1.03e5, 140.0, 0.068, 23.33, 343.83, 1.1, Inc_718, Al_7075_T6, Al_7075_T6, 0.1419, 0.0578, 0.1021, 0.2804, 0.3042, 0.1136, 255)#Gas Generator Cycle Reference #fix rhoprop
+SSME    = ReferenceEngine(2.04e7, 2.28e6, 77.5,  0.138, 512.6, 361.89, 1.2, Inc_718, D6AC_Steel, D6AC_Steel, 0.0907, 0.1984, 0.0737, 0.1955, 0.2763, 0.1654, 3177)#Stage Combustion Cycle Reference #fixrhoprop
 
 
 
@@ -150,7 +150,7 @@ def Mass(Pc, material_N, material_V, arear, rt, mprop, FS, rhoprop, cycle):
     #     return 0, Mass_error,Mass_warnings 
 
     
-    Ns0= (31537*mth.sqrt(mprop))/(5172.15**(0.75))
+    # Ns0= (31537*mth.sqrt(mprop))/(5172.15**(0.75))
 
     reference = RL10
 
@@ -189,7 +189,7 @@ def Mass(Pc, material_N, material_V, arear, rt, mprop, FS, rhoprop, cycle):
     #Total:
     Total_Mass = (ManifoldMass + TubeMass + PumpMass + ValveMass)*reference.RefMass 
 
-    return Total_Mass
+    return Total_Mass, (Pc/reference.pc)**1 , ((material_N.density/reference.Material_NCG.density)**1), (((material_N.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1)), ((arear/reference.arear)**1), ((rt/reference.rt)**2)
 
 
 def RhoProp(O_prop, F_prop, OF):
@@ -223,27 +223,23 @@ def RhoProp(O_prop, F_prop, OF):
         return rho_prop
 
 ##Reuseability:
-def Reuseability(material):
-    # T1_max = 0
-    # T0_max = 0.35*T1_max #The 0.35 comes from the assumption that the cooling channels are rectangular in shape. This needs to be changed for any other cross section. 
+def Reuseability(material, Twg, Twc, DT, H, Chanel_width, P_chamber, P_channel, mu, N):
+    T1 = (Twg + Twc)/2
+    T0 = 0.35*T1 #The 0.35 comes from the assumption that the cooling channels are rectangular in shape. This needs to be changed for any other cross section. 
     # T1_min = 0
     # T0_min = 0.35*T0_max #The 0.35 comes from the assumption that the cooling channels are rectangular in shape. This needs to be changed for any other cross section. 
-    # DT_ep_pl2 = 0
-    # def_tot = 0
-    # def1 = 0
-    # H = 0
-    # def2 = 0
+    DT_ep_pl2 = DT
     # mu = 0
-    # l = 0
-    # w = 0
-    # p = 0
+    l = Chanel_width
+    w = l
+    p = P_channel - P_chamber
     # N = 0 
     # Ti = 0
     # T0 = 0
     # N_Life = 0
 
     #Inelastic Strain:
-    ep_pl1 = material.k*((T1_max - T0_max) - (T1_min - T0_min)) - (2*material.yieldstress_l/material.Emod)
+    ep_pl1 = (material.k*(T1 - T0)) - (2*material.yieldstress_l/material.Emod)
     ep_pl2 = (material.Emod*(material.k*DT_ep_pl2)**2)/(12*material.yieldstress_l*(1-mu)**2)
     ep_1 = 2*(ep_pl1+ep_pl2)
 
@@ -259,7 +255,7 @@ def Reuseability(material):
 
     #Fatigue and Creep Rupture Damage:
     q = 0.2*((material.ustress - material.yieldstress_l)/material.yieldstress_l)**(0.6)
-    ep_c1avg = material.k*(Ti - T0)
+    ep_c1avg = material.k*(T1 - T0)
     ep_c1 = ep_c1avg*(((q-1)/q)*((t_N_min/t_N_max) - 1))*((t_N_min/t_N_max)**((q-1)/q) - 1)**(-1)
     ep_c2 = ep_c1avg
     ep_c_tot = (2/mth.sqrt(3))*mth.sqrt((ep_c1**2 + ep_c1*ep_c2 + ep_c2**2))
@@ -267,5 +263,10 @@ def Reuseability(material):
     #Life Prediction:
     N_T = 750*q**(1.25)
 
-    return N_Life
-    
+    return 
+
+rhotest = RhoProp(1141, 71, 5.5)
+
+
+
+print(Mass(1.27e7,D6AC_Steel,D6AC_Steel, 52, 0.121, 246.38, 1.1, rhotest, 'SC'))
