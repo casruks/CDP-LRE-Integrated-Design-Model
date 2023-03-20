@@ -47,34 +47,48 @@ Carbon                  =       Materials('Carbon-Carbon Matrix coating',       
 #Nozzle Surface Fucntion:
 def Nozzle_mass(x,R,t,material):
     total_surf = 0
-    nozmass_error = 0
-    nozmass_warnings = 0
+    # nozmass_error = 0
+    # nozmass_warnings = 0
     
     # Warning 0: "The thickness is lower than 1mm, a default thickness of 1mm has been used"
     # Warning 1: "The material density is lower than 0"
     # Warning 2: "The nozzle mass is lower than 0
-
-    if t < 0.001:
-        nozmass_warnings=nozmass_warnings|(1<<0)
-    else:
-        nozmass_warnings=0
-        return 0,nozmass_error, nozmass_warnings
     
-    if material.density < 0:
-        nozmass_warnings=nozmass_warnings|(1<<1)
-        return 0,nozmass_warnings,nozmass_warnings
+    #Example: error implementation
+    # if Pc>300:
+    #     if (warnings & (1<<0))==False:
+    #         warnings=warnings|(1<<0)
+    # elif warnings & (1<<0):
+    #     warnings=warnings & (~(1<<0))
+
+
+    # if t < 0.001:
+    #     if (nozmass_warnings & (1<<0)) == False:
+    #         nozmass_warnings=nozmass_warnings|(1<<0)
+    # else:
+    #     nozmass_warnings = nozmass_warnings & (~(1<<0))
+    #     return 0,nozmass_error, nozmass_warnings
+    
+    # if material.density < 0:
+    #     if (nozmass_warnings & (1<<0)) == False:
+    #         nozmass_warnings=nozmass_warnings|(1<<1)
+    # else:
+    #     nozmass_warnings = nozmass_warnings & (~(1<<1))
+    #     return 0,nozmass_error, nozmass_warnings
+     
 
     for i in range(len(x)-1):
-        total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*t[i]*R[i]
-    else:
-        total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*aux.Default.t*R[i]
+        if t[i] < 0.001:
+            total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*t[i]*R[i]
+        else:
+            total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*0.001*R[i]
     NozzleMass = total_surf*2*mth.pi*material.density
 
     # if NozzleMass < 0:
     #     nozmass_error=nozmass_error|(1<<0)
     #     return 0,nozmass_error,nozmass_warnings
     
-    return NozzleMass #,nozmass_error, nozmass_warnings
+    return NozzleMass 
 
 class ReferenceEngine:
     def __init__(self, pc, thrust, arear, rt, mprop, rhoprop, FS, Material_NCG, Material_P, Material_V, mfrac_tube, mfrac_manifold, mfrac_jacket, mfrac_chamber, mfrac_pump, mfrac_valve, RefMass):
@@ -244,8 +258,9 @@ def Reuseability(material, Twg_max, Twc_max, Twg_min, Twc_min, DT, H, Chanel_wid
     def_tot = def1 + def2
 
     #Ligament Deformation:
+    t_N = (N*w*def_tot)/(l+w)
     # t_N_min = (2*H*(l+w) - N*w*def_tot)/(l+w)
-    t_N_max = (2*H*(l+w)**2 + N*w*l*def_tot)/(l+w)**2
+    #t_N_max = (2*H*(l+w)**2 + N*w*l*def_tot)/(l+w)**2
 
     # #Fatigue and Creep Rupture Damage: Funtion does not seem to work when creep is 
     q = 0.2*((160e6 - material.yieldstress_l)/material.yieldstress_l)**(0.6)
@@ -257,14 +272,15 @@ def Reuseability(material, Twg_max, Twc_max, Twg_min, Twc_min, DT, H, Chanel_wid
     #Critical Thickness:
     tcr = 2*H*(1-mth.e**(-q))
 
-    if t_N_max > tcr:
+    if t_N > tcr:
         Reuseability = 'Not Reuseable after selected amount of cycles'
     else:
         Reuseability = 'Reuseable System'
 
     return Reuseability
 
+x = 1,2,3
+y = 3,4,5
+t = 0.001,0.001,0.001
 
-
-
-
+print(Nozzle_mass(x,y,t,D6AC_Steel))
