@@ -224,23 +224,23 @@ def RhoProp(O_prop, F_prop, OF):
 
 ##Reuseability:
 def Reuseability(material):
-    T1_max = 0
-    T0_max = 0.35*T1_max #The 0.35 comes from the assumption that the cooling channels are rectangular in shape. This needs to be changed for any other cross section. 
-    T1_min = 0
-    T0_min = 0.35*T0_max #The 0.35 comes from the assumption that the cooling channels are rectangular in shape. This needs to be changed for any other cross section. 
-    DT_ep_pl2 = 0
-    def_tot = 0
-    def1 = 0
-    H = 0
-    def2 = 0
-    mu = 0
-    l = 0
-    w = 0
-    p = 0
-    N = 0 
-    Ti = 0
-    T0 = 0
-    N_Life = 0
+    # T1_max = 0
+    # T0_max = 0.35*T1_max #The 0.35 comes from the assumption that the cooling channels are rectangular in shape. This needs to be changed for any other cross section. 
+    # T1_min = 0
+    # T0_min = 0.35*T0_max #The 0.35 comes from the assumption that the cooling channels are rectangular in shape. This needs to be changed for any other cross section. 
+    # DT_ep_pl2 = 0
+    # def_tot = 0
+    # def1 = 0
+    # H = 0
+    # def2 = 0
+    # mu = 0
+    # l = 0
+    # w = 0
+    # p = 0
+    # N = 0 
+    # Ti = 0
+    # T0 = 0
+    # N_Life = 0
 
     #Inelastic Strain:
     ep_pl1 = material.k*((T1_max - T0_max) - (T1_min - T0_min)) - (2*material.yieldstress_l/material.Emod)
