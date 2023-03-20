@@ -460,7 +460,3 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
 
     return t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,D_t,D_e,L_nozzle_con,L_nozzle_div,L_tot,x_noz_cool,y_noz_cool,errors, warnings;
-
-
-
-

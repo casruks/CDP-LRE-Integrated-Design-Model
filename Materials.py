@@ -1,6 +1,7 @@
 import math as mth
 import Aux_classes as aux
 
+
 class Materials:
     def __init__(self, material, density, yieldstress_l, Emod, OpTemp_u, k, cost):
         self.material = material
@@ -45,18 +46,14 @@ Carbon                  =       Materials('Carbon-Carbon Matrix coating',       
 
 ##Computing Mass nozzle: 
 #Nozzle Surface Fucntion:
-
-def Nozzle_mass(default, x,R,t,material):
+def Nozzle_mass(x,R,t,material):
     total_surf = 0
-    for i in range(len(t)):
-        if t[i] > default.t:
-            for i in range(len(x)-1):
-                total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*t[i+1]*R[i+1]
+    for i in range(len(x)-1):
+        if t[i] > aux.Default.t:
+            total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*t[i]*R[i]
         else:
-            for i in range(len(x)-1):
-                total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*1e-3*R[i+1]
-    #vol = total_dist*2*mth.pi
-    print(total_surf*2*mth.pi)
+            total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*aux.Default.t*R[i]
+
     NozzleMass = total_surf*2*mth.pi*material.density
     return NozzleMass
 
@@ -102,9 +99,6 @@ def Mass(Pc, material_N, material_P, material_V, arear, rt, mprop, FS, rhoprop, 
     #Nozzle Mass:
     TubeMass = reference.mfrac_tube*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*(((material_N.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((arear/reference.arear)**1)*((rt/reference.rt)**2)) #Dimensionless Nozzle Tube Mass
     ManifoldMass = reference.mfrac_manifold*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*((mprop/reference.mprop)**1)*((material_N.yieldstress_l/reference.Material_NCG.yieldstress_l)**(-1))*((rhoprop/reference.rhoprop)**(-1))*((rt/reference.rt)**1)) #Dimensionless Nozzle Manifold Mass
-    #JacketMass = reference.mfrac_jacket*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*(((material_N.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((arear/reference.arear)**1.5)*((rt/reference.rt)**3))#Dimensionless Nozzle Jacket Mass
-    
-    
 
     #TurboPump Mass
     PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.15)*((material_P.density/reference.material_P.density)**1)*(((material_P.yieldstress_l/FS)/(reference.Material_p.yieldstress_l/reference.FS)*(-1)))*((mprop/reference.mprop)**0.9)*((rhoprop/reference.rhoprop)**(-0.45))*((Ns/y)**(-0.6)))
@@ -147,9 +141,6 @@ def Reuseability(RA, Material, N_F):
     E_T = 3.5(Material.yieldstress_l/Material.Emod)*N_F**(-0.12) + (E_f**0.6)*N_F**(-0.6)
     return E_T
 
-
-# Mass = Mass_Regenerative(3.20e6,Inc_718,Inc_718,D6AC_Steel,61.1,0.076,16.85,1.1,351.91,'EX')
-# print(Mass)
 def RhoProp(O_prop, F_prop, OF):
         rho_prop = 0
         rho_prop = ((O_prop*F_prop)*(1+OF))/(F_prop*OF+O_prop)

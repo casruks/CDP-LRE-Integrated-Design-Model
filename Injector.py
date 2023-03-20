@@ -15,12 +15,12 @@ def injector1(default, propellant, p_c, m, OF):
     m = mass flow toward injector; \n
     OF = mass ratio. \n
     '''
-
+    
     #Error & warning handling
     er = 0
     wr = 0
 
-    #Default variables
+    #Default variables 
     d_ox = default.d_ox
     d_f = default.d_f
     C_d = default.Cd
@@ -45,8 +45,7 @@ def injector1(default, propellant, p_c, m, OF):
     def Massflow(m, OF):
         m_ox = (OF/(OF+1.0))*m
         m_f = m - m_ox
-        return m_ox, m_f
-     
+        return m_ox, m_f    
     #! Maybe remove this and just replace it for eta_s alone, allow user to 
     #  change it accordingly.
     ## For throttled 0.2, for Unthrottled engines 0.3
@@ -56,8 +55,12 @@ def injector1(default, propellant, p_c, m, OF):
         eta_s = 0.2 #20-25% [Humble et al.]
     elif InjType == 'pintle':
         eta_s = 0.1 # [Humble et al.], [DARE, Sparrow]
-        
+    
     dp = eta_s * p_c
+    
+    if default.dp_state == True:
+        dp = default.dp_user*1e5 #input in bar -> *1e5 Pa
+
     v_iox = C_d * (2*dp/rho_ox)**0.5
     v_if = C_d * (2*dp/rho_f)**0.5
     m_ox, m_f = Massflow(m, OF)    
@@ -156,7 +159,7 @@ def validateInj():
     m = 176
     OF = 6
     v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, P_D, A_est, er, wr  = injector1(Default, Propellant, p_c, m, OF)
-    print(v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, P_D, A_est, er, wr)
+    print(v_iox, v_if, D_f, D_ox, 'dp=',dp, eta_s, m_ox, m_f, n_ox, n_f, P_D, A_est, er, wr)
     p_inj = 100e5
     print(injector2(Default, Propellant, v_iox, v_if, p_inj, eta_s))
 #validateInj()

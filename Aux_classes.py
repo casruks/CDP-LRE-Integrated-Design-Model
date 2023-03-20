@@ -19,11 +19,12 @@ class Default:
      # Should be implemented for GUI user input
     InjTypes = ['like', 'unlike', 'pintle'] #Please keep this one in default as well. Used for Injector1() via Default.InjTypes 
     InjType = InjTypes[2] #This one is placeholder
-    
+    dp_user = 0.0 #bar, used when user specifies a pressure drop.
+    dp_state = False #If False, user did not specify dp, if True user did specifiy dp.
     #Nozzle
     Nozzle_type = 0 # Type of nozzle, 0=conical, 1=bell
 
-    MR = 0 # O_F ratio, 0=optimize for c* LIMIT: >=0
+    MR = 6.04 # O_F ratio, 0=optimize for c* LIMIT: >=0
     De_max = 2.5 # Maximum exit diameter of the nozzle LIMIT: >0
     De_turbine_noz_max = 2.5 # Maximum exit diameter for the turbine exhaust nozzle LIMIT: >0
     Theta_con = 60 # Angle of the convergent part of the nozzle in degrees  LIMITS: 0<THETA<90
