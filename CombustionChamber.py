@@ -66,7 +66,7 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
     if (d0 < 0):
         er = er | (1 << 0)
         # quit("Diameter of droplet coming from injector is too small")
-    if (d0 > 1 * 10 ** -5):
+    if (d0 > 4 * 10 ** -3):
         er = er | (1 << 1)
         # quit("Diameter of droplet coming from injector is too large")
 
