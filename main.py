@@ -228,6 +228,10 @@ def Main(d: aux.Data):
         # Option to overwrite area with input area bool
         # which regenerative function to call (default 0, do not change!)
         #
+
+        alpha = 2 * math.pi * default.perimeter_percentage / default.n
+        y_for_cooling_channel = np.amin(y_noz_cool)
+        A_nozzle = [x_noz_cool[-1] * y_for_cooling_channel * alpha]
         (
             Tf_cool,
             Tw_wall_nozzle_calculated,
@@ -251,14 +255,15 @@ def Main(d: aux.Data):
             Ms.Rhenium,
             default.default_coating,
             default.Dr,
-            default.A,
+            A_nozzle,
             default.T_fuel_tanks,
             d.m_nozz / (1.0 + d.O_F) / default.n,
             x_noz_cool[-1],
             y_noz_cool,
-            default.overwriteA,
+            True,
             default.regenerative_case,
         )
+        Coolobj.Q = Coolobj.Q * default.n
         # Outputs
         # end temperature of the coolant in K
         # wall temperature array
@@ -288,6 +293,8 @@ def Main(d: aux.Data):
         # Radius of the chamber in m~
         # Option to overwrite area with input area bool
         # which regenerative function to call (default 0, do not change!)
+
+        A_chamber = [d.Chamber_L * y_for_cooling_channel * alpha]
         (
             Tf_cool,
             Tw_wall_chamber_calculated,
@@ -311,7 +318,7 @@ def Main(d: aux.Data):
             Ms.Rhenium,
             default.default_coating,
             default.Dr,
-            np.array([d.Chamber_L * d.Dc * math.pi]),
+            np.array(A_chamber),
             Tf_cool,
             d.m_nozz / (1.0 + d.O_F) / default.n,
             d.Chamber_L,
@@ -319,6 +326,7 @@ def Main(d: aux.Data):
             True,
             default.regenerative_case,
         )
+        Coolobj_c.Q = Coolobj_c.Q * default.n
         # Outputs
         # end temperature of the coolant in K
         # wall temperature array

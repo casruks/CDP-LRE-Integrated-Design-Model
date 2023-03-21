@@ -229,6 +229,12 @@ if __name__ == "__main__":
     print("warning", warn_nozzle_cooling)
     print("type: ", type_variable_nozzle)
 
+    default.n = 20
+    perimeter_percentage = 0.4
+    alpha = 2 * math.pi * perimeter_percentage / default.n
+    # A_chamber=[Chamber_L * Dc * 2*math.pi]
+    A_chamber = [Chamber_L * Dc * alpha]
+    
     (
         Tf_cool,
         Tw_wall_chamber_calculated,
@@ -252,7 +258,7 @@ if __name__ == "__main__":
         Ms.Rhenium,
         default.default_coating,
         default.Dr,
-        np.array([Chamber_L * Dc * math.pi]),
+        np.array(A_chamber),
         Tf_cool,
         m_nozz / (1.0 + O_F) / default.n,
         Chamber_L,

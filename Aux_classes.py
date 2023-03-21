@@ -85,6 +85,7 @@ class Default:
     overwriteA=False #option to overwrite the surface area calculated by the program with the input variable A, given by the user or default class
     regenerative_case=0 #option of which function to use in regenerative cooling; 0 corresponds to the explicit function Run1D()
     operationtime=10000000000000000 #[s] default operation time (large to imply infinite time)
+    perimeter_percentage = 1 #percentage of the perimeter used for cooling chambers
 
     # Igniters
     ignburntime = 4  # Put on advanced inputs, it is the ignition burn time.
