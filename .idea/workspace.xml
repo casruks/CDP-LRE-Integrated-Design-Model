@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ef1b47cd-59e5-4d2e-97f2-dac65949b5c8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Igniters.py" beforeDir="false" afterPath="$PROJECT_DIR$/Igniters.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
