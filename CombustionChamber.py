@@ -282,7 +282,9 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
 
     velocity = velocity_ox*(1-1/(1+of)) + velocity_f*(1/(1+of))
     heattransfer = a * ro**0.8 * velocity**0.8 * (1/(Rchamber*2))**0.2 * (k*Pr**0.33/niu**0.8)
-
+    if heattransfer < 0:
+        er = er | (1<<8)
+        return(0,0,0,0,0,wr,er)
     Re=velocity*ro*dchamber/niu
 
     if LengthChamber > 0.7:
