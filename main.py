@@ -64,7 +64,7 @@ def Main(d : aux.Data):
             
         #Compute injector (1)
         ## Added A_est, representing estimated total orifice area (A_ox+A_f) for sanity check with combustion chamber dimensions..
-        d[-1].v_iox, d[-1].v_if, d[-1].D_f, d[-1].D_ox, d[-1].dp, d[-1].eta_s, d[-1].m_ox, d[-1].m_f, d[-1].n_ox, d[-1].n_f, d[-1].P_D, A_est, er, wr = Inj.injector1(default, prop, p_new, d[-1].m_nozz, d[-1].O_F)
+        d[-1].v_iox, d[-1].v_if, d[-1].D_f, d[-1].D_ox, d[-1].dp, d[-1].eta_s, d[-1].m_ox, d[-1].m_f, d[-1].n_ox, d[-1].n_f, A_est, er, wr = Inj.injector1(default, prop, p_new, d[-1].m_nozz, d[-1].O_F)
 
         errors.append((er))
         warnings.append((wr))
@@ -340,7 +340,7 @@ def Main(d : aux.Data):
     ## By this order: igniter propellant total mass, igniter fuel mass, igniter oxidizer mass, warnings
 
     #Compute reliability 
-    Reliability = Rel.Reliability(default,prop, d[-1].time, d[-1].Thrust, d[-1].Thrust, default.val)
+    Reliability = Rel.Reliability(default, d[-1].time, d[-1].Thrust, d[-1].Thrust, default.val)
     
     #Compute Mass:
     NozzleMass = Ms.Nozzle_mass(x_noz,y_noz,t_noz,Ms.D6AC_Steel)
