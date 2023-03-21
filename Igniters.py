@@ -41,7 +41,7 @@ def Igniters (m,Propellant,default,Tc,of,type):
     match type:
         case '00':
             Hc = Enthalpy(Propellant,Tc,of)*10**3
-            H0 = Propellant.enthapy_298_f * (1 / (of + 1)) + Propellant.enthapy_298_ox * (1 - 1 / (of + 1))
+            H0 = Propellant.enthalpy_298_f * (1 / (of + 1)) + Propellant.enthalpy_298_ox * (1 - 1 / (of + 1))
             Power = m * (Hc - H0)
             heatingvalue = Propellant.heatingvalue*(1/(default.ign_o_f+1))
             mass_igniter = Power/heatingvalue * default.ignburntime /(default.fudgefactor)
@@ -54,7 +54,7 @@ def Igniters (m,Propellant,default,Tc,of,type):
             return mass_igniter,mfuel,mox,wr
         case '10':
             Hc = Enthalpy(Propellant, Tc, of) * 10 ** 3
-            H0 = Propellant.enthapy_298_f * (1/(of+1)) + Propellant.enthapy_298_ox *(1-1/(of+1))
+            H0 = Propellant.enthalpy_298_f * (1/(of+1)) + Propellant.enthalpy_298_ox *(1-1/(of+1))
             Power = m * (Hc - H0)
             heatingvalue = 50*10**6 * (1 / (default.ign_o_f + 1))
             mass_igniter = Power / heatingvalue * default.ignburntime / (default.fudgefactor)
@@ -65,7 +65,7 @@ def Igniters (m,Propellant,default,Tc,of,type):
             return mass_igniter, mfuel, mox,wr
         case '11':
             Hc = Enthalpy(Propellant, Tc, of) * 10 ** 3
-            H0 = Propellant.enthapy_298_f * (1/(of+1)) + Propellant.enthapy_298_ox *(1-1/(of+1))
+            H0 = Propellant.enthalpy_298_f * (1/(of+1)) + Propellant.enthalpy_298_ox *(1-1/(of+1))
             Power = m * (Hc - H0)
             heatingvalue = 119.96*10**6 * (1 / (default.ign_o_f + 1))
             mass_igniter = Power / heatingvalue * default.ignburntime / (default.fudgefactor)
@@ -76,7 +76,7 @@ def Igniters (m,Propellant,default,Tc,of,type):
             return mass_igniter, mfuel, mox,wr
         case '20':
             Hc = Enthalpy(Propellant, Tc, of) * 10 ** 3
-            H0 = Propellant.enthapy_298_f * (1 / (of + 1)) + Propellant.enthapy_298_ox * (1 - 1 / (of + 1))
+            H0 = Propellant.enthalpy_298_f * (1 / (of + 1)) + Propellant.enthalpy_298_ox * (1 - 1 / (of + 1))
             Power = m * (Hc - H0)
             heatingvalue = 2.5*10**6 #* (1 / (default.ign_o_f + 1))
             mass_igniter = Power / heatingvalue * default.ignburntime / (default.fudgefactor)
@@ -87,7 +87,7 @@ def Igniters (m,Propellant,default,Tc,of,type):
             return mass_igniter, mfuel, mox,wr
         case '30':
             Hc = Enthalpy(Propellant, Tc, of) * 10 ** 3
-            H0 = Propellant.enthapy_298_f * (1 / (of + 1)) + Propellant.enthapy_298_ox * (1 - 1 / (of + 1))
+            H0 = Propellant.enthalpy_298_f * (1 / (of + 1)) + Propellant.enthalpy_298_ox * (1 - 1 / (of + 1))
             Power = m * (Hc - H0)
             heatingvalue = 22.6*10**6 * (1 / (default.ign_o_f + 1))
             mass_igniter = Power / heatingvalue * default.ignburntime / (default.fudgefactor)
@@ -98,7 +98,7 @@ def Igniters (m,Propellant,default,Tc,of,type):
             return mass_igniter, mfuel, mox,wr
         case '31':
             Hc = Enthalpy(Propellant, Tc, of) * 10 ** 3
-            H0 = Propellant.enthapy_298_f * (1 / (of + 1)) + Propellant.enthapy_298_ox * (1 - 1 / (of + 1))
+            H0 = Propellant.enthalpy_298_f * (1 / (of + 1)) + Propellant.enthalpy_298_ox * (1 - 1 / (of + 1))
             Power = m * (Hc - H0)
             heatingvalue = 36.4*10**6 * (1 / (default.ign_o_f + 1))
             mass_igniter = Power / heatingvalue * default.ignburntime / (default.fudgefactor)
@@ -109,7 +109,7 @@ def Igniters (m,Propellant,default,Tc,of,type):
             return mass_igniter, mfuel, mox,wr
         case '32':
             Hc = Enthalpy(Propellant, Tc, of) * 10 ** 3
-            H0 = Propellant.enthapy_298_f * (1 / (of + 1)) + Propellant.enthapy_298_ox * (1 - 1 / (of + 1))
+            H0 = Propellant.enthalpy_298_f * (1 / (of + 1)) + Propellant.enthalpy_298_ox * (1 - 1 / (of + 1))
             Power = m * (Hc - H0)
             heatingvalue = 28.326 * 10 ** 6 * (1 / (default.ign_o_f + 1))
             mass_igniter = Power / heatingvalue * default.ignburntime / (default.fudgefactor)
@@ -120,7 +120,7 @@ def Igniters (m,Propellant,default,Tc,of,type):
             return mass_igniter, mfuel, mox, wr
         case '33':
             Hc = Enthalpy(Propellant, Tc, of) * 10 ** 3
-            H0 = Propellant.enthapy_298_f * (1 / (of + 1)) + Propellant.enthapy_298_ox * (1 - 1 / (of + 1))
+            H0 = Propellant.l_298_f * (1 / (of + 1)) + Propellant.enthalpy_298_ox * (1 - 1 / (of + 1))
             Power = m * (Hc - H0)
             heatingvalue = 32.94 * 10 ** 6 * (1 / (default.ign_o_f + 1))
             mass_igniter = Power / heatingvalue * default.ignburntime / (default.fudgefactor)
@@ -144,18 +144,21 @@ def Igniters (m,Propellant,default,Tc,of,type):
     #return Compound[0].mass
 
 #class Default:
-    #ignburntime = 3.5
-    #fudgefactor = 4
-    #ign_o_f = 0.7
+ #   ignburntime = 3.5
+  #  fudgefactor = 4
+   # ign_o_f = 0.7
 
 #class Propellant:
-    #f_nist_enthalpy_coef = [43.31,-4.293,1.27243,-0.096876,-20.5339,-38.5151,162.08,0,
-      #                     33.066,-11.363,11.4328,-2.773,-0.15856,-9.981,172.71,0]
-    #o_nist_enthalpy_coef = [20.91,10.72,-2.02,0.1464,9.2457,5.338,237.62,0,
-     #                       31.33,-20.235,57.87,-36.51,-0.007374,-8.9035,246.79,0]
-    #ox_M = 32*10**(-3)
-    #f_M = 2*10**(-3)
-    #heatingvalue = 119.96 * 10 ** 6
+ #   f_nist_enthalpy_coef = [43.31,-4.293,1.27243,-0.096876,-20.5339,-38.5151,162.08,0,
+  #                         33.066,-11.363,11.4328,-2.773,-0.15856,-9.981,172.71,0]
+   # o_nist_enthalpy_coef = [20.91,10.72,-2.02,0.1464,9.2457,5.338,237.62,0,
+                            31.33,-20.235,57.87,-36.51,-0.007374,-8.9035,246.79,0]
+#    ox_M = 32*10**(-3)
+ #   f_M = 2*10**(-3)
+  #  heatingvalue = 119.96 * 10 ** 6
+   # enthalpy_298_ox = 1*10**6
+    #enthalpy_298_f = 1 *10**6
+
 
 #prop = Propellant
 #default = Default
