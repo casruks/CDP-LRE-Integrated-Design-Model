@@ -36,11 +36,11 @@ import warnings
 #    SF = 1.0
 #    D_0 = 250 * 10 ** -6
 #    kloads = 1
-#    inj_velocity = 20
-#    ConvergenceRatio_l = 1.5
-#    ConvergenceRatio_h = 3.5
-#    factor = 0.3
-#    a = 0.023
+ #   inj_velocity = 20
+  #  ConvergenceRatio_l = 1.5
+   # ConvergenceRatio_h = 3.5
+    #factor = 0.3
+    #a = 0.023
 
 
 
@@ -108,14 +108,14 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
 
     #setting boundaries for chamber diameter based on expected convergence rate
     Ac_low_1 = A_minimum
-    Ac_low_2=At *3# default.ConvergenceRatio_l
+    Ac_low_2=At * default.ConvergenceRatio_l
 
     if Ac_low_1 > Ac_low_2:
         Ac_low = Ac_low_1
     else:
         Ac_low = Ac_low_2
 
-    Ac_high = At *3# default.ConvergenceRatio_h
+    Ac_high = At * default.ConvergenceRatio_h
 
     if Ac_high < A_est:
         er = er |(1 << 4)
@@ -285,7 +285,7 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
 
     if LengthChamber > 0.7:
         wr = wr | (1 << 8)
-    if LengthChamber > 1:
+    if LengthChamber > 1.5:
         er = er | (1<<5)
         return (0, 0, 0, 0, 0, wr,er)
 
