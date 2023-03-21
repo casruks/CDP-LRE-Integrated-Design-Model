@@ -136,10 +136,49 @@ def Cost(m_engine, R, n):
     return lst
 
 ##Reuseability:
-def Reuseability(RA, Material, N_F):
-    E_f = mth.log(100/(100-RA))
-    E_T = 3.5(Material.yieldstress_l/Material.Emod)*N_F**(-0.12) + (E_f**0.6)*N_F**(-0.6)
-    return E_T
+def Reuseability(material):
+    T1_max = 0
+    T0_max = 0.35*T1_max #The 0.35 comes from the assumption that the cooling channels are rectangular in shape. This needs to be changed for any other cross section. 
+    T1_min = 0
+    T0_min = 0.35*T0_max #The 0.35 comes from the assumption that the cooling channels are rectangular in shape. This needs to be changed for any other cross section. 
+    DT_ep_pl2 = 0
+    def_tot = 0
+    def1 = 0
+    H = 0
+    def2 = 0
+    mu = 0
+    l = 0
+    w = 0
+    p = 0
+    N = 0 
+    Ti = 0
+    T0 = 0
+    N_Life = 0
+
+    #Inelastic Strain:
+    ep_pl1 = material.k*((T1_max - T0_max) - (T1_min - T0_min)) - (2*material.yieldstress_l/material.Emod)
+    ep_pl2 = (material.Emod*(material.k*DT_ep_pl2)**2)/(12*material.yieldstress_l*(1-mu)**2)
+    ep_1 = 2*(ep_pl1+ep_pl2)
+
+    #Deflection:
+    def1 = 2*((H/ep_1) - mth.sqrt((H/ep_1)**2 - (l/4)**2))
+    def2 = (ep_1*p*l**2)/(4*H*material.yieldstress_l)
+    def_tot = def1 + def2
+
+    #Ligament Deformation:
+    #t_N = (N*w*def_tot)/(l*w)
+    t_N_min = (2*H*(l+w) - N*w*def_tot)/(l+w)
+    t_N_max = (2*H*(l+w)**2 + N*w*l*def_tot)/(l+w)**2
+
+    #Fatigue and Creep Rupture Damage:
+    q = 0.2*((material.ustress - material.yieldstress_l)/material.yieldstress_l)**(0.6)
+    ep_c1avg = material.k*(Ti - T0)
+    ep_c1 = ep_c1avg*(((q-1)/q)*((t_N_min/t_N_max) - 1))*((t_N_min/t_N_max)**((q-1)/q) - 1)**(-1)
+    ep_c2 = ep_c1avg
+    ep_c_tot = (2/mth.sqrt(3))*mth.sqrt((ep_c1**2 + ep_c1*ep_c2 + ep_c2**2))
+
+    #Life Prediction
+    return N_Life
 
 def RhoProp(O_prop, F_prop, OF):
         rho_prop = 0
