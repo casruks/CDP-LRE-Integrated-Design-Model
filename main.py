@@ -85,7 +85,7 @@ def Main(d : aux.Data):
         ## bool variable that specifies if inside loop or not
         ## density, cp, miu,k, prandlt - this all comes from nozzle just leave it like that
         ## IMPORTANT - this function is currently using hardcoded droplet diameter, bc droplet diameter coming from injector does not make sense.
-        d[-1].h_comb, d[-1].Dc, d[-1].ThicknessChamber, d[-1].Chamber_L, d[-1].Re_c,wr_comb,er_comb= Comb.CombustionChamber(p_new, d[-1].At, prop, Ms.Rhenium, default, d[-1].v_if, d[-1].v_iox, d[-1].Tc, d[-1].O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est)
+        d[-1].h_comb, d[-1].Dc, d[-1].ThicknessChamber, d[-1].Chamber_L, d[-1].Re_c,wr_comb,er_comb= Comb.CombustionChamber(p_new, d[-1].At, prop, Ms.Rhenium, default, d[-1].v_if, d[-1].v_iox, d[-1].D_f, d[-1].D_ox, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est)
         
         #errors.append((er_comb))
         #warnings.append((wr_comb))

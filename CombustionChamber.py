@@ -19,32 +19,33 @@ import warnings
     
 
 #class Propellant:
-    #o_lamb = 1*10**(-6)
-    #f_lamb = 9.6*10**-6
-    #lstar = [0.76,1.02]
-    #o_dens = 1
+ #   o_lamb = 1*10**(-6)
+  #  f_lamb = 9.6*10**-6
+   # lstar = [0.76,1.02]
+   # o_dens = 1
     #f_dens_g = 1
     #ocp=1
     #fcp=1
     #omiu=1
     #fmiu=1
 #class Material:
-    #density = 1
-    #yieldstress_l =1
+#    density = 1
+#    yieldstress_l =1
 
 #class Default:
-    #SF = 1.0
-    #D_0 = 200 * 10 ** -6
-    #kloads = 1
-    #inj_velocity = 20
-    #ConvergenceRatio_l = 1.5
-    #ConvergenceRatio_h = 3.5
-    #factor = 0.3
+#    SF = 1.0
+#    D_0 = 250 * 10 ** -6
+#    kloads = 1
+#    inj_velocity = 20
+#    ConvergenceRatio_l = 1.5
+#    ConvergenceRatio_h = 3.5
+#    factor = 0.3
+#    a = 0.023
 
 
 
 
-def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,Tc,of,bool,rho_c,cp_c,mu_c,k_c,Pr_c,A_est):
+def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,d_f,d_o,bool,rho_c,cp_c,mu_c,k_c,Pr_c,A_est):
 
 
 
@@ -58,38 +59,43 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
     test = 0
     Safety = default.SF
     #velocity = default.inj_velocity
-    d0 = default.D_0
     #Input Sanity Check
 
     ##errors:
+    if(default.ConvergenceRatio_l>default.ConvergenceRatio_h):
+        er = er | (1 << 6)
+        return(0,0,0,0,0,wr,er)
 
-    if (d0 < 0):
+    if (d_f < 0) or (d_o < 0):
         er = er | (1 << 0)
-        # quit("Diameter of droplet coming from injector is too small")
-    if (d0 > 1 * 10 ** -5):
+        return(0,0,0,0,0,wr,er)
+    if (d_o > 1 * 10 ** -3) or (d_f > 1*10 **-3):
         er = er | (1 << 1)
+        return (0, 0, 0, 0, 0,wr,er)
         # quit("Diameter of droplet coming from injector is too large")
 
     if (velocity_ox < 0):
         er = er | (1 << 2)
+        return (0, 0, 0, 0, 0, wr,er)
         # quit("Velocity of oxidizer droplet coming from injector is too small")
 
     if (velocity_f < 0):
         er = er | (1 << 3)
+        return (0, 0, 0, 0, 0, wr,er)
         # quit("Velocity of fuel droplet coming from injector is too small")
 
     ## warnings :
-    if(d0 < 100*10**-6):
+    if(d_o < 10*10**-6) or (d_f < 10*10**-6) :
         wr = wr |(1<<0)
         #quit("Diameter of droplet coming from injector is too small")
-    if(d0 > 250*10**-6):
+    if(d_o > 250*10**-6) or (d_f > 250*10**-6):
         wr = wr | (1 << 1)
         #quit("Diameter of droplet coming from injector is too large")
 
     if(velocity_ox < 10):
         wr = wr |(1<<2)
         #quit("Velocity of oxidizer droplet coming from injector is too small")
-    if(velocity_ox > 30):
+    if(velocity_ox > 50):
         wr = wr | (1 << 3)
         #quit("Velocity of oxidizer droplet coming from injector is too large")
 
@@ -102,14 +108,19 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
 
     #setting boundaries for chamber diameter based on expected convergence rate
     Ac_low_1 = A_minimum
-    Ac_low_2=At * default.ConvergenceRatio_l
+    Ac_low_2=At *3# default.ConvergenceRatio_l
 
     if Ac_low_1 > Ac_low_2:
         Ac_low = Ac_low_1
     else:
         Ac_low = Ac_low_2
 
-    Ac_high = At * default.ConvergenceRatio_h
+    Ac_high = At *3# default.ConvergenceRatio_h
+
+    if Ac_high < A_est:
+        er = er |(1 << 4)
+        return (0, 0, 0, 0, 0, wr,er)
+
     d_low = math.sqrt(Ac_low / math.pi) * 2
     d_high = math.sqrt(Ac_high / math.pi) * 2
 
@@ -118,12 +129,15 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
 
     #first iteration for length and diameter
 
-    Vi = 4.0/3.0*math.pi*(d0/2.0)**3.0
-    Vf = Vi * 0.3 #random value for now
-    d = (3.0/4.0*Vf/math.pi)**(1.0/3.0)*2.0
-    time_f = -(d**2.0-d0**2.0)/Propellant.f_lamb #dquadrado
-    time_o = -(d**2.0-d0**2.0)/Propellant.o_lamb
+    Vi_o = 4.0/3.0*math.pi*(d_o/2.0)**3.0
+    Vf_o = Vi_o * factor #random value for now
+    d_1 = (3.0/4.0*Vf_o/math.pi)**(1.0/3.0)*2.0
+    time_o = -(d_1**2.0-d_o**2.0)/Propellant.o_lamb
 
+    Vi_f = 4.0 / 3.0 * math.pi * (d_f / 2.0) ** 3.0
+    Vf_f = Vi_f * factor  # random value for now
+    d_2 = (3.0 / 4.0 * Vf_f / math.pi) ** (1.0 / 3.0) * 2.0
+    time_f = -(d_2 ** 2.0 - d_f ** 2.0) / Propellant.f_lamb  # dquadrado
 
     LengthChamber_f = time_f * velocity_f
     LengthChamber_ox= velocity_ox * time_o
@@ -153,11 +167,15 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
             if (factor < 0):
                 Control_cycle_one = 1
                 break
-            Vf = Vi * factor  # random value for now
-            d = (3.0 / 4.0 * Vf / math.pi) ** (1.0 / 3.0) * 2.0
+            Vi_o = 4.0 / 3.0 * math.pi * (d_o / 2.0) ** 3.0
+            Vf_o = Vi_o * factor  # random value for now
+            d_1 = (3.0 / 4.0 * Vf_o / math.pi) ** (1.0 / 3.0) * 2.0
+            time_o = -(d_1 ** 2.0 - d_o ** 2.0) / Propellant.o_lamb
 
-            time_f = -(d ** 2.0 - d0 ** 2.0) / Propellant.f_lamb  # dquadrado
-            time_o = -(d ** 2.0 - d0 ** 2.0) / Propellant.o_lamb
+            Vi_f = 4.0 / 3.0 * math.pi * (d_f / 2.0) ** 3.0
+            Vf_f = Vi_f * factor  # random value for now
+            d_2 = (3.0 / 4.0 * Vf_f / math.pi) ** (1.0 / 3.0) * 2.0
+            time_f = -(d_2 ** 2.0 - d_f ** 2.0) / Propellant.f_lamb  # dquadrado
 
             LengthChamber_f = time_f * velocity_f
             LengthChamber_ox = velocity_ox * time_o
@@ -207,11 +225,15 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
             if (factor > 0.4):
                 Control_cycle_two = 1
                 break
-            Vf = Vi * factor  # random value for now
-            d = (3.0 / 4.0 * Vf / math.pi) ** (1.0 / 3.0) * 2.0
+            Vi_o = 4.0 / 3.0 * math.pi * (d_o / 2.0) ** 3.0
+            Vf_o = Vi_o * factor  # random value for now
+            d_1 = (3.0 / 4.0 * Vf_o / math.pi) ** (1.0 / 3.0) * 2.0
+            time_o = -(d_1 ** 2.0 - d_o ** 2.0) / Propellant.o_lamb
 
-            time_f = -(d ** 2.0 - d0 ** 2.0) / Propellant.f_lamb  # dquadrado
-            time_o = -(d ** 2.0 - d0 ** 2.0) / Propellant.o_lamb
+            Vi_f = 4.0 / 3.0 * math.pi * (d_f / 2.0) ** 3.0
+            Vf_f = Vi_f * factor  # random value for now
+            d_2 = (3.0 / 4.0 * Vf_f / math.pi) ** (1.0 / 3.0) * 2.0
+            time_f = -(d_2 ** 2.0 - d_f ** 2.0) / Propellant.f_lamb  # dquadrado
 
             LengthChamber_f = time_f * velocity_f
             LengthChamber_ox = velocity_ox * time_o
@@ -261,10 +283,11 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
 
     Re=velocity*ro*dchamber/niu
 
-    if LengthChamber > 1:
+    if LengthChamber > 0.7:
         wr = wr | (1 << 8)
-    if LengthChamber > 2:
-        er = er | (1<<4)
+    if LengthChamber > 1:
+        er = er | (1<<5)
+        return (0, 0, 0, 0, 0, wr,er)
 
     if bool == 0:
         return (heattransfer,dchamber,Thickness,LengthChamber,Re,wr,er)
@@ -273,11 +296,11 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
 
 
 #prop = Propellant
-#at = Material
+#mat = Material
 #default = Default
 
-#ht,dc,t,lc,re = CombustionChamber(20300000, 0.053, prop, mat, default,300,15, 3400, 6, 0, 1, 1, 1, 1, 1)
-#print(dc,lc)
+#ht,dc,t,lc,re,wr,er = CombustionChamber(20300000, 0.053, prop, mat, default,280,30, 200*10**-6, 68*10**-6, 0, 1, 1, 1, 1, 1,0.000000053)
+#print(dc,lc,er,wr)
 #Ac_low = 0.053 * 1.5
 #Ac_high = 0.053 * 3.5
 #d_low = math.sqrt(Ac_low/math.pi)*2
@@ -286,4 +309,4 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
 #At = 0.053
 #Ac = 2.96*At
 #y=math.sqrt(Ac/math.pi)*2
-#print(y)
+#print(y
