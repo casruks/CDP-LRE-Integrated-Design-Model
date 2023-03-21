@@ -11,7 +11,7 @@ set_images_path = "../Turbomachinery_code/"
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        loadUi("Codes_versions/Version for integration 20_03/GUI.ui",self)
+        loadUi("GUI.ui",self)
 
         # Initialize Font
         screen = QApplication.primaryScreen()
