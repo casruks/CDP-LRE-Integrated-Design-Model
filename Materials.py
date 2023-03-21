@@ -267,8 +267,4 @@ def Reuseability(material, Twg_max, Twc_max, Twg_min, Twc_min, DT, H, Chanel_wid
 
     return Reuseability
 
-x = 1,2,3
-y = 3,4,5
-t = 0.001,0.001,0.001
 
-print(Mass(20e6, Rhenium, Rhenium, 60.1, 0.3, 50, 1.1, 300, 'SC'))
