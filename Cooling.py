@@ -541,7 +541,7 @@ def thermal_stress(
 
         return stress_main, stress_coating
     else:
-        v = 0.3
+        v = main_material.mu
         stress_main = (
             delta_T * main_material.thr_exp * main_material.Emod / (2 * (1 - v))
         )
