@@ -22,30 +22,29 @@ import warnings
  #   o_lamb = 1*10**(-6)
   #  f_lamb = 9.6*10**-6
    # lstar = [0.76,1.02]
-   # o_dens = 1
+    #o_dens = 1
     #f_dens_g = 1
     #ocp=1
     #fcp=1
     #omiu=1
     #fmiu=1
 #class Material:
-#    density = 1
-#    yieldstress_l =1
+ #   density = 1
+  #  yieldstress_l =1
 
 #class Default:
-#    SF = 1.0
-#    D_0 = 250 * 10 ** -6
-#    kloads = 1
- #   inj_velocity = 20
-  #  ConvergenceRatio_l = 1.5
-   # ConvergenceRatio_h = 3.5
+ #   SF = 1.0
+  # kloads = 1
+   # inj_velocity = 20
+    #ConvergenceRatio_l = 1.5
+    #ConvergenceRatio_h = 3.5
     #factor = 0.3
     #a = 0.023
 
 
 
 
-def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,d_f,d_o,bool,rho_c,cp_c,mu_c,k_c,Pr_c,A_est):
+def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,d_f,d_o,bool,rho_c,cp_c,mu_c,k_c,Pr_c,A_est,of):
 
 
 
@@ -270,6 +269,9 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
     if bool == 1:
         kloads = default.kloads
         Mass = kloads *(1/(LengthChamber/dchamber)+2)*Material.density*Safety/Material.yieldstress_l*Vchamber*Pc
+        if Mass < 0:
+            er = er | (1<<7)
+            return(0,0,0,0,0,wr,er)
 
     a = default.a
     ro = rho_c
@@ -278,7 +280,7 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
     niu = mu_c
     k = k_c
 
-    velocity = velocity_ox
+    velocity = velocity_ox*(1-1/(1+of)) + velocity_f*(1/(1+of))
     heattransfer = a * ro**0.8 * velocity**0.8 * (1/(Rchamber*2))**0.2 * (k*Pr**0.33/niu**0.8)
 
     Re=velocity*ro*dchamber/niu
@@ -288,7 +290,6 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
     if LengthChamber > 1.5:
         er = er | (1<<5)
         return (0, 0, 0, 0, 0, wr,er)
-
     if bool == 0:
         return (heattransfer,dchamber,Thickness,LengthChamber,Re,wr,er)
     else:
@@ -299,7 +300,7 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
 #mat = Material
 #default = Default
 
-#ht,dc,t,lc,re,wr,er = CombustionChamber(20300000, 0.053, prop, mat, default,280,30, 200*10**-6, 68*10**-6, 0, 1, 1, 1, 1, 1,0.000000053)
+#ht,dc,t,lc,re,wr,er = CombustionChamber(20300000, 0.053, prop, mat, default,300,25, 200*10**-6, 68*10**-6, 0, 1, 1, 1, 1, 1,0.000000053)
 #print(dc,lc,er,wr)
 #Ac_low = 0.053 * 1.5
 #Ac_high = 0.053 * 3.5
