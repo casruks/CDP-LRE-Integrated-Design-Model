@@ -346,6 +346,7 @@ class Data:
     ptinj = 0.0 #[Pa] Total pressure at injector inlet
     dptop = 0.0 #[Pa] Total pressure rise over oxidizer pump
     dptfp = 0.0 #[Pa] Total pressure rise over fuel pump
+    turbo_m = 0.0 #[kg/s] TOtal mass flow
 
     #Combustion
     h_comb = 0.0 #Conductive heat transfer coefficient in chamber
@@ -357,6 +358,8 @@ class Data:
     Mnoz = 0.0 # [kg] Total nozzle mass
 
     #Cooling
+    type_variable_nozzle = 0
+    type_variable_chamber = 0
 
 
     #Injector
