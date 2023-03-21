@@ -66,7 +66,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>5</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="global">
          <attribute name="title">
@@ -647,17 +647,86 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>357</width>
-               <height>380</height>
+               <width>395</width>
+               <height>365</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_3">
+              <item row="2" column="2">
+               <widget class="QLabel" name="label_no_2">
+                <property name="text">
+                 <string>[-]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_Ele_power">
+                <property name="text">
+                 <string>Electric motor power</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QLabel" name="label_no_3">
+                <property name="text">
+                 <string>[-]</string>
+                </property>
+               </widget>
+              </item>
               <item row="4" column="1">
                <widget class="QLineEdit" name="line_Ele_power">
                 <property name="text">
                  <string>100000</string>
                 </property>
                </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="line_turb_eff">
+                <property name="text">
+                 <string>0.5</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QLabel" name="label_no_4">
+                <property name="text">
+                 <string>[-]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="label_valve_losses">
+                <property name="text">
+                 <string>Valve losses</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_Opump_eff">
+                <property name="text">
+                 <string>Oxidizer pump efficiency</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="line_Opump_eff">
+                <property name="text">
+                 <string>0.3</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="0">
+               <spacer name="verticalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
               <item row="5" column="1">
                <widget class="QLineEdit" name="line_valve_losses">
@@ -673,31 +742,17 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="2">
-               <widget class="QLabel" name="label_no_3">
+              <item row="4" column="2">
+               <widget class="QLabel" name="label_W_2">
                 <property name="text">
-                 <string>[-]</string>
+                 <string>[W]</string>
                 </property>
                </widget>
               </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="label_valve_losses">
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="line_Fpump_eff">
                 <property name="text">
-                 <string>Valve losses</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="line_turb_eff">
-                <property name="text">
-                 <string>0.5</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="2">
-               <widget class="QLabel" name="label_no_2">
-                <property name="text">
-                 <string>[-]</string>
+                 <string>0.3</string>
                 </property>
                </widget>
               </item>
@@ -708,72 +763,10 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_Turb_eff">
-                <property name="text">
-                 <string>Turbine efficiency</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLineEdit" name="line_Opump_eff">
-                <property name="text">
-                 <string>0.3</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="0">
-               <spacer name="verticalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="1" column="1">
-               <widget class="QLineEdit" name="line_Fpump_eff">
-                <property name="text">
-                 <string>0.3</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="2">
-               <widget class="QLabel" name="label_W_2">
-                <property name="text">
-                 <string>[W]</string>
-                </property>
-               </widget>
-              </item>
               <item row="0" column="2">
                <widget class="QLabel" name="label_no">
                 <property name="text">
                  <string>[-]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="label_Ele_power">
-                <property name="text">
-                 <string>Electric motor power</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_Opump_eff">
-                <property name="text">
-                 <string>Oxidizer pump efficiency</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_mech_eff">
-                <property name="text">
-                 <string>Mechanical efficiency</string>
                 </property>
                </widget>
               </item>
@@ -784,8 +777,36 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="2">
-               <widget class="QLabel" name="label_no_4">
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_mech_eff">
+                <property name="text">
+                 <string>Mechanical efficiency</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_Turb_eff">
+                <property name="text">
+                 <string>Turbine efficiency</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="0">
+               <widget class="QLabel" name="label_lGG">
+                <property name="text">
+                 <string>Percentage of total mass flow for GG</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QLineEdit" name="line_lGG">
+                <property name="text">
+                 <string>0.1</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="2">
+               <widget class="QLabel" name="label_no_lGG">
                 <property name="text">
                  <string>[-]</string>
                 </property>
@@ -1086,7 +1107,7 @@
         </widget>
         <widget class="QWidget" name="ign">
          <attribute name="title">
-          <string>Ignitor</string>
+          <string>Igniter</string>
          </attribute>
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
@@ -1099,7 +1120,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>513</width>
+               <width>579</width>
                <height>365</height>
               </rect>
              </property>
@@ -1127,7 +1148,7 @@
                 </item>
                 <item>
                  <property name="text">
-                  <string>Catalytic</string>
+                  <string>Catalytic - Hydrogen peroxide</string>
                  </property>
                 </item>
                 <item>
@@ -1234,17 +1255,17 @@
                 </item>
                 <item>
                  <property name="text">
-                  <string>aniline</string>
+                  <string>Aniline w/ Oxygen</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>NTO with mono-methylhydrazine</string>
+                  <string>NTO w/ mono-methylhydrazine</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>Unsymmetrical dimethylhydrazine</string>
+                  <string>NTO w/ Unsymmetrical dimethylhydrazine</string>
                  </property>
                 </item>
                </widget>
@@ -1808,7 +1829,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>6</number>
+         <number>0</number>
         </property>
         <property name="elideMode">
          <enum>Qt::ElideNone</enum>
@@ -2007,7 +2028,11 @@
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QLineEdit" name="line_O_F_2"/>
+               <widget class="QLineEdit" name="line_O_F_2">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
               <item row="0" column="2">
                <widget class="QLabel" name="label_O_F_no">
@@ -2356,7 +2381,7 @@
               <item row="0" column="2">
                <widget class="QLabel" name="label_Pa_6">
                 <property name="text">
-                 <string>[Pa]</string>
+                 <string>[bar]</string>
                 </property>
                </widget>
               </item>
@@ -2414,6 +2439,13 @@
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_2">
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="line_Opump_power">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
               <item row="1" column="0">
                <widget class="QLabel" name="label_Fpump_power">
                 <property name="text">
@@ -2428,8 +2460,22 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
-               <widget class="QLineEdit" name="line_Opump_power">
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_W">
+                <property name="text">
+                 <string>[W]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_P_inj_in">
+                <property name="text">
+                 <string>Injector inlet pressure</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="line_P_inj_in">
                 <property name="readOnly">
                  <bool>true</bool>
                 </property>
@@ -2442,28 +2488,7 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="1">
-               <widget class="QLineEdit" name="line_P_inj_in">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="2">
-               <widget class="QLabel" name="label_Pa_5">
-                <property name="text">
-                 <string>[Pa]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_Turb_power">
-                <property name="text">
-                 <string>Turbine power</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="0">
+              <item row="5" column="0">
                <spacer name="verticalSpacer_2">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
@@ -2476,17 +2501,17 @@
                 </property>
                </spacer>
               </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="line_Turb_power">
-                <property name="readOnly">
-                 <bool>true</bool>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_Turb_power">
+                <property name="text">
+                 <string>Turbine power</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_P_inj_in">
+              <item row="3" column="2">
+               <widget class="QLabel" name="label_Pa_5">
                 <property name="text">
-                 <string>Injector inlet pressure</string>
+                 <string>[Pa]</string>
                 </property>
                </widget>
               </item>
@@ -2504,10 +2529,31 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="2">
-               <widget class="QLabel" name="label_W">
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="line_Turb_power">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_turbo_mass">
                 <property name="text">
-                 <string>[W]</string>
+                 <string>Total system mass flow</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="2">
+               <widget class="QLabel" name="label_kgs_3">
+                <property name="text">
+                 <string>[kg/s]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QLineEdit" name="line_turbo_mass">
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -2530,17 +2576,49 @@
             <widget class="QWidget" name="scrollAreaWidgetContents_13">
              <property name="geometry">
               <rect>
-               <x>0</x>
+               <x>-170</x>
                <y>0</y>
-               <width>357</width>
-               <height>380</height>
+               <width>537</width>
+               <height>365</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_9">
-              <item row="0" column="1">
-               <widget class="QLineEdit" name="lineEdit_2"/>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_cool_temp">
+                <property name="text">
+                 <string>End of cooling temperature</string>
+                </property>
+               </widget>
               </item>
-              <item row="1" column="0">
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="line_cool_temp">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QLabel" name="label_Pa_8">
+                <property name="text">
+                 <string>[Pa]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="line_cool_loss">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_cool_cham">
+                <property name="text">
+                 <string>Cooling system in combustion chamber</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
                <spacer name="verticalSpacer_8">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
@@ -2553,17 +2631,68 @@
                 </property>
                </spacer>
               </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_4">
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_cool_loss">
                 <property name="text">
-                 <string>TextLabel</string>
+                 <string>Pressure losses in cooling channel</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="2">
-               <widget class="QLabel" name="label_5">
+              <item row="1" column="1" colspan="2">
+               <widget class="QComboBox" name="combo_cool_nozz">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Heat sink</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Radiation cooling</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Regenerative cooling</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_cool_nozz">
                 <property name="text">
-                 <string>TextLabel</string>
+                 <string>Cooling system in nozzle</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1" colspan="2">
+               <widget class="QComboBox" name="combo_cool_cham">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Heat sink</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Radiation cooling</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Regenerative cooling</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="QLabel" name="label_K_5">
+                <property name="text">
+                 <string>[K]</string>
                 </property>
                </widget>
               </item>
@@ -2698,7 +2827,11 @@
                </widget>
               </item>
               <item row="4" column="1">
-               <widget class="QLineEdit" name="line_inj_pres"/>
+               <widget class="QLineEdit" name="line_inj_pres">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
               <item row="4" column="2">
                <widget class="QLabel" name="label_Pa_7">
@@ -2809,6 +2942,7 @@
     <property name="title">
      <string>Options</string>
     </property>
+    <addaction name="actionExport_to_csv"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuOptions"/>
@@ -2821,6 +2955,11 @@
   <action name="actionLoad_configuration">
    <property name="text">
     <string>Load configuration</string>
+   </property>
+  </action>
+  <action name="actionExport_to_csv">
+   <property name="text">
+    <string>Export to csv</string>
    </property>
   </action>
  </widget>
@@ -3034,6 +3173,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionExport_to_csv</sender>
+   <signal>triggered()</signal>
+   <receiver>GUI</receiver>
+   <slot>exportCSV()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>602</x>
+     <y>296</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>Run()</slot>
@@ -3049,5 +3204,6 @@
   <slot>hypergolic_changed(int)</slot>
   <slot>Output(int)</slot>
   <slot>define_inj_dp(bool)</slot>
+  <slot>exportCSV()</slot>
  </slots>
 </ui>

@@ -6,6 +6,8 @@ from PyQt5.QtWidgets import QDialog, QApplication, QWidget, QMainWindow, QLabel,
 from PyQt5.QtWidgets import QMessageBox
 import main
 import Aux_classes as aux
+import csv
+from datetime import datetime
 
 set_images_path = "../Turbomachinery_code/"
 class MainWindow(QMainWindow):
@@ -68,6 +70,7 @@ class MainWindow(QMainWindow):
         self.line_mech_eff.editingFinished.connect(self.checkMechEff);  self.checkMechEff()
         self.line_Ele_power.editingFinished.connect(self.checkElePow);  self.checkElePow()
         self.line_valve_losses.editingFinished.connect(self.checkValveLoss);  self.checkValveLoss()
+        self.line_lGG.editingFinished.connect(self.checkLGG); self.checkLGG()
 
         #Cooling
         self.coating_changed(0)
@@ -306,7 +309,7 @@ class MainWindow(QMainWindow):
         self.line_nozz_mass.setText(str(main.dat[i].Mnoz))
 
         #Combustion chamber
-        self.line_Pc.setText(str(main.dat[i].Pc))
+        self.line_Pc.setText(str(main.dat[i].Pc/1.0e5))
         self.line_Tc.setText(str(main.dat[i].Tc))
         self.line_Dc.setText(str(main.dat[i].Dc))
         self.line_Lc.setText(str(main.dat[i].Chamber_L))
@@ -318,9 +321,11 @@ class MainWindow(QMainWindow):
         self.line_Fpump_power.setText(str(main.dat[i].W_Fpump))
         self.line_Turb_power.setText(str(main.dat[i].W_turb))
         self.line_P_inj_in.setText(str(main.dat[i].ptinj))
+        self.line_turbo_mass.setText(str(main.dat[i].turbo_m))
 
         #Cooling
-
+        self.combo_cool_cham.setCurrentIndex(main.dat[i].type_variable_chamber)
+        self.combo_cool_nozz.setCurrentIndex(main.dat[i].type_variable_nozzle)
 
         #Injectors
         self.line_n_oxinj.setText(str(main.dat[i].n_ox))
@@ -333,6 +338,17 @@ class MainWindow(QMainWindow):
         self.line_Mign.setText(str(main.dat[i].Igniter_compound))
 
         #Materials
+
+
+    #Export CSV
+    def exportCSV(self):
+        filename = "Export_" + datetime.now().strftime("%H_%M_%S") + ".csv"
+        for data in main.dat:
+            members = [attr for attr in dir(data) if not callable(getattr(data, attr)) and not attr.startswith("__")]
+            with open(filename, 'w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(members)
+                writer.writerow([getattr(data, attr) for attr in members])
 
 
     #Blocks
@@ -354,6 +370,16 @@ class MainWindow(QMainWindow):
             self.line_inj_dp.setDisabled(True)
 
     def cycle_changed(self,i : int):
+        if i == 2:
+            self.checkLGG()
+            self.label_lGG.show()
+            self.line_lGG.show()
+            self.label_no_lGG.show()
+        else:
+            self.label_lGG.hide()
+            self.line_lGG.hide()
+            self.label_no_lGG.hide()
+
         if i == 4:
             self.line_Ele_power.setEnabled(True)
             self.line_turb_eff.setEnabled(False)
@@ -986,6 +1012,16 @@ class MainWindow(QMainWindow):
             msg = QMessageBox()
             msg.setWindowTitle("Input error!")
             msg.setText("Invalid user defined pressure drop over injector, try again.")
+            msg.exec_()
+    def checkLGG(self):
+        var = float(self.line_lGG.text())
+        if var > 0.0 and var < 0.9:
+            main.default.l_def = var;
+        else:
+            self.line_lGG.setText("0.1")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid percentage of total mass flow for GG, try again.")
             msg.exec_()
 
 # Main
