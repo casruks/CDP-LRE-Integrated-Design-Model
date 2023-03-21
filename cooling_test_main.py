@@ -4,6 +4,9 @@ import numpy as np
 import math
 import Mass as Ms
 import statistics
+import Materials_2 as Mt
+import Aux_classes
+import Materials
 
 p_a = 1.0e5
 Thrust = 15000
@@ -56,9 +59,9 @@ class Default:
     T_fuel_tanks = 20  # [K] temperature of the fuel tanks, considered the inicial coolant temperature
     # T_ox_tanks = 60 #[K] temperature of the oxidiser tanks
     n = 1  # number of coolant chanels
-    default_coating = Mt.Materials(
-        "default_coating", 0.0, 0.0, 0.0, 0.0, 1, 0
-    )  # default coolant
+    # default_coating = Mt.Materials(
+    #   "default_coating", 0.0, 0.0, 0.0, 0.0, 1, 0
+    #  )  # default coolant
     default_coating_thickness = 0  # default coolant thickness
     T0 = 293.5  # [k] default inicial temperature
     eps = 0.85  # default emissivity
@@ -153,7 +156,7 @@ if __name__ == "__main__":
 
     Mt.Rhenium.OpTemp_u = 700
     Mt.Rhenium.k = 45
-    default.T_fuel_tanks = 20
+    Aux_classes.Default.T_fuel_tanks = 20
     c = 340
     operationtime = 3000000000000000
     m_casing = 1000
@@ -172,7 +175,7 @@ if __name__ == "__main__":
     O_F = 2
     Tf_cool = 20
 
-    chamber_mass = Mt.Chamber_mass(Dc, Chamber_L, ThicknessChamber, Ms.Rhenium)
+    chamber_mass = Materials.Chamber_mass(Dc, Chamber_L, ThicknessChamber, Ms.Rhenium)
     err_chamber_cooling = 0
     warn_err_chamber_cooling = 0
 
@@ -195,26 +198,28 @@ if __name__ == "__main__":
         err_nozzle_cooling,
         warn_nozzle_cooling,
     ) = Coolobj.Run_cooling(
-        default.T0,
+        Aux_classes.Default.T0,
         c,
-        default.operationtime,
+        Aux_classes.Default.operationtime,
         nozzle_mass,
-        default.eps,
+        Aux_classes.Default.eps,
         Tw_ad_noz,
         h_c_noz,
         t_noz,
-        np.array([default.default_coating_thickness for i in range(len(t_noz))]),
+        np.array(
+            [Aux_classes.Default.default_coating_thickness for i in range(len(t_noz))]
+        ),
         prop,
         Ms.Rhenium,
-        default.default_coating,
-        default.Dr,
-        default.A,
-        default.T_fuel_tanks,
-        m_nozz / (1.0 + O_F) / default.n,
+        Aux_classes.Default.default_coating,
+        Aux_classes.Default.Dr,
+        Aux_classes.Default.A,
+        Aux_classes.Default.T_fuel_tanks,
+        m_nozz / (1.0 + O_F) / Aux_classes.Default.n,
         x_noz_cool[-1],
         y_noz_cool,
-        default.overwriteA,
-        default.regenerative_case,
+        Aux_classes.Default.overwriteA,
+        Aux_classes.Default.regenerative_case,
     )
 
     print("\nRun", case_run)
@@ -229,9 +234,9 @@ if __name__ == "__main__":
     print("warning", warn_nozzle_cooling)
     print("type: ", type_variable_nozzle)
 
-    default.n = 20
+    Aux_classes.Default.n = 20
     perimeter_percentage = 0.4
-    alpha = 2 * math.pi * perimeter_percentage / default.n
+    alpha = 2 * math.pi * perimeter_percentage / Aux_classes.Default.n
     # A_chamber=[Chamber_L * Dc * 2*math.pi]
     y_for_cooling_channel = np.amin(y_noz_cool)
     A_chamber = [L * y_for_cooling_channel * alpha]
@@ -246,26 +251,26 @@ if __name__ == "__main__":
         err_chamber_cooling,
         warn_chamber_cooling,
     ) = Coolobj_c.Run_cooling(
-        default.T0,
+        Aux_classes.Default.T0,
         c,
-        default.operationtime,
+        Aux_classes.Default.operationtime,
         chamber_mass,
-        default.eps,
+        Aux_classes.Default.eps,
         np.array([Tc]),
         np.array([h_comb]),
         np.array([ThicknessChamber]),
-        np.array([default.default_coating_thickness]),
+        np.array([Aux_classes.Default.default_coating_thickness]),
         prop,
         Ms.Rhenium,
-        default.default_coating,
-        default.Dr,
+        Aux_classes.Default.default_coating,
+        Aux_classes.Default.Dr,
         np.array(A_chamber),
         Tf_cool,
-        m_nozz / (1.0 + O_F) / default.n,
+        m_nozz / (1.0 + O_F) / Aux_classes.Default.n,
         Chamber_L,
         np.array([Dc / 2]),
         True,
-        default.regenerative_case,
+        Aux_classes.Default.regenerative_case,
     )
     print("\nRun", case_run)
     print("Tf_cool: ", Tf_cool)
@@ -285,7 +290,8 @@ if __name__ == "__main__":
         np.max(Tw_wall_chamber_calculated), np.max(Tw_wall_nozzle_calculated)
     )
     maximum_thermal_stress = (
-        6.12*10**-6
+        6.12
+        * 10**-6
         * Ms.Rhenium.Emod
         * np.maximum(
             np.max(
@@ -295,18 +301,50 @@ if __name__ == "__main__":
         )
     )
     safety_factor_cooling = Ms.Rhenium.yieldstress_l / maximum_thermal_stress
-    print("max_temperature_inner", max_temperature_inner)
-    print("max_temperature_outer", max_temperature_outer)
-    print("maximum_thermal_stress", maximum_thermal_stress)
-    print("safety_factor_cooling", safety_factor_cooling)
-    print("maximum deltaT", np.maximum(
+
+    print(
+        "maximum deltaT",
+        np.maximum(
             np.max(
                 np.array(Tw_wall_chamber_calculated) - np.array(T_outer_wall_chamber)
             ),
             np.max(np.array(Tw_wall_nozzle_calculated) - np.array(T_outer_wall_nozzle)),
-        ))
+        ),
+    )
 
-    """
+chamber_D = 0.8
+ThicknessChamber = 0.1
+Aux_classes.Default.default_coating_thickness = 1 * 10**-3
+Ms.Rhenium.thr_exp = 7.25
+Aux_classes.Default.default_coating.thr_exp = 2
+Aux_classes.Default.default_coating.Emod= 2*10**6
+maximum_thermal_stress = 0
+
+(
+    maximum_thermal_stress,
+    safety_factor_cooling,
+    max_temperature_inner,
+    max_temperature_outer,
+) = Cooling.outputs(
+    T_outer_wall_chamber,
+    T_outer_wall_nozzle,
+    Tw_wall_chamber_calculated,
+    Tw_wall_nozzle_calculated,
+    Ms.Rhenium,
+    Ms.Rhenium,
+    Aux_classes.Default.default_coating,
+    ThicknessChamber,
+    t_noz,
+    Aux_classes.Default.default_coating_thickness,
+    y,
+    chamber_D / 2,
+)
+print("max_temperature_inner", max_temperature_inner)
+print("max_temperature_outer", max_temperature_outer)
+print("maximum_thermal_stress", maximum_thermal_stress)
+print("safety_factor_cooling", safety_factor_cooling)
+
+"""   
     (
         T_co_calculated,
         Tw_wall_calculated,
@@ -360,7 +398,7 @@ if __name__ == "__main__":
         case_run,
     ) """
 
-    """ Tf_cool, dptcool = regCool.Run_for_Toperating1D(
+""" Tf_cool, dptcool = regCool.Run_for_Toperating1D(
         Tw_ad_noz,
         h_c_noz,
         t_noz,

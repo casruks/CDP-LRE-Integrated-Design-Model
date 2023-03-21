@@ -13,6 +13,7 @@ import Aux_classes as aux
 import math
 import Materials as Mt
 
+
 Thrust_ = 1350000  # = input("Introduce thrust")
 Thrust_time_ = 180  # = input("Introduce thrust time")
 Pamb_ = 1000  # = input("Introudce ambient pressure (Pa)")
@@ -335,31 +336,10 @@ def Main(d: aux.Data):
         # errors
         # warnings
         dptcool = dptcool + dptcool_c
-
-        pLACE_HOLDER_THERMAL_EXPANSION_COEFFICIENT = 6.12 * 10**-6
         dptcool_cooling = dptcool
-        T_outer_wall_chamber = np.array(T_outer_wall_chamber)
-        T_outer_wall_chamber = np.array(T_outer_wall_nozzle)
-        T_outer_wall_chamber = np.array(Tw_wall_chamber_calculated)
-        T_outer_wall_chamber = np.array(Tw_wall_nozzle_calculated)
+        maximum_thermal_stress,safety_factor_cooling, max_temperature_inner,max_temperature_outer=Cooling.outputs(T_outer_wall_chamber,T_outer_wall_nozzle,Tw_wall_chamber_calculated,Tw_wall_nozzle_calculated,Ms.Rhenium,Ms.Rhenium, default.default_coating, d.ThicknessChamber, t_noz, default.default_coating_thickness,y_noz,d.Dc/2 )
 
-        max_temperature_inner = np.maximum(
-            np.max(T_outer_wall_chamber), np.max(T_outer_wall_nozzle)
-        )
-        max_temperature_outer = np.maximum(
-            np.max(Tw_wall_chamber_calculated), np.max(Tw_wall_nozzle_calculated)
-        )
-        maximum_thermal_stress = (
-            pLACE_HOLDER_THERMAL_EXPANSION_COEFFICIENT
-            * Ms.Rhenium.Emod
-            * np.maximum(
-                np.max((Tw_wall_chamber_calculated + T_outer_wall_nozzle) / 2)
-                - default.T0,
-                np.max((Tw_wall_nozzle_calculated + T_outer_wall_nozzle) / 2)
-                - default.T0,
-            )
-        )
-        safety_factor_cooling = Ms.Rhenium.yieldstress_l / maximum_thermal_stress
+        
         # Compute Turbo
         dp_cool = np.max(dptcool)
         d.ptinj, d.W_Opump, d.W_Fpump, d.W_turb, error = Turbo.TurboM(
