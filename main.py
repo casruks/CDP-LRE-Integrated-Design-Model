@@ -338,6 +338,11 @@ def Main(d: aux.Data):
 
         pLACE_HOLDER_THERMAL_EXPANSION_COEFFICIENT = 6.12 * 10**-6
         dptcool_cooling = dptcool
+        T_outer_wall_chamber = np.array(T_outer_wall_chamber)
+        T_outer_wall_chamber = np.array(T_outer_wall_nozzle)
+        T_outer_wall_chamber = np.array(Tw_wall_chamber_calculated)
+        T_outer_wall_chamber = np.array(Tw_wall_nozzle_calculated)
+
         max_temperature_inner = np.maximum(
             np.max(T_outer_wall_chamber), np.max(T_outer_wall_nozzle)
         )
@@ -348,8 +353,10 @@ def Main(d: aux.Data):
             pLACE_HOLDER_THERMAL_EXPANSION_COEFFICIENT
             * Ms.Rhenium.Emod
             * np.maximum(
-                np.max(Tw_wall_chamber_calculated - T_outer_wall_chamber),
-                np.max(Tw_wall_nozzle_calculated - T_outer_wall_nozzle),
+                np.max((Tw_wall_chamber_calculated + T_outer_wall_nozzle) / 2)
+                - default.T0,
+                np.max((Tw_wall_nozzle_calculated + T_outer_wall_nozzle) / 2)
+                - default.T0,
             )
         )
         safety_factor_cooling = Ms.Rhenium.yieldstress_l / maximum_thermal_stress
