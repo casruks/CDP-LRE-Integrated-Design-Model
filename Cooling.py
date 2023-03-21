@@ -183,7 +183,7 @@ class CoolingClass:
                     case_run,
                     err,
                 )
-                T_outer_wall=self.Main_regenerative_run_function.T_out_wall
+                T_outer_wall=self.regencool.T_out_wall
         # Update heat extracted by cooling
         self.Q = self.regencool.Q
 
@@ -318,7 +318,7 @@ class RegenerativeCool:
         # print("self.hco", self.hco)
         # T_wall = self.t[ArrayCounter] / self.Mater.k * q + Ti_co + q / self.hco
         T_wall = Tr - q / hg
-        self.T_outer_Wall=T_wall-self.Mater.k/self.t[ArrayCounter]*q
+        self.T_outer_Wall_loop_val=T_wall-self.t[ArrayCounter]/self.Mater.k*q
         # Tinext_co: end coolant temperature
         # T_wall: wall temperature
         check_positive_args(Tinext_co, T_wall)
@@ -405,7 +405,7 @@ class RegenerativeCool:
             T_co_calcualted[i + 1], T_wall_calcualted[i] = self.Tcalculation1D(
                 Tr[i], T_co_calcualted[i], A, hg[i], i
             )
-            self.T_out_wall[i]=self.Tcalculation1D.T_outer_Wall
+            self.T_out_wall[i]=self.T_outer_Wall_loop_val
         # print(T_co_calcualted)
         if check_positive_args(T_co_calcualted, T_wall_calcualted, ploss) == False:
             err = err | (1 << 3)

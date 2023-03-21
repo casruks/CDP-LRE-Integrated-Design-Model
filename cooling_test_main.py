@@ -191,6 +191,7 @@ if __name__ == "__main__":
         dptcool,
         _,
         type_variable_nozzle,
+        T_outer,
         err_nozzle_cooling,
         warn_nozzle_cooling,
     ) = Coolobj.Run_cooling(
@@ -223,6 +224,7 @@ if __name__ == "__main__":
         dptcool,
     )
     print("Tw_wall_calculated", Tw_wall_nozzle_calculated[-1])
+    print("Outer wall temperature", T_outer[-1])
     print("errors:", err_nozzle_cooling)
     print("warning", warn_nozzle_cooling)
     print("type: ", type_variable_nozzle)
@@ -233,6 +235,7 @@ if __name__ == "__main__":
         dptcool_c,
         _,
         type_variable_chamber,
+        T_outer,
         err_chamber_cooling,
         warn_chamber_cooling,
     ) = Coolobj_c.Run_cooling(
@@ -264,6 +267,7 @@ if __name__ == "__main__":
         dptcool_c,
     )
     print("Tw_wall_calculated", Tw_wall_chamber_calculated[-1])
+    print("Outer wall temperature", T_outer[-1])
     print("errors:", err_chamber_cooling)
     print("warning", warn_chamber_cooling)
 
