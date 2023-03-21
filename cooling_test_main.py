@@ -191,7 +191,7 @@ if __name__ == "__main__":
         dptcool,
         _,
         type_variable_nozzle,
-        T_outer,
+        T_outer_wall_nozzle,
         err_nozzle_cooling,
         warn_nozzle_cooling,
     ) = Coolobj.Run_cooling(
@@ -224,7 +224,7 @@ if __name__ == "__main__":
         dptcool,
     )
     print("Tw_wall_calculated", Tw_wall_nozzle_calculated[-1])
-    print("Outer wall temperature", T_outer[-1])
+    print("Outer wall temperature", T_outer_wall_nozzle[-1])
     print("errors:", err_nozzle_cooling)
     print("warning", warn_nozzle_cooling)
     print("type: ", type_variable_nozzle)
@@ -233,15 +233,16 @@ if __name__ == "__main__":
     perimeter_percentage = 0.4
     alpha = 2 * math.pi * perimeter_percentage / default.n
     # A_chamber=[Chamber_L * Dc * 2*math.pi]
-    A_chamber = [Chamber_L * Dc * alpha]
-    
+    y_for_cooling_channel = np.amin(y_noz_cool)
+    A_chamber = [L * y_for_cooling_channel * alpha]
+
     (
         Tf_cool,
         Tw_wall_chamber_calculated,
         dptcool_c,
         _,
         type_variable_chamber,
-        T_outer,
+        T_outer_wall_chamber,
         err_chamber_cooling,
         warn_chamber_cooling,
     ) = Coolobj_c.Run_cooling(
@@ -273,9 +274,37 @@ if __name__ == "__main__":
         dptcool_c,
     )
     print("Tw_wall_calculated", Tw_wall_chamber_calculated[-1])
-    print("Outer wall temperature", T_outer[-1])
+    print("Outer wall temperature", T_outer_wall_chamber[-1])
     print("errors:", err_chamber_cooling)
     print("warning", warn_chamber_cooling)
+
+    max_temperature_inner = np.maximum(
+        np.max(T_outer_wall_chamber), np.max(T_outer_wall_nozzle)
+    )
+    max_temperature_outer = np.maximum(
+        np.max(Tw_wall_chamber_calculated), np.max(Tw_wall_nozzle_calculated)
+    )
+    maximum_thermal_stress = (
+        6.12*10**-6
+        * Ms.Rhenium.Emod
+        * np.maximum(
+            np.max(
+                np.array(Tw_wall_chamber_calculated) - np.array(T_outer_wall_chamber)
+            ),
+            np.max(np.array(Tw_wall_nozzle_calculated) - np.array(T_outer_wall_nozzle)),
+        )
+    )
+    safety_factor_cooling = Ms.Rhenium.yieldstress_l / maximum_thermal_stress
+    print("max_temperature_inner", max_temperature_inner)
+    print("max_temperature_outer", max_temperature_outer)
+    print("maximum_thermal_stress", maximum_thermal_stress)
+    print("safety_factor_cooling", safety_factor_cooling)
+    print("maximum deltaT", np.maximum(
+            np.max(
+                np.array(Tw_wall_chamber_calculated) - np.array(T_outer_wall_chamber)
+            ),
+            np.max(np.array(Tw_wall_nozzle_calculated) - np.array(T_outer_wall_nozzle)),
+        ))
 
     """
     (

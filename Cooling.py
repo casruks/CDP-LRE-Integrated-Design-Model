@@ -326,9 +326,14 @@ class RegenerativeCool:
 
     # Calculates pressure loss
     # auxiliary function of Run()
+    def auxiliary_calculation_f_for_pressureloss(self,local_f,Dr,local_Re):
+        roughness=3.5 #Default from a paper
+        return local_f-(1/(-2*math.log10(roughness/Dr/3.7+2.51/(local_Re*local_f))))**2
     def pressureloss(self, m_flow_fuel: float, Dr: float, L: float):
-        delta_p = self.f * m_flow_fuel**2 / (2 * self.Prop.f_dens_l) * L / Dr
-        return delta_p
+        local_Re=Dr*m_flow_fuel/self.Prop.fmiu
+        local_f=scipy.optimize.fsolve(self.auxiliary_calculation_f_for_pressureloss,1,args=(Dr,local_Re))
+        delta_p = local_f * m_flow_fuel**2 / (2 * self.Prop.f_dens_l) * L / Dr
+        return delta_p*10**6
 
     def Inicialise(
         self,

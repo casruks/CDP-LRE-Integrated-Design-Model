@@ -336,6 +336,23 @@ def Main(d: aux.Data):
         # warnings
         dptcool = dptcool + dptcool_c
 
+        pLACE_HOLDER_THERMAL_EXPANSION_COEFFICIENT = 6.12 * 10**-6
+        dptcool_cooling = dptcool
+        max_temperature_inner = np.maximum(
+            np.max(T_outer_wall_chamber), np.max(T_outer_wall_nozzle)
+        )
+        max_temperature_outer = np.maximum(
+            np.max(Tw_wall_chamber_calculated), np.max(Tw_wall_nozzle_calculated)
+        )
+        maximum_thermal_stress = (
+            pLACE_HOLDER_THERMAL_EXPANSION_COEFFICIENT
+            * Ms.Rhenium.Emod
+            * np.maximum(
+                np.max(Tw_wall_chamber_calculated - T_outer_wall_chamber),
+                np.max(Tw_wall_nozzle_calculated - T_outer_wall_nozzle),
+            )
+        )
+        safety_factor_cooling = Ms.Rhenium.yieldstress_l / maximum_thermal_stress
         # Compute Turbo
         dp_cool = np.max(dptcool)
         d.ptinj, d.W_Opump, d.W_Fpump, d.W_turb, error = Turbo.TurboM(
