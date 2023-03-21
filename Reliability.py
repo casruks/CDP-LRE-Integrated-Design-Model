@@ -18,7 +18,7 @@ def Reliability(default, prop, t, Fnom, Fop, val):
     N = default.N
     # Data for Cycle Impact (effect of engine cycle on reliability)
     CyclesData = {}
-    with open('Reliability_Data/Cycle_Data.csv', newline='') as csvfile:
+    with open('Codes_versions/Version for integration 20_03/Reliability_Data/Cycle_Data.csv', newline='') as csvfile:
         reader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for i, row in enumerate(reader):
             if i != 0:
@@ -32,7 +32,7 @@ def Reliability(default, prop, t, Fnom, Fop, val):
     
     # Data for De-rating/Up-rating Impact (effect of operating at non-nominal thrust on reliability)
     RatingData = {}
-    with open('Reliability_Data/Propellant_Uprating_Data.csv', newline='') as csvfile:
+    with open('Codes_versions/Version for integration 20_03/Reliability_Data/Propellant_Uprating_Data.csv', newline='') as csvfile:
         reader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for i, row in enumerate(reader):
             if i != 0:
