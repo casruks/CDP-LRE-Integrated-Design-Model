@@ -13,31 +13,31 @@ class Materials:
         self.heat_cap = heat_cap #Heat capacity [J/kg*K]
         self.ulstress = ultstress #Ultimate Tensile Strength [Pa]
         self.mu = mu #Poisson Ratio [dimensionless]  
-        self.thr_exp = thr_exp  #Coefficient of Thermal Expansion [strain/K]
+        self.thr_exp = thr_exp  #Coefficient of Thermal Expansion [mm/m*K]
        
 
 
-Custom                  =       Materials('Custom Material',                    21000.0,  2300.0e6,   471.0e9, 2200.0,   48.0,   938.0,  145.0,  2500.0e6,   0.265,  7.25)
-Rhenium                 =       Materials('Rhenium-Iridium alloy',              21000.0,  2300.0e6,   471.0e9, 2200.0,   48.0,   938.0,  145.0,  2500.0e6,   0.265,  7.25)
-Al_7075_T6              =       Materials('Aluminium 7075 T6',                  2770.0,   530.0e6,    72.0e9,  373.15,   130.0,  3.97,   929.0,  580.0e6,    0.335,  24.1)
-Ti6Al4V                 =       Materials('Tungsten & Aluminium alloy',         4428.0,   898.0e6,    115.0e9, 693.15,   6.7,    23.8,   570.0,  980.0e6,    0.370,  9.1)
-Haynes_188              =       Materials('Nickel Alloy',                       9010.0,   419.0e6,    244.0e9, 1423.0,   10.8,   30.6,   436.0,  953.0e6,    0.323,  12.6)
-Inc_X_750               =       Materials('Inconel-750, Nickel-Chromium Alloy', 8290.0,   763.0e6,    222.0e9, 1090.0,   12.4,   20.4,   480.0,  1140.0e6,   0.312,  14.0)
-Inc_600                 =       Materials('Inconel-600, Nickel-Chromium Alloy', 8470.0,   290.0e6,    206.0e9, 982.0,    15.9,   20.2,   480.0,  586.0e6,    0.302,  13.1)
-Inc_718                 =       Materials('Inconel-718, Nickel-Chromium Alloy', 8190.0,   1036.0e6,   211.0e9, 825.0,    11.4,   16.6,   458.0,  914.0e6,    0.302,  13.4)
-Inc_A_286               =       Materials('A-286_Nickel-Chromium Alloy',        7920.0,   7920.0e6,   201.0e9, 700.0,    23.9,   5.43,   430.0,  1160.0e6,   0.330,  13.7)
-Columbium_c103          =       Materials('Niobium (Colombium) - cold rolled',  8950.0,   730.0e6,    92.0e9,  1255.0,   44.0,   225.0,  350.0,  800.0e6,    0.390,   8.4)
-Copper_structural       =       Materials('Copper',                             8940.0,   40.0e6,     128.0e9, 573.0,    398.0,  5.60,   387.0,  160.0e6,    0.350,  16.9) 
-D6AC_Steel              =       Materials('D6AC Steel Alloy',                   7870.0,   1450.0e6,   210.0e9, 1180.0,   52.0,   1.12,   480.0,  2360.0e6,   0.295,  13.1)
+Custom                  =       Materials('Custom Material',                    21000.0,  2300.0e6,   471.0e9, 2200.0,   48.0,   938.0,  145.0,  2500.0e6,   0.265,  7.25e-3)
+Rhenium                 =       Materials('Rhenium-Iridium alloy',              21000.0,  2300.0e6,   471.0e9, 2200.0,   48.0,   938.0,  145.0,  2500.0e6,   0.265,  7.25e-3)
+Al_7075_T6              =       Materials('Aluminium 7075 T6',                  2770.0,   530.0e6,    72.0e9,  373.15,   130.0,  3.97,   929.0,  580.0e6,    0.335,  24.1e-3)
+Ti6Al4V                 =       Materials('Tungsten & Aluminium alloy',         4428.0,   898.0e6,    115.0e9, 693.15,   6.7,    23.8,   570.0,  980.0e6,    0.370,  9.1e-3)
+Haynes_188              =       Materials('Nickel Alloy',                       9010.0,   419.0e6,    244.0e9, 1423.0,   10.8,   30.6,   436.0,  953.0e6,    0.323,  12.6e-3)
+Inc_X_750               =       Materials('Inconel-750, Nickel-Chromium Alloy', 8290.0,   763.0e6,    222.0e9, 1090.0,   12.4,   20.4,   480.0,  1140.0e6,   0.312,  14.0e-3)
+Inc_600                 =       Materials('Inconel-600, Nickel-Chromium Alloy', 8470.0,   290.0e6,    206.0e9, 982.0,    15.9,   20.2,   480.0,  586.0e6,    0.302,  13.1e-3)
+Inc_718                 =       Materials('Inconel-718, Nickel-Chromium Alloy', 8190.0,   1036.0e6,   211.0e9, 825.0,    11.4,   16.6,   458.0,  914.0e6,    0.302,  13.4e-3)
+Inc_A_286               =       Materials('A-286_Nickel-Chromium Alloy',        7920.0,   7920.0e6,   201.0e9, 700.0,    23.9,   5.43,   430.0,  1160.0e6,   0.330,  13.7e-3)
+Columbium_c103          =       Materials('Niobium (Colombium) - cold rolled',  8950.0,   730.0e6,    92.0e9,  1255.0,   44.0,   225.0,  350.0,  800.0e6,    0.390,   8.4e-3)
+Copper_structural       =       Materials('Copper',                             8940.0,   40.0e6,     128.0e9, 573.0,    398.0,  5.60,   387.0,  160.0e6,    0.350,  16.9e-3)
+D6AC_Steel              =       Materials('D6AC Steel Alloy',                   7870.0,   1450.0e6,   210.0e9, 1180.0,   52.0,   1.12,   480.0,  2360.0e6,   0.295,  13.1e-3)
 default                 =       Materials('default_coating',                    0.0,      0.0,        0.0,     0.0,      1,      0.0,    0.0,    0.0,        0.0,    0.0)
 
 #Coating Materials:
-Coat_Custom             =       Materials('Carbon-Carbon Matrix coating',       1950.0,   0,          0,          2400.0,   37.4,   6.4,   2093.0,   0,   0,   18.0)
-Copper                  =       Materials('Copper coating',                     8940.0,   0,          0,          573.0,    390.0,  6.4,   388.0,    0,   0,   18.0)
-Narloy_Z                =       Materials('Copper Alloy Coating',               9130.0,   0,          0,          740.0,    290.0,  6.4,   388.0,    0,   0,   22.0)
-GRCop_84                =       Materials('GRPCop_84 Copper alloy coating',     8756.0,   0,          0,          1000.0,   351.0,  6.4,   388.0,    0,   0,   20.0)
-Silica                  =       Materials('Scilica Coating',                    1700.0,   0,          0,          1200.0,   0.55,   6.4,   1256.0,   0,   0,   20.0)
-Carbon                  =       Materials('Carbon-Carbon Matrix coating',       1950.0,   0,          0,          2400.0,   37.4,   6.4,   2093.0,   0,   0,   20.0)
+Coat_Custom             =       Materials('Carbon-Carbon Matrix coating',       1950.0,   0,          0,          2400.0,   37.4,   6.4,   2093.0,   0,   0,   18.0e-3)
+Copper                  =       Materials('Copper coating',                     8940.0,   0,          0,          573.0,    390.0,  6.4,   388.0,    0,   0,   18.0e-3)
+Narloy_Z                =       Materials('Copper Alloy Coating',               9130.0,   0,          0,          740.0,    290.0,  6.4,   388.0,    0,   0,   22.0e-3)
+GRCop_84                =       Materials('GRPCop_84 Copper alloy coating',     8756.0,   0,          0,          1000.0,   351.0,  6.4,   388.0,    0,   0,   20.0e-3)
+Silica                  =       Materials('Scilica Coating',                    1700.0,   0,          0,          1200.0,   0.55,   6.4,   1256.0,   0,   0,   20.0e-3)
+Carbon                  =       Materials('Carbon-Carbon Matrix coating',       1950.0,   0,          0,          2400.0,   37.4,   6.4,   2093.0,   0,   0,   20.0e-3)
 
 
 ##Computing Mass nozzle:
@@ -168,7 +168,7 @@ def RhoProp(O_prop, F_prop, OF):
 
 ##Reuseability:
 #Thinning of the coolant pipe wall after 1 cycle
-def Reuseability(material, Twg_max, Twc_max, Twg_min, Twc_min, DT, H, Chanel_width, P_chamber, P_channel, mu, N):
+def Reuseability(material, Twg_max, Twc_max, Twg_min, Twc_min, DT, H, Chanel_width, P_chamber, P_channel, N):
     Ti_max = (Twg_max + Twc_max)/2
     T0_max = 0.35*Ti_max #The 0.35 comes from the assumption that the cooling channels are rectangular in shape. This needs to be changed for any other cross section. 
     
@@ -183,36 +183,36 @@ def Reuseability(material, Twg_max, Twc_max, Twg_min, Twc_min, DT, H, Chanel_wid
 
     #Inelastic Strain:
     ep_pl1 = (material.thr_exp*(Ti_max - T0_max) - (Ti_min - T0_min)) - (2*material.yieldstress_l/material.Emod)
-    ep_pl2 = ((material.thr_exp*DT_ep_pl2)**2)/(12*material.yieldstress_l*(1-mu)**2)
+    ep_pl2 = ((material.thr_exp*DT_ep_pl2)**2)/(12*material.yieldstress_l*(1-material.mu)**2)
     ep_1 = 2*(ep_pl1+ep_pl2)
 
     #Deflection:
-    def1 = 2*((H/ep_1) - mth.sqrt(((H/ep_1)**2) - ((l/4)**2)))
-    def2 = (ep_1*p*l**2)/(4*H*material.yieldstress_l)
-    def_tot = def1 + def2
+    # def1 = 2*((H/ep_1) - mth.sqrt(((H/ep_1)**2) - ((l/4)**2)))
+    # def2 = (ep_1*p*l**2)/(4*H*material.yieldstress_l)
+    # def_tot = def1 + def2
 
     #Ligament Deformation:
-    t_N = (N*w*def_tot)/(l+w)
+    # t_N = (N*w*def_tot)/(l+w)
     # t_N_min = (2*H*(l+w) - N*w*def_tot)/(l+w)
     #t_N_max = (2*H*(l+w)**2 + N*w*l*def_tot)/(l+w)**2
 
     # #Fatigue and Creep Rupture Damage: Funtion does not seem to work when creep is 
-    q = 0.2*((160e6 - material.yieldstress_l)/material.yieldstress_l)**(0.6)
+    # q = 0.2*((160e6 - material.yieldstress_l)/material.yieldstress_l)**(0.6)
     # ep_c1avg = material.k*(T1 - T0)
     # ep_c1 = ep_c1avg*(((q-1)/q)*((t_N_min/t_N_max) - 1))*((t_N_min/t_N_max)**((q-1)/q) - 1)**(-1)
     # ep_c2 = ep_c1avg
     # ep_c_tot = (2/mth.sqrt(3))*mth.sqrt((ep_c1**2 + ep_c1*ep_c2 + ep_c2**2))
     
     #Critical Thickness:
-    tcr = 2*H*(1-mth.e**(-q))
+    # tcr = 2*H*(1-mth.e**(-q))
 
-    if t_N > tcr:
-        Reuseability = 'Not Reuseable after selected amount of cycles'
-    else:
-        Reuseability = 'Reuseable System'
+    # if t_N > tcr:
+    #     Reuseability = 'Not Reuseable after selected amount of cycles'
+    # else:
+    #     Reuseability = 'Reuseable System'
 
-    return Reuseability
-
-
+    return ep_1
 
 
+
+print(Reuseability(Rhenium,1000,999,1000,999,10,0.198,0.230,20e6,21e6,1))
