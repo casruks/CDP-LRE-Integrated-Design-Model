@@ -2,7 +2,7 @@ import csv
 import numpy as np
 from matplotlib import pyplot as plt
 
-def Reliability(default, prop, t, Fnom, Fop, val):
+def Reliability(default, t, Fnom, Fop, val):
     '''
     Determines the reliability of the LRE, based on LH2/LOX. \n
     default: loads default values \n
@@ -76,22 +76,53 @@ def Reliability(default, prop, t, Fnom, Fop, val):
             lst.append(R)
         # Number of Engines and Total Burn Time Impact
         return lst    #list 
-    
-    if val == True:
+
     # VALIDATION --> Yields the same figure as Fig.3 in Fernández et al. (2022)
-        def validate(Fref):
-            N = [4, 5, 6, 7, 8, 9]
-            t = np.arange(0, 500, 0.1)
+    def validate(Fref):
+        N = [4, 5, 6, 7, 8, 9]
+        t = np.arange(0, 500, 0.1)
+    
+        plt.figure()
+        ax = plt.axes()
+        for Ni in N:
+            R = reliability_general(t, "D_FR_SC", Fref, Fref, Ni, "LOX_LH2")
+            R = R[0]
+            ax.plot(t, R, label = "N = " + str(Ni))
+    
+        ax.set_xlabel('Time [s]')
+        ax.set_ylabel('Reliability')
+        ax.legend()
+        plt.show()
         
-            plt.figure()
-            ax = plt.axes()
-            for Ni in N:
-                R = reliability_general(t, "D_FR_SC", Fref, Fref, Ni, "LOX_LH2")
-                ax.plot(t, R, label = "N = " + str(Ni))
-        
-            ax.set_xlabel('Time [s]')
-            ax.set_ylabel('Reliability')
-            ax.legend()
-            plt.show()
-        return validate(Fref)
+    if val == True:
+        validate(Fref)
     return reliability_general(t, cycle, Fnom, Fop, N, prop)
+        
+#########################################################################################################
+from datetime import date
+import csv 
+import Aux_classes as aux
+default = aux.Default(0)
+def verification(default):
+    cycles = default.cycles
+    lst = ['R']
+
+    with open('Verification_rel_'+str(date.today())+'.csv', mode='w', newline='') as file:
+        writer = csv.writer(file)
+        #writer.writerow(inj1lst)
+        writer.writerows(map(lambda x: [x], lst))
+
+    lst_t = np.arange(1, 1e3, 150)
+    lst_F = np.arange(1e3, 1e10, 1e7)
+    val = False
+    for cycle in cycles:
+        for t in lst_t:
+            for F in lst_F:
+                lst.append(Reliability(default, t, F, F, val))
+
+    with open('Verification_rel_'+str(date.today())+'.csv', mode='w', newline='') as file:
+        writer = csv.writer(file)
+        #writer.writerow(inj1lst)
+        writer.writerows(map(lambda x: [x], lst))
+    print('done')
+#verification(default)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     

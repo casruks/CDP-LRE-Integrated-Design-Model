@@ -95,6 +95,9 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         n=num_con 
         x_con=geek.linspace(0,xp_con,num=n) # Discretization of points in the convergent
         a_con=(yp_con-Dc/2)/(xp_con) # Coefficient for the convergent part
+        if a_con>=0:
+            errors=errors|(1<<13)
+            return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
         y_con=Dc/2+a_con*x_con # With this part we have defined the coordinates for the convergent geometry
 
         # Discretization of the first part of the throat (convergent section of the throat area)
@@ -195,6 +198,9 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         n=num_con
         x_con=geek.linspace(0,xp_con,num=n)
         a_con=(yp_con-Dc/2)/(xp_con)
+        if a_con>=0:
+            errors=errors|(1<<13)
+            return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
         y_con=Dc/2+a_con*x_con # With this we have defined the geometry of the convergent part
 
         y_throat1=[]
@@ -286,15 +292,15 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     cp_t=cps[1]
     g_t=gs[1]
     g_c=gsc[1]
-    R_t=cp_t*(g_t-1)/g_t
-    R_c=cp_c*(g_c-1)/g_c
+    Rt=cp_t*(g_t-1)/g_t
+    Rc=cp_c*(g_c-1)/g_c
 
-    P_t=rho_t*R_t*T_t # Pressure in the throat
+    P_t=rho_t*Rt*T_t # Pressure in the throat
 
     # For the convergent part we assume a linear decreas in pressure
     x_1=geek.concatenate((x_con,x_throat1))
-    a_P_con=(P_t-Pc)/(x_1[-1]-x_1[0])
-    P_con=Pc+a_P_con*x_1
+    a_P_con=(P_t-(100000*Pc))/(x_1[-1]-x_1[0])
+    P_con=Pc*100000+a_P_con*x_1
 
     y_2=geek.concatenate((y_throat2,y_div))
     A_div=mth.pi*y_2**2 #Areas sampled at the various locations in the divergent
@@ -303,7 +309,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     for i in A_div:
         eps_it=i/At
         dp=ispObj.get_PcOvPe(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state,frozenAtThroat=frozen_state)
-        Pe_it=Pc/dp
+        Pe_it=Pc*100000/dp
         P_div.append(Pe_it);
     
     P_noz=geek.concatenate((P_con,P_div)) # Pressure throughout the nozzle
@@ -322,8 +328,8 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     
     T_noz=geek.concatenate((T_con,T_div)) # Temperature throughout the nozzle
 
-    a_R_con=(R_t-R_c)/(x_1[-1]-x_1[0])
-    R_con=R_c+a_R_con*x_1 # R of gas in the convergent
+    a_R_con=(Rt-Rc)/(x_1[-1]-x_1[0])
+    R_con=Rc+a_R_con*x_1 # R of gas in the convergent
 
     a_g_con=(g_t-g_c)/(x_1[-1]-x_1[0])
     g_con=g_c+a_g_con*x_1 # gamma of gas in the convergent
@@ -419,6 +425,11 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     D_t=R_t*2;
     D_e=mth.sqrt(eps)*D_t
 
+    x_noz_cool=x_noz_cool[1:]
+    y_noz_cool=y_noz_cool[1:]
+    h_c_noz=h_c_noz[1:]
+    Tw_ad_noz=Tw_ad_noz[1:]
+
     if min(t_noz)<=0:
         errors=errors|(1<<2)
         return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
@@ -429,7 +440,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     elif warnings & (1<<0):
         warnings=warnings & (~(1<<0));
     
-    if min(x_noz)<=0:
+    if min(x_noz)<0:
         errors=errors|(1<<3)
         return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
     
@@ -451,7 +462,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         errors=errors|(1<<6)
         return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
     
-    if min(x_noz_cool)<=0:
+    if min(x_noz_cool)<0:
         errors=errors|(1<<7)
         return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
     
@@ -459,8 +470,5 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         errors=errors|(1<<8)
         return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
 
+
     return t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,D_t,D_e,L_nozzle_con,L_nozzle_div,L_tot,x_noz_cool,y_noz_cool,errors, warnings;
-
-
-
-
