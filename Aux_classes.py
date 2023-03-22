@@ -90,8 +90,17 @@ class Default:
     noz_mat_select = material_list[0]
     chamber_mat_select = material_list[0]
     Safety_factor=1.3
-    t = 1e-3 #m
+    
+    
+    #Mass: All other inputs are called from other variables already here    
+    valv_mat_select = Mt.Al_7075_T6 #Valve material --> Does not need to appear in GUI
+    t = 1e-3 #Default thickness for nozzle when thickness is below 1mm --> Already implemented in the function
 
+    #Cost:
+    tech_ready = 1.25 #Technology Readiness Factor for developmet 
+    exp_factor = 1.3 #Prior Experience Factor for development 
+    learn_factor = 0 #Prior Experience in fabrication
+    
     #Reliabiliy
      # Should be implemented for GUI user input
      # Fop should also be included, but commented out for now as to not mess with code
