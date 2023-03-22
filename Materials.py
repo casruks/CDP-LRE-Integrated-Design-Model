@@ -3,30 +3,19 @@ import Aux_classes as aux
 
 class Materials:
     def __init__(self, material, density, yieldstress_l, Emod, OpTemp_u, k, cost, heat_cap, ultstress, mu, thr_exp):
-        self.material = material
-        self.density = density
-        self.yieldstress_l = yieldstress_l
-        self.Emod = Emod
-        self.OpTemp_u = OpTemp_u
-        self.k = k
-        self.cost = cost
-        self.heat_cap = heat_cap
-        self.ulstress = ultstress
-        self.mu = mu
-        self.thr_exp = thr_exp 
+        self.material = material #Description of the materials
+        self.density = density #Density of the material [kg/m^3]
+        self.yieldstress_l = yieldstress_l #Yieldstress [Pa]
+        self.Emod = Emod #Young's Modulus [Pa]
+        self.OpTemp_u = OpTemp_u #Maximum Operational Temperature in [K]
+        self.k = k #Thermal Conductivity of the Material in [W/m*K]
+        self.cost = cost #Cost per kilogram [Eur/kg] 
+        self.heat_cap = heat_cap #Heat capacity [J/kg*K]
+        self.ulstress = ultstress #Ultimate Tensile Strength [Pa]
+        self.mu = mu #Poisson Ratio [dimensionless]  
+        self.thr_exp = thr_exp  #Coefficient of Thermal Expansion [strain/K]
        
-##Properties of Material Class:
-#material: Description of the materials
-#density: in [kg/m^3]
-#YieldStress_l: Yieldstress of the material in [Pa]
-#Emod: Young's Modulus of the material in [Pa]
-#OpTemp_u: Maximum Operational Temperature in [K]
-#k: Thermal Conductivity of the Material in [W/m*K]
-#cost: Cost per kilogram [Eur/kg] 
-#heat_cap: Heat capacity [J/kg*K]
-# ulstress: Ultimate Tensile Strength [Pa]
-# mu: Poisson Ratio [dimensionless]    
-#thr_exp: Coefficient of Thermal Expansion [strain/K]
+
 
 Custom                  =       Materials('Custom Material',                    21000.0,  2300.0e6,   471.0e9, 2200.0,   48.0,   938.0,  145.0,  2500.0e6,   0.265,  7.25)
 Rhenium                 =       Materials('Rhenium-Iridium alloy',              21000.0,  2300.0e6,   471.0e9, 2200.0,   48.0,   938.0,  145.0,  2500.0e6,   0.265,  7.25)
@@ -39,8 +28,8 @@ Inc_718                 =       Materials('Inconel-718, Nickel-Chromium Alloy', 
 Inc_A_286               =       Materials('A-286_Nickel-Chromium Alloy',        7920.0,   7920.0e6,   201.0e9, 700.0,    23.9,   5.43,   430.0,  1160.0e6,   0.330,  13.7)
 Columbium_c103          =       Materials('Niobium (Colombium) - cold rolled',  8950.0,   730.0e6,    92.0e9,  1255.0,   44.0,   225.0,  350.0,  800.0e6,    0.390,   8.4)
 Copper_structural       =       Materials('Copper',                             8940.0,   40.0e6,     128.0e9, 573.0,    398.0,  5.60,   387.0,  160.0e6,    0.350,  16.9) 
-D6AC_Steel              =       Materials('D6AC Steel Alloy',                   7870.0,   1450.0e6,   210.0e9, 1180.0,    52.0,  1.12,   480.0,  2360.0e6,   0.295,  13.1)
-default                 =       Materials('default_coating',                       0.0,       0.0,        0.0,   0.0,        1,   0.0,     0.0,     0.0,       0.0,   0.0)
+D6AC_Steel              =       Materials('D6AC Steel Alloy',                   7870.0,   1450.0e6,   210.0e9, 1180.0,   52.0,   1.12,   480.0,  2360.0e6,   0.295,  13.1)
+default                 =       Materials('default_coating',                    0.0,      0.0,        0.0,     0.0,      1,      0.0,    0.0,    0.0,        0.0,    0.0)
 
 #Coating Materials:
 Coat_Custom             =       Materials('Carbon-Carbon Matrix coating',       1950.0,   0,          0,          2400.0,   37.4,   6.4,   2093.0,   0,   0,   18.0)
@@ -55,34 +44,19 @@ Carbon                  =       Materials('Carbon-Carbon Matrix coating',       
 #Nozzle Surface Fucntion:
 def Nozzle_mass(x,R,t,material):
     total_surf = 0
-    # nozmass_error = 0
-    # nozmass_warnings = 0
-    
-    # Warning 0: "The thickness is lower than 1mm, a default thickness of 1mm has been used"
-    # Warning 1: "The material density is lower than 0"
-    # Warning 2: "The nozzle mass is lower than 0
-    
-    #Example: error implementation
-    # if Pc>300:
-    #     if (warnings & (1<<0))==False:
-    #         warnings=warnings|(1<<0)
-    # elif warnings & (1<<0):
-    #     warnings=warnings & (~(1<<0))
+    nozmass_error = 0
+    nozmass_warnings = 0
 
-
-    # if t < 0.001:
-    #     if (nozmass_warnings & (1<<0)) == False:
-    #         nozmass_warnings=nozmass_warnings|(1<<0)
-    # else:
-    #     nozmass_warnings = nozmass_warnings & (~(1<<0))
+    for i in range(len(t)):
+        if t[i] < 0.001:
+            nozmass_warnings=nozmass_warnings|(1<<0)
+        else:
+            nozmass_warnings = nozmass_warnings & (~(1<<0))
     
-    # if material.density < 0:
-    #     if (nozmass_warnings & (1<<0)) == False:
-    #         nozmass_warnings=nozmass_warnings|(1<<1)
-    # else:
-    #     nozmass_warnings = nozmass_warnings & (~(1<<1))
-    #     return 0,nozmass_error, nozmass_warnings
-     
+    if material.density < 0:
+        nozmass_warnings=nozmass_warnings|(1<<1)
+    else:
+        nozmass_warnings = nozmass_warnings & (~(1<<1))
 
     for i in range(len(x)-1):
         if t[i] < 0.001:
@@ -91,68 +65,81 @@ def Nozzle_mass(x,R,t,material):
             total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*0.001*R[i]
     NozzleMass = total_surf*2*mth.pi*material.density
 
-    # if NozzleMass < 0:
-    #     nozmass_error=nozmass_error|(1<<0)
-    #     return 0,nozmass_error,nozmass_warnings
+    if NozzleMass < 0:
+        nozmass_error=nozmass_error|(1<<0)
+        return 0, nozmass_error, nozmass_warnings
     
-    return NozzleMass 
+    return NozzleMass, nozmass_error, nozmass_warnings
 
 class ReferenceEngine:
     def __init__(self, pc, thrust, arear, rt, mprop, rhoprop, FS, Material_NCG, Material_P, Material_V, mfrac_tube, mfrac_manifold, mfrac_jacket, mfrac_chamber, mfrac_pump, mfrac_valve, RefMass):
-        self.pc = pc
-        self.thrust = thrust
-        self.arear = arear
-        self.rt = rt
-        self.mprop = mprop
-        self.rhoprop = rhoprop
-        self.FS = FS
-        self.Material_NCG = Material_NCG
-        self.Material_P = Material_P
-        self.Material_V = Material_V
-        self.mfrac_tube = mfrac_tube
-        self.mfrac_manifold = mfrac_manifold
-        self.mfrac_jacket = mfrac_jacket
-        self.mfrac_chamber = mfrac_chamber
-        self.mfrac_pump = mfrac_pump
-        self.mfrac_valve = mfrac_valve
-        self.RefMass = RefMass
+        self.pc = pc #Combustion chamber pressure of the reference engine
+        self.thrust = thrust #Thrust of the reference engine
+        self.arear = arear #Area ratio 
+        self.rt = rt #Throat area
+        self.mprop = mprop #Mass flow rate
+        self.rhoprop = rhoprop #Density of the propellant
+        self.FS = FS #Material safety factor
+        self.Material_NCG = Material_NCG #Nozzle material
+        self.Material_P = Material_P #Turbopump material
+        self.Material_V = Material_V #Valve material
+        self.mfrac_tube = mfrac_tube #Mass fraction of regenerative nozzle tubes
+        self.mfrac_manifold = mfrac_manifold #Mass fraction of regenerative nozzle manifold
+        self.mfrac_jacket = mfrac_jacket #Mass fraction of regenerative nozzle jacket
+        self.mfrac_chamber = mfrac_chamber #Mass fraction of combustion chamber + gas generator(if applicable)
+        self.mfrac_pump = mfrac_pump #Mass fraction of turbopump
+        self.mfrac_valve = mfrac_valve #Mass fraction of valve
+        self.RefMass = RefMass #Total mass of the reference engine
 
 RL10    = ReferenceEngine(3.20e6, 7.34e4, 61.1,  0.076, 16.85, 351.91, 1.1, Inc_718, D6AC_Steel, D6AC_Steel, 0.0903, 0.2575, 0.0484, 0.2281, 0.3096, 0.0661, 138) #Expander Cycle Reference
 LE5     = ReferenceEngine(3.65e6, 1.03e5, 140.0, 0.068, 23.33, 343.83, 1.1, Inc_718, Al_7075_T6, Al_7075_T6, 0.1419, 0.0578, 0.1021, 0.2804, 0.3042, 0.1136, 255)#Gas Generator Cycle Reference #fix rhoprop
 SSME    = ReferenceEngine(2.04e7, 2.28e6, 77.5,  0.138, 512.6, 361.89, 1.2, Inc_718, D6AC_Steel, D6AC_Steel, 0.0907, 0.1984, 0.0737, 0.1955, 0.2763, 0.1654, 3177)#Stage Combustion Cycle Reference #fixrhoprop
 
-
-
-
 #Mass estimation function Nozzle Tubes:
 def Mass(Pc, material_N, material_V, arear, rt, mprop, FS, rhoprop, cycle):
     
     Mass_warnings = 0
-    # Mass_error = 0
+    Mass_error = 0
 
     if Pc < 0:
         Mass_warnings=Mass_warnings|(1<<0)
+    else:
+        Mass_warnings = Mass_warnings & (~(1<<0))
     
     if material_N.density < 0:
-        Mass_warnings=Mass_warnings|(1<<1)    
+        Mass_warnings=Mass_warnings|(1<<1)
+    else:
+        Mass_warnings = Mass_warnings & (~(1<<1))    
     
     if material_V.density < 0:
         Mass_warnings=Mass_warnings|(1<<2)
+    else:
+        Mass_warnings = Mass_warnings & (~(1<<2)) 
     
     if arear < 0:
         Mass_warnings=Mass_warnings|(1<<3)
+    else:
+        Mass_warnings = Mass_warnings & (~(1<<3)) 
     
     if rt < 0:
         Mass_warnings=Mass_warnings|(1<<4)
+    else:
+        Mass_warnings = Mass_warnings & (~(1<<4)) 
     
     if mprop < 0:
         Mass_warnings=Mass_warnings|(1<<5)
+    else:
+        Mass_warnings = Mass_warnings & (~(1<<5)) 
     
     if FS < 0:
         Mass_warnings=Mass_warnings|(1<<6)
+    else:
+        Mass_warnings = Mass_warnings & (~(1<<7)) 
     
     if rhoprop < 0:
         Mass_warnings=Mass_warnings|(1<<7)
+    else:
+        Mass_warnings = Mass_warnings & (~(1<<8)) 
   
 
     reference = RL10
@@ -169,29 +156,29 @@ def Mass(Pc, material_N, material_V, arear, rt, mprop, FS, rhoprop, cycle):
     TubeMass = reference.mfrac_tube*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*(((material_N.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((arear/reference.arear)**2)*((rt/reference.rt)**2)) #Dimensionless Nozzle Tube Mass
     ManifoldMass = reference.mfrac_manifold*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*((mprop/reference.mprop)**1)*((material_N.yieldstress_l/reference.Material_NCG.yieldstress_l)**(-1))*((rhoprop/reference.rhoprop)**(-1))*((rt/reference.rt)**2)) #Dimensionless Nozzle Manifold Mass
 
-    # if TubeMass + ManifoldMass < 0:
-        # Mass_warnings=Mass_warnings|(1<<10)
-        # return 0, Mass_error,Mass_warnings
+    if (TubeMass + ManifoldMass) < 0:
+        Mass_error=Mass_error|(1<<0)
+        return 0, Mass_error,Mass_warnings
 
     #TurboPump Mass
     #PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.15)*((material_P.density/reference.material_P.density)**1)*(((material_P.yieldstress_l/FS)/(reference.Material_p.yieldstress_l/reference.FS)*(-1)))*((mprop/reference.mprop)**0.9)*((rhoprop/reference.rhoprop)**(-0.45))*((Ns/Ns0)**(-0.6)))
     PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.53)*((mprop/reference.mprop)**0.53)*(rhoprop/reference.rhoprop)**(-0.53)) #Dimensionless mass of turbopump (historic data method)
     
-    # if PumpMass < 0:
-        # Mass_warnings=Mass_warnings|(1<<11)
-        # return 0, Mass_error,Mass_warnings
+    if PumpMass < 0:
+        Mass_error=Mass_error|(1<<1)
+        return 0, Mass_error,Mass_warnings
 
 
     #Valves
     ValveMass = reference.mfrac_valve*(((Pc/reference.pc)**1.0)*((material_V.density/reference.Material_V.density)**1)*(((material_V.yieldstress_l/FS)/(reference.Material_V.yieldstress_l/reference.FS))**(-1))*((mprop/reference.mprop)**1)*((rhoprop/reference.rhoprop)**(-1)))#Dimensionless mass of Valves
     
-    # if ValveMass < 0:
-        # Mass_warnings=Mass_warnings|(1<<11)
-        # return 0, Mass_error,Mass_warnings
+    if ValveMass < 0:
+        Mass_error=Mass_error|(1<<2)
+        return 0, Mass_error,Mass_warnings
     
     #Total:
     Total_Mass = (ManifoldMass + TubeMass + PumpMass + ValveMass)*reference.RefMass 
-    return Total_Mass, Mass_warnings
+    return Total_Mass, Mass_error, Mass_warnings
 
 
 def RhoProp(O_prop, F_prop, OF):
@@ -201,17 +188,45 @@ def RhoProp(O_prop, F_prop, OF):
 
 
 ##Cost function 
-def Cost(m_engine,f1,R,f3,n,a_m):
+def Cost(m_engine,f1,f3,R,n,cycle):
     TotalCost_MY = 0
-    f2  = 0.27+1.075*R**46.994
+    cost_error = 0
+    cost_warning = 0
+
+    if (f1 < 0.4) or (f1 > 1.25):
+        cost_warning = cost_warning|(1<<0)
+    
+    if f3 < 0.6 or f3 > 1.3:
+        cost_warning = cost_warning|(1<<1)
+
+    if R < 0.8:
+        cost_warning = cost_warning|(1<<2)
+    
+    if m_engine < 0:
+        cost_error = cost_error|(1<<0)
+        return 0, cost_warning, cost_error
+    
+    if (cycle < 0) or (cycle > 5):
+        cost_error = cost_error|(1<<1)
+        return 0, cost_warning, cost_error
+
+    if cycle == 5:
+        f2 = 0.25+1.1096*R**51.968
+    elif cycle == 4:
+        f2 = 0.27+1.0750*R**46.994
+    else:
+        f2 = 0.33+1.0769*R**51.360
+
     f4  = -0.0553*mth.log(n) + 1.0011
     C_D = 1.1*f1*f2*f3*162*m_engine**0.58
-    F_E = a_m*f4*m_engine**0.46
+    F_E = 5*f4*m_engine**0.46
     TotalCost_MY = C_D + F_E
-    
-    #a_m is correction factor 4 in the GUI
-    
-    return TotalCost_MY
+
+    return TotalCost_MY, cost_warning, cost_error
+
+
+
+
 
 
 def RhoProp(O_prop, F_prop, OF):
@@ -219,9 +234,16 @@ def RhoProp(O_prop, F_prop, OF):
         rho_prop = ((O_prop*F_prop)*(1+OF))/(F_prop*OF+O_prop)
         return rho_prop
 
+
+
+
+
+
+
+
+
 ##Reuseability:
 #Thinning of the coolant pipe wall after 1 cycle
-
 def Reuseability(material, Twg_max, Twc_max, Twg_min, Twc_min, DT, H, Chanel_width, P_chamber, P_channel, mu, N):
     Ti_max = (Twg_max + Twc_max)/2
     T0_max = 0.35*Ti_max #The 0.35 comes from the assumption that the cooling channels are rectangular in shape. This needs to be changed for any other cross section. 
@@ -236,8 +258,8 @@ def Reuseability(material, Twg_max, Twc_max, Twg_min, Twc_min, DT, H, Chanel_wid
     Reuseability = 'Not Reuseable'
 
     #Inelastic Strain:
-    ep_pl1 = (material.k*(Ti_max - T0_max) - (Ti_min - T0_min)) - (2*material.yieldstress_l/material.Emod)
-    ep_pl2 = ((material.k*DT_ep_pl2)**2)/(12*material.yieldstress_l*(1-mu)**2)
+    ep_pl1 = (material.thr_exp*(Ti_max - T0_max) - (Ti_min - T0_min)) - (2*material.yieldstress_l/material.Emod)
+    ep_pl2 = ((material.thr_exp*DT_ep_pl2)**2)/(12*material.yieldstress_l*(1-mu)**2)
     ep_1 = 2*(ep_pl1+ep_pl2)
 
     #Deflection:
@@ -266,5 +288,7 @@ def Reuseability(material, Twg_max, Twc_max, Twg_min, Twc_min, DT, H, Chanel_wid
         Reuseability = 'Reuseable System'
 
     return Reuseability
+
+
 
 
