@@ -25,7 +25,7 @@ def injector1(default, propellant, p_c, m, OF):
         #02 - v_iox, v_if, n_ox or n_f is less than or equal to zero.
         #Warnings:
         #01 - Injection velocities are > 100 m/s.
-        #02 - Droplet size of fuel or oxidizer droplet > 200 *10^{-6} m.                                                                          
+        #02 - Droplet size of fuel or oxidizer droplet > 200 *10^{-6} m.
 
     #Default variables 
     d_ox = default.d_ox             # 3.74 mm
@@ -62,13 +62,13 @@ def injector1(default, propellant, p_c, m, OF):
         eta_s = 0.2 #20-25% [Humble et al.]
     elif InjType == 'pintle':
         eta_s = 0.1 # [Humble et al.], [DARE, Sparrow]
-    
+
     #else: (technically)
     if default.dp_state == True:
         eta_s = default.dp_user #user specified pressure drop
 
     dp = eta_s * p_c
-
+    
     v_iox = C_d * (2*dp/rho_ox)**0.5
     v_if = C_d * (2*dp/rho_f)**0.5
     m_ox, m_f = Massflow(m, OF)    
@@ -97,7 +97,7 @@ def injector1(default, propellant, p_c, m, OF):
         D_f = D_ox = (1.6e5*(v_j*3.28084)**(-1.0)*(p_center/p_j)**(-0.1)*(d_j*39.3701)**0.57*K_prop)*1e-6
         # print(D_f)
     else: #liquid - liquid   
-        K_prop = ((mu_prop*sig_prop/rho_prop)/(mu_wax*sig_wax/rho_wax))**0.25 # https://ntrs.nasa.gov/citations/19760023196    
+        K_prop = ((mu_prop*sig_prop/rho_prop)/(mu_wax*sig_wax/rho_wax))**0.25 # https://ntrs.nasa.gov/citations/19760023196
         # unlike doublet https://ntrs.nasa.gov/citations/19720010642
         # tested for d_f <= d_ox
         P_D = (rho_f*v_if**2.0)/(rho_ox*v_iox**2.0)     #momentum ratio
@@ -120,28 +120,26 @@ def injector1(default, propellant, p_c, m, OF):
     else:
         wr = wr&(~(1<<1))
 
-    return v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, A_est, er, wr  
+    return v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, A_est, er, wr 
            
 def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
     '''
     Computes chamber pressure after injector.
     
-    ''' 
-    er = 0
-    wr = 0
+    '''
     #Error & warning handling 
     er = 0
     wr = 0
     ## Error & warning codes
         #Errors:
-        #01 - Injection pressure is given lower or equal to zero.
+        #03 - Injection pressure is given lower or equal to zero.
         #Warnings:
-        #01 - Pressure drop for the oxidizer is less than req pressure drop for stability.
-        #02 - Pressure drop for the fuel is less than req pressure drop for stability.                                                                            
+        #03 - Pressure drop for the oxidizer is less than req pressure drop for stability.
+        #04 - Pressure drop for the fuel is less than req pressure drop for stability.
 
     #Input sanitize
     if p_inj <= 0:
-        er = er|(1<<0)
+        er = er|(1<<2)
         print('Error, p_inj=', p_inj)
         return 0, 0, 0, er, wr
 
@@ -154,24 +152,24 @@ def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
     rho_f = propellant.f_dens_l
     
     p_c = p_inj / (1 + eta_s)
-    
     zeta = 1.0/ C_d**2.0
     dp_ox = zeta * 0.5 * rho_ox*v_iox**2.0
     dp_f = zeta * 0.5 * rho_f*v_if**2.0
-    
+
     if (dp_ox/p_c) < eta_s:
-        wr = wr|(1<<0)
-        print('dp_ox <', eta_s,' p_c!')
+        wr = wr|(1<<2)
+        print('dp_ox (', InjType,') <', eta_s,' p_c!')
     else:
-        wr = wr&(~(1<<0))
+        wr = wr&(~(1<<2))
 
     if (dp_f/p_c) < eta_s:
-        wr = wr|(1<<1)
-        print('dp_f <', eta_s,' p_c!')
+        wr = wr|(1<<3)
+        print('dp_f (', InjType,') <', eta_s,' p_c!')
     else:
-        wr = wr&(~(1<<1))
+        wr = wr&(~(1<<3))
 
     return p_c, dp_ox, dp_f, er, wr
+
 
 #########################################################################################################
 def validateInj():
@@ -187,7 +185,6 @@ def validateInj():
     print('1) dp should be:', (p_inj-p_c)*1e-5, '[bar]')
     v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, A_est, er, wr  = injector1(Default, Propellant, p_c, m, OF)
     print('2)', v_iox, v_if, D_f, D_ox, 'dp=',dp*1e-5, eta_s, m_ox, m_f, n_ox, n_f, 'A_est =',A_est, er, wr)
-              
     print('3)', injector2(Default, Propellant, v_iox, v_if, p_inj, eta_s))
     print('4) D=', 2*(A_est/np.pi)**0.5)
 #validateInj()
