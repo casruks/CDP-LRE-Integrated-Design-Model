@@ -59,7 +59,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     noz_res=Default.noz_res
     # Definition of the geometry of the nozzle
     R_t=mth.sqrt(At/(mth.pi)) #Throat radius
-    R_u=(R_t*Default.R_u_ratio)
+    R_u=R_t*Default.R_u_ratio 
     con_ratio=Dc**2/((2*R_t)**2) # Contraction ratio (from chamber to throat)
 
     ## Subdivision of the discretization between the convergent, throat and divergent parts of the nozzle
@@ -70,32 +70,24 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     Dt=R_t*2; # Throat diameter
     De=Dt*(mth.sqrt(eps)) # Exit diameter
     if Nozzle_type==0: # If to determine whether the nozzle is conical (==0) or bell (==1)
-        yp_con=-1
-        it=0
-        while yp_con<=0:
-            L_nozzle_div=(mth.sqrt(eps)*R_t-R_t-R_u*(1-mth.cos(mth.cos(Theta_conical))))/(mth.tan(Theta_conical))+R_u*mth.sin(Theta_conical) # Length of the divergent part of the nozzle for the conical nozzle
-            L_nozzle_con=(mth.sqrt(con_ratio)*R_t-R_t-R_u*(1-mth.cos(mth.cos(theta_con))))/(mth.tan(theta_con))+R_u*mth.sin(theta_con) # Length of the convergent part of the nozzle for the conical
-            L_tot=L_nozzle_con+L_nozzle_div # Total length of the nozzle
+        L_nozzle_div=(mth.sqrt(eps)*R_t-R_t-R_u*(1-mth.cos(mth.cos(Theta_conical))))/(mth.tan(Theta_conical))+R_u*mth.sin(Theta_conical) # Length of the divergent part of the nozzle for the conical nozzle
+        L_nozzle_con=(mth.sqrt(con_ratio)*R_t-R_t-R_u*(1-mth.cos(mth.cos(theta_con))))/(mth.tan(theta_con))+R_u*mth.sin(theta_con) # Length of the convergent part of the nozzle for the conical
+        L_tot=L_nozzle_con+L_nozzle_div # Total length of the nozzle
 
-            if L_nozzle_div <=0 or L_nozzle_con <=0:
-                errors=errors|(1<<9)
-                return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+        if L_nozzle_div <=0 or L_nozzle_con <=0:
+            errors=errors|(1<<9)
+            return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
         
-            xp=L_nozzle_con+R_u*mth.sin(Theta_conical) # point P as defined in the documentation (x value)
-            yp=R_t+(1-mth.cos(Theta_conical))*R_u # point P as defined in the documentation (y value)
+        xp=L_nozzle_con+R_u*mth.sin(Theta_conical) # point P as defined in the documentation (x value)
+        yp=R_t+(1-mth.cos(Theta_conical))*R_u # point P as defined in the documentation (y value)
         
-            if xp<=0 or yp <=0:
-                errors=errors|(1<<10)
-                return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+        if xp<=0 or yp <=0:
+            errors=errors|(1<<10)
+            return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
         
-            xp_con=L_nozzle_con-R_u*mth.sin(theta_con) # point P as defined in the documentation, but for the convergent(x value)
-            yp_con=R_t+(1-mth.cos(theta_con))*R_u # point P as defined in the documentation, but for the convergent(y value)
+        xp_con=L_nozzle_con-R_u*mth.sin(theta_con) # point P as defined in the documentation, but for the convergent(x value)
+        yp_con=R_t+(1-mth.cos(theta_con))*R_u # point P as defined in the documentation, but for the convergent(y value)
         
-            if xp_con<=0 or yp_con<=0 and it<1000:
-                theta_con=theta_con*0.8
-                it=it+1
-                warnings=warnings|(1<<2);
-
         if xp_con<=0 or yp_con<=0:
             errors=errors|(1<<11)
             return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
@@ -103,6 +95,9 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         n=num_con 
         x_con=geek.linspace(0,xp_con,num=n) # Discretization of points in the convergent
         a_con=(yp_con-Dc/2)/(xp_con) # Coefficient for the convergent part
+        if a_con>=0:
+            errors=errors|(1<<13)
+            return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
         y_con=Dc/2+a_con*x_con # With this part we have defined the coordinates for the convergent geometry
 
         # Discretization of the first part of the throat (convergent section of the throat area)
@@ -172,37 +167,30 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         x_noz_cool=geek.concatenate((x_con,x_throat1,x_th2_cool,x_div_cool))
         y_noz_cool=geek.concatenate((y_con,y_throat1,y_th2_cool,y_div_cool))
     else: ## Definition of bell nozzle geometry
-        yp_con=-1
-        it=0
-        while yp_con<=0 or xp_con<=0:
-            ye=mth.sqrt(eps)*R_t # y coordinate for the exit section of the nozzle
-            xp=Ru_bell*R_t*mth.sin(Theta_bell) #Point P as defined in the documentation (x value)
-            yp=(1+Ru_bell)*R_t-Ru_bell*R_t*mth.cos(Theta_bell)#Point P as defined in the documentation (y value)
-            a=(mth.tan(mth.pi/2-TH_exit_bell)-mth.tan(mth.pi/2-Theta_bell))/(2*(ye-yp)) # Definition of parabolic coefficients
-            b=mth.tan(mth.pi/2-Theta_bell)-2*(mth.tan(mth.pi/2-TH_exit_bell)-mth.tan(mth.pi/2-Theta_bell))/(2*(ye-yp))*yp
-            c=xp-a*yp**2-b*yp
-            L_nozzle_div=a*ye**2+b*ye+c # Length of divergent part of the nozzle
-            L_nozzle_con=((mth.sqrt(con_ratio)-1)*R_t+R_u*(1/mth.cos(theta_con)-1))/mth.tan(theta_con) # Length of convergent part of the nozzle
-            L_tot=L_nozzle_con+L_nozzle_div #Total length of the nozzle
+        ye=mth.sqrt(eps)*R_t # y coordinate for the exit section of the nozzle
+        xp=Ru_bell*R_t*mth.sin(Theta_bell) #Point P as defined in the documentation (x value)
+        yp=(1+Ru_bell)*R_t-Ru_bell*R_t*mth.cos(Theta_bell)#Point P as defined in the documentation (y value)
+        a=(mth.tan(mth.pi/2-TH_exit_bell)-mth.tan(mth.pi/2-Theta_bell))/(2*(ye-yp)) # Definition of parabolic coefficients
+        b=mth.tan(mth.pi/2-Theta_bell)-2*(mth.tan(mth.pi/2-TH_exit_bell)-mth.tan(mth.pi/2-Theta_bell))/(2*(ye-yp))*yp
+        c=xp-a*yp**2-b*yp
+        L_nozzle_div=a*ye**2+b*ye+c # Length of divergent part of the nozzle
+        L_nozzle_con=((mth.sqrt(con_ratio)-1)*R_t+R_u*(1/mth.cos(theta_con)-1))/mth.tan(theta_con) # Length of convergent part of the nozzle
+        L_tot=L_nozzle_con+L_nozzle_div #Total length of the nozzle
         
-            if L_nozzle_div <=0 or L_nozzle_con <=0:
-                errors=errors|(1<<9)
-                return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
-            
-            ## Same discretization process as for the convergent, with same check for discretization points exceeding the cooling limit
-            xp=xp+L_nozzle_con
+        if L_nozzle_div <=0 or L_nozzle_con <=0:
+            errors=errors|(1<<9)
+            return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+        
+        ## Same discretization process as for the convergent, with same check for discretization points exceeding the cooling limit
+        xp=xp+L_nozzle_con
 
-            if xp<=0 or yp <=0:
-                errors=errors|(1<<10)
-                return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
-            
-            xp_con=L_nozzle_con-R_u*mth.sin(theta_con)
-            yp_con=R_t+(1-mth.cos(theta_con))*R_u
-
-            if xp_con<=0 or yp_con<=0 and it<1000:
-                theta_con=theta_con*0.8
-                it=it+1
-                warnings=warnings|(1<<2);
+        if xp<=0 or yp <=0:
+            errors=errors|(1<<10)
+            return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+        
+        xp_con=L_nozzle_con-R_u*mth.sin(theta_con)
+        yp_con=R_t+(1-mth.cos(theta_con))*R_u
+        
         if xp_con<=0 or yp_con<=0:
             errors=errors|(1<<11)
             return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
@@ -210,6 +198,9 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         n=num_con
         x_con=geek.linspace(0,xp_con,num=n)
         a_con=(yp_con-Dc/2)/(xp_con)
+        if a_con>=0:
+            errors=errors|(1<<13)
+            return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
         y_con=Dc/2+a_con*x_con # With this we have defined the geometry of the convergent part
 
         y_throat1=[]
@@ -301,15 +292,15 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     cp_t=cps[1]
     g_t=gs[1]
     g_c=gsc[1]
-    R_t=cp_t*(g_t-1)/g_t
-    R_c=cp_c*(g_c-1)/g_c
+    Rt=cp_t*(g_t-1)/g_t
+    Rc=cp_c*(g_c-1)/g_c
 
-    P_t=rho_t*R_t*T_t # Pressure in the throat
+    P_t=rho_t*Rt*T_t # Pressure in the throat
 
     # For the convergent part we assume a linear decreas in pressure
     x_1=geek.concatenate((x_con,x_throat1))
-    a_P_con=(P_t-Pc)/(x_1[-1]-x_1[0])
-    P_con=Pc+a_P_con*x_1
+    a_P_con=(P_t-(100000*Pc))/(x_1[-1]-x_1[0])
+    P_con=Pc*100000+a_P_con*x_1
 
     y_2=geek.concatenate((y_throat2,y_div))
     A_div=mth.pi*y_2**2 #Areas sampled at the various locations in the divergent
@@ -318,7 +309,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     for i in A_div:
         eps_it=i/At
         dp=ispObj.get_PcOvPe(Pc=Pc,MR=MR,eps=eps_it,frozen=frozen_state,frozenAtThroat=frozen_state)
-        Pe_it=Pc/dp
+        Pe_it=Pc*100000/dp
         P_div.append(Pe_it);
     
     P_noz=geek.concatenate((P_con,P_div)) # Pressure throughout the nozzle
@@ -337,8 +328,8 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     
     T_noz=geek.concatenate((T_con,T_div)) # Temperature throughout the nozzle
 
-    a_R_con=(R_t-R_c)/(x_1[-1]-x_1[0])
-    R_con=R_c+a_R_con*x_1 # R of gas in the convergent
+    a_R_con=(Rt-Rc)/(x_1[-1]-x_1[0])
+    R_con=Rc+a_R_con*x_1 # R of gas in the convergent
 
     a_g_con=(g_t-g_c)/(x_1[-1]-x_1[0])
     g_con=g_c+a_g_con*x_1 # gamma of gas in the convergent
@@ -434,6 +425,11 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     D_t=R_t*2;
     D_e=mth.sqrt(eps)*D_t
 
+    x_noz_cool=x_noz_cool[1:]
+    y_noz_cool=y_noz_cool[1:]
+    h_c_noz=h_c_noz[1:]
+    Tw_ad_noz=Tw_ad_noz[1:]
+
     if min(t_noz)<=0:
         errors=errors|(1<<2)
         return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
@@ -444,7 +440,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     elif warnings & (1<<0):
         warnings=warnings & (~(1<<0));
     
-    if min(x_noz)<=0:
+    if min(x_noz)<0:
         errors=errors|(1<<3)
         return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
     
@@ -466,7 +462,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         errors=errors|(1<<6)
         return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
     
-    if min(x_noz_cool)<=0:
+    if min(x_noz_cool)<0:
         errors=errors|(1<<7)
         return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
     
@@ -474,8 +470,5 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         errors=errors|(1<<8)
         return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
 
+
     return t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,D_t,D_e,L_nozzle_con,L_nozzle_div,L_tot,x_noz_cool,y_noz_cool,errors, warnings;
-
-
-
-

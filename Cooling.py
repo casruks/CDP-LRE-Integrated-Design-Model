@@ -3,13 +3,9 @@ from scipy.integrate import quad
 import scipy.optimize
 import scipy.constants
 import numpy as np
-
 import Materials as Mt
-
-# import Materials_2 as Mt
 from statistics import mean
 import Aux_classes
-import Mass as Ms
 
 
 # To do: calculate the mass flow required in order to end temperature to be equal to operating temperature!
@@ -76,7 +72,7 @@ class CoolingClass:
         ploss = 0
         m_flow_fuel = 0
         type_variable = 0
-        T_outer_wall = 0
+
         # Check if input variables are positive
         if (
             check_positive_args(
@@ -101,15 +97,7 @@ class CoolingClass:
             == False
         ):
             err = err | (1 << 0)
-            return (
-                T_co_calculated,
-                Tw_wall_calculated,
-                ploss,
-                m_flow_fuel,
-                T_outer_wall,
-                err,
-                warn,
-            )
+            return T_co_calculated, Tw_wall_calculated, ploss, m_flow_fuel, err, warn
 
         # Calculate total contact area for cooling system
         if overwriteA == False:
@@ -131,20 +119,13 @@ class CoolingClass:
         )
 
         Tw_wall_calculated = [self.heatsink.T_calculated]
-        T_outer_wall = [Tw_wall_calculated]
         self.Q = self.heatsink.Q
 
         if err != 0:
-            return (
-                T_co_calculated,
-                Tw_wall_calculated,
-                ploss,
-                m_flow_fuel,
-                T_outer_wall,
-                err,
-                warn,
-            )
+            return T_co_calculated, Tw_wall_calculated, ploss, m_flow_fuel, err, warn
 
+        if type(self.heatsink.T_calculated) is np.ndarray:
+            self.heatsink.T_calculated=self.heatsink.T_calculated[0]
         if self.heatsink.T_calculated > TestTemp:
 
             type_variable = 1
@@ -162,7 +143,6 @@ class CoolingClass:
             self.Q = self.radiationcool.Q
             T_co_calculated = Ti_co
             Tw_wall_calculated = [self.radiationcool.T_calculated]
-            T_outer_wall = [self.radiationcool.T_outer_wall]
             ploss = 0
             m_flow_fuel = 0
             if err != 0:
@@ -203,7 +183,7 @@ class CoolingClass:
                     case_run,
                     err,
                 )
-                T_outer_wall = self.regencool.T_out_wall
+
         # Update heat extracted by cooling
         self.Q = self.regencool.Q
 
@@ -215,16 +195,13 @@ class CoolingClass:
             x > TestTemp for x in Tw_wall_calculated
         ):
             err = err | (1 << 8)
-        if check_positive_args(ploss) == False or ploss > 10**6:
+        if check_positive_args(ploss) == False or ploss > 10**5:
             err = err | (1 << 9)
         if check_positive_args(m_flow_fuel) == False or m_flow_fuel > 30:
             err = err | (1 << 10)
 
         if check_positive_args(self.Q) == False:
             err = err | (1 << 11)
-
-        if check_positive_args(T_outer_wall) == False:
-            err = err | (1 << 12)
 
         # if(m_flow_fuel > 6000 or Tw_wall_calculated[-1] > 2000 or T_co_calculated > 1000 or ploss > 10**5):
         # warn=warn|(1<<1)
@@ -236,7 +213,6 @@ class CoolingClass:
             ploss,
             m_flow_fuel,
             type_variable,
-            T_outer_wall,
             err,
             warn,
         )
@@ -274,11 +250,12 @@ class RadiationCool:
         # thickness
         self.T_calculated = -1
 
+
     # Defines system of equations required in order to find the end temperature. Auxiliary function
     def Tcalculation_system(self, x, Tr, eps, k, t, h):
         Ti, Tout = x
         return [
-            h * (Tr - Ti) - (Ti - Tout) * k / t,
+            h * (Tr - Ti) - (Tout - Ti) * k / t,
             eps * scipy.constants.sigma * Tout**4 - h * (Tr - Ti),
         ]
 
@@ -291,8 +268,7 @@ class RadiationCool:
         sol = scipy.optimize.fsolve(
             self.Tcalculation_system, x0, args=(Tr, eps, k, t, h)
         )
-        self.T_calculated = sol[1]
-        self.T_outer_wall = sol[0]
+        self.T_calculated = sol[0]
 
         if check_positive_args(self.T_calculated) == False:
             err = err | (1 << 2)
@@ -323,6 +299,7 @@ class RegenerativeCool:
     # ----------------------------------------------------------------------------------------------------------------
 
     # Calculates and returns equilibrium wall temperature, and end coolant temperature
+    
 
     def Tcalculation1D(
         self, Tr: float, Ti_co: float, A: float, hg: float, ArrayCounter: int
@@ -336,7 +313,6 @@ class RegenerativeCool:
         # print("self.hco", self.hco)
         # T_wall = self.t[ArrayCounter] / self.Mater.k * q + Ti_co + q / self.hco
         T_wall = Tr - q / hg
-        self.T_outer_Wall_loop_val = T_wall - self.t[ArrayCounter] / self.Mater.k * q
         # Tinext_co: end coolant temperature
         # T_wall: wall temperature
         check_positive_args(Tinext_co, T_wall)
@@ -344,24 +320,9 @@ class RegenerativeCool:
 
     # Calculates pressure loss
     # auxiliary function of Run()
-    def auxiliary_calculation_f_for_pressureloss(self, local_f, Dr, local_Re):
-        roughness = 3.5  # Default from a paper
-        return (
-            local_f
-            - (
-                1
-                / (-2 * math.log10(roughness / Dr / 3.7 + 2.51 / (local_Re * local_f)))
-            )
-            ** 2
-        )
-
     def pressureloss(self, m_flow_fuel: float, Dr: float, L: float):
-        local_Re = Dr * m_flow_fuel / self.Prop.fmiu
-        local_f = scipy.optimize.fsolve(
-            self.auxiliary_calculation_f_for_pressureloss, 1, args=(Dr, local_Re)
-        )
-        delta_p = local_f * m_flow_fuel**2 / (2 * self.Prop.f_dens_l) * L / Dr
-        return delta_p * 10**6
+        delta_p = self.f * m_flow_fuel**2 / (2 * self.Prop.f_dens_l) * L / Dr
+        return delta_p
 
     def Inicialise(
         self,
@@ -432,19 +393,20 @@ class RegenerativeCool:
         T_co_calcualted = [0 for i in range(len(Tr) + 1)]
         T_co_calcualted[0] = Ti_co
         T_wall_calcualted = [0 for i in range(len(Tr))]
-        self.T_out_wall = [0 for i in range(len(Tr))]
+
         # Calculate the wall temperature and the coolant temperature for each point along the wall
         for i in range(len(Tr)):
             T_co_calcualted[i + 1], T_wall_calcualted[i] = self.Tcalculation1D(
                 Tr[i], T_co_calcualted[i], A, hg[i], i
             )
-            self.T_out_wall[i] = self.T_outer_Wall_loop_val
         # print(T_co_calcualted)
         if check_positive_args(T_co_calcualted, T_wall_calcualted, ploss) == False:
             err = err | (1 << 3)
         return T_co_calcualted[-1], T_wall_calcualted, ploss, err
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    
 
     def FindA(self, y, L, l, i):
         return (2 * math.pi * y[i]) * L / l
@@ -515,115 +477,3 @@ def check_positive_args(*args):
         else:
             raise ValueError("Unsupported argument type: {type(arg).__name__}")
     return True
-
-
-def thermal_stress(
-    main_material,
-    coating_material,
-    main_material_thickness,
-    coating_thickness,
-    y,
-    delta_T,
-):
-    if coating_thickness != 0:
-
-        Ri = y + coating_thickness / 2
-        Ro = y + coating_thickness + main_material_thickness / 2
-
-        delta_Ri_indp = 2 * math.pi * delta_T * coating_material.thr_exp
-        p_contact = delta_Ri_indp / (
-            Ri**2 / (coating_material.Emod * coating_thickness)
-            + Ro**2 / (main_material.Emod * main_material_thickness)
-        )
-
-        stress_main = p_contact * Ro / main_material_thickness
-        stress_coating = p_contact * Ri / coating_thickness
-
-        return stress_main, stress_coating
-    else:
-        v = main_material.mu
-        stress_main = (
-            delta_T * main_material.thr_exp * main_material.Emod / (2 * (1 - v))
-        )
-
-        stress_coating = 0
-        return stress_main, stress_coating
-
-
-def outputs(
-    T_outer_wall_chamber,
-    T_outer_wall_nozzle,
-    Tw_wall_chamber_calculated,
-    Tw_wall_nozzle_calculated,
-    nozzle_material,
-    chamber_material,
-    coating_material,
-    chamber_thickness,
-    nozzle_thickness,
-    coating_thickness,
-    y,
-    chamber_Radius,
-):
-    # pLACE_HOLDER_THERMAL_EXPANSION_COEFFICIENT = 6.12 * 10**-6
-
-    T_outer_wall_chamber = np.array(T_outer_wall_chamber)
-    T_outer_wall_chamber = np.array(T_outer_wall_nozzle)
-    T_outer_wall_chamber = np.array(Tw_wall_chamber_calculated)
-    T_outer_wall_chamber = np.array(Tw_wall_nozzle_calculated)
-
-    max_temperature_inner = np.maximum(
-        np.max(T_outer_wall_chamber), np.max(T_outer_wall_nozzle)
-    )
-    max_temperature_outer = np.maximum(
-        np.max(Tw_wall_chamber_calculated), np.max(Tw_wall_nozzle_calculated)
-    )
-
-    Tw_wall_chamber_calculated = np.array(Tw_wall_chamber_calculated)
-    Tw_wall_nozzle_calculated = np.array(Tw_wall_nozzle_calculated)
-    delta_T = np.maximum(
-        np.max((Tw_wall_chamber_calculated + T_outer_wall_chamber) / 2)
-        - Aux_classes.Default.T0,
-        np.max((Tw_wall_nozzle_calculated + T_outer_wall_nozzle) / 2)
-        - Aux_classes.Default.T0,
-    )
-
-    if delta_T == np.max(
-        ((Tw_wall_chamber_calculated + T_outer_wall_chamber) / 2)
-        - Aux_classes.Default.T0
-    ):
-        main_material = chamber_material
-        main_material_thickness = chamber_thickness
-        Radius = chamber_Radius
-    else:
-        main_material = nozzle_material
-        main_material_thickness = nozzle_thickness
-        Radius = y[
-            np.argmax(
-                ((Tw_wall_chamber_calculated + T_outer_wall_chamber) / 2)
-                - Aux_classes.Default.T0
-            )
-        ]
-
-    stress_main, stress_coating = thermal_stress(
-        main_material,
-        coating_material,
-        main_material_thickness,
-        coating_thickness,
-        Radius,
-        delta_T,
-    )
-
-    safety_factor_cooling_main = main_material.yieldstress_l / stress_main
-    if stress_coating != 0:
-        safety_factor_cooling_coating = coating_material.yieldstress_l / stress_coating
-    else:
-        safety_factor_cooling_coating = (
-            0  # so it doesn't appear as the max value in the return
-        )
-
-    return (
-        max(stress_main, stress_coating),
-        max(safety_factor_cooling_main, safety_factor_cooling_coating),
-        max_temperature_inner,
-        max_temperature_outer,
-    )

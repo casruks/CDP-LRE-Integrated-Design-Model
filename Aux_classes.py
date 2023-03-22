@@ -1,4 +1,4 @@
-import Materials as Ms
+import Materials as Mt
 
 #Default values
 class Default:
@@ -19,14 +19,15 @@ class Default:
      # Should be implemented for GUI user input
     InjTypes = ['like', 'unlike', 'pintle'] #Please keep this one in default as well. Used for Injector1() via Default.InjTypes 
     InjType = InjTypes[2] #This one is placeholder
-    
+    dp_user = 0.0 #bar, used when user specifies a pressure drop.
+    dp_state = False #If False, user did not specify dp, if True user did specifiy dp.
     #Nozzle
     Nozzle_type = 0 # Type of nozzle, 0=conical, 1=bell
 
-    MR = 0 # O_F ratio, 0=optimize for c* LIMIT: >=0
+    MR = 6.04 # O_F ratio, 0=optimize for c* LIMIT: >=0
     De_max = 2.5 # Maximum exit diameter of the nozzle LIMIT: >0
     De_turbine_noz_max = 2.5 # Maximum exit diameter for the turbine exhaust nozzle LIMIT: >0
-    Theta_con = 60 # Angle of the convergent part of the nozzle in degrees  LIMITS: 0<THETA<90
+    Theta_con = 45 # Angle of the convergent part of the nozzle in degrees  LIMITS: 0<THETA<90
     Theta_conical = 15 # Angle of the divergent part for the conical nozzle, in degrees LIMITS: 0<THETA<90
     Theta_bell = 55 # Angle of the divergent part for the bell nozzle, in degrees LIMITS: 0<THETA<90
     TH_exit_bell = 3 # Exit angle for the bell nozzle, in degrees LIMITS: 0<THETA<90
@@ -41,6 +42,7 @@ class Default:
     toll_P_adapted = 0.01 # Tollerance on the normalized difference between exit pressure and ambient pressure (Nozzle_1) LIMIT: >0
     noz_res=150 # Number of points in the discretization of the whole nozzle (Nozzle_2) LIMIT: >0
     n_cool=90 # Number of points used for cooling properties in the divergent part of the nozzle (Nozzle_2) LIMIT: >0
+    SF_noz=1.3 # Safety factor for nozzle thickness
 
     #Turbomachinery
     cycle_type = 0 # 0:EX (expander) - 1:CB (coolant bleed) - 2:GG (gas generator) - 3:SC (staged combustion) - 4:EL (electrical) - 5:PF (pressure fed)
@@ -63,48 +65,39 @@ class Default:
     ConvergenceRatio_h = 3.5 #Maximum acceptable Convergence ratio
     factor = 0.3  # this is the factor that correlates initial droplet volume to final droplet volume. final droplet Volume = initial droplet volume * factor
 
- # Cooling
-    Dr = 0.01  # [m] hydralic diameter of the coolant channel
-    A = 0.0003  # [m2] area of contact for each segment of the cooling
-    T_fuel_tanks = 20  # [K] temperature of the fuel tanks, considered the inicial coolant temperature
+    #Cooling
+    Dr = 0.01 #[m] hydralic diameter of the coolant channel
+    A = 0.0003 #[m2] area of contact for each segment of the cooling
+    T_fuel_tanks = 20 #[K] temperature of the fuel tanks, considered the inicial coolant temperature
     T_ox_tanks = 60 #[K] temperature of the oxidiser tanks
-    n = 1  # number of coolant chanels
-    default_coating = Ms.default #default coolant
-    default_coating_thickness = 0  # default coolant thickness
-    T0 = 293.5  # [k] default inicial temperature
-    eps = 0.85  # default emissivity
-    overwriteA = False  # option to overwrite the surface area calculated by the program with the input variable A, given by the user or default class
-    regenerative_case = 0  # option of which function to use in regenerative cooling; 0 corresponds to the explicit function Run1D()
-    operationtime = (
-        10000000000000000  # [s] default operation time (large to imply infinite time)
-    )
-    perimeter_percentage = 1  # percentage of the perimeter used for cooling chambers
-
+    n = 1 #number of coolant chanels
+    default_coating = Mt.Materials("default_coating",0.0,0.0,0.0,0.0,1,0) #default coolant
+    default_coating_thickness = 0#default coolant thickness
+    T0=293.5 #[k] default inicial temperature
+    eps=0.85 #default emissivity
+    overwriteA=False #option to overwrite the surface area calculated by the program with the input variable A, given by the user or default class
+    regenerative_case=0 #option of which function to use in regenerative cooling; 0 corresponds to the explicit function Run1D()
+    operationtime=10000000000000000 #[s] default operation time (large to imply infinite time)
 
     #Igniters
+
     ignburntime = 4 #Put on advanced inputs, it is the ignition burn time.
     ign_o_f=0.7 #fuel ratio of the igniter propellant
     fudgefactor = 20 #factor to correct for mass overestimation
     type = '00'
 
     #Material
-    material_list = [Ms.Rhenium, Ms.Al_7075_T6, Ms.Ti6Al4V, Ms.Haynes_188, Ms.Inc_X_750, Ms.Inc_600, Ms.Inc_718, Ms.Inc_A_286,Ms.Columbium_c103,
-                     Ms.Copper_structural, Ms.D6AC_Steel]
-    coating_list = [Ms.Copper, Ms.Narloy_Z, Ms.GRCop_84, Ms.Silica, Ms.Carbon]
+    #material = Ms.Rhenium #Default Material selected OCCHIO ALLE STRONZATE
+    material="This"
+    Safety_factor = 1.3 #Default safety factor
+    material_list = [Mt.Custom,Mt.Rhenium, Mt.Al_7075_T6, Mt.Ti6Al4V, Mt.Haynes_188, Mt.Inc_X_750, Mt.Inc_600, Mt.Inc_718, Mt.Inc_A_286,Mt.Columbium_c103,
+                    Mt.Copper_structural, Mt.D6AC_Steel]
+    coating_list = [Mt.Coat_Custom,Mt.Copper, Mt.Narloy_Z, Mt.GRCop_84, Mt.Silica, Mt.Carbon]
     noz_mat_select = material_list[0]
     chamber_mat_select = material_list[0]
     Safety_factor=1.3
-    
-    
-    #Mass: All other inputs are called from other variables already here    
-    valv_mat_select = Mt.Al_7075_T6 #Valve material --> Does not need to appear in GUI
-    t = 1e-3 #Default thickness for nozzle when thickness is below 1mm --> Already implemented in the function
+    t = 1e-3 #m
 
-    #Cost:
-    tech_ready = 1.25 #Technology Readiness Factor for developmet 
-    exp_factor = 1.3 #Prior Experience Factor for development 
-    learn_factor = 0 #Prior Experience in fabrication
-    
     #Reliabiliy
      # Should be implemented for GUI user input
      # Fop should also be included, but commented out for now as to not mess with code
@@ -125,7 +118,8 @@ class Default:
             self.Cd = 1.0
 
 
-# Propellant class
+#Propellant class
+
 class Propellant:
     # Oxidizer
     def Oxigen(self):
@@ -154,7 +148,6 @@ class Propellant:
             0,
         ]  # for shomate equation
         self.omiu = 1.0e-6
-        self.molarmass = 15.999  # g/mol
 
     # Fuel
     def LH(self):
@@ -187,10 +180,7 @@ class Propellant:
             0,
         ]  # for shomate equation
         self.heatingvalue = 119.96 * 10**6  # for the fuel only!
-        self.molarmass = 2.016  # g/mol
-        self.enthalpy_298_f = 0 #J/kh
         # Propellant
-
     gama = 1.4
     tq = 0.9  # characteristic chemical time of propellant
     Frozen_state = 0  # Frozen state of the propellant 0=chemical equilibrium flow, 1=frozen flow (from throat onwards)
@@ -223,115 +213,104 @@ class Propellant:
                 f_name = "Ethanol"
                 o_name = "LOX"
                 self.UDMH()
-                self.Oxigen()
+                self.Oxigen() 
+
 
     def Rp1(self):
         self.Fuel_name = "RP1"  # Fuel name for rocketCEA
         self.Fuel_composition = "C 1 H 1.95"  # Composition of fuel for rocketcea
         self.f_dens_l = 804.59  # liquid fuel density
-        self.f_dens_g = 10**5 / (
-            298 * 8.31455 / self.molarmass
-        )  # gaseous fuel density with ideal gas for standard conditions
-        self.f_gamma = 1.24  # fuel gamma
+        self.f_dens_g = "does not exist in literature"   # gaseous fuel density
+        self.f_gamma = 1.24 # fuel gamma
         self.fcp = 1.88  # fuel cp
         self.h_fuel = -1758.456  # fuel enthalpy
-        self.R_f = 4.75  # fuel gas constant
+        self.R_f = 4.75 # fuel gas constant
         self.f_lamb = 115e-3
         self.fmiu = 2.166e-6
-        self.f_nist_enthalpy_coef = []  # for shomate equation
-        self.heatingvalue = -43100  # for the fuel only!
-        self.molarmass = 175  # g/mol
-        self.enthalpy_298_f = 0.137899*10**6#J/kh
+        self.f_nist_enthalpy_coef = [
+            
+        ]  # for shomate equation
+        self.heatingvalue =  -43100 # for the fuel only!
 
     def Ethanol(self):
         self.Fuel_name = "Ethanol"  # Fuel name for rocketCEA
         self.Fuel_composition = "C 2 H 6 O 1"  # Composition of fuel for rocketcea
-        self.f_dens_l = 789  # liquid fuel density
-        self.f_dens_g = 1.59  # gaseous fuel density
+        self.f_dens_l =  789 # liquid fuel density
+        self.f_dens_g = 1.59 # gaseous fuel density
         self.f_gamma = 1.13  # fuel gamma
-        self.fcp = 111.7 / 46.0684 * 10**3  # fuel cp
+        self.fcp = 111.7/46.0684*10**3  # fuel cp
         self.h_fuel = -234  # fuel enthalpy
-        self.R_f = 8.314 / 46.0684 * 10**3  # fuel gas constant
+        self.R_f = 8.314/46.0684*10**3 # fuel gas constant
         self.f_lamb = 166.4e-3
         self.fmiu = 1199.4e-6
-        self.f_nist_enthalpy_coef = []  # for shomate equation
-        self.heatingvalue = -29672  # for the fuel only!
-        self.molarmass = 46.07
-        self.enthalpy_298_f = 5.01766*10**6#J/kh
+        self.f_nist_enthalpy_coef = [
+            
+        ]  # for shomate equation
+        self.heatingvalue =  -29672 # for the fuel only!
 
     def UDMH(self):
         self.Fuel_name = "UDMH"  # Fuel name for rocketCEA
         self.Fuel_composition = "C 2 H 8 N 2"  # Composition of fuel for rocketcea
 
-        self.f_dens_l = 793  # IDK YET  # liquid fuel density
+        self.f_dens_l = 793#IDK YET  # liquid fuel density
 
-        self.f_dens_g = 10**5 / (
-            298 * 8.31455 / self.molarmass
-        )  # gaseous fuel density with ideal gas for standard conditions
-        self.f_gamma = 1.152  # fuel gamma
-        self.fcp = 164.05 / 60.098 * 10**3  # fuel cp
-        self.h_fuel = 83.3 * 10**3 / 60.0983  # fuel enthalpy
-        self.R_f = 8.314 / 60.0983 * 10**3  # fuel gas constant
+        self.f_dens_g = "does not exist in literature" # gaseous fuel density
+        self.f_gamma = 1.152 # fuel gamma
+        self.fcp = 164.05/60.098*10**3  # fuel cp
+        self.h_fuel = 83.3*10**3/60.0983  # fuel enthalpy
+        self.R_f = 8.314/60.0983*10**3 # fuel gas constant
         self.f_lamb = 168e-3
         self.fmiu = 1.1071e-05
-        self.f_nist_enthalpy_coef = []  # for shomate equation
-        self.heatingvalue = -32928  # for the fuel only!
-        self.molarmass = 60.1
-        self.enthalpy_298_f = 0.886280*10**6#J/kh
+        self.f_nist_enthalpy_coef = [
+            
+        ]  # for shomate equation
+        self.heatingvalue = -32928 # for the fuel only!
 
     def methane(self):
         self.Fuel_name = "Methane"  # Fuel name for rocketCEA
         self.Fuel_composition = "C 1 H 4"  # Composition of fuel for rocketcea
 
-        self.f_dens_l = 451.13  # IDK YET  # liquid fuel density
+        self.f_dens_l = 451.13 #IDK YET  # liquid fuel density
 
-        self.f_dens_g = 0.64861  # gaseous fuel density
-        self.f_gamma = 2.2313 / 1.7082  # fuel gamma
+        self.f_dens_g = 0.64861 # gaseous fuel density
+        self.f_gamma = 2.2313/1.7082	 # fuel gamma
         self.fcp = 2231  # fuel cp
-        self.h_fuel = -74.87  # fuel enthalpy
-        self.R_f = 8.314 / 16.0425 * 10**3  # fuel gas constant
+        self.h_fuel = -74.87	  # fuel enthalpy
+        self.R_f = 8.314/16.0425*10**3 # fuel gas constant
         self.f_lamb = 0.033937
         self.fmiu = 480e-6
-        self.f_nist_enthalpy_coef = [
-            85.81217,
+        self.f_nist_enthalpy_coef = [85.81217,
             11.26467,
             -2.114146,
             0.13819,
             -26.42221,
             -153.5327,
             224.4143,
-            -74.8731,
+            -74.8731   
         ]  # for shomate equation
-        self.heatingvalue = -55511  # for the fuel only!
-        self.molarmass = 16.04  # g/mol
-        self.enthalpy_298_f = 4.56*10**6#J/kh
+        self.heatingvalue =  -55511 # for the fuel only!
+
 
     def NTO(self):
         self.Ox_name = "NTO"  # Oxidizer name for rocketCEA
         self.Ox_composition = "N 2 O 4"  # Composition of oxidizer for rocketcea
         self.o_dens = 1442.46  # Oxidizer density
-        self.ocp = 1.549 * 10**3  # oxidizer cp
-        self.h_ox = (
-            -19.56 / 92.0110 * 10**3
-        )  # oxidizer enthalpy in liquid phase. Gas phase is +9.08/92.0110*10**3
-        self.o_lamb = 131 * 10 ** (-3)
-        self.o_nist_enthalpy_coef = [
-            128.6220,
+        self.ocp = 1.549*10**3  # oxidizer cp
+        self.h_ox = -19.56/92.0110*10**3	 # oxidizer enthalpy in liquid phase. Gas phase is +9.08/92.0110*10**3
+        self.o_lamb = 131*10**(-3)
+        self.o_nist_enthalpy_coef = [ 128.6220,
             2.524345,
             -0.520883,
             0.03663,
             -11.55704,
             -59.22619,
             417.0444,
-            9.078988,
+            9.078988        
         ]  # for shomate equation
-        self.omiu = 393 * 10 ** (-6)
-        self.molarmass = 92.010  # g/mol
-        self.enthalpy_298_f = 1.036*10**6 #J/kh
+        self.omiu = 393*10**(-6)
 
 
-
-
+        
 #Data class
 class Data:
     #Global in
@@ -368,6 +347,7 @@ class Data:
     ptinj = 0.0 #[Pa] Total pressure at injector inlet
     dptop = 0.0 #[Pa] Total pressure rise over oxidizer pump
     dptfp = 0.0 #[Pa] Total pressure rise over fuel pump
+    turbo_m = 0.0 #[kg/s] TOtal mass flow
 
     #Combustion
     h_comb = 0.0 #Conductive heat transfer coefficient in chamber
@@ -379,6 +359,8 @@ class Data:
     Mnoz = 0.0 # [kg] Total nozzle mass
 
     #Cooling
+    type_variable_nozzle = 0
+    type_variable_chamber = 0
 
 
     #Injector
