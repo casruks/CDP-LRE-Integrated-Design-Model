@@ -69,7 +69,7 @@ def Main(d : aux.Data):
         ## bool variable that specifies if inside loop or not
         ## density, cp, miu,k, prandlt - this all comes from nozzle just leave it like that
         ## IMPORTANT - this function is currently using hardcoded droplet diameter, bc droplet diameter coming from injector does not make sense.
-        d.h_comb, d.Dc, d.ThicknessChamber, d.Chamber_L, d.Re_c,wr_comb,er_comb= Comb.CombustionChamber(p_new, d.At, prop, Ms.Rhenium, default, d.v_if, d.v_iox, d.Tc, d.O_F, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est)
+        d[-1].h_comb, d[-1].Dc, d[-1].ThicknessChamber, d[-1].Chamber_L, d[-1].Re_c,wr_comb,er_comb= Comb.CombustionChamber(p_new, d[-1].At, prop, Ms.Rhenium, default, d[-1].v_if, d[-1].v_iox, d[-1].D_f, d[-1].D_ox, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est,d[-1].O_F)
         #outputs
         ## conductive heat transfer coefficient
         ## chamber diameter in m
@@ -140,7 +140,7 @@ def Main(d : aux.Data):
     Reliability = Rel.Reliability(default,prop, d.time, d.Thrust, d.Thrust, default.val)
     
     #Compute Mass:
-    ChamberMass = Comb.CombustionChamber(p_new, d.At, prop, Ms.D6AC_Steel, default, d.v_if, d.v_iox, d.Tc, d.O_F, 1,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est)[5]
+    ChamberMass = Comb.CombustionChamber(p_new, d.At, prop, Ms.D6AC_Steel, default, d.v_if, d.v_iox, d.D_f, d.D_ox, 1,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est,d.O_F)[5]
     IgnitorMass, mfuel, mox, wr = Ign.Igniters(d.m_nozz,prop,default,d.Tc,d.O_F,default.type)
     rho_prop = Ms.RhoProp(aux.Propellant.f_dens_l,aux.Propellant.o_dens,aux.Data.O_F)
     Mass = ChamberMass + IgnitorMass + Ms.Mass(p_new,aux.Default.noz_mat_select,aux.Default.valv_mat_select,d.Eps,d.A_t,d.m_nozz,aux.Default.Safety_factor,rho_prop,aux.Default.cycle_type,x_noz,y_noz,t_noz)
