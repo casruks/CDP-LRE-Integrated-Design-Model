@@ -146,7 +146,7 @@ def Main(d : aux.Data):
     Mass = ChamberMass + IgnitorMass + Ms.Mass(p_new,aux.Default.noz_mat_select,aux.Default.valv_mat_select,d.Eps,d.A_t,d.m_nozz,aux.Default.Safety_factor,rho_prop,aux.Default.cycle_type,x_noz,y_noz,t_noz)
     #Computing costs:
     n_engine = 1
-    #Cost = Ms.Cost(Mass, Reliability, n_engine)
+    #Cost = Ms.Cost(Mass, aux.Default.tech_ready, aux.Default.exp_factor, Reliability, aux.Default.learn_factor, aux.Default.cycle_type)
 
     print("Calculations finished")
     return True
