@@ -2,293 +2,155 @@ import math as mth
 import Aux_classes as aux
 
 class Materials:
-    def __init__(self, material, density, yieldstress_l, Emod, OpTemp_u, k, cost, heat_cap, ultstress, mu, thr_exp):
-        self.material = material #Description of the materials
-        self.density = density #Density of the material [kg/m^3]
-        self.yieldstress_l = yieldstress_l #Yieldstress [Pa]
-        self.Emod = Emod #Young's Modulus [Pa]
-        self.OpTemp_u = OpTemp_u #Maximum Operational Temperature in [K]
-        self.k = k #Thermal Conductivity of the Material in [W/m*K]
-        self.cost = cost #Cost per kilogram [Eur/kg] 
-        self.heat_cap = heat_cap #Heat capacity [J/kg*K]
-        self.ulstress = ultstress #Ultimate Tensile Strength [Pa]
-        self.mu = mu #Poisson Ratio [dimensionless]  
-        self.thr_exp = thr_exp  #Coefficient of Thermal Expansion [strain/K]
-       
+    def __init__(self, material, density, yieldstress_l, Emod, OpTemp_u, k, cost):
+        self.material = material
+        self.density = density
+        self.yieldstress_l = yieldstress_l
+        self.Emod = Emod
+        self.OpTemp_u = OpTemp_u
+        self.k = k
+        self.cost = cost
 
+##Properties of Material Class:
+#material: Description of the materials
+#density: in [kg/m^3]
+#YieldStress_l: Yieldstress of the material in [Pa]
+#Emod: Young's Modulus of the material in [Pa]
+#OpTemp_u: Maximum Operational Temperature in [K]
+#k: Thermal Conductivity of the Material in [W/m*K]
+#cost: Cost per kilogram [Eur/kg]         
 
-Custom                  =       Materials('Custom Material',                    21000.0,  2300.0e6,   471.0e9, 2200.0,   48.0,   938.0,  145.0,  2500.0e6,   0.265,  7.25)
-Rhenium                 =       Materials('Rhenium-Iridium alloy',              21000.0,  2300.0e6,   471.0e9, 2200.0,   48.0,   938.0,  145.0,  2500.0e6,   0.265,  7.25)
-Al_7075_T6              =       Materials('Aluminium 7075 T6',                  2770.0,   530.0e6,    72.0e9,  373.15,   130.0,  3.97,   929.0,  580.0e6,    0.335,  24.1)
-Ti6Al4V                 =       Materials('Tungsten & Aluminium alloy',         4428.0,   898.0e6,    115.0e9, 693.15,   6.7,    23.8,   570.0,  980.0e6,    0.370,  9.1)
-Haynes_188              =       Materials('Nickel Alloy',                       9010.0,   419.0e6,    244.0e9, 1423.0,   10.8,   30.6,   436.0,  953.0e6,    0.323,  12.6)
-Inc_X_750               =       Materials('Inconel-750, Nickel-Chromium Alloy', 8290.0,   763.0e6,    222.0e9, 1090.0,   12.4,   20.4,   480.0,  1140.0e6,   0.312,  14.0)
-Inc_600                 =       Materials('Inconel-600, Nickel-Chromium Alloy', 8470.0,   290.0e6,    206.0e9, 982.0,    15.9,   20.2,   480.0,  586.0e6,    0.302,  13.1)
-Inc_718                 =       Materials('Inconel-718, Nickel-Chromium Alloy', 8190.0,   1036.0e6,   211.0e9, 825.0,    11.4,   16.6,   458.0,  914.0e6,    0.302,  13.4)
-Inc_A_286               =       Materials('A-286_Nickel-Chromium Alloy',        7920.0,   7920.0e6,   201.0e9, 700.0,    23.9,   5.43,   430.0,  1160.0e6,   0.330,  13.7)
-Columbium_c103          =       Materials('Niobium (Colombium) - cold rolled',  8950.0,   730.0e6,    92.0e9,  1255.0,   44.0,   225.0,  350.0,  800.0e6,    0.390,   8.4)
-Copper_structural       =       Materials('Copper',                             8940.0,   40.0e6,     128.0e9, 573.0,    398.0,  5.60,   387.0,  160.0e6,    0.350,  16.9) 
-D6AC_Steel              =       Materials('D6AC Steel Alloy',                   7870.0,   1450.0e6,   210.0e9, 1180.0,   52.0,   1.12,   480.0,  2360.0e6,   0.295,  13.1)
-default                 =       Materials('default_coating',                    0.0,      0.0,        0.0,     0.0,      1,      0.0,    0.0,    0.0,        0.0,    0.0)
+Custom = Materials('Custom Material', 21000.0, 2300.0e6, 471.0e9, 2200.0, 48.0, 938.0)
+Rhenium                 =       Materials('Rhenium',                            21000.0,  2300.0e6,   471.0e9, 2200.0,   48.0,   938.0)
+Al_7075_T6              =       Materials('Aluminium 7075 T6',                  2810.0,   505.0e6,    72.0e9,  373.15,   130.0,  3.97)
+Ti6Al4V                 =       Materials('Tungsten & Aluminium alloy',         4428.0,   110.0e6,    114.0e9, 693.15,   6.7,    23.8)
+Haynes_188              =       Materials('Nickel Alloy',                       8980.0,   464.0e6,    244.0e9, 1423.0,   10.8,   30.6)
+Inc_X_750               =       Materials('Inconel-750, Nickel-Chromium Alloy', 8280.0,   850.0e6,    222.0e9, 1090.0,   12.0,   20.4)
+Inc_600                 =       Materials('Inconel-600, Nickel-Chromium Alloy', 8470.0,   290.0e6,    206.0e9, 982.0,    15.9,   20.2)
+Inc_718                 =       Materials('Inconel-718, Nickel-Chromium Alloy', 8190.0,   1036.0e6,   211.0e9, 825.0,    11.4,   16.6)
+Inc_A_286               =       Materials('A-286_Nickel-Chromium Alloy',        7920.0,   7920.0e6,   201.0e9, 700.0,    23.9,   5.43)
+Columbium_c103          =       Materials('Niobium (Colombium) - cold rolled',  8600.0,   550.0e6,    130.0e9, 1255.0,   0.54,   225.0)
+Copper_structural       =       Materials('Copper',                             8940.0,   40.0e6,     128.0e9, 573.0,    398.0,  5.60) 
+D6AC_Steel              =       Materials('D6AC Steel Alloy',                   7870.0,   145.0e6,    200.0e9, 774.0,     52.0,  1.12)
+default                 =       Materials('default_coating',                       0.0,       0.0,        0.0,   0.0,        1,     0)
 
 #Coating Materials:
-Coat_Custom             =       Materials('Carbon-Carbon Matrix coating',       1950.0,   0,          0,          2400.0,   37.4,   6.4,   2093.0,   0,   0,   18.0)
-Copper                  =       Materials('Copper coating',                     8940.0,   0,          0,          573.0,    390.0,  6.4,   388.0,    0,   0,   18.0)
-Narloy_Z                =       Materials('Copper Alloy Coating',               9130.0,   0,          0,          740.0,    290.0,  6.4,   388.0,    0,   0,   22.0)
-GRCop_84                =       Materials('GRPCop_84 Copper alloy coating',     8756.0,   0,          0,          1000.0,   351.0,  6.4,   388.0,    0,   0,   20.0)
-Silica                  =       Materials('Scilica Coating',                    1700.0,   0,          0,          1200.0,   0.55,   6.4,   1256.0,   0,   0,   20.0)
-Carbon                  =       Materials('Carbon-Carbon Matrix coating',       1950.0,   0,          0,          2400.0,   37.4,   6.4,   2093.0,   0,   0,   20.0)
+Coat_Custom             =       Materials('Carbon-Carbon Matrix coating',       1950.0,   0,          0,          2400.0,   37.4,   6.4)
+Copper                  =       Materials('Copper coating',                     8940.0,   0,          0,          573.0,    390.0,  6.4)
+Narloy_Z                =       Materials('Copper Alloy Coating',               9130.0,   0,          0,          740.0,    290.0,  6.4)
+GRCop_84                =       Materials('GRPCop_84 Copper alloy coating',     8756.0,   0,          0,          1000.0,   351.0,  6.4)
+Silica                  =       Materials('Scilica Coating',                    1700.0,   0,          0,          1200.0,   0.55,   6.4)
+Carbon                  =       Materials('Carbon-Carbon Matrix coating',       1950.0,   0,          0,          2400.0,   37.4,   6.4)
 
 
 ##Computing Mass nozzle: 
 #Nozzle Surface Fucntion:
-def Nozzle_mass(x,R,t,material):
+
+def Nozzle_mass(default, x,R,t,material):
     total_surf = 0
-    nozmass_error = 0
-    nozmass_warnings = 0
-
     for i in range(len(t)):
-        if t[i] < 0.001:
-            nozmass_warnings=nozmass_warnings|(1<<0)
+        if t[i] > default.t:
+            for i in range(len(x)-1):
+                total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*t[i+1]*R[i+1]
         else:
-            nozmass_warnings = nozmass_warnings & (~(1<<0))
-    
-    if material.density < 0:
-        nozmass_warnings=nozmass_warnings|(1<<1)
-    else:
-        nozmass_warnings = nozmass_warnings & (~(1<<1))
-
-    for i in range(len(x)-1):
-        if t[i] < 0.001:
-            total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*t[i]*R[i]
-        else:
-            total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*0.001*R[i]
+            for i in range(len(x)-1):
+                total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*1e-3*R[i+1]
+    #vol = total_dist*2*mth.pi
+    print(total_surf*2*mth.pi)
     NozzleMass = total_surf*2*mth.pi*material.density
+    return NozzleMass
 
-    if NozzleMass < 0:
-        nozmass_error=nozmass_error|(1<<0)
-        return 0, nozmass_error, nozmass_warnings
-    
-    return NozzleMass, nozmass_error, nozmass_warnings
+##Computing Chamber Mass:
+def Chamber_mass(ChambR,ChambL,Chambt,material_C):
+    ChamberMass = (2*mth.pi()*ChambR*ChambL*Chambt + 2*mth.pi()*ChambR**2*Chambt)*material_C.density
+    return ChamberMass
 
 class ReferenceEngine:
     def __init__(self, pc, thrust, arear, rt, mprop, rhoprop, FS, Material_NCG, Material_P, Material_V, mfrac_tube, mfrac_manifold, mfrac_jacket, mfrac_chamber, mfrac_pump, mfrac_valve, RefMass):
-        self.pc = pc #Combustion chamber pressure of the reference engine
-        self.thrust = thrust #Thrust of the reference engine
-        self.arear = arear #Area ratio 
-        self.rt = rt #Throat area
-        self.mprop = mprop #Mass flow rate
-        self.rhoprop = rhoprop #Density of the propellant
-        self.FS = FS #Material safety factor
-        self.Material_NCG = Material_NCG #Nozzle material
-        self.Material_P = Material_P #Turbopump material
-        self.Material_V = Material_V #Valve material
-        self.mfrac_tube = mfrac_tube #Mass fraction of regenerative nozzle tubes
-        self.mfrac_manifold = mfrac_manifold #Mass fraction of regenerative nozzle manifold
-        self.mfrac_jacket = mfrac_jacket #Mass fraction of regenerative nozzle jacket
-        self.mfrac_chamber = mfrac_chamber #Mass fraction of combustion chamber + gas generator(if applicable)
-        self.mfrac_pump = mfrac_pump #Mass fraction of turbopump
-        self.mfrac_valve = mfrac_valve #Mass fraction of valve
-        self.RefMass = RefMass #Total mass of the reference engine
+        self.pc = pc
+        self.thrust = thrust
+        self.arear = arear
+        self.rt = rt
+        self.mprop = mprop
+        self.rhoprop = rhoprop
+        self.FS = FS
+        self.Material_NCG = Material_NCG
+        self.Material_P = Material_P
+        self.Material_V = Material_V
+        self.mfrac_tube = mfrac_tube
+        self.mfrac_manifold = mfrac_manifold
+        self.mfrac_jacket = mfrac_jacket
+        self.mfrac_chamber = mfrac_chamber
+        self.mfrac_pump = mfrac_pump
+        self.mfrac_valve = mfrac_valve
+        self.RefMass = RefMass
 
 RL10    = ReferenceEngine(3.20e6, 7.34e4, 61.1,  0.076, 16.85, 351.91, 1.1, Inc_718, D6AC_Steel, D6AC_Steel, 0.0903, 0.2575, 0.0484, 0.2281, 0.3096, 0.0661, 138) #Expander Cycle Reference
-LE5     = ReferenceEngine(3.65e6, 1.03e5, 140.0, 0.068, 23.33, 343.83, 1.1, Inc_718, Al_7075_T6, Al_7075_T6, 0.1419, 0.0578, 0.1021, 0.2804, 0.3042, 0.1136, 255)#Gas Generator Cycle Reference #fix rhoprop
-SSME    = ReferenceEngine(2.04e7, 2.28e6, 77.5,  0.138, 512.6, 361.89, 1.2, Inc_718, D6AC_Steel, D6AC_Steel, 0.0907, 0.1984, 0.0737, 0.1955, 0.2763, 0.1654, 3177)#Stage Combustion Cycle Reference #fixrhoprop
+LE5     = ReferenceEngine(3.65e6, 1.03e5, 140.0, 0.068, 23.33, 5.5,    1.1, Inc_718, Al_7075_T6, Al_7075_T6, 0.1419, 0.0578, 0.1021, 0.2804, 0.3042, 0.1136, 255)#Gas Generator Cycle Reference #fix rhoprop
+SSME    = ReferenceEngine(2.04e7, 2.28e6, 77.5,  0.138, 512.6, 6,      1.2, Inc_718, D6AC_Steel, D6AC_Steel, 0.0907, 0.1984, 0.0737, 0.1955, 0.2763, 0.1654, 3177)#Stage Combustion Cycle Reference #fixrhoprop
+
+
+
 
 #Mass estimation function Nozzle Tubes:
-def Mass(Pc, material_N, material_V, arear, rt, mprop, FS, rhoprop, cycle):
+def Mass(Pc, material_N, material_P, material_V, arear, rt, mprop, FS, rhoprop, Ns): 
     
-    Mass_warnings = 0
-    Mass_error = 0
-
-    if Pc < 0:
-        Mass_warnings=Mass_warnings|(1<<0)
-    else:
-        Mass_warnings = Mass_warnings & (~(1<<0))
-    
-    if material_N.density < 0:
-        Mass_warnings=Mass_warnings|(1<<1)
-    else:
-        Mass_warnings = Mass_warnings & (~(1<<1))    
-    
-    if material_V.density < 0:
-        Mass_warnings=Mass_warnings|(1<<2)
-    else:
-        Mass_warnings = Mass_warnings & (~(1<<2)) 
-    
-    if arear < 0:
-        Mass_warnings=Mass_warnings|(1<<3)
-    else:
-        Mass_warnings = Mass_warnings & (~(1<<3)) 
-    
-    if rt < 0:
-        Mass_warnings=Mass_warnings|(1<<4)
-    else:
-        Mass_warnings = Mass_warnings & (~(1<<4)) 
-    
-    if mprop < 0:
-        Mass_warnings=Mass_warnings|(1<<5)
-    else:
-        Mass_warnings = Mass_warnings & (~(1<<5)) 
-    
-    if FS < 0:
-        Mass_warnings=Mass_warnings|(1<<6)
-    else:
-        Mass_warnings = Mass_warnings & (~(1<<7)) 
-    
-    if rhoprop < 0:
-        Mass_warnings=Mass_warnings|(1<<7)
-    else:
-        Mass_warnings = Mass_warnings & (~(1<<8)) 
-  
+    y= (31537*mth.sqrt(mprop))/(5172.15**(0.75))
 
     reference = RL10
 
-    if cycle == 'SC':
-        reference = SSME
-    elif cycle == 'GG':
-        reference == LE5
-    else:
-        reference == RL10
-
-
-    #Cooling Mass:
-    TubeMass = reference.mfrac_tube*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*(((material_N.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((arear/reference.arear)**2)*((rt/reference.rt)**2)) #Dimensionless Nozzle Tube Mass
-    ManifoldMass = reference.mfrac_manifold*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*((mprop/reference.mprop)**1)*((material_N.yieldstress_l/reference.Material_NCG.yieldstress_l)**(-1))*((rhoprop/reference.rhoprop)**(-1))*((rt/reference.rt)**2)) #Dimensionless Nozzle Manifold Mass
-
-    if (TubeMass + ManifoldMass) < 0:
-        Mass_error=Mass_error|(1<<0)
-        return 0, Mass_error,Mass_warnings
+    #Nozzle Mass:
+    TubeMass = reference.mfrac_tube*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*(((material_N.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((arear/reference.arear)**1)*((rt/reference.rt)**2)) #Dimensionless Nozzle Tube Mass
+    ManifoldMass = reference.mfrac_manifold*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*((mprop/reference.mprop)**1)*((material_N.yieldstress_l/reference.Material_NCG.yieldstress_l)**(-1))*((rhoprop/reference.rhoprop)**(-1))*((rt/reference.rt)**1)) #Dimensionless Nozzle Manifold Mass
+    #JacketMass = reference.mfrac_jacket*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*(((material_N.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((arear/reference.arear)**1.5)*((rt/reference.rt)**3))#Dimensionless Nozzle Jacket Mass
+    
+    
 
     #TurboPump Mass
-    #PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.15)*((material_P.density/reference.material_P.density)**1)*(((material_P.yieldstress_l/FS)/(reference.Material_p.yieldstress_l/reference.FS)*(-1)))*((mprop/reference.mprop)**0.9)*((rhoprop/reference.rhoprop)**(-0.45))*((Ns/Ns0)**(-0.6)))
-    PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.53)*((mprop/reference.mprop)**0.53)*(rhoprop/reference.rhoprop)**(-0.53)) #Dimensionless mass of turbopump (historic data method)
-    
-    if PumpMass < 0:
-        Mass_error=Mass_error|(1<<1)
-        return 0, Mass_error,Mass_warnings
-
+    PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.15)*((material_P.density/reference.material_P.density)**1)*(((material_P.yieldstress_l/FS)/(reference.Material_p.yieldstress_l/reference.FS)*(-1)))*((mprop/reference.mprop)**0.9)*((rhoprop/reference.rhoprop)**(-0.45))*((Ns/y)**(-0.6)))
+    #PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.53)*((mprop/reference.mprop)**0.53)*(rhoprop/reference.rhoprop)**(-0.53)) #Dimensionless mass of turbopump (historic data method)
 
     #Valves
     ValveMass = reference.mfrac_valve*(((Pc/reference.pc)**1.0)*((material_V.density/reference.Material_V.density)**1)*(((material_V.yieldstress_l/FS)/(reference.Material_V.yieldstress_l/reference.FS))**(-1))*((mprop/reference.mprop)**1)*((rhoprop/reference.rhoprop)**(-1)))#Dimensionless mass of Valves
     
-    if ValveMass < 0:
-        Mass_error=Mass_error|(1<<2)
-        return 0, Mass_error,Mass_warnings
-    
+
     #Total:
     Total_Mass = (ManifoldMass + TubeMass + PumpMass + ValveMass)*reference.RefMass 
-    return Total_Mass, Mass_error, Mass_warnings
 
+    return Total_Mass, ValveMass
 
-def RhoProp(O_prop, F_prop, OF):
-    rho_prop = 0
-    rho_prop = ((O_prop*F_prop)*(1+OF))/(F_prop*OF+O_prop)
-    return rho_prop
 
 
 ##Cost function 
-def Cost(m_engine,f1,f3,R,n,cycle):
-    TotalCost_MY = 0
-    cost_error = 0
-    cost_warning = 0
+def Cost(m_engine, R, n):
+    TotalCost = 0
+    lst = []
+    for i in range(len(R)):
+        f1  = 1.0
+        f2  = 0.27+1.075*R[i]**46.994
+        f3  = 1
+        f4  = -0.0553*mth.log(n) + 1.0011
+        a_m = 4.0
 
-    if (f1 < 0.4) or (f1 > 1.25):
-        cost_warning = cost_warning|(1<<0)
-    
-    if f3 < 0.6 or f3 > 1.3:
-        cost_warning = cost_warning|(1<<1)
+        C_D = 1.1*f1*f2*f3*m_engine**0.58
 
-    if R < 0.8:
-        cost_warning = cost_warning|(1<<2)
-    
-    if m_engine < 0:
-        cost_error = cost_error|(1<<0)
-        return 0, cost_warning, cost_error
-    
-    if (cycle < 0) or (cycle > 5):
-        cost_error = cost_error|(1<<1)
-        return 0, cost_warning, cost_error
+        F_E = a_m*f4*m_engine**0.46
 
-    if cycle == 5:
-        f2 = 0.25+1.1096*R**51.968
-    elif cycle == 4:
-        f2 = 0.27+1.0750*R**46.994
-    else:
-        f2 = 0.33+1.0769*R**51.360
+        TotalCost_MY = C_D + F_E
+        TotalCost = TotalCost_MY*200e3
+        lst.append(TotalCost)
+    return lst
 
-    f4  = -0.0553*mth.log(n) + 1.0011
-    C_D = 1.1*f1*f2*f3*162*m_engine**0.58
-    F_E = 5*f4*m_engine**0.46
-    TotalCost_MY = C_D + F_E
-
-    return TotalCost_MY, cost_warning, cost_error
+##Reuseability:
+def Reuseability(RA, Material, N_F):
+    E_f = mth.log(100/(100-RA))
+    E_T = 3.5(Material.yieldstress_l/Material.Emod)*N_F**(-0.12) + (E_f**0.6)*N_F**(-0.6)
+    return E_T
 
 
-
-
-
-
+# Mass = Mass_Regenerative(3.20e6,Inc_718,Inc_718,D6AC_Steel,61.1,0.076,16.85,1.1,351.91,'EX')
+# print(Mass)
 def RhoProp(O_prop, F_prop, OF):
         rho_prop = 0
         rho_prop = ((O_prop*F_prop)*(1+OF))/(F_prop*OF+O_prop)
         return rho_prop
-
-
-
-
-
-
-
-
-
-##Reuseability:
-#Thinning of the coolant pipe wall after 1 cycle
-def Reuseability(material, Twg_max, Twc_max, Twg_min, Twc_min, DT, H, Chanel_width, P_chamber, P_channel, mu, N):
-    Ti_max = (Twg_max + Twc_max)/2
-    T0_max = 0.35*Ti_max #The 0.35 comes from the assumption that the cooling channels are rectangular in shape. This needs to be changed for any other cross section. 
-    
-    Ti_min = (Twg_min + Twc_min)/2
-    T0_min = 0.35*Ti_min 
-    
-    DT_ep_pl2 = DT
-    l = Chanel_width
-    w = l
-    p = P_channel - P_chamber
-    Reuseability = 'Not Reuseable'
-
-    #Inelastic Strain:
-    ep_pl1 = (material.thr_exp*(Ti_max - T0_max) - (Ti_min - T0_min)) - (2*material.yieldstress_l/material.Emod)
-    ep_pl2 = ((material.thr_exp*DT_ep_pl2)**2)/(12*material.yieldstress_l*(1-mu)**2)
-    ep_1 = 2*(ep_pl1+ep_pl2)
-
-    #Deflection:
-    def1 = 2*((H/ep_1) - mth.sqrt(((H/ep_1)**2) - ((l/4)**2)))
-    def2 = (ep_1*p*l**2)/(4*H*material.yieldstress_l)
-    def_tot = def1 + def2
-
-    #Ligament Deformation:
-    t_N = (N*w*def_tot)/(l+w)
-    # t_N_min = (2*H*(l+w) - N*w*def_tot)/(l+w)
-    #t_N_max = (2*H*(l+w)**2 + N*w*l*def_tot)/(l+w)**2
-
-    # #Fatigue and Creep Rupture Damage: Funtion does not seem to work when creep is 
-    q = 0.2*((160e6 - material.yieldstress_l)/material.yieldstress_l)**(0.6)
-    # ep_c1avg = material.k*(T1 - T0)
-    # ep_c1 = ep_c1avg*(((q-1)/q)*((t_N_min/t_N_max) - 1))*((t_N_min/t_N_max)**((q-1)/q) - 1)**(-1)
-    # ep_c2 = ep_c1avg
-    # ep_c_tot = (2/mth.sqrt(3))*mth.sqrt((ep_c1**2 + ep_c1*ep_c2 + ep_c2**2))
-    
-    #Critical Thickness:
-    tcr = 2*H*(1-mth.e**(-q))
-
-    if t_N > tcr:
-        Reuseability = 'Not Reuseable after selected amount of cycles'
-    else:
-        Reuseability = 'Reuseable System'
-
-    return Reuseability
-
-
-
-

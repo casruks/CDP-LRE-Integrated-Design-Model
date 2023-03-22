@@ -15,36 +15,29 @@ def injector1(default, propellant, p_c, m, OF):
     m = mass flow toward injector; \n
     OF = mass ratio. \n
     '''
-    
+
     #Error & warning handling
     er = 0
     wr = 0
-    ## Error & warning codes
-        #Errors:
-        #01 - pc, m, or OF is less than or equal to zero.
-        #02 - v_iox, v_if, n_ox or n_f is less than or equal to zero.
-        #Warnings:
-        #01 - Injection velocities are > 100 m/s.
-        #02 - Droplet size of fuel or oxidizer droplet > 200 *10^{-6} m.                                                                          
 
-    #Default variables 
-    d_ox = default.d_ox             # 3.74 mm
-    d_f = default.d_f               # 3.74 mm
-    C_d = default.Cd                # 0 < Cd < 2
-    InjType = default.InjType        
-    mu_prop = default.mu_prop       # [lbm/(ft-s)], 1 lbm/(ft-s) = 1.4881639 Pa.s
-    sig_prop = default.sig_prop     # [dynes/cm], 1 dyn/cm = 1e-7 N/m 
-    rho_prop = default.rho_prop     # [lbm/ft3], 1 lbm/ft3 = 16.0185 kg/m3 
-    p_center = default.p_center     # 1
-    p_j = default.p_j               # 1
-    InjTypes = default.InjTypes     # ['like', 'unlike', 'pintle']
+    #Default variables
+    d_ox = default.d_ox
+    d_f = default.d_f
+    C_d = default.Cd
+    InjType = default.InjType
+    mu_prop = default.mu_prop    # [lbm/(ft-s)], 1 lbm/(ft-s) = 1.4881639 Pa.s
+    sig_prop = default.sig_prop  # [dynes/cm], 1 dyn/cm = 1e-7 N/m 
+    rho_prop = default.rho_prop  # [lbm/ft3], 1 lbm/ft3 = 16.0185 kg/m3 
+    p_center = default.p_center
+    p_j = default.p_j
+    InjTypes = default.InjTypes 
     
     #Propellant densities
     rho_ox = propellant.o_dens
     rho_f = propellant.f_dens_l  
 
     #Input sanitize
-    if p_c<=0 or m<=0 or OF<=0:   #error 0...1, p_c, m or OF <0.
+    if p_c<0 or m<0 or OF<0:   #error 0...1, p_c, m or OF <0.
         print('Error, p_c=', p_c,', m=', m,', OF=', OF)
         er = er|(1<<0)
         return 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, er, wr 
@@ -52,7 +45,8 @@ def injector1(default, propellant, p_c, m, OF):
     def Massflow(m, OF):
         m_ox = (OF/(OF+1.0))*m
         m_f = m - m_ox
-        return m_ox, m_f    
+        return m_ox, m_f
+     
     #! Maybe remove this and just replace it for eta_s alone, allow user to 
     #  change it accordingly.
     ## For throttled 0.2, for Unthrottled engines 0.3
@@ -62,19 +56,14 @@ def injector1(default, propellant, p_c, m, OF):
         eta_s = 0.2 #20-25% [Humble et al.]
     elif InjType == 'pintle':
         eta_s = 0.1 # [Humble et al.], [DARE, Sparrow]
-    
-    #else: (technically)
-    if default.dp_state == True:
-        eta_s = default.dp_user #user specified pressure drop
-
+        
     dp = eta_s * p_c
-
     v_iox = C_d * (2*dp/rho_ox)**0.5
     v_if = C_d * (2*dp/rho_f)**0.5
     m_ox, m_f = Massflow(m, OF)    
     n_ox = m_ox / (rho_ox * v_iox * (np.pi/4) * d_ox**2)
     n_f = m_f / (rho_f * v_if * (np.pi/4) * d_f**2) 
-    if n_f<=0 or n_ox<=0 or v_iox<=0 or v_if <=0:
+    if n_f<0 or n_ox<0 or v_iox<0 or v_if <0:
         er = er|(1<<1)
         print('Error, n_f =', n_f, 'n_ox =', n_ox, 'v_if =', v_if, 'v_iox =', v_iox)
         return 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, er, wr
@@ -91,13 +80,15 @@ def injector1(default, propellant, p_c, m, OF):
     
     if InjType == 'like':                
         K_prop = ((mu_prop*sig_prop/rho_prop)/(mu_wax*sig_wax/rho_wax))**0.25 # https://ntrs.nasa.gov/citations/19760023196     
+        
         # https://ntrs.nasa.gov/citations/19760023196
         d_j = d_f = d_ox             #orifice diameter
         v_j = (v_iox + v_if)/2.0    
         D_f = D_ox = (1.6e5*(v_j*3.28084)**(-1.0)*(p_center/p_j)**(-0.1)*(d_j*39.3701)**0.57*K_prop)*1e-6
         # print(D_f)
     else: #liquid - liquid   
-        K_prop = ((mu_prop*sig_prop/rho_prop)/(mu_wax*sig_wax/rho_wax))**0.25 # https://ntrs.nasa.gov/citations/19760023196    
+        K_prop = ((mu_prop*sig_prop/rho_prop)/(mu_wax*sig_wax/rho_wax))**0.25 # https://ntrs.nasa.gov/citations/19760023196
+                
         # unlike doublet https://ntrs.nasa.gov/citations/19720010642
         # tested for d_f <= d_ox
         P_D = (rho_f*v_if**2.0)/(rho_ox*v_iox**2.0)     #momentum ratio
@@ -109,18 +100,13 @@ def injector1(default, propellant, p_c, m, OF):
     A_ox = n_ox*((np.pi/4) * d_ox**2)  
     A_est = (A_f + A_ox) * 6/(np.pi*(3)**0.5)   #Estimated effective area of hexagonal circle packing eff = pi * sqrt(3)/6
     #print('A_f =', A_f, 'A_ox =', A_ox)
-    if D_f> 200e-6:
-        print('Warning, D_f=,', D_f*1e6,'[1E-6m]')
-        D_f = 200e-6
-        wr = wr|(1<<1)
-    elif D_ox > 200e-6:
-        print('Warning, D_ox=,', D_ox*1e6, '[1E-6m]')
-        D_ox = 200e-6
+    if D_f or D_ox > 200e-6:
+        print('Warning, D_f=,', D_f*1e6,'[1E-6m] D_ox=,', D_ox*1e6, '[1E-6m]')
         wr = wr|(1<<1)
     else:
         wr = wr&(~(1<<1))
 
-    return v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, A_est, er, wr  
+    return v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, P_D, A_est, er, wr 
            
 def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
     '''
@@ -129,25 +115,16 @@ def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
     ''' 
     er = 0
     wr = 0
-    #Error & warning handling 
-    er = 0
-    wr = 0
-    ## Error & warning codes
-        #Errors:
-        #01 - Injection pressure is given lower or equal to zero.
-        #Warnings:
-        #01 - Pressure drop for the oxidizer is less than req pressure drop for stability.
-        #02 - Pressure drop for the fuel is less than req pressure drop for stability.                                                                            
 
     #Input sanitize
-    if p_inj <= 0:
+    if p_inj < 0:
         er = er|(1<<0)
         print('Error, p_inj=', p_inj)
-        return 0, 0, 0, er, wr
+        return 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, er, wr
 
     #Default variables
-    C_d = default.Cd                # 0 < Cd < 2
-    InjType = default.InjType       
+    C_d = default.Cd
+    InjType = default.InjType
     
     #Propellant densities
     rho_ox = propellant.o_dens
@@ -161,72 +138,25 @@ def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
     
     if (dp_ox/p_c) < eta_s:
         wr = wr|(1<<0)
-        print('dp_ox <', eta_s,' p_c!')
+        print('dp_ox (', InjType,') <', eta_s,' p_c!')
     else:
         wr = wr&(~(1<<0))
 
     if (dp_f/p_c) < eta_s:
         wr = wr|(1<<1)
-        print('dp_f <', eta_s,' p_c!')
+        print('dp_f (', InjType,') <', eta_s,' p_c!')
     else:
         wr = wr&(~(1<<1))
 
     return p_c, dp_ox, dp_f, er, wr
 
-#########################################################################################################
 def validateInj():
-    #SSME data
-    p_c = 300e5 
-    OF = 359.43/102.42
-    m = ((OF+1)/(OF))*359.43
-    p_inj = 421.3e5
-    #Default.dp_state = True
-    #Default.dp_user = 0.2
-    #Default.dp_user = (421.3e5 - 207.26e5)/207.26e5
-    #Propellant.f_dens_l = 804.59
-    print('1) dp should be:', (p_inj-p_c)*1e-5, '[bar]')
-    v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, A_est, er, wr  = injector1(Default, Propellant, p_c, m, OF)
-    print('2)', v_iox, v_if, D_f, D_ox, 'dp=',dp*1e-5, eta_s, m_ox, m_f, n_ox, n_f, 'A_est =',A_est, er, wr)
-              
-    print('3)', injector2(Default, Propellant, v_iox, v_if, p_inj, eta_s))
-    print('4) D=', 2*(A_est/np.pi)**0.5)
+    p_c = 180e5
+    C_d = 0.7
+    m = 176
+    OF = 6
+    v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, P_D, A_est, er, wr  = injector1(Default, Propellant, p_c, m, OF)
+    print(v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, P_D, A_est, er, wr)
+    p_inj = 100e5
+    print(injector2(Default, Propellant, v_iox, v_if, p_inj, eta_s))
 #validateInj()
-
-from datetime import date
-import csv 
-def verification():
-    inj1lst = ['v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, A_est, er, wr']
-    inj2lst = ['p_c, dp_ox, dp_f, er, wr']
-
-    with open('Verification_inj1_'+str(date.today())+'.csv', mode='w', newline='') as file:
-        writer = csv.writer(file)
-        #writer.writerow(inj1lst)
-        writer.writerows(map(lambda x: [x], inj1lst))
-    with open('Verification_inj2_'+str(date.today())+'.csv', mode='w', newline='') as file:
-        writer = csv.writer(file)
-        #writer.writerow(inj2lst)
-        writer.writerows(map(lambda x: [x], inj2lst))
-
-    #a**4 sweeps
-    a = 10
-    lst_pc = np.linspace(1e5, 500e5, a)
-    lst_m = np.linspace(1, 800, a)
-    lst_OF = np.linspace(0.1, 10, a)
-    lst_p_inj = np.linspace(1e5, 100e6, a)
-
-    for p_c in lst_pc:
-        for m in lst_m:
-            for OF in lst_OF:
-                for p_inj in lst_p_inj:
-                    v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, A_est, er, wr = injector1(Default, Propellant, p_c, m, OF)
-                    inj1lst.append(injector1(Default, Propellant, p_c, m, OF))
-                    inj2lst.append(injector2(Default, Propellant, v_iox, v_if, p_inj, eta_s))
-    with open('Verification_inj1_'+str(date.today())+'.csv', mode='w', newline='') as file:
-        writer = csv.writer(file)
-        #writer.writerow(inj1lst)
-        writer.writerows(map(lambda x: [x], inj1lst))
-    with open('Verification_inj2_'+str(date.today())+'.csv', mode='w', newline='') as file:
-        writer = csv.writer(file)
-        #writer.writerow(inj2lst)
-        writer.writerows(map(lambda x: [x], inj2lst))
-#verification()

@@ -52,10 +52,6 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
     errors=0
     warnings=0
 
-    # Losses due to divergent part in conical nozzle
-    if Nozzle_type==0:
-        eps_loss=0.5*(1-mth.cos(theta_conical))
-        F=F_tar/(1-eps_loss);
     
     # Chamber pressure
     if Pc>300:
@@ -86,6 +82,11 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
     elif warnings & (1<<3):
         warnings=warnings & (~(1<<3));
     
+
+    # Losses due to divergent part in conical nozzle
+    if Nozzle_type==0:
+        eps_loss=0.5*(1-mth.cos(theta_conical))
+        F=F_tar/(1-eps_loss);
     
     if eps_loss>=1:
         errors=errors|(1<<7)
