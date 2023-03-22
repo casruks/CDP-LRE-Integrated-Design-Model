@@ -187,6 +187,7 @@ class Propellant:
         ]  # for shomate equation
         self.heatingvalue = 119.96 * 10**6  # for the fuel only!
         self.molarmass = 2.016  # g/mol
+        self.enthalpy_298_f = 0 #J/kh
         # Propellant
 
     gama = 1.4
@@ -239,6 +240,7 @@ class Propellant:
         self.f_nist_enthalpy_coef = []  # for shomate equation
         self.heatingvalue = -43100  # for the fuel only!
         self.molarmass = 175  # g/mol
+        self.enthalpy_298_f = 0.137899*10**6#J/kh
 
     def Ethanol(self):
         self.Fuel_name = "Ethanol"  # Fuel name for rocketCEA
@@ -254,6 +256,7 @@ class Propellant:
         self.f_nist_enthalpy_coef = []  # for shomate equation
         self.heatingvalue = -29672  # for the fuel only!
         self.molarmass = 46.07
+        self.enthalpy_298_f = 5.01766*10**6#J/kh
 
     def UDMH(self):
         self.Fuel_name = "UDMH"  # Fuel name for rocketCEA
@@ -273,6 +276,7 @@ class Propellant:
         self.f_nist_enthalpy_coef = []  # for shomate equation
         self.heatingvalue = -32928  # for the fuel only!
         self.molarmass = 60.1
+        self.enthalpy_298_f = 0.886280*10**6#J/kh
 
     def methane(self):
         self.Fuel_name = "Methane"  # Fuel name for rocketCEA
@@ -299,6 +303,7 @@ class Propellant:
         ]  # for shomate equation
         self.heatingvalue = -55511  # for the fuel only!
         self.molarmass = 16.04  # g/mol
+        self.enthalpy_298_f = 4.56*10**6#J/kh
 
     def NTO(self):
         self.Ox_name = "NTO"  # Oxidizer name for rocketCEA
@@ -321,6 +326,7 @@ class Propellant:
         ]  # for shomate equation
         self.omiu = 393 * 10 ** (-6)
         self.molarmass = 92.010  # g/mol
+        self.enthalpy_298_f = 1.036*10**6 #J/kh
 
 
 # Data class
