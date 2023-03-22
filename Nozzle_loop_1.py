@@ -56,11 +56,11 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
     # Chamber pressure
     if Pc>300:
         if (warnings & (1<<0))==False:
-            warnings=warnings|(1<<0);
-    elif warnings & (1<<0):
-        warnings=warnings & (~(1<<0));
+            warnings=warnings|(1<<0);  
+    elif warnings & (1<<0):           
+        warnings=warnings & (~(1<<0)); 
     if Pc<=Pamb:
-        errors=errors|(1<<0)
+        errors=errors|(1<<0)    
         return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
     
     # Angles
@@ -82,21 +82,16 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
     elif warnings & (1<<3):
         warnings=warnings & (~(1<<3));
     
-
-    # Losses due to divergent part in conical nozzle
     if Nozzle_type==0:
-        eps_loss=0.5*(1-mth.cos(theta_conical))
-        F=F_tar/(1-eps_loss);
+        if eps_loss>=1:
+            errors=errors|(1<<7)
+            return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
     
-    if eps_loss>=1:
-        errors=errors|(1<<7)
-        return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
-    
-    if eps_loss>0.1:
-        if (warnings & (1<<5))==False:
-            warnings=warnings|(1<<5);
-    elif warnings & (1<<5):
-        warnings=warnings & (~(1<<5));
+        if eps_loss>0.1:
+            if (warnings & (1<<5))==False:
+                warnings=warnings|(1<<5);
+        elif warnings & (1<<5):
+            warnings=warnings & (~(1<<5));
     
     if MR==0:
         MR_1=0.01
@@ -143,7 +138,7 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
 
     while v_eff<0 or variation>toll_F_obj:
 
-        eps_max=Ae_max/At # Maximum expansion ratio with this throat area
+        eps_max=abs(Ae_max/At) # Maximum expansion ratio with this throat area
 
         if eps_max>eps_m:
             eps_max=eps_m;
@@ -154,14 +149,14 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
         if Pe_max>Pamb or eps_max==eps_m:
             difference=0.001
             Pe=Pe_max
-            Ae=At*eps_max; #In this case the maximum exit area cannot reach adapted conditions and we will simply take that
+            Ae=abs(At*eps_max); #In this case the maximum exit area cannot reach adapted conditions and we will simply take that
         else:
             difference=0.1
-            Ae_1=At+0.001; # In this case we enter the loop and start the iteration with Minimum exit area with this throat area
+            Ae_1=abs(At)+0.001; # In this case we enter the loop and start the iteration with Minimum exit area with this throat area
         
         while difference>toll_P_adapted:
 
-            eps_1= Ae_1/At # First expansion ratio 
+            eps_1= abs(Ae_1/At) # First expansion ratio 
             
             Pratio_1=ispObj.get_PcOvPe(Pc=Pc,MR=MR,eps=eps_1,frozen=frozen_state,frozenAtThroat=frozen_state)
             Pe_1=Pc/Pratio_1 # Exit pressure 1
@@ -181,11 +176,12 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
                 Ae=Ae_1 # Finish iteration if we have reached the convergence
                 Pe=Pe_1;
             
-        eps_actual=Ae/At;
+        eps_actual=abs(Ae/At);
         
         # Divergence losses in case of a bell nozzle:
         if Nozzle_type==1:
-            R_t=mth.sqrt(At/mth.pi)
+            
+            R_t=mth.sqrt(abs(At)/mth.pi)
             ye=mth.sqrt(eps_actual)*R_t
             xp=Ru_bell*R_t*mth.sin(Theta_bell)
             yp=(1+Ru_bell)*R_t-Ru_bell*R_t*mth.cos(Theta_bell)
@@ -216,16 +212,17 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
 
         if variation>toll_F_obj: # If we have to iterate again, we change the throat area
             mp2=m_p_it*(F/F_it);
-            At=c_star*mp2/(Pc*100000)
-            if At<=0:
-                errors=errors|(1<<10)
-                return 0,0,0,0,0,0,0,0,0,0,0,errors
+            At=abs(c_star*mp2/(Pc*100000))
+            
     
         it=it+1;
         if it>Max_iterations_mass_flow:
             break;
         v_eff=v_eff_it;
     
+    if At<=0:
+        errors=errors|(1<<10)
+        return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
     m_p=m_p_it # Propellant mass flow
     eps=Ae/At # Expansion ratio
     Isp=Isp_it # Isp value
@@ -284,10 +281,10 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
         errors=errors|(1<<6)
         return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
 
-    print('Ae =', Ae, 'm2') 
-    print('De =', (4*Ae/mth.pi)**0.5)
-    print('At=', At, 'm2')
-    print('Dt =', (4*At/mth.pi)**0.5)
+    #print('Ae =', Ae, 'm2') 
+    #print('De =', (4*Ae/mth.pi)**0.5)
+    #print('At=', At, 'm2')
+    #print('Dt =', (4*At/mth.pi)**0.5)
     return m_p,Tc,MR,At,eps,Isp[0]*(1-eps_loss),rho_c,cp_c,mu_c,k_c,Pr_c,errors,warnings
 
 
