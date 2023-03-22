@@ -214,5 +214,3 @@ def Reuseability(material, Twg_max, Twc_max, Twg_min, Twc_min, DT, H, Chanel_wid
     return ep_1
 
 
-
-print(Reuseability(Rhenium,1000,999,1000,999,10,0.198,0.230,20e6,21e6,1))
