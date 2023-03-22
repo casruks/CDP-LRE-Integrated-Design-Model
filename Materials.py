@@ -11,7 +11,7 @@ class Materials:
         self.k = k #Thermal Conductivity of the Material in [W/m*K]
         self.cost = cost #Cost per kilogram [Eur/kg] 
         self.heat_cap = heat_cap #Heat capacity [J/kg*K]
-        self.ultstress = ultstress #Ultimate Tensile Strength [Pa]
+        self.ulstress = ultstress #Ultimate Tensile Strength [Pa]
         self.mu = mu #Poisson Ratio [dimensionless]  
         self.thr_exp = thr_exp  #Coefficient of Thermal Expansion [mm/m*K]
        
@@ -166,51 +166,45 @@ def RhoProp(O_prop, F_prop, OF):
         rho_prop = ((O_prop*F_prop)*(1+OF))/(F_prop*OF+O_prop)
         return rho_prop
 
-##Reuseability:
-#Thinning of the coolant pipe wall after 1 cycle
-def Reuseability(material, Twg_max, Twc_max, Twg_min, Twc_min, DT, H, Chanel_width, P_chamber, P_channel, N):
-    Ti_max = (Twg_max + Twc_max)/2
-    T0_max = 0.35*Ti_max #The 0.35 comes from the assumption that the cooling channels are rectangular in shape. This needs to be changed for any other cross section. 
+##Reuseability: Prediction of low cycle fatigue life of the thrust chamber
+def Reuseability(material, sigma_T, Twg, Twc, H, l, p):
     
-    Ti_min = (Twg_min + Twc_min)/2
-    T0_min = 0.35*Ti_min 
-    
-    DT_ep_pl2 = DT
-    l = Chanel_width
+    ReuseabilityError = 0
+    ReuseabilityWarning = 0
+
+    DT = Twg - Twc #Twg = Temperature on the gas side of the chamber, Twc = Temperature on the coolant channel wall temperature
+
+    if Twg < Twc:
+        ReuseabilityError == ReuseabilityError|(1<<0)
+        return 0,ReuseabilityError,ReuseabilityWarning
+
     w = l
-    p = P_channel - P_chamber
-    Reuseability = 'Not Reuseable'
-
+    
     #Inelastic Strain:
-    ep_pl1 = (material.thr_exp*(Ti_max - T0_max) - (Ti_min - T0_min)) - (2*material.yieldstress_l/material.Emod)
-    ep_pl2 = ((material.thr_exp*DT_ep_pl2)**2)/(12*material.yieldstress_l*(1-material.mu)**2)
-    ep_1 = 2*(ep_pl1+ep_pl2)
+    if sigma_T > material.yieldstress_l:
+        ep_pl1 =  (sigma_T - material.yieldstress_l)/material.Emod
+    else:
+        ep_pl1 == 0
+        ReuseabilityWarning = ReuseabilityWarning|(1<<0)
+    
+    ep_pl2 = (material.Emod*(material.thr_exp*DT)**2)/(12*material.yieldstress_l*(1-material.mu)**2)
+    ep_1 = (ep_pl1+ep_pl2)
 
-    #Deflection:
-    # def1 = 2*((H/ep_1) - mth.sqrt(((H/ep_1)**2) - ((l/4)**2)))
-    # def2 = (ep_1*p*l**2)/(4*H*material.yieldstress_l)
-    # def_tot = def1 + def2
+    # Deflection:
+    def1 = 2*((H/ep_1) - mth.sqrt(((H/ep_1)**2) - ((l/4)**2)))
+    def2 = (ep_1*p*l**2)/(4*H*material.yieldstress_l)
+    def_tot = def1+def2
 
     #Ligament Deformation:
     # t_N = (N*w*def_tot)/(l+w)
     # t_N_min = (2*H*(l+w) - N*w*def_tot)/(l+w)
-    #t_N_max = (2*H*(l+w)**2 + N*w*l*def_tot)/(l+w)**2
-
-    # #Fatigue and Creep Rupture Damage: Funtion does not seem to work when creep is 
-    # q = 0.2*((160e6 - material.yieldstress_l)/material.yieldstress_l)**(0.6)
-    # ep_c1avg = material.k*(T1 - T0)
-    # ep_c1 = ep_c1avg*(((q-1)/q)*((t_N_min/t_N_max) - 1))*((t_N_min/t_N_max)**((q-1)/q) - 1)**(-1)
-    # ep_c2 = ep_c1avg
-    # ep_c_tot = (2/mth.sqrt(3))*mth.sqrt((ep_c1**2 + ep_c1*ep_c2 + ep_c2**2))
-    
-    #Critical Thickness:
-    # tcr = 2*H*(1-mth.e**(-q))
-
-    # if t_N > tcr:
-    #     Reuseability = 'Not Reuseable after selected amount of cycles'
-    # else:
-    #     Reuseability = 'Reuseable System'
-
-    return ep_1
+    # t_N_max = (2*H*(l+w)**2 + N*w*l*def_tot)/(l+w)**2
 
 
+    # #Critical Thickness:
+    q = material.ultstress/material.yieldstress_l
+    tcr = 2*H*(1-mth.e**(-q))
+
+    # #Instability life:
+    Nf = (tcr*(l+w))/(def_tot*w) 
+    return Nf, ReuseabilityError, ReuseabilityWarning
