@@ -40,37 +40,7 @@ Silica                  =       Materials('Scilica Coating',                    
 Carbon                  =       Materials('Carbon-Carbon Matrix coating',       1950.0,   0,          0,          2400.0,   37.4,   6.4,   2093.0,   0,   0,   20.0)
 
 
-##Computing Mass nozzle: 
-#Nozzle Surface Fucntion:
-def Nozzle_mass(x,R,t,material):
-    total_surf = 0
-    nozmass_error = 0
-    nozmass_warnings = 0
-
-    for i in range(len(t)):
-        if t[i] < 0.001:
-            nozmass_warnings=nozmass_warnings|(1<<0)
-        else:
-            nozmass_warnings = nozmass_warnings & (~(1<<0))
-    
-    if material.density < 0:
-        nozmass_warnings=nozmass_warnings|(1<<1)
-    else:
-        nozmass_warnings = nozmass_warnings & (~(1<<1))
-
-    for i in range(len(x)-1):
-        if t[i] < 0.001:
-            total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*t[i]*R[i]
-        else:
-            total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*0.001*R[i]
-    NozzleMass = total_surf*2*mth.pi*material.density
-
-    if NozzleMass < 0:
-        nozmass_error=nozmass_error|(1<<0)
-        return 0, nozmass_error, nozmass_warnings
-    
-    return NozzleMass, nozmass_error, nozmass_warnings
-
+##Computing Mass nozzle:
 class ReferenceEngine:
     def __init__(self, pc, thrust, arear, rt, mprop, rhoprop, FS, Material_NCG, Material_P, Material_V, mfrac_tube, mfrac_manifold, mfrac_jacket, mfrac_chamber, mfrac_pump, mfrac_valve, RefMass):
         self.pc = pc #Combustion chamber pressure of the reference engine
@@ -96,68 +66,46 @@ LE5     = ReferenceEngine(3.65e6, 1.03e5, 140.0, 0.068, 23.33, 343.83, 1.1, Inc_
 SSME    = ReferenceEngine(2.04e7, 2.28e6, 77.5,  0.138, 512.6, 361.89, 1.2, Inc_718, D6AC_Steel, D6AC_Steel, 0.0907, 0.1984, 0.0737, 0.1955, 0.2763, 0.1654, 3177)#Stage Combustion Cycle Reference #fixrhoprop
 
 #Mass estimation function Nozzle Tubes:
-def Mass(Pc, material_N, material_V, arear, rt, mprop, FS, rhoprop, cycle):
+def Mass(Pc, material_N, material_V, arear, rt, mprop, FS, rhoprop, cycle, x, R, t):
     
+    total_surf = 0
     Mass_warnings = 0
     Mass_error = 0
 
-    if Pc < 0:
-        Mass_warnings=Mass_warnings|(1<<0)
-    else:
-        Mass_warnings = Mass_warnings & (~(1<<0))
-    
-    if material_N.density < 0:
-        Mass_warnings=Mass_warnings|(1<<1)
-    else:
-        Mass_warnings = Mass_warnings & (~(1<<1))    
-    
-    if material_V.density < 0:
-        Mass_warnings=Mass_warnings|(1<<2)
-    else:
-        Mass_warnings = Mass_warnings & (~(1<<2)) 
-    
-    if arear < 0:
-        Mass_warnings=Mass_warnings|(1<<3)
-    else:
-        Mass_warnings = Mass_warnings & (~(1<<3)) 
-    
-    if rt < 0:
-        Mass_warnings=Mass_warnings|(1<<4)
-    else:
-        Mass_warnings = Mass_warnings & (~(1<<4)) 
-    
-    if mprop < 0:
-        Mass_warnings=Mass_warnings|(1<<5)
-    else:
-        Mass_warnings = Mass_warnings & (~(1<<5)) 
-    
-    if FS < 0:
-        Mass_warnings=Mass_warnings|(1<<6)
-    else:
-        Mass_warnings = Mass_warnings & (~(1<<7)) 
-    
-    if rhoprop < 0:
-        Mass_warnings=Mass_warnings|(1<<7)
-    else:
-        Mass_warnings = Mass_warnings & (~(1<<8)) 
-  
-
     reference = RL10
 
-    if cycle == 'SC':
+    if cycle == 3:
         reference = SSME
-    elif cycle == 'GG':
+    elif cycle == 2:
         reference == LE5
     else:
         reference == RL10
 
+    #Warnings:
+    for i in range(len(t)):
+        if t[i] < 0.001:
+            Mass_warnings=Mass_warnings|(1<<0)
+        else:
+            Mass_warnings = Mass_warnings & (~(1<<0))
 
+    #Nozzle Mass:
+    for i in range(len(x)-1):
+        if t[i] < 0.001:
+            total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*t[i]*R[i]
+        else:
+            total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*0.001*R[i]
+    
+    NozzleMass = total_surf*2*mth.pi*material_N.density
+
+    if NozzleMass < 0:
+        Mass_error=Mass_error|(1<<0)
+    
     #Cooling Mass:
     TubeMass = reference.mfrac_tube*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*(((material_N.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((arear/reference.arear)**2)*((rt/reference.rt)**2)) #Dimensionless Nozzle Tube Mass
     ManifoldMass = reference.mfrac_manifold*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*((mprop/reference.mprop)**1)*((material_N.yieldstress_l/reference.Material_NCG.yieldstress_l)**(-1))*((rhoprop/reference.rhoprop)**(-1))*((rt/reference.rt)**2)) #Dimensionless Nozzle Manifold Mass
 
     if (TubeMass + ManifoldMass) < 0:
-        Mass_error=Mass_error|(1<<0)
+        Mass_error=Mass_error|(1<<1)
         return 0, Mass_error,Mass_warnings
 
     #TurboPump Mass
@@ -165,7 +113,7 @@ def Mass(Pc, material_N, material_V, arear, rt, mprop, FS, rhoprop, cycle):
     PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.53)*((mprop/reference.mprop)**0.53)*(rhoprop/reference.rhoprop)**(-0.53)) #Dimensionless mass of turbopump (historic data method)
     
     if PumpMass < 0:
-        Mass_error=Mass_error|(1<<1)
+        Mass_error=Mass_error|(1<<2)
         return 0, Mass_error,Mass_warnings
 
 
@@ -173,11 +121,11 @@ def Mass(Pc, material_N, material_V, arear, rt, mprop, FS, rhoprop, cycle):
     ValveMass = reference.mfrac_valve*(((Pc/reference.pc)**1.0)*((material_V.density/reference.Material_V.density)**1)*(((material_V.yieldstress_l/FS)/(reference.Material_V.yieldstress_l/reference.FS))**(-1))*((mprop/reference.mprop)**1)*((rhoprop/reference.rhoprop)**(-1)))#Dimensionless mass of Valves
     
     if ValveMass < 0:
-        Mass_error=Mass_error|(1<<2)
+        Mass_error=Mass_error|(1<<3)
         return 0, Mass_error,Mass_warnings
     
     #Total:
-    Total_Mass = (ManifoldMass + TubeMass + PumpMass + ValveMass)*reference.RefMass 
+    Total_Mass = (ManifoldMass + TubeMass + PumpMass + ValveMass)*reference.RefMass + NozzleMass
     return Total_Mass, Mass_error, Mass_warnings
 
 
@@ -193,25 +141,8 @@ def Cost(m_engine,f1,f3,R,n,cycle):
     cost_error = 0
     cost_warning = 0
 
-    if (f1 < 0.4) or (f1 > 1.25):
-        cost_warning = cost_warning|(1<<0)
-    
-    if f3 < 0.6 or f3 > 1.3:
-        cost_warning = cost_warning|(1<<1)
-
     if R < 0.8:
-        cost_warning = cost_warning|(1<<2)
-    
-    if n > 10:
-        cost_warning = cost_warning|(1<<3)
-    
-    if m_engine < 0:
-        cost_error = cost_error|(1<<0)
-        return 0, cost_warning, cost_error
-    
-    if (cycle < 0) or (cycle > 5):
-        cost_error = cost_error|(1<<1)
-        return 0, cost_warning, cost_error
+        cost_warning = cost_warning|(1<<0)
 
     if cycle == 5:
         f2 = 0.25+1.1096*R**51.968
@@ -225,25 +156,15 @@ def Cost(m_engine,f1,f3,R,n,cycle):
     F_E = 5*f4*m_engine**0.46
     TotalCost_MY = C_D + F_E
 
+    if TotalCost_MY < 0:
+        cost_error = cost_error|(1<<0)
+        return 0, cost_warning, cost_error
     return TotalCost_MY, cost_warning, cost_error
-
-
-
-
-
 
 def RhoProp(O_prop, F_prop, OF):
         rho_prop = 0
         rho_prop = ((O_prop*F_prop)*(1+OF))/(F_prop*OF+O_prop)
         return rho_prop
-
-
-
-
-
-
-
-
 
 ##Reuseability:
 #Thinning of the coolant pipe wall after 1 cycle
