@@ -344,7 +344,6 @@ def Main(d : aux.Data):
     
     #Compute Mass:
     ChamberMass = Comb.CombustionChamber(p_new, d[-1].At, prop, Ms.D6AC_Steel, default, d[-1].v_if, d[-1].v_iox, d[-1].Tc, d[-1].O_F, 1,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est)[5]
-    IgnitorMass, mfuel, mox, wr = Ign.Igniters(d[-1].m_nozz,prop,default,d[-1].Tc,d[-1].O_F,default.type)
     #Inputs for Ms.Mass
     ## chamber pressure
     ##nozzle material from aux
@@ -360,7 +359,7 @@ def Main(d : aux.Data):
     ##Density of the oxidizer
     ##Density of the Fuel
     ##Oxidizer to Fuel Ratio
-    Mass = ChamberMass + IgnitorMass + Ms.Mass(p_new,aux.Default.noz_mat_select,aux.Default.valv_mat_select,d[-1].Eps,d[-1].A_t, d[-1].m_nozz,aux.Default.Safety_factor,x_noz,y_noz,t_noz,prop.o_dens,prop.f_dens_l,aux.Data.O_F)
+    Mass = ChamberMass + Ign_propellant_mass + Ms.Mass(p_new,aux.Default.noz_mat_select,aux.Default.valv_mat_select,d[-1].Eps,d[-1].A_t, d[-1].m_nozz,aux.Default.Safety_factor,x_noz,y_noz,t_noz,prop.o_dens,prop.f_dens_l,aux.Data.O_F)
     #Output:
     ##Total Mass of the engine
     
