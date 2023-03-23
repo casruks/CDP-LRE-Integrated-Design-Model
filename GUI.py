@@ -56,11 +56,14 @@ class MainWindow(QMainWindow):
         self.line_par_fang.editingFinished.connect(self.checkParAngf);  self.checkParAngf()
         self.line_curv_conv.editingFinished.connect(self.checkCurvConv);  self.checkCurvConv()
         self.line_curv_div.editingFinished.connect(self.checkCurvDiv);  self.checkCurvDiv()
+        self.line_SF_nozz.editingFinished.connect(self.checkSFNozz); self.checkSFNozz()
 
         #Combustion chamber
         self.line_SF.editingFinished.connect(self.checkSF);  self.checkSF()
         self.line_drop_ratio.editingFinished.connect(self.checkDropRat); self.checkDropRat()
         self.line_kloads.editingFinished.connect(self.checkKloads); self.checkKloads()
+        self.line_conv_rat_min.editingFinished.connect(self.checkConvRatMin); self.checkConvRatMin()
+        self.line_conv_rat_max.editingFinished.connect(self.checkConvRatMax); self.checkConvRatMax()
 
         #Turbo
         self.cycle_changed(0)
@@ -98,12 +101,25 @@ class MainWindow(QMainWindow):
         self.line_E_nozz.editingFinished.connect(self.checkENozz); self.checkENozz()
         self.line_k_nozz.editingFinished.connect(self.checkKNozz); self.checkKNozz()
         self.line_cost_nozz.editingFinished.connect(self.checkCostNozz); self.checkCostNozz()
+        self.line_heat_nozz.editingFinished.connect(self.checkHeatNozz); self.checkHeatNozz()
+        self.line_ult_nozz.editingFinished.connect(self.checkUltNozz); self.checkUltNozz()
+        self.line_mu_nozz.editingFinished.connect(self.checkMuNozz); self.checkMuNozz()
+        self.line_alf_nozz.editingFinished.connect(self.checkAlfNozz); self.checkAlfNozz()
         self.line_dens_cham.editingFinished.connect(self.checkDensCham); self.checkDensCham()
         self.line_yield_cham.editingFinished.connect(self.checkYieldCham); self.checkYieldCham()
         self.line_OpT_cham.editingFinished.connect(self.checkOpTCham); self.checkOpTCham()
         self.line_E_cham.editingFinished.connect(self.checkECham); self.checkECham()
         self.line_k_cham.editingFinished.connect(self.checkKCham); self.checkKCham()
         self.line_cost_cham.editingFinished.connect(self.checkCostCham); self.checkCostCham()
+        self.line_heat_cham.editingFinished.connect(self.checkHeatCham); self.checkHeatCham()
+        self.line_ult_cham.editingFinished.connect(self.checkUltCham); self.checkUltCham()
+        self.line_mu_cham.editingFinished.connect(self.checkMuCham); self.checkMuCham()
+        self.line_alf_cham.editingFinished.connect(self.checkAlfCham); self.checkAlfCham()
+
+        #Cost
+        self.line_cost_tech.editingFinished.connect(self.checkCostTech); self.checkCostTech()
+        self.line_cost_exp.editingFinished.connect(self.checkCostExp); self.checkCostExp()
+        self.line_cost_learn.editingFinished.connect(self.checkCostLearn); self.checkCostLearn()
 
     #Run
     def Run(self):
@@ -112,15 +128,15 @@ class MainWindow(QMainWindow):
         main.default.cycle_type = self.combo_cycle.currentIndex()
 
         #run main
-        err_nozz, err_chamber, err_turbo, err_inj, err_ign, err_cool, err_mass, warn_nozz, warn_chamber, warn_turbo, warn_inj, warn_ign, warn_cool, warn_mass = main.Main(main.dat)
+        err_nozz, err_nozz2, err_chamber, err_turbo, err_inj, err_ign, err_cool, err_mass, err_cost, warn_nozz, warn_nozz2, warn_chamber, warn_turbo, warn_inj, warn_ign, warn_cool, warn_mass, warn_cost = main.Main(main.dat)
         
         #Errors
-        if(err_nozz or err_chamber or err_turbo or err_inj or err_ign or err_cool or err_mass): 
+        if(err_nozz or err_nozz2 or err_chamber or err_turbo or err_inj or err_ign or err_cool or err_mass or err_cost): 
             msg = QMessageBox(self)
             msg.setIcon(QMessageBox.Critical)
             msg.setWindowTitle("Calculation error!")
 
-            #Nozzle
+            #Nozzle 1
             if (err_nozz & (1<<0)):
                 msg.setText("Error in nozzle calculation - Chamber pressure is lower than ambient pressure")
             if (err_nozz & (1<<1)):
@@ -143,10 +159,58 @@ class MainWindow(QMainWindow):
                 msg.setText("Error in nozzle calculation - Mass flow rate in iteration becomes negative")
             if (err_nozz & (1<<10)):
                 msg.setText("Error in nozzle calculation - Throat area in iteration is negative")
+            if (err_nozz & (1<<11)):
+                msg.setText("Error in nozzle calculation - Not possible to reach a physical solution for nozzle geometry")
+
+            #Nozzle 2
+            if (err_nozz2 & (1<<0)):
+                msg.setText("Error in nozzle calculation - Chamber diameter is smaller than throat diameter")
+            if (err_nozz2 & (1<<1)):
+                msg.setText("Error in nozzle calculation - Number of points in cooling discretization is too small")
+            if (err_nozz2 & (1<<2)):
+                msg.setText("Error in nozzle calculation - Nozzle thickness lower than 0")
+            if (err_nozz2 & (1<<3)):
+                msg.setText("Error in nozzle calculation - Nozzle x coordinate lower than 0")
+            if (err_nozz2 & (1<<4)):
+                msg.setText("Error in nozzle calculation - Nozzle y coordinate lower than 0")
+            if (err_nozz2 & (1<<5)):
+                msg.setText("Error in nozzle calculation - Adiabatic wall temperature lower than 0")
+            if (err_nozz2 & (1<<6)):
+                msg.setText("Error in nozzle calculation - Convective heat transfer lower than 0")
+            if (err_nozz2 & (1<<7)):
+                msg.setText("Error in nozzle calculation - Nozzle cooling x coordinate lower than 0")
+            if (err_nozz2 & (1<<8)):
+                msg.setText("Error in nozzle calculation - Nozzle cooling y coordinate lower than 0")
+            if (err_nozz2 & (1<<9)):
+                msg.setText("Error in nozzle calculation - Nozzle convergent or divergent length lower than 0")
+            if (err_nozz2 & (1<<10)):
+                msg.setText("Error in nozzle calculation - Throat exit coordinates lower than 0")
+            if (err_nozz2 & (1<<11)):
+                msg.setText("Error in nozzle calculation - Throat entry coordinates lower than 0")
+            if (err_nozz2 & (1<<12)):
+                msg.setText("Error in nozzle calculation - Film temperature lower than 0")
+            if (err_nozz2 & (1<<13)):
+                msg.setText("Error in nozzle calculation - Contraction angle too high")
             
             #Combustion chamber
             if (err_chamber & (1<<0)):
-                msg.setText("Error in combustion chamber calculation - Chamber length is higher than 2m")
+                msg.setText("Error in combustion chamber calculation - Initial droplet diameter smaller than 0")
+            if (err_chamber & (1<<1)):
+                msg.setText("Error in combustion chamber calculation - Initial droplet diameter higher than 1mm")
+            if (err_chamber & (1<<2)):
+                msg.setText("Error in combustion chamber calculation - Oxidizer injection velocity < 0")
+            if (err_chamber & (1<<3)):
+                msg.setText("Error in combustion chamber calculation - Fuel injection velocity < 0")
+            if (err_chamber & (1<<4)):
+                msg.setText("Error in combustion chamber calculation - Minimum area for injector plate is bigger than the max chamber area")
+            if (err_chamber & (1<<5)):
+                msg.setText("Error in combustion chamber calculation - Chamber length is higher than 1.5m")
+            if (err_chamber & (1<<6)):
+                msg.setText("Error in combustion chamber calculation - Lowest admisible convergence ratio is higher than highest admissible convergence ratio")
+            if (err_chamber & (1<<7)):
+                msg.setText("Error in combustion chamber calculation - Computed mass is smaller than 0")
+            if (err_chamber & (1<<8)):
+                msg.setText("Error in combustion chamber calculation - Computed heat transfer coefficient is smaller than 0")
 
             #Turbomachinery
             if (err_turbo & (1<<0)):
@@ -161,7 +225,12 @@ class MainWindow(QMainWindow):
                 msg.setText("Error in cycle calculation - Pump or turbine potency is negative")
 
             #Injector
-
+            if (err_inj & (1<<0)):
+                msg.setText("Error in injectors - One of the input parameters given is smaller than 0, i.e. chamber pressure, mass flow or mass mixture ratio.")
+            if (err_inj & (1<<1)):
+                msg.setText("Error in injectors - The injection velocities or amount of required orifices are smaller than 0.")
+            if (err_inj & (1<<2)):
+                msg.setText("Error in injectors - The injection pressure is given lower than 0.")
 
             #Igniter
 
@@ -193,14 +262,22 @@ class MainWindow(QMainWindow):
                 msg.setText("Error in cooling calculation - Heat is negative")
 
             #Mass
+            if (err_mass & (1<<0)):
+                msg.setText("Error in mass calculation - The nozzle mass is lower than 0")
+            if (err_mass & (1<<1)):
+                msg.setText("Error in mass calculation - The cooling mass is less than 0")
+            if (err_mass & (1<<2)):
+                msg.setText("Error in mass calculation - The turbomachinery mass is less than 0")
+            if (err_mass & (1<<3)):
+                msg.setText("Error in mass calculation - The valve mass is less than 0")
 
-            
+            #Cost
 
             msg.exec_()
             return;
 
         #warnings
-        if(warn_nozz or warn_chamber or warn_turbo or warn_inj or warn_ign or warn_cool or warn_mass):
+        if(warn_nozz or warn_nozz2 or warn_chamber or warn_turbo or warn_inj or warn_ign or warn_cool or warn_mass or warn_cost):
             msg = QMessageBox(self)
             msg.setIcon(QMessageBox.Warning)
             msg.setWindowTitle("Warnings raised")
@@ -214,7 +291,7 @@ class MainWindow(QMainWindow):
             msg.layout().setColumnMinimumWidth(2,int(self.ScrSize.width()/3))
             msg.layout().setRowMinimumHeight(1,int(self.ScrSize.height()/4))
 
-            #Nozzle
+            #Nozzle 1
             if (warn_nozz & (1<<0)):
                 lay.addWidget(QLabel("Warning in nozzle calculation - Chamber pressure is higher than 300 bar.", parent = msg))
             if (warn_nozz & (1<<1)):
@@ -227,6 +304,12 @@ class MainWindow(QMainWindow):
                 lay.addWidget(QLabel("Warning in nozzle calculation - Isp is higher than 550 s.", parent = msg))
             if (warn_nozz & (1<<5)):
                 lay.addWidget(QLabel("Warning in nozzle calculation - Divergent flow loss is very high.", parent = msg))
+
+            #Nozzle 2
+            if (warn_nozz & (1<<0)):
+                lay.addWidget(QLabel("Warning in nozzle calculation - Nozzle thickness lower than 1 mm.", parent = msg))
+            if (warn_nozz & (1<<1)):
+                lay.addWidget(QLabel("Warning in nozzle calculation - diabatic wall temperature lower than 273 K.", parent = msg))
 
             #Chamber
             if (warn_chamber & (1<<0)):
@@ -245,12 +328,22 @@ class MainWindow(QMainWindow):
                 lay.addWidget(QLabel("Warning in combustion chamber calculation - Chamber length was increased to a value higher than what it takes to get full atomization of propellant, in order to make CC chamber fit the convergence ratio", parent = msg))
             if (warn_chamber & (1<<7)):
                 lay.addWidget(QLabel("Warning in combustion chamber calculation - Chamber diameter was too small, all methods failed as such, Lstar was increased to make CC fulfill convergence ratio", parent = msg))
-            if (warn_chamber & (1<<5)):
+            if (warn_chamber & (1<<8)):
                 lay.addWidget(QLabel("Warning in combustion chamber calculation - Chamber length is larger than 1m.", parent = msg))
 
             #Turbo
 
+
             #Injector
+            if (warn_inj & (1<<0)):
+                lay.addWidget(QLabel("Warning in injector calculation - The injection velocities are higher than 100 m/s.", parent = msg))
+            if (warn_inj & (1<<1)):
+                lay.addWidget(QLabel("Warning in injector calculation - The droplet size of the fuel or oxidizer droplets are greater than 200 μm.", parent = msg))
+            if (warn_inj & (1<<2)):
+                lay.addWidget(QLabel("Warning in injector calculation - The pressure drop for the oxidizer is lower than the required pressure drop for combustion stability.", parent = msg))
+            if (warn_inj & (1<<3)):
+                lay.addWidget(QLabel("Warning in injector calculation - The pressure drop for the fuel is lower than the required pressure drop for combustion stability.", parent = msg))
+            
 
             #igniter
             if (warn_ign & (1<<0)):
@@ -260,7 +353,15 @@ class MainWindow(QMainWindow):
 
             #Cooling
 
+
             #Mass
+            if (warn_mass & (1<<0)):
+                lay.addWidget(QLabel("Warning in mass calculation - The nozzle wall thickness is lower than 1mm, a default thickness of 1mm has been used", parent = msg))
+
+            #Cost
+            if (warn_cost & (1<<0)):
+                lay.addWidget(QLabel("Warning in cost calculation - The reliability of the engine is low", parent = msg))
+            
 
             lay.addItem(QSpacerItem(10,10,QSizePolicy.Expanding,QSizePolicy.Expanding))
             msg.exec_()
@@ -440,18 +541,32 @@ class MainWindow(QMainWindow):
             self.label_OpT_nozz.hide()
             self.label_k_nozz.hide()
             self.label_cost_nozz.hide()
+            self.label_heat_nozz.hide()
+            self.label_ult_nozz.hide()
+            self.label_mu_nozz.hide()
+            self.label_alf_nozz.hide()
+
             self.line_dens_nozz.hide()
             self.line_yield_nozz.hide()
             self.line_E_nozz.hide()
             self.line_OpT_nozz.hide()
             self.line_k_nozz.hide()
             self.line_cost_nozz.hide()
+            self.line_heat_nozz.hide()
+            self.line_ult_nozz.hide()
+            self.line_mu_nozz.hide()
+            self.line_alf_nozz.hide()
+
             self.label_kg_m3_nozz.hide()
             self.label_Pa_nozz.hide()
             self.label_Pa_nozz_2.hide()
             self.label_K_nozz.hide()
             self.label_W_mK_nozz.hide()
             self.label_eur_kg_nozz.hide()
+            self.label_J_nozz.hide()
+            self.label_Pa_nozz_3.hide()
+            self.label_K_nozz_2.hide()
+            self.label_no_nozz.hide()
         else:
             self.label_dens_nozz.show()
             self.label_yield_nozz.show()
@@ -459,18 +574,32 @@ class MainWindow(QMainWindow):
             self.label_OpT_nozz.show()
             self.label_k_nozz.show()
             self.label_cost_nozz.show()
+            self.label_heat_nozz.show()
+            self.label_ult_nozz.show()
+            self.label_mu_nozz.show()
+            self.label_alf_nozz.show()
+
             self.line_dens_nozz.show()
             self.line_yield_nozz.show()
             self.line_E_nozz.show()
             self.line_OpT_nozz.show()
             self.line_k_nozz.show()
             self.line_cost_nozz.show()
+            self.line_heat_nozz.show()
+            self.line_ult_nozz.show()
+            self.line_mu_nozz.show()
+            self.line_alf_nozz.show()
+
             self.label_kg_m3_nozz.show()
             self.label_Pa_nozz.show()
             self.label_Pa_nozz_2.show()
             self.label_K_nozz.show()
             self.label_W_mK_nozz.show()
             self.label_eur_kg_nozz.show()
+            self.label_J_nozz.show()
+            self.label_Pa_nozz_3.show()
+            self.label_K_nozz_2.show()
+            self.label_no_nozz.show()
 
     def cham_mat_changed(self, i : int):
         main.default.noz_mat_select = main.default.material_list[i]
@@ -481,18 +610,32 @@ class MainWindow(QMainWindow):
             self.label_OpT_cham.hide()
             self.label_k_cham.hide()
             self.label_cost_cham.hide()
+            self.label_heat_cham.hide()
+            self.label_ult_cham.hide()
+            self.label_mu_cham.hide()
+            self.label_alf_cham.hide()
+
             self.line_dens_cham.hide()
             self.line_yield_cham.hide()
             self.line_E_cham.hide()
             self.line_OpT_cham.hide()
             self.line_k_cham.hide()
             self.line_cost_cham.hide()
+            self.line_heat_cham.hide()
+            self.line_ult_cham.hide()
+            self.line_mu_cham.hide()
+            self.line_alf_cham.hide()
+
             self.label_kg_m3_cham.hide()
             self.label_Pa_cham.hide()
             self.label_Pa_cham_2.hide()
             self.label_K_cham.hide()
             self.label_W_mK_cham.hide()
             self.label_eur_kg_cham.hide()
+            self.label_J_cham.hide()
+            self.label_Pa_cham_3.hide()
+            self.label_K_cham_2.hide()
+            self.label_no_cham.hide()
         else:
             main.default.noz_mat_select = main.default.coating_list[0]
             self.label_dens_cham.show()
@@ -501,18 +644,32 @@ class MainWindow(QMainWindow):
             self.label_OpT_cham.show()
             self.label_k_cham.show()
             self.label_cost_cham.show()
+            self.label_heat_cham.show()
+            self.label_ult_cham.show()
+            self.label_mu_cham.show()
+            self.label_alf_cham.show()
+
             self.line_dens_cham.show()
             self.line_yield_cham.show()
             self.line_E_cham.show()
             self.line_OpT_cham.show()
             self.line_k_cham.show()
             self.line_cost_cham.show()
+            self.line_heat_cham.show()
+            self.line_ult_cham.show()
+            self.line_mu_cham.show()
+            self.line_alf_cham.show()
+
             self.label_kg_m3_cham.show()
             self.label_Pa_cham.show()
             self.label_Pa_cham_2.show()
             self.label_K_cham.show()
             self.label_W_mK_cham.show()
             self.label_eur_kg_cham.show()
+            self.label_J_cham.show()
+            self.label_Pa_cham_3.show()
+            self.label_K_cham_2.show()
+            self.label_no_cham.show()
 
     def coating_changed(self, i : int):
         main.default.default_coating = main.default.coating_list[i+1]
@@ -752,7 +909,7 @@ class MainWindow(QMainWindow):
 
     def checkCd(self):
         var = float(self.line_Cd.text())
-        if var > 0.0 and var < 2.0:
+        if var >= 0.0 and var < 2.0:
             main.default.Cd = var;
         else:
             self.line_Cd.setText("0.7")
@@ -904,6 +1061,50 @@ class MainWindow(QMainWindow):
             msg.setText("Invalid cost per kg for nozzle custom material, try again.")
             msg.exec_()
 
+    def checkHeatNozz(self):
+        var = float(self.line_heat_nozz.text())
+        if var > 0.0:
+            main.default.material_list[0].heat_cap = var;
+        else:
+            self.line_heat_nozz.setText("145")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid heat capacity for nozzle custom material, try again.")
+            msg.exec_()
+
+    def checkUltNozz(self):
+        var = float(self.line_ult_nozz.text())
+        if var > 0.0:
+            main.default.material_list[0].ulstress = var;
+        else:
+            self.line_ult_nozz.setText("2500e6")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid ultimate tensile strength for nozzle custom material, try again.")
+            msg.exec_()
+
+    def checkMuNozz(self):
+        var = float(self.line_mu_nozz.text())
+        if var > 0.0:
+            main.default.material_list[0].mu = var;
+        else:
+            self.line_mu_nozz.setText("0.625")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid poisson ratio for nozzle custom material, try again.")
+            msg.exec_()
+
+    def checkAlfNozz(self):
+        var = float(self.line_alf_nozz.text())
+        if var > 0.0:
+            main.default.material_list[0].thr_exp = var;
+        else:
+            self.line_cost_nozz.setText("7.25")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid coefficient of thermal expansion for nozzle custom material, try again.")
+            msg.exec_()
+
     def checkDensCham(self):
         var = float(self.line_dens_cham.text())
         if var > 0.0:
@@ -970,6 +1171,50 @@ class MainWindow(QMainWindow):
             msg.setText("Invalid cost per kg for combustion chamber custom material, try again.")
             msg.exec_()
 
+    def checkHeatCham(self):
+        var = float(self.line_heat_cham.text())
+        if var > 0.0:
+            main.default.coating_list[0].heat_cap = var;
+        else:
+            self.line_heat_cham.setText("145")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid heat capacity for chamber custom material, try again.")
+            msg.exec_()
+
+    def checkUltCham(self):
+        var = float(self.line_ult_cham.text())
+        if var > 0.0:
+            main.default.coating_list[0].ulstress = var;
+        else:
+            self.line_ult_cham.setText("2500e6")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid ultimate tensile strength for chamber custom material, try again.")
+            msg.exec_()
+
+    def checkMuCham(self):
+        var = float(self.line_mu_cham.text())
+        if var > 0.0:
+            main.default.coating_list[0].mu = var;
+        else:
+            self.line_mu_cham.setText("0.625")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid poisson ratio for chamber custom material, try again.")
+            msg.exec_()
+
+    def checkAlfCham(self):
+        var = float(self.line_alf_cham.text())
+        if var > 0.0:
+            main.default.coating_list[0].thr_exp = var;
+        else:
+            self.line_cost_cham.setText("7.25")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid coefficient of thermal expansion for chamber custom material, try again.")
+            msg.exec_()
+
     def checkT0wall(self):
         var = float(self.line_T0_wall.text())
         if var > 0.0 and var < 1000:
@@ -1013,6 +1258,7 @@ class MainWindow(QMainWindow):
             msg.setWindowTitle("Input error!")
             msg.setText("Invalid user defined pressure drop over injector, try again.")
             msg.exec_()
+    
     def checkLGG(self):
         var = float(self.line_lGG.text())
         if var > 0.0 and var < 0.9:
@@ -1022,6 +1268,72 @@ class MainWindow(QMainWindow):
             msg = QMessageBox()
             msg.setWindowTitle("Input error!")
             msg.setText("Invalid percentage of total mass flow for GG, try again.")
+            msg.exec_()
+
+    def checkSFNozz(self):
+        var = float(self.line_SF_nozz.text())
+        if var > 1.0 and var < 20.0:
+            main.default.SF_noz = var;
+        else:
+            self.line_SF_nozz.setText("1.3")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid safety factor for nozzle, try again.")
+            msg.exec_()
+
+    def checkConvRatMin(self):
+        var = float(self.line_conv_rat_min.text())
+        if var > 1.1 and var < float(self.line_conv_rat_max.text()):
+            main.default.ConvergenceRatio_l = var;
+        else:
+            self.line_conv_rat.setText("1.5")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid minimum convergence ratio, try again.")
+            msg.exec_()
+
+    def checkConvRatMax(self):
+        var = float(self.line_conv_rat_max.text())
+        if var > float(self.line_conv_rat_min.text()) and var < 20.0:
+            main.default.ConvergenceRatio_h = var;
+        else:
+            self.line_conv_rat.setText("4.0")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid maximum convergence ratio, try again.")
+            msg.exec_()
+
+    def checkCostTech(self):
+        var = float(self.line_cost_tech.text())
+        if var > 0.4 and var < 1.25:
+            main.default.tech_ready = var;
+        else:
+            self.line_cost_tech.setText("0.5")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid tech readiness factor, try again.")
+            msg.exec_()
+
+    def checkCostLearn(self):
+        var = float(self.line_cost_learn.text())
+        if var > 0.0 and var < 10.0:
+            main.default.learn_factor = var;
+        else:
+            self.line_cost_learn.setText("1.0")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid learning factor, try again.")
+            msg.exec_()
+
+    def checkCostExp(self):
+        var = float(self.line_cost_exp.text())
+        if var > 0.0 and var < 10.0:
+            main.default.exp_factor = var;
+        else:
+            self.line_cost_exp.setText("1.0")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid experience factor, try again.")
             msg.exec_()
 
 # Main

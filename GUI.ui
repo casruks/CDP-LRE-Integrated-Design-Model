@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1206</width>
-    <height>593</height>
+    <width>1316</width>
+    <height>668</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -66,7 +66,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>7</number>
         </property>
         <widget class="QWidget" name="global">
          <attribute name="title">
@@ -84,7 +84,7 @@
                <x>0</x>
                <y>0</y>
                <width>503</width>
-               <height>365</height>
+               <height>428</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_4">
@@ -318,21 +318,76 @@
                <x>0</x>
                <y>0</y>
                <width>421</width>
-               <height>365</height>
+               <height>428</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_5">
-              <item row="7" column="0">
-               <widget class="QLabel" name="label_curv_conv">
+              <item row="6" column="0">
+               <widget class="QLabel" name="label_par_fang">
                 <property name="text">
-                 <string>Throat curvature (convergent)</string>
+                 <string>Parabola final angle</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_De_max">
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="line_conv_ang">
                 <property name="text">
-                 <string>Maximum exit diameter</string>
+                 <string>60</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="line_eps_max">
+                <property name="text">
+                 <string>300</string>
+                </property>
+               </widget>
+              </item>
+              <item row="10" column="0">
+               <spacer name="verticalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_nozz_type">
+                <property name="text">
+                 <string>Nozzle type</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="2">
+               <widget class="QLabel" name="label_Rt">
+                <property name="text">
+                 <string>[Rt]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QLabel" name="label_m_2">
+                <property name="text">
+                 <string>[m]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="2">
+               <widget class="QLabel" name="label_Rt_2">
+                <property name="text">
+                 <string>[Rt]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="QLabel" name="label_no_5">
+                <property name="text">
+                 <string>[-]</string>
                 </property>
                </widget>
               </item>
@@ -357,32 +412,33 @@
                 </property>
                </widget>
               </item>
-              <item row="6" column="0">
-               <widget class="QLabel" name="label_par_fang">
+              <item row="6" column="2">
+               <widget class="QLabel" name="label_deg_4">
                 <property name="text">
-                 <string>Parabola final angle</string>
+                 <string>[º]</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_conv_ang">
+              <item row="8" column="1">
+               <widget class="QLineEdit" name="line_curv_div">
                 <property name="text">
-                 <string>Convergent angle</string>
+                 <string>0.382</string>
                 </property>
                </widget>
               </item>
-              <item row="9" column="0">
-               <spacer name="verticalSpacer_3">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
+              <item row="4" column="1">
+               <widget class="QLineEdit" name="line_div_ang">
+                <property name="text">
+                 <string>15</string>
                 </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
+               </widget>
+              </item>
+              <item row="8" column="0">
+               <widget class="QLabel" name="label_curv_div">
+                <property name="text">
+                 <string>Throat curvature (divergent)</string>
                 </property>
-               </spacer>
+               </widget>
               </item>
               <item row="1" column="1">
                <widget class="QLineEdit" name="line_De_max">
@@ -395,6 +451,27 @@
                <widget class="QLabel" name="label_div_ang">
                 <property name="text">
                  <string>Divergent angle</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="label_par_0ang">
+                <property name="text">
+                 <string>Parabola initial angle</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="0">
+               <widget class="QLabel" name="label_curv_conv">
+                <property name="text">
+                 <string>Throat curvature (convergent)</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QLineEdit" name="line_par_fang">
+                <property name="text">
+                 <string>3</string>
                 </property>
                </widget>
               </item>
@@ -412,10 +489,17 @@
                 </property>
                </widget>
               </item>
-              <item row="6" column="2">
-               <widget class="QLabel" name="label_deg_4">
+              <item row="7" column="1">
+               <widget class="QLineEdit" name="line_curv_conv">
                 <property name="text">
-                 <string>[º]</string>
+                 <string>1.5</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_De_max">
+                <property name="text">
+                 <string>Maximum exit diameter</string>
                 </property>
                </widget>
               </item>
@@ -426,62 +510,6 @@
                 </property>
                </widget>
               </item>
-              <item row="4" column="1">
-               <widget class="QLineEdit" name="line_div_ang">
-                <property name="text">
-                 <string>15</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QLineEdit" name="line_conv_ang">
-                <property name="text">
-                 <string>60</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="label_par_0ang">
-                <property name="text">
-                 <string>Parabola initial angle</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="1">
-               <widget class="QLineEdit" name="line_par_fang">
-                <property name="text">
-                 <string>3</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="line_eps_max">
-                <property name="text">
-                 <string>300</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_nozz_type">
-                <property name="text">
-                 <string>Nozzle type</string>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="2">
-               <widget class="QLabel" name="label_Rt">
-                <property name="text">
-                 <string>[Rt]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="2">
-               <widget class="QLabel" name="label_no_5">
-                <property name="text">
-                 <string>[-]</string>
-                </property>
-               </widget>
-              </item>
               <item row="2" column="0">
                <widget class="QLabel" name="label_eps_max">
                 <property name="text">
@@ -489,38 +517,31 @@
                 </property>
                </widget>
               </item>
-              <item row="7" column="1">
-               <widget class="QLineEdit" name="line_curv_conv">
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_conv_ang">
                 <property name="text">
-                 <string>1.5</string>
+                 <string>Convergent angle</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="2">
-               <widget class="QLabel" name="label_m_2">
+              <item row="9" column="0">
+               <widget class="QLabel" name="label_3">
                 <property name="text">
-                 <string>[m]</string>
+                 <string>Nozzle safety factor</string>
                 </property>
                </widget>
               </item>
-              <item row="8" column="0">
-               <widget class="QLabel" name="label_curv_div">
+              <item row="9" column="1">
+               <widget class="QLineEdit" name="line_SF_nozz">
                 <property name="text">
-                 <string>Throat curvature (divergent)</string>
+                 <string>1.3</string>
                 </property>
                </widget>
               </item>
-              <item row="8" column="1">
-               <widget class="QLineEdit" name="line_curv_div">
+              <item row="9" column="2">
+               <widget class="QLabel" name="label_6">
                 <property name="text">
-                 <string>0.382</string>
-                </property>
-               </widget>
-              </item>
-              <item row="8" column="2">
-               <widget class="QLabel" name="label_Rt_2">
-                <property name="text">
-                 <string>[Rt]</string>
+                 <string>[-]</string>
                 </property>
                </widget>
               </item>
@@ -545,15 +566,29 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>367</width>
-               <height>365</height>
+               <width>393</width>
+               <height>443</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_drop_ratio">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_SF">
                 <property name="text">
-                 <string>Final to initial droplet volume ratio</string>
+                 <string>Pressure safety factor</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="line_kloads">
+                <property name="text">
+                 <string>1</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="line_conv_rat_min">
+                <property name="text">
+                 <string>1.5</string>
                 </property>
                </widget>
               </item>
@@ -564,7 +599,7 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
+              <item row="5" column="0">
                <spacer name="verticalSpacer_5">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
@@ -577,31 +612,10 @@
                 </property>
                </spacer>
               </item>
-              <item row="0" column="2">
-               <widget class="QLabel" name="label_no_7">
+              <item row="3" column="2">
+               <widget class="QLabel" name="label_8">
                 <property name="text">
                  <string>[-]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QLineEdit" name="line_drop_ratio">
-                <property name="text">
-                 <string>0.2</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="2">
-               <widget class="QLabel" name="label_no_11">
-                <property name="text">
-                 <string>[-]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_SF">
-                <property name="text">
-                 <string>Pressure safety factor</string>
                 </property>
                </widget>
               </item>
@@ -612,10 +626,38 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="line_kloads">
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_drop_ratio">
                 <property name="text">
-                 <string>1</string>
+                 <string>Final to initial droplet volume ratio</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_7">
+                <property name="text">
+                 <string>Minimum convergence ratio</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="line_drop_ratio">
+                <property name="text">
+                 <string>0.2</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_no_7">
+                <property name="text">
+                 <string>[-]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QLabel" name="label_no_11">
+                <property name="text">
+                 <string>[-]</string>
                 </property>
                </widget>
               </item>
@@ -623,6 +665,27 @@
                <widget class="QLabel" name="label_no_12">
                 <property name="text">
                  <string>[-]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_9">
+                <property name="text">
+                 <string>Maximum convergence ratio</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="2">
+               <widget class="QLabel" name="label_10">
+                <property name="text">
+                 <string>[-]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QLineEdit" name="line_conv_rat_max">
+                <property name="text">
+                 <string>4.0</string>
                 </property>
                </widget>
               </item>
@@ -648,7 +711,7 @@
                <x>0</x>
                <y>0</y>
                <width>395</width>
-               <height>365</height>
+               <height>428</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_3">
@@ -833,8 +896,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>357</width>
-               <height>380</height>
+               <width>393</width>
+               <height>443</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_10">
@@ -1013,8 +1076,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>357</width>
-               <height>380</height>
+               <width>393</width>
+               <height>443</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_11">
@@ -1121,7 +1184,7 @@
                <x>0</x>
                <y>0</y>
                <width>579</width>
-               <height>365</height>
+               <height>428</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_13">
@@ -1289,68 +1352,52 @@
             <widget class="QWidget" name="scrollAreaWidgetContents_7">
              <property name="geometry">
               <rect>
-               <x>0</x>
-               <y>0</y>
+               <x>-142</x>
+               <y>-138</y>
                <width>520</width>
-               <height>552</height>
+               <height>856</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_15">
-              <item row="5" column="3">
-               <widget class="QLabel" name="label_W_mK_nozz">
+              <item row="16" column="3">
+               <widget class="QLabel" name="label_W_mK_cham">
                 <property name="text">
                  <string>[W/(m K)]</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="2">
-               <widget class="QLineEdit" name="line_OpT_nozz">
+              <item row="15" column="1">
+               <widget class="QLabel" name="label_OpT_cham">
                 <property name="text">
-                 <string>2200</string>
+                 <string>Maximum operating temperature</string>
                 </property>
                </widget>
               </item>
-              <item row="8" column="1">
-               <widget class="QLabel" name="label_dens_cham">
+              <item row="17" column="2">
+               <widget class="QLineEdit" name="line_cost_cham">
                 <property name="text">
-                 <string>Density</string>
+                 <string>938</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
-               <spacer name="horizontalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Fixed</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="5" column="2">
-               <widget class="QLineEdit" name="line_k_nozz">
+              <item row="20" column="1">
+               <widget class="QLabel" name="label_mu_cham">
                 <property name="text">
-                 <string>48</string>
+                 <string>Poisson ratio</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="2">
-               <widget class="QLineEdit" name="line_E_nozz">
+              <item row="5" column="1">
+               <widget class="QLabel" name="label_k_nozz">
                 <property name="text">
-                 <string>471e9</string>
+                 <string>Conductivity</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="3">
-               <widget class="QLabel" name="label_K_nozz">
+              <item row="17" column="1">
+               <widget class="QLabel" name="label_cost_cham">
                 <property name="text">
-                 <string>[K]</string>
+                 <string>Cost</string>
                 </property>
                </widget>
               </item>
@@ -1361,6 +1408,20 @@
                 </property>
                </widget>
               </item>
+              <item row="3" column="3">
+               <widget class="QLabel" name="label_Pa_nozz_2">
+                <property name="text">
+                 <string>[Pa]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QLabel" name="label_OpT_nozz">
+                <property name="text">
+                 <string>Maximum operating temperature</string>
+                </property>
+               </widget>
+              </item>
               <item row="1" column="1">
                <widget class="QLabel" name="label_dens_nozz">
                 <property name="text">
@@ -1368,14 +1429,84 @@
                 </property>
                </widget>
               </item>
-              <item row="7" column="0" colspan="2">
-               <widget class="QLabel" name="label_mat_comb">
+              <item row="12" column="2">
+               <widget class="QLineEdit" name="line_dens_cham">
                 <property name="text">
-                 <string>Combustion chamber material</string>
+                 <string>21000</string>
                 </property>
                </widget>
               </item>
-              <item row="7" column="2" colspan="2">
+              <item row="13" column="1">
+               <widget class="QLabel" name="label_yield_cham">
+                <property name="text">
+                 <string>Yield stress</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="3">
+               <widget class="QLabel" name="label_kg_m3_nozz">
+                <property name="text">
+                 <string>[kg/m^3]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="3">
+               <widget class="QLabel" name="label_W_mK_nozz">
+                <property name="text">
+                 <string>[W/(m K)]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="2">
+               <widget class="QLineEdit" name="line_k_nozz">
+                <property name="text">
+                 <string>48</string>
+                </property>
+               </widget>
+              </item>
+              <item row="10" column="1">
+               <widget class="QLabel" name="label_alf_nozz">
+                <property name="text">
+                 <string>Coefficient of thermal expansion</string>
+                </property>
+               </widget>
+              </item>
+              <item row="19" column="1">
+               <widget class="QLabel" name="label_ult_cham">
+                <property name="text">
+                 <string>Ultimate tensile strength</string>
+                </property>
+               </widget>
+              </item>
+              <item row="16" column="2">
+               <widget class="QLineEdit" name="line_k_cham">
+                <property name="text">
+                 <string>48</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="3">
+               <widget class="QLabel" name="label_K_nozz">
+                <property name="text">
+                 <string>[K]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="1">
+               <widget class="QLabel" name="label_mu_nozz">
+                <property name="text">
+                 <string>Poisson ratio</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QLabel" name="label_cost_nozz">
+                <property name="text">
+                 <string>Cost</string>
+                </property>
+               </widget>
+              </item>
+              <item row="11" column="2" colspan="2">
                <widget class="QComboBox" name="combo_mat_comb">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -1449,6 +1580,91 @@
                <widget class="QLineEdit" name="line_yield_nozz">
                 <property name="text">
                  <string>2300e6</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QLineEdit" name="line_E_nozz">
+                <property name="text">
+                 <string>471e9</string>
+                </property>
+               </widget>
+              </item>
+              <item row="22" column="1">
+               <spacer name="verticalSpacer_13">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>281</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="12" column="1">
+               <widget class="QLabel" name="label_dens_cham">
+                <property name="text">
+                 <string>Density</string>
+                </property>
+               </widget>
+              </item>
+              <item row="15" column="2">
+               <widget class="QLineEdit" name="line_OpT_cham">
+                <property name="text">
+                 <string>2200</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="2">
+               <widget class="QLineEdit" name="line_OpT_nozz">
+                <property name="text">
+                 <string>2200</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <spacer name="horizontalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Fixed</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLabel" name="label_E_nozz">
+                <property name="text">
+                 <string>Elastic module</string>
+                </property>
+               </widget>
+              </item>
+              <item row="12" column="3">
+               <widget class="QLabel" name="label_kg_m3_cham">
+                <property name="text">
+                 <string>[kg/m^3]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="3">
+               <widget class="QLabel" name="label_eur_kg_nozz">
+                <property name="text">
+                 <string>[EUR/kg]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="11" column="0" colspan="2">
+               <widget class="QLabel" name="label_mat_comb">
+                <property name="text">
+                 <string>Combustion chamber material</string>
                 </property>
                </widget>
               </item>
@@ -1529,100 +1745,45 @@
                 </property>
                </widget>
               </item>
-              <item row="5" column="1">
-               <widget class="QLabel" name="label_k_nozz">
-                <property name="text">
-                 <string>Conductivity</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="1">
-               <widget class="QLabel" name="label_cost_nozz">
-                <property name="text">
-                 <string>Cost</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="3">
-               <widget class="QLabel" name="label_kg_m3_nozz">
-                <property name="text">
-                 <string>[kg/m^3]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="9" column="1">
-               <widget class="QLabel" name="label_yield_cham">
+              <item row="2" column="1">
+               <widget class="QLabel" name="label_yield_nozz">
                 <property name="text">
                  <string>Yield stress</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="1">
-               <widget class="QLabel" name="label_E_nozz">
-                <property name="text">
-                 <string>Elastic module</string>
-                </property>
-               </widget>
-              </item>
-              <item row="12" column="1">
-               <widget class="QLabel" name="label_k_cham">
-                <property name="text">
-                 <string>Conductivity</string>
-                </property>
-               </widget>
-              </item>
-              <item row="10" column="1">
+              <item row="14" column="1">
                <widget class="QLabel" name="label_E_cham">
                 <property name="text">
                  <string>Elastic module</string>
                 </property>
                </widget>
               </item>
-              <item row="14" column="1">
-               <spacer name="verticalSpacer_13">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>281</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="11" column="1">
-               <widget class="QLabel" name="label_OpT_cham">
-                <property name="text">
-                 <string>Maximum operating temperature</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="3">
-               <widget class="QLabel" name="label_eur_kg_nozz">
-                <property name="text">
-                 <string>[EUR/kg]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="3">
-               <widget class="QLabel" name="label_Pa_nozz">
+              <item row="13" column="3">
+               <widget class="QLabel" name="label_Pa_cham">
                 <property name="text">
                  <string>[Pa]</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="1">
-               <widget class="QLabel" name="label_OpT_nozz">
+              <item row="14" column="3">
+               <widget class="QLabel" name="label_Pa_cham_2">
                 <property name="text">
-                 <string>Maximum operating temperature</string>
+                 <string>[Pa]</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="3">
-               <widget class="QLabel" name="label_Pa_nozz_2">
+              <item row="8" column="1">
+               <widget class="QLabel" name="label_ult_nozz">
                 <property name="text">
-                 <string>[Pa]</string>
+                 <string>Ultimate tensile strength</string>
+                </property>
+               </widget>
+              </item>
+              <item row="15" column="3">
+               <widget class="QLabel" name="label_K_cham">
+                <property name="text">
+                 <string>[K]</string>
                 </property>
                </widget>
               </item>
@@ -1633,101 +1794,252 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
-               <widget class="QLabel" name="label_yield_nozz">
+              <item row="18" column="1">
+               <widget class="QLabel" name="label_heat_cham">
                 <property name="text">
-                 <string>Yield stress</string>
+                 <string>Heat capacity</string>
                 </property>
                </widget>
               </item>
-              <item row="13" column="1">
-               <widget class="QLabel" name="label_cost_cham">
+              <item row="2" column="3">
+               <widget class="QLabel" name="label_Pa_nozz">
                 <property name="text">
-                 <string>Cost</string>
+                 <string>[Pa]</string>
                 </property>
                </widget>
               </item>
-              <item row="8" column="2">
-               <widget class="QLineEdit" name="line_dens_cham">
+              <item row="17" column="3">
+               <widget class="QLabel" name="label_eur_kg_cham">
                 <property name="text">
-                 <string>21000</string>
+                 <string>[EUR/kg]</string>
                 </property>
                </widget>
               </item>
-              <item row="9" column="2">
+              <item row="16" column="1">
+               <widget class="QLabel" name="label_k_cham">
+                <property name="text">
+                 <string>Conductivity</string>
+                </property>
+               </widget>
+              </item>
+              <item row="13" column="2">
                <widget class="QLineEdit" name="line_yield_cham">
                 <property name="text">
                  <string>2300e6</string>
                 </property>
                </widget>
               </item>
-              <item row="10" column="2">
+              <item row="14" column="2">
                <widget class="QLineEdit" name="line_E_cham">
                 <property name="text">
                  <string>471e9</string>
                 </property>
                </widget>
               </item>
-              <item row="11" column="2">
-               <widget class="QLineEdit" name="line_OpT_cham">
+              <item row="7" column="1">
+               <widget class="QLabel" name="label_heat_nozz">
                 <property name="text">
-                 <string>2200</string>
+                 <string>Heat capacity</string>
                 </property>
                </widget>
               </item>
-              <item row="12" column="2">
-               <widget class="QLineEdit" name="line_k_cham">
+              <item row="21" column="1">
+               <widget class="QLabel" name="label_alf_cham">
                 <property name="text">
-                 <string>48</string>
+                 <string>Coefficient of thermal expansion</string>
                 </property>
                </widget>
               </item>
-              <item row="13" column="2">
-               <widget class="QLineEdit" name="line_cost_cham">
+              <item row="18" column="2">
+               <widget class="QLineEdit" name="line_heat_cham">
                 <property name="text">
-                 <string>938</string>
+                 <string>145</string>
+                </property>
+               </widget>
+              </item>
+              <item row="19" column="2">
+               <widget class="QLineEdit" name="line_ult_cham">
+                <property name="text">
+                 <string>2500e6</string>
+                </property>
+               </widget>
+              </item>
+              <item row="20" column="2">
+               <widget class="QLineEdit" name="line_mu_cham">
+                <property name="text">
+                 <string>0.625</string>
+                </property>
+               </widget>
+              </item>
+              <item row="21" column="2">
+               <widget class="QLineEdit" name="line_alf_cham">
+                <property name="text">
+                 <string>7.25</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="2">
+               <widget class="QLineEdit" name="line_heat_nozz">
+                <property name="text">
+                 <string>145</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="2">
+               <widget class="QLineEdit" name="line_ult_nozz">
+                <property name="text">
+                 <string>2500e6</string>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="2">
+               <widget class="QLineEdit" name="line_mu_nozz">
+                <property name="text">
+                 <string>0.265</string>
+                </property>
+               </widget>
+              </item>
+              <item row="10" column="2">
+               <widget class="QLineEdit" name="line_alf_nozz">
+                <property name="text">
+                 <string>7.25</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="3">
+               <widget class="QLabel" name="label_J_nozz">
+                <property name="text">
+                 <string>[J/(kg K)]</string>
                 </property>
                </widget>
               </item>
               <item row="8" column="3">
-               <widget class="QLabel" name="label_kg_m3_cham">
+               <widget class="QLabel" name="label_Pa_nozz_3">
                 <property name="text">
-                 <string>[kg/m^3]</string>
+                 <string>[Pa]</string>
                 </property>
                </widget>
               </item>
               <item row="9" column="3">
-               <widget class="QLabel" name="label_Pa_cham">
+               <widget class="QLabel" name="label_no_nozz">
                 <property name="text">
-                 <string>[Pa]</string>
+                 <string>[-]</string>
                 </property>
                </widget>
               </item>
               <item row="10" column="3">
-               <widget class="QLabel" name="label_Pa_cham_2">
+               <widget class="QLabel" name="label_K_nozz_2">
+                <property name="text">
+                 <string>[1/K]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="18" column="3">
+               <widget class="QLabel" name="label_J_cham">
+                <property name="text">
+                 <string>[J/(kg K)]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="21" column="3">
+               <widget class="QLabel" name="label_K_cham_2">
+                <property name="text">
+                 <string>[1/K]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="20" column="3">
+               <widget class="QLabel" name="label_no_cham">
+                <property name="text">
+                 <string>[-]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="19" column="3">
+               <widget class="QLabel" name="label_Pa_cham_3">
                 <property name="text">
                  <string>[Pa]</string>
                 </property>
                </widget>
               </item>
-              <item row="11" column="3">
-               <widget class="QLabel" name="label_K_cham">
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab">
+         <attribute name="title">
+          <string>Cost</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QScrollArea" name="scrollArea_16">
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <widget class="QWidget" name="scrollAreaWidgetContents_16">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>393</width>
+               <height>443</height>
+              </rect>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_16">
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_5">
                 <property name="text">
-                 <string>[K]</string>
+                 <string>Learning factor</string>
                 </property>
                </widget>
               </item>
-              <item row="12" column="3">
-               <widget class="QLabel" name="label_W_mK_cham">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_2">
                 <property name="text">
-                 <string>[W/(m K)]</string>
+                 <string>Tech readiness factor</string>
                 </property>
                </widget>
               </item>
-              <item row="13" column="3">
-               <widget class="QLabel" name="label_eur_kg_cham">
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="line_cost_tech">
                 <property name="text">
-                 <string>[EUR/kg]</string>
+                 <string>0.5</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>Experience factor</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <spacer name="verticalSpacer_14">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="line_cost_exp">
+                <property name="text">
+                 <string>1</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="line_cost_learn">
+                <property name="text">
+                 <string>1</string>
                 </property>
                </widget>
               </item>
@@ -1829,7 +2141,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>4</number>
         </property>
         <property name="elideMode">
          <enum>Qt::ElideNone</enum>
@@ -1852,8 +2164,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>357</width>
-               <height>380</height>
+               <width>393</width>
+               <height>443</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout">
@@ -2062,8 +2374,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>357</width>
-               <height>380</height>
+               <width>393</width>
+               <height>443</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_6">
@@ -2269,8 +2581,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>357</width>
-               <height>380</height>
+               <width>393</width>
+               <height>443</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_8">
@@ -2434,8 +2746,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>357</width>
-               <height>380</height>
+               <width>393</width>
+               <height>443</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_2">
@@ -2576,10 +2888,10 @@
             <widget class="QWidget" name="scrollAreaWidgetContents_13">
              <property name="geometry">
               <rect>
-               <x>-170</x>
+               <x>0</x>
                <y>0</y>
                <width>537</width>
-               <height>365</height>
+               <height>428</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_9">
@@ -2717,8 +3029,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>357</width>
-               <height>380</height>
+               <width>393</width>
+               <height>443</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_12">
@@ -2848,7 +3160,7 @@
         </widget>
         <widget class="QWidget" name="ign">
          <attribute name="title">
-          <string>Ignitor</string>
+          <string>Igniter</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
@@ -2861,8 +3173,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>357</width>
-               <height>380</height>
+               <width>393</width>
+               <height>443</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_14">
@@ -2889,7 +3201,7 @@
               <item row="0" column="0">
                <widget class="QLabel" name="label_Mign">
                 <property name="text">
-                 <string>Ignitor mass</string>
+                 <string>Igniter mass</string>
                 </property>
                </widget>
               </item>
@@ -2927,7 +3239,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1206</width>
+     <width>1316</width>
      <height>24</height>
     </rect>
    </property>
