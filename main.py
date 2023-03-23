@@ -375,6 +375,21 @@ def Main(d : aux.Data):
     #Outputs:
     ##Cost of the engine
     
+    #Reuseability Funtion:
+    #inputs:
+    ##Nozzle Material
+    ##Maximum thermal stress
+    ##Maximum temperature on the gas side 
+    ##Maximum temperature for the coolant side
+    ##Ligament thickness
+    ##coolant channel width
+    ##Ribs width
+    ##Chamber Pressure
+    Reuseabitiy = Ms.Reuseability(aux.Default.noz_mat_select, maximum_thermal_stress, max_temperature_inner, max_temperature_outer, 0.445, 1.686, 1.270, p_new )
+    #Missing Inputs: H,l,w (geometry of the cooling chanels written as 0.445, in the function above^)
+    #They are currently inputs for the cooling function and are not returned anywhere. This is necessary before implementing into the fuction. Currently default values are used 
+    #Output:
+    #Low cycle fatigue life of the thrust chamber
    
 
     print("Calculations finished")
