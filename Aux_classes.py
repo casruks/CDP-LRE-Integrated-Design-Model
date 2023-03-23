@@ -88,15 +88,22 @@ class Default:
 
     #Material
     #material = Ms.Rhenium #Default Material selected OCCHIO ALLE STRONZATE
-    material="This"
     Safety_factor = 1.3 #Default safety factor
     material_list = [Mt.Custom,Mt.Rhenium, Mt.Al_7075_T6, Mt.Ti6Al4V, Mt.Haynes_188, Mt.Inc_X_750, Mt.Inc_600, Mt.Inc_718, Mt.Inc_A_286,Mt.Columbium_c103,
                     Mt.Copper_structural, Mt.D6AC_Steel]
     coating_list = [Mt.Coat_Custom,Mt.Copper, Mt.Narloy_Z, Mt.GRCop_84, Mt.Silica, Mt.Carbon]
     noz_mat_select = material_list[0]
     chamber_mat_select = material_list[0]
-    Safety_factor=1.3
-    t = 1e-3 #m
+    
+    
+    #Mass: All other inputs are called from other variables already here    
+    valv_mat_select = Mt.Al_7075_T6 #Valve material --> Does not need to appear in GUI
+    t = 1e-3 #Default thickness for nozzle when thickness is below 1mm
+
+    #Cost:
+    tech_ready = 1.25
+    exp_factor = 1.3
+    learn_factor = 0 
 
     #Reliabiliy
      # Should be implemented for GUI user input
