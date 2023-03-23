@@ -73,8 +73,8 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         yp_con=-1
         it=0
         while yp_con<=0 or xp_con<=0:
-            L_nozzle_div=(mth.sqrt(eps)*R_t-R_t-R_u*(1-mth.cos(mth.cos(Theta_conical))))/(mth.tan(Theta_conical))+R_u*mth.sin(Theta_conical) # Length of the divergent part of the nozzle for the conical nozzle
-            L_nozzle_con=(mth.sqrt(con_ratio)*R_t-R_t-R_u*(1-mth.cos(mth.cos(theta_con))))/(mth.tan(theta_con))+R_u*mth.sin(theta_con) # Length of the convergent part of the nozzle for the conical
+            L_nozzle_div=((mth.sqrt(eps)-1)*R_t-R_u*(1-mth.cos(Theta_conical)))/mth.tan(Theta_conical)+R_u*mth.sin(Theta_conical) # Length of the divergent part of the nozzle for the conical nozzle
+            L_nozzle_con=((mth.sqrt(con_ratio)-1)*R_t-R_u*(1-mth.cos(theta_con)))/mth.tan(theta_con)+R_u*mth.sin(theta_con)# Length of the convergent part of the nozzle for the conical
             L_tot=L_nozzle_con+L_nozzle_div # Total length of the nozzle
 
             if L_nozzle_div <=0 or L_nozzle_con <=0:
@@ -92,7 +92,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
             yp_con=R_t+(1-mth.cos(theta_con))*R_u # point P as defined in the documentation, but for the convergent(y value)
         
             if xp_con<=0 or yp_con<=0 and it<1000:
-                theta_con=theta_con*0.8
+                theta_con=theta_con*0.95
                 it=it+1
                 warnings=warnings|(1<<2);
 
@@ -184,7 +184,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
             b=mth.tan(mth.pi/2-Theta_bell)-2*(mth.tan(mth.pi/2-TH_exit_bell)-mth.tan(mth.pi/2-Theta_bell))/(2*(ye-yp))*yp
             c=xp-a*yp**2-b*yp
             L_nozzle_div=a*ye**2+b*ye+c # Length of divergent part of the nozzle
-            L_nozzle_con=((mth.sqrt(con_ratio)-1)*R_t+R_u*(1/mth.cos(theta_con)-1))/mth.tan(theta_con) # Length of convergent part of the nozzle
+            L_nozzle_con=((mth.sqrt(con_ratio)-1)*R_t-R_u*(1-mth.cos(theta_con)))/mth.tan(theta_con)+R_u*mth.sin(theta_con) # Length of convergent part of the nozzle
             L_tot=L_nozzle_con+L_nozzle_div #Total length of the nozzle
         
             if L_nozzle_div <=0 or L_nozzle_con <=0:
