@@ -350,7 +350,7 @@ class RegenerativeCool:
             local_f
             - (
                 1
-                / (-2 * math.log10(roughness / Dr / 3.7 + 2.51 / (local_Re * local_f)))
+                / (-2 * math.log10(roughness / Dr / 3.7 + 2.51 / (local_Re * math.sqrt(local_f))))
             )
             ** 2
         )
