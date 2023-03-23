@@ -386,15 +386,7 @@ class Data:
     #Cooling
     type_variable_nozzle = 0
     type_variable_chamber = 0
-    Dr = 0# [m] hydralic diameter of the coolant channel
-    T_fuel_tanks = 0  # [K] temperature of the fuel tanks, considered the inicial coolant temperature
-    n = 1  # number of coolant chanels
-    default_coating = Mt.Materials(
-        "default_coating", 0.0, 0.0, 0.0, 0.0, 1, 0
-    )  # default coolant
-    default_coating_thickness = 0  # default coolant thickness
-    T0 = 0  # [k] default inicial temperature
-    perimeter_percentage = 0  # percentage of the perimeter used for cooling chambers
+    
     maximum_thermal_stress=0 #Maximum thermal stress in Pa
     safety_factor_cooling=0 #Safety factor in respect to the stress
     max_temperature_inner=0 #maximum temperature of the inner wall [k]
