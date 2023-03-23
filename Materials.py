@@ -66,7 +66,7 @@ LE5     = ReferenceEngine(3.65e6, 1.03e5, 140.0, 0.068, 23.33, 343.83, 1.1, Inc_
 SSME    = ReferenceEngine(2.04e7, 2.28e6, 77.5,  0.138, 512.6, 361.89, 1.2, Inc_718, D6AC_Steel, D6AC_Steel, 0.0907, 0.1984, 0.0737, 0.1955, 0.2763, 0.1654, 3177)#Stage Combustion Cycle Reference #fixrhoprop
 
 #Mass estimation function Nozzle Tubes:
-def Mass(Pc, material_N, material_V, arear, rt, mprop, FS, rhoprop, cycle, x, R, t):
+def Mass(Pc, material_N, material_V, arear, rt, mprop, FS, cycle, x, R, t, O_prop,F_prop,O_F):
     
     total_surf = 0
     Mass_warnings = 0
@@ -87,7 +87,9 @@ def Mass(Pc, material_N, material_V, arear, rt, mprop, FS, rhoprop, cycle, x, R,
             Mass_warnings=Mass_warnings|(1<<0)
         else:
             Mass_warnings = Mass_warnings & (~(1<<0))
-
+    #Density of the Propellant:
+    rho_prop = ((O_prop*F_prop)*(1+OF))/(F_prop*OF+O_prop)
+    
     #Nozzle Mass:
     for i in range(len(x)-1):
         if t[i] < 0.001:
@@ -102,15 +104,15 @@ def Mass(Pc, material_N, material_V, arear, rt, mprop, FS, rhoprop, cycle, x, R,
     
     #Cooling Mass:
     TubeMass = reference.mfrac_tube*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*(((material_N.yieldstress_l/FS)/(reference.Material_NCG.yieldstress_l/reference.FS))**(-1))*((arear/reference.arear)**2)*((rt/reference.rt)**2)) #Dimensionless Nozzle Tube Mass
-    ManifoldMass = reference.mfrac_manifold*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*((mprop/reference.mprop)**1)*((material_N.yieldstress_l/reference.Material_NCG.yieldstress_l)**(-1))*((rhoprop/reference.rhoprop)**(-1))*((rt/reference.rt)**2)) #Dimensionless Nozzle Manifold Mass
+    ManifoldMass = reference.mfrac_manifold*(((Pc/reference.pc)**1)*((material_N.density/reference.Material_NCG.density)**1)*((mprop/reference.mprop)**1)*((material_N.yieldstress_l/reference.Material_NCG.yieldstress_l)**(-1))*((rho_prop/reference.rhoprop)**(-1))*((rt/reference.rt)**2)) #Dimensionless Nozzle Manifold Mass
 
     if (TubeMass + ManifoldMass) < 0:
         Mass_error=Mass_error|(1<<1)
         return 0, Mass_error,Mass_warnings
 
     #TurboPump Mass
-    #PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.15)*((material_P.density/reference.material_P.density)**1)*(((material_P.yieldstress_l/FS)/(reference.Material_p.yieldstress_l/reference.FS)*(-1)))*((mprop/reference.mprop)**0.9)*((rhoprop/reference.rhoprop)**(-0.45))*((Ns/Ns0)**(-0.6)))
-    PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.53)*((mprop/reference.mprop)**0.53)*(rhoprop/reference.rhoprop)**(-0.53)) #Dimensionless mass of turbopump (historic data method)
+    #PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.15)*((material_P.density/reference.material_P.density)**1)*(((material_P.yieldstress_l/FS)/(reference.Material_p.yieldstress_l/reference.FS)*(-1)))*((mprop/reference.mprop)**0.9)*((rho_prop/reference.rhoprop)**(-0.45))*((Ns/Ns0)**(-0.6)))
+    PumpMass = reference.mfrac_pump*(((Pc/reference.pc)**0.53)*((mprop/reference.mprop)**0.53)*(rho_prop/reference.rhoprop)**(-0.53)) #Dimensionless mass of turbopump (historic data method)
     
     if PumpMass < 0:
         Mass_error=Mass_error|(1<<2)
@@ -118,7 +120,7 @@ def Mass(Pc, material_N, material_V, arear, rt, mprop, FS, rhoprop, cycle, x, R,
 
 
     #Valves
-    ValveMass = reference.mfrac_valve*(((Pc/reference.pc)**1.0)*((material_V.density/reference.Material_V.density)**1)*(((material_V.yieldstress_l/FS)/(reference.Material_V.yieldstress_l/reference.FS))**(-1))*((mprop/reference.mprop)**1)*((rhoprop/reference.rhoprop)**(-1)))#Dimensionless mass of Valves
+    ValveMass = reference.mfrac_valve*(((Pc/reference.pc)**1.0)*((material_V.density/reference.Material_V.density)**1)*(((material_V.yieldstress_l/FS)/(reference.Material_V.yieldstress_l/reference.FS))**(-1))*((mprop/reference.mprop)**1)*((rho_prop/reference.rhoprop)**(-1)))#Dimensionless mass of Valves
     
     if ValveMass < 0:
         Mass_error=Mass_error|(1<<3)
