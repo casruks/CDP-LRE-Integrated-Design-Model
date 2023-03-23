@@ -182,7 +182,7 @@ def Main(d : aux.Data):
             warn_nozzle_cooling,
         ) = Coolobj.Run_cooling(
             default.T0,
-            c,
+            Ms.Rhenium.heat_cap,
             default.operationtime,
             nozzle_mass,
             default.eps,
@@ -245,7 +245,7 @@ def Main(d : aux.Data):
             warn_chamber_cooling,
         ) = Coolobj_c.Run_cooling(
             default.T0,
-            c,
+            Ms.Rhenium.heat_cap,
             default.operationtime,
             chamber_mass,
             default.eps,
