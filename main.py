@@ -140,8 +140,8 @@ def Main(d : aux.Data):
         Coolobj = Cooling.CoolingClass()
         Coolobj_c = Cooling.CoolingClass()
 
-        nozzle_mass = Mt.Nozzle_mass(x_noz_cool, y_noz_cool, t_noz, Ms.Rhenium)
-        chamber_mass = Mt.Chamber_mass(
+        nozzle_mass = Ms.Nozzle_mass(x_noz_cool, y_noz_cool, t_noz, Ms.Rhenium)
+        chamber_mass = Ms.Chamber_mass(
             d.Dc, d.Chamber_L, d.ThicknessChamber, Ms.Rhenium
         )
 

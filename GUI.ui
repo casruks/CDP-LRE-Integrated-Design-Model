@@ -66,7 +66,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>7</number>
+         <number>4</number>
         </property>
         <widget class="QWidget" name="global">
          <attribute name="title">
@@ -1352,8 +1352,8 @@
             <widget class="QWidget" name="scrollAreaWidgetContents_7">
              <property name="geometry">
               <rect>
-               <x>-142</x>
-               <y>-138</y>
+               <x>0</x>
+               <y>0</y>
                <width>520</width>
                <height>856</height>
               </rect>
@@ -2888,65 +2888,46 @@
             <widget class="QWidget" name="scrollAreaWidgetContents_13">
              <property name="geometry">
               <rect>
-               <x>0</x>
+               <x>-144</x>
                <y>0</y>
                <width>537</width>
                <height>428</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_9">
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_cool_temp">
-                <property name="text">
-                 <string>End of cooling temperature</string>
+              <item row="0" column="1" colspan="2">
+               <widget class="QComboBox" name="combo_cool_cham">
+                <property name="enabled">
+                 <bool>false</bool>
                 </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="line_cool_temp">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="2">
-               <widget class="QLabel" name="label_Pa_8">
-                <property name="text">
-                 <string>[Pa]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QLineEdit" name="line_cool_loss">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_cool_cham">
-                <property name="text">
-                 <string>Cooling system in combustion chamber</string>
-                </property>
+                <item>
+                 <property name="text">
+                  <string>Heat sink</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Radiation cooling</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Regenerative cooling</string>
+                 </property>
+                </item>
                </widget>
               </item>
               <item row="4" column="0">
-               <spacer name="verticalSpacer_8">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>367</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_cool_loss">
+               <widget class="QLabel" name="label_11">
                 <property name="text">
-                 <string>Pressure losses in cooling channel</string>
+                 <string>Inner wall temperature</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="label_12">
+                <property name="text">
+                 <string>Outer wall temperature</string>
                 </property>
                </widget>
               </item>
@@ -2979,30 +2960,100 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="1" colspan="2">
-               <widget class="QComboBox" name="combo_cool_cham">
-                <property name="enabled">
-                 <bool>false</bool>
+              <item row="7" column="0">
+               <spacer name="verticalSpacer_8">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
                 </property>
-                <item>
-                 <property name="text">
-                  <string>Heat sink</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Radiation cooling</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Regenerative cooling</string>
-                 </property>
-                </item>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>367</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_cool_temp">
+                <property name="text">
+                 <string>End of cooling temperature</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="line_cool_temp">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_cool_loss">
+                <property name="text">
+                 <string>Pressure losses in cooling channel</string>
+                </property>
                </widget>
               </item>
               <item row="2" column="2">
                <widget class="QLabel" name="label_K_5">
+                <property name="text">
+                 <string>[K]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QLabel" name="label_Pa_8">
+                <property name="text">
+                 <string>[Pa]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_cool_cham">
+                <property name="text">
+                 <string>Cooling system in combustion chamber</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="line_cool_loss">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="0">
+               <widget class="QLabel" name="label_13">
+                <property name="text">
+                 <string>maximum thermal stress on wall</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QLineEdit" name="line_cool_Iwall"/>
+              </item>
+              <item row="5" column="1">
+               <widget class="QLineEdit" name="line_cool_Owall"/>
+              </item>
+              <item row="6" column="1">
+               <widget class="QLineEdit" name="line_cool_stress"/>
+              </item>
+              <item row="6" column="2">
+               <widget class="QLabel" name="label_14">
+                <property name="text">
+                 <string>[Pa]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="2">
+               <widget class="QLabel" name="label_15">
+                <property name="text">
+                 <string>[K]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="2">
+               <widget class="QLabel" name="label_16">
                 <property name="text">
                  <string>[K]</string>
                 </property>

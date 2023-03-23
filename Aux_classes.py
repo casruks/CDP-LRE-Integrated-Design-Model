@@ -73,7 +73,7 @@ class Default:
     # T_ox_tanks = 60 #[K] temperature of the oxidiser tanks
     n = 1  # number of coolant chanels
     default_coating = Mt.Materials(
-        "default_coating", 0.0, 0.0, 0.0, 0.0, 1, 0
+        "default_coating", 0.0, 0.0, 0.0, 0.0, 1, 0, 0.0, 0.0, 0.0, 0.0
     )  # default coolant
     default_coating_thickness = 0  # default coolant thickness
     T0 = 293.5  # [k] default inicial temperature

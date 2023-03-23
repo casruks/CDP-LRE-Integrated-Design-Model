@@ -427,6 +427,11 @@ class MainWindow(QMainWindow):
         #Cooling
         self.combo_cool_cham.setCurrentIndex(main.dat[i].type_variable_chamber)
         self.combo_cool_nozz.setCurrentIndex(main.dat[i].type_variable_nozzle)
+        self.combo_cool_temp.setCurrentIndex(main.dat[i].T_after_cool)
+        self.combo_cool_loss.setCurrentIndex(main.dat[i].dptcool_cooling)
+        self.combo_cool_Iwall.setCurrentIndex(main.dat[i].max_temperature_inner)
+        self.combo_cool_Owall.setCurrentIndex(main.dat[i].max_temperature_outer)
+        self.combo_cool_stress.setCurrentIndex(main.dat[i].maximum_thermal_stress)
 
         #Injectors
         self.line_n_oxinj.setText(str(main.dat[i].n_ox))
@@ -602,7 +607,7 @@ class MainWindow(QMainWindow):
             self.label_no_nozz.show()
 
     def cham_mat_changed(self, i : int):
-        main.default.noz_mat_select = main.default.material_list[i]
+        main.default.chamber_mat_select = main.default.material_list[i]
         if(i):
             self.label_dens_cham.hide()
             self.label_yield_cham.hide()
@@ -637,7 +642,7 @@ class MainWindow(QMainWindow):
             self.label_K_cham_2.hide()
             self.label_no_cham.hide()
         else:
-            main.default.noz_mat_select = main.default.coating_list[0]
+            main.default.chamber_mat_select = main.default.coating_list[0]
             self.label_dens_cham.show()
             self.label_yield_cham.show()
             self.label_E_cham.show()
