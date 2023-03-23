@@ -275,8 +275,12 @@ def Main(d : aux.Data):
         # warnings
         dptcool = dptcool + dptcool_c
         dptcool_cooling = dptcool
-        maximum_thermal_stress,safety_factor_cooling, max_temperature_inner,max_temperature_outer=Cooling.outputs(T_outer_wall_chamber,T_outer_wall_nozzle,Tw_wall_chamber_calculated,Tw_wall_nozzle_calculated,Ms.Rhenium,Ms.Rhenium, default.default_coating, d.ThicknessChamber, t_noz, default.default_coating_thickness,y_noz,d.Dc/2 )
-
+        error_out_cool=0
+        err_cooling=0
+        maximum_thermal_stress,safety_factor_cooling, max_temperature_inner,max_temperature_outer,error_out_cool=Cooling.outputs(T_outer_wall_chamber,T_outer_wall_nozzle,Tw_wall_chamber_calculated,Tw_wall_nozzle_calculated,Ms.Rhenium,Ms.Rhenium, default.default_coating, d.ThicknessChamber, t_noz, default.default_coating_thickness,y_noz,d.Dc/2, error_out_cool )
+        err_cooling=err_cooling|error_out_cool
+        err_cooling=err_cooling|err_chamber_cooling
+        err_cooling=err_cooling|err_nozzle_cooling
         
         #Compute Turbo
         dp_cool=np.max(dptcool)
