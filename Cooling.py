@@ -197,7 +197,7 @@ class CoolingClass:
             err = err | (1 << 8)
         if check_positive_args(ploss) == False or ploss > 10**5:
             err = err | (1 << 9)
-        if check_positive_args(m_flow_fuel) == False or m_flow_fuel > 30:
+        if check_positive_args(m_flow_fuel) == False:
             err = err | (1 << 10)
 
         if check_positive_args(self.Q) == False:
