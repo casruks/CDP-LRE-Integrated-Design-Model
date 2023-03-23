@@ -54,6 +54,7 @@ class Default:
     ptf = 1.0e5 #[Pa] Fuel tank oxidizer pressure
     Wmotor = 1.0e6 #[W] Power of the electric motor
     v_loss = 100 #[Pa] valve losses
+    l_def = 0.1 #[-] Default percentage of total mass flow for GG
 
     #Combustion chamber
     SF = 1.0 # Safety factor for thickness estimation, put on advanced inputs
@@ -371,7 +372,7 @@ class Data:
     ptinj = 0.0 #[Pa] Total pressure at injector inlet
     dptop = 0.0 #[Pa] Total pressure rise over oxidizer pump
     dptfp = 0.0 #[Pa] Total pressure rise over fuel pump
-    turbo_m = 0.0 #[kg/s] TOtal mass flow
+    turbo_m = 0.0 #[kg/s] Total mass flow
 
     #Combustion
     h_comb = 0.0 #Conductive heat transfer coefficient in chamber
@@ -385,7 +386,6 @@ class Data:
     #Cooling
     type_variable_nozzle = 0
     type_variable_chamber = 0
-
 
     #Injector
     v_iox = 0.0     # Injection velocity oxidizer [m/s]
