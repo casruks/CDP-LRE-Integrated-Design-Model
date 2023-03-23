@@ -272,6 +272,9 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
         if Mass < 0:
             er = er | (1<<7)
             return(0,0,0,0,0,wr,er)
+        if LengthChamber > 1.5:
+            er = er | (1<<5)
+            return (0, 0, 0, 0, 0, wr,er)
 
     a = default.a
     ro = rho_c
@@ -289,9 +292,7 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
 
     if LengthChamber > 0.7:
         wr = wr | (1 << 8)
-    if LengthChamber > 1.5:
-        er = er | (1<<5)
-        return (0, 0, 0, 0, 0, wr,er)
+
     if bool == 0:
         return (heattransfer,dchamber,Thickness,LengthChamber,Re,wr,er)
     else:
