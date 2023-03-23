@@ -343,18 +343,40 @@ def Main(d : aux.Data):
     Reliability = Rel.Reliability(default, d[-1].time, d[-1].Thrust, d[-1].Thrust, default.val)
     
     #Compute Mass:
-    NozzleMass = Ms.Nozzle_mass(x_noz,y_noz,t_noz,Ms.D6AC_Steel)
-    print('Nozzle mass =', NozzleMass)
     ChamberMass = Comb.CombustionChamber(p_new, d[-1].At, prop, Ms.D6AC_Steel, default, d[-1].v_if, d[-1].v_iox, d[-1].Tc, d[-1].O_F, 1,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est)[5]
     IgnitorMass, mfuel, mox, wr = Ign.Igniters(d[-1].m_nozz,prop,default,d[-1].Tc,d[-1].O_F,default.type)
-    #! Ns- pump specific speed not yet implemented
-    #Mass = ChamberMass + IgnitorMass #+ Ms.Mass(p_new,Ms.Rhenium,Ms.Rhenium,Ms.Rhenium,d[-1].Eps,d[-1].A_t,0,aux.Default.Safety_factor,0,Turbo.Ns)
-    rho_prop = Ms.RhoProp(prop.f_dens_l,prop.o_dens,aux.Data.O_F)
-    #Mass = ChamberMass + IgnitorMass +NozzleMass + Ms.Mass(p_new,Ms.Rhenium,Ms.Rhenium,d[-1].Eps,d[-1].A_t, d[-1].m_nozz ,aux.Default.Safety_factor,rho_prop,'SC','try')
-    #print(NozzleMass, ChamberMass, IgnitorMass) #kg
-     # #Computing costs:
-    # n_engine = 1
-    # #Cost = Ms.Cost(Mass, Reliability, n_engine)
+    #Inputs for Ms.Mass
+    ## chamber pressure
+    ##nozzle material from aux
+    ##valve material from aux
+    ##Area ratio
+    ##Throat Area
+    ##Mass flow rate
+    ##Safety Factor
+    ##Cycle type (has to be changed in aux to affect Mass function)
+    ##nozzle x coordinate
+    ##nozzle y coordinate
+    ##nozzle thickness
+    ##Density of the oxidizer
+    ##Density of the Fuel
+    ##Oxidizer to Fuel Ratio
+    Mass = ChamberMass + IgnitorMass + Ms.Mass(p_new,aux.Default.noz_mat_select,aux.Default.valv_mat_select,d[-1].Eps,d[-1].A_t, d[-1].m_nozz,aux.Default.Safety_factor,x_noz,y_noz,t_noz,prop.o_dens,prop.f_dens_l,aux.Data.O_F)
+    #Output:
+    ##Total Mass of the engine
+    
+    #Compute Cost:
+    #Inputs for Ms.Cost
+    ##Mass of the engine
+    ##Tech Readiness Factor
+    ##Prior Experience Factor
+    ##Reliability
+    ##Learning Factor
+    ##Cycle type
+    Cost = Ms.Cost(Mass,aux.Default.tech_ready,aux.Default.exp_factor,Reliability,aux.Defualt.learn_factor,aux.Defualt.cycle_types)
+    #Outputs:
+    ##Cost of the engine
+    
+   
 
     print("Calculations finished")
     return 0,0,0,0,0,0,0,7,0,0,0,0,0,0
