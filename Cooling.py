@@ -361,7 +361,7 @@ class RegenerativeCool:
             self.auxiliary_calculation_f_for_pressureloss, 1, args=(Dr, local_Re)
         )
         delta_p = local_f * m_flow_fuel**2 / (2 * self.Prop.f_dens_l) * L / Dr
-        return delta_p * 10**6
+        return delta_p
 
     def Inicialise(
         self,
