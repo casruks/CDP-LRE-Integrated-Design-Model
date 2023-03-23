@@ -387,6 +387,7 @@ class Data:
     type_variable_nozzle = 0
     type_variable_chamber = 0
     
+    T_after_cool = 0
     maximum_thermal_stress=0 #Maximum thermal stress in Pa
     safety_factor_cooling=0 #Safety factor in respect to the stress
     max_temperature_inner=0 #maximum temperature of the inner wall [k]
