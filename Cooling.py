@@ -9,7 +9,6 @@ import Materials as Mt
 # import Materials_2 as Mt
 from statistics import mean
 import Aux_classes
-import Mass as Ms
 
 
 # To do: calculate the mass flow required in order to end temperature to be equal to operating temperature!
@@ -39,7 +38,7 @@ import Mass as Ms
 # General cooling class
 # Can be used to organise/hold all types of cooling for a specific application
 class CoolingClass:
-    def __init__(self):
+    def _init_(self):
         self.heatsink = Heatsink()
         self.radiationcool = RadiationCool()
         self.regencool = RegenerativeCool()
@@ -212,8 +211,8 @@ class CoolingClass:
         if check_positive_args(T_co_calculated) == False or T_co_calculated > 1000:
             err = err | (1 << 7)
 
-        if check_positive_args(Tw_wall_calculated) == False or any(
-            x > TestTemp for x in Tw_wall_calculated
+        if check_positive_args(Tw_wall_calculated) == False or np.any(
+            [x > TestTemp for x in Tw_wall_calculated]
         ):
             err = err | (1 << 8)
         if check_positive_args(ploss) == False or ploss > 10**6:
@@ -228,7 +227,7 @@ class CoolingClass:
 
         # if(m_flow_fuel > 6000 or Tw_wall_calculated[-1] > 2000 or T_co_calculated > 1000 or ploss > 10**5):
         # warn=warn|(1<<1)
-        if T_co_calculated > Tw_wall_calculated[-1]:
+        if T_co_calculated > Tw_wall_calculated[-1] and type_variable == 2:
             err = err | (1 << 6)
         return (
             T_co_calculated,
@@ -246,7 +245,7 @@ class CoolingClass:
 # Calculates the Temperature at the wall after a time interval of operation time
 # Q is the total energy transfered, and is in J
 class Heatsink:
-    def __init__(self, Q=-1, m=-1):
+    def _init_(self, Q=-1, m=-1):
         self.Q = Q
         # heat
         self.m = m
@@ -267,7 +266,7 @@ class Heatsink:
 # Calculates the equilibrium temperature, taking into account radiated heat
 # Q is a power, and is in W
 class RadiationCool:
-    def __init__(self, Q=-1, t=-1):
+    def _init_(self, Q=-1, t=-1):
         self.Q = Q
         # heat
         self.t = t
@@ -313,7 +312,7 @@ class RadiationCool:
 # Note on units
 # Q is a power, and is in W
 class RegenerativeCool:
-    def __init__(self):
+    def _init_(self):
         self.Q = 0
         # heat
         self.t = 0
@@ -350,7 +349,12 @@ class RegenerativeCool:
             local_f
             - (
                 1
-                / (-2 * math.log10(roughness / Dr / 3.7 + 2.51 / (local_Re * math.sqrt(local_f))))
+                / (
+                    -2
+                    * math.log10(
+                        roughness / Dr / 3.7 + 2.51 / (local_Re * math.sqrt(local_f))
+                    )
+                )
             )
             ** 2
         )
@@ -474,7 +478,7 @@ class RegenerativeCool:
         if overwriteA == False:
             A = [self.FindA(y, L, len(y), i) for i in range(len(y))]
         else:
-            A = [A for i in range(len(y))]
+            A = [A / len(y) for i in range(len(y))]
 
         match case_run:
             case 0:
@@ -513,7 +517,7 @@ def check_positive_args(*args):
                 print("All elements of numerical arguments must be positive")
                 return False
         else:
-            raise ValueError("Unsupported argument type: {type(arg).__name__}")
+            raise ValueError("Unsupported argument type: {type(arg)._name_}")
     return True
 
 
@@ -568,9 +572,9 @@ def outputs(
 ):
     # pLACE_HOLDER_THERMAL_EXPANSION_COEFFICIENT = 6.12 * 10**-6
     T_outer_wall_chamber = np.array(T_outer_wall_chamber)
-    T_outer_wall_chamber = np.array(T_outer_wall_nozzle)
-    T_outer_wall_chamber = np.array(Tw_wall_chamber_calculated)
-    T_outer_wall_chamber = np.array(Tw_wall_nozzle_calculated)
+    T_outer_wall_nozzle = np.array(T_outer_wall_nozzle)
+    Tw_wall_chamber_calculated = np.array(Tw_wall_chamber_calculated)
+    Tw_wall_nozzle_calculated = np.array(Tw_wall_nozzle_calculated)
 
     max_temperature_inner = np.maximum(
         np.max(T_outer_wall_chamber), np.max(T_outer_wall_nozzle)
