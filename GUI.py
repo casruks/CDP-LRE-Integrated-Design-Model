@@ -384,7 +384,7 @@ class MainWindow(QMainWindow):
     def Output(self, i : int):
         self.line_Isp.setText(str(main.dat[i].Isp))
         self.line_cstar.setText(str(main.dat[i].cstar))
-        self.line_m.setText(str(main.dat[i].m))
+        self.line_m.setText(str(main.dat[i].turbo_m))
         self.line_prop_mass.setText(str(main.dat[i].Mprop))
         self.line_mass.setText(str(main.dat[i].Mtot))
         self.line_cost.setText(str(main.dat[i].cost))
@@ -427,6 +427,11 @@ class MainWindow(QMainWindow):
         #Cooling
         self.combo_cool_cham.setCurrentIndex(main.dat[i].type_variable_chamber)
         self.combo_cool_nozz.setCurrentIndex(main.dat[i].type_variable_nozzle)
+        self.line_cool_temp.setCurrentIndex(main.dat[i].T_after_cool)
+        self.line_cool_loss.setCurrentIndex(main.dat[i].dptcool_cooling)
+        self.line_cool_Iwall.setCurrentIndex(main.dat[i].max_temperature_inner)
+        self.line_cool_Owall.setCurrentIndex(main.dat[i].max_temperature_outer)
+        self.line_cool_stress.setCurrentIndex(main.dat[i].maximum_thermal_stress)
 
         #Injectors
         self.line_n_oxinj.setText(str(main.dat[i].n_ox))
