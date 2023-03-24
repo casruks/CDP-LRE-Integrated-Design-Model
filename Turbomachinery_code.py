@@ -145,7 +145,7 @@ class EX:
 
         if(not root["success"] or abs(sum(root["fun"])) > 0.01):
             self.br = self.br | 1<<2
-            return np.Inf
+            return sum(root["fun"])*9999
         else:
             self.br = self.br & ~(1<<2)
 
@@ -250,7 +250,7 @@ class SC:
 
         if(not root["success"] or abs(sum(root["fun"])) > 0.01):
             self.br = self.br | 1<<2
-            return np.Inf
+            return sum(root["fun"])*9999
         else:
             self.br = self.br & ~(1<<2)
 
@@ -361,11 +361,11 @@ class CB:
 
     #Optimize for maximum chamber pressure
     def opt(self,vars):
-        root = least_squares(self.equations,[1.0e6,1.0e7,1.0e7], args = vars, bounds = ((10.0,self.pa,10.0),(10.0e10,10.0e10,10.0e10)))
+        root = least_squares(self.equations,[1.0e6,1.0e7,1.0e7], args = vars, bounds = ((1000.0,self.pa*1.2,1000.0),(10.0e10,10.0e10,10.0e10)))
 
         if(not root["success"] or abs(sum(root["fun"])) > 0.01):
             self.br = self.br | 1<<2
-            return np.Inf
+            return sum(root["fun"])*9999
         else:
             self.br = self.br & ~(1<<2)
 
@@ -466,7 +466,7 @@ class GG:
         self.dptop = root["x"][0]; self.pt1 = root["x"][1]; self.dptfp = root["x"][2]; self.ptinj = root["x"][3];
         if(not root["success"] or abs(sum(root["fun"])) > 0.01):
             self.br = self.br | 1<<2
-            return np.Inf
+            return sum(root["fun"])*9999
         else:
             self.br = self.br & ~(1<<2)
         
@@ -614,7 +614,7 @@ class EL:
 
     #Initialize values
     def __init__(self, DF : aux.Default, prop : aux.Propellant, O_F : float, Tf_cool : float, dptcool : float, m : float):
-        print("Coolant bleed cycle selected")
+        print("Electrical motor cycle selected")
         self.ptanko = DF.p_to
         self.ptankf = DF.ptf
         self.prop = prop
@@ -632,7 +632,14 @@ class EL:
     #Obtain results, no optimization procedure needed for this cycle
     def results(self):
         #Computation of results
-        self.dptop, self.dptfp, self.ptinj = fsolve(self.equations,[1.0e6,1.0e6,1.0e6])
+        root = least_squares(self.equations,[1.0e6,1.0e6,1.0e6])
+        self.dptop, self.dptfp, self.ptinj = root["x"][0], root["x"][1], root["x"][2]
+        if(not root["success"] or abs(sum(root["fun"])) > 0.01):
+            self.br = self.br | 1<<2
+            return sum(root["fun"])*9999
+        else:
+            self.br = self.br & ~(1<<2)
+        
         self.Wop = self.O_F/(self.O_F+1.0) * self.m * self.dptop / (self.eff_po*self.prop.o_dens)
         self.Wfp = 1.0/(self.O_F+1.0) * self.m * self.dptfp / (self.eff_pf*self.prop.f_dens_l)
         self.mt = self.m
@@ -669,6 +676,16 @@ prop = aux.Propellant(0)
 #main Function
 if __name__ == '__main__':
     print('Loading...')
-    default.cycle_type = 2 # 0:EX (expander) - 1:CB (coolant bleed) - 2:GG (gas generator) - 3:SC (staged combustion) - 4:EL (electrical) - 5:PF (pressure fed)
-    print(TurboM(default, prop, O_F_, Pa_, Tf_cool_, dptcool_, m_))
+    default.cycle_type = 1 # 0:EX (expander) - 1:CB (coolant bleed) - 2:GG (gas generator) - 3:SC (staged combustion) - 4:EL (electrical) - 5:PF (pressure fed)
+    
+    #print(TurboM(default, prop, O_F_, Pa_, Tf_cool_, dptcool_, m_))
+    counter = 0
+    for m_ in np.linspace(0.1,400,100):
+        for Tf_cool_ in np.linspace(100,900,100):
+            ptinj_, Wop_, Wfp_, Wt_, l_, mt_, br_ = TurboM(default, prop, O_F_, Pa_, Tf_cool_, dptcool_, m_)
+            if(br_):
+                print("error for m=" + str(m_) + ", Tf=" + str(Tf_cool_))
+                counter = counter + 1
+
+    print(counter)
     print('\nProcess Terminated')
