@@ -427,11 +427,11 @@ class MainWindow(QMainWindow):
         #Cooling
         self.combo_cool_cham.setCurrentIndex(main.dat[i].type_variable_chamber)
         self.combo_cool_nozz.setCurrentIndex(main.dat[i].type_variable_nozzle)
-        self.line_cool_temp.setCurrentIndex(main.dat[i].T_after_cool)
-        self.line_cool_loss.setCurrentIndex(main.dat[i].dptcool_cooling)
-        self.line_cool_Iwall.setCurrentIndex(main.dat[i].max_temperature_inner)
-        self.line_cool_Owall.setCurrentIndex(main.dat[i].max_temperature_outer)
-        self.line_cool_stress.setCurrentIndex(main.dat[i].maximum_thermal_stress)
+        self.line_cool_temp.setText(str(main.dat[i].T_after_cool))
+        self.line_cool_loss.setText(str(main.dat[i].dptcool_cooling))
+        self.line_cool_Iwall.setText(str(main.dat[i].max_temperature_inner))
+        self.line_cool_Owall.setText(str(main.dat[i].max_temperature_outer))
+        self.line_cool_stress.setText(str(main.dat[i].maximum_thermal_stress))
 
         #Injectors
         self.line_n_oxinj.setText(str(main.dat[i].n_ox))
