@@ -66,7 +66,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>4</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="global">
          <attribute name="title">
@@ -83,8 +83,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>503</width>
-               <height>428</height>
+               <width>549</width>
+               <height>414</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_4">
@@ -317,8 +317,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>421</width>
-               <height>428</height>
+               <width>461</width>
+               <height>422</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_5">
@@ -566,8 +566,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>393</width>
-               <height>443</height>
+               <width>446</width>
+               <height>414</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -684,8 +684,11 @@
               </item>
               <item row="4" column="1">
                <widget class="QLineEdit" name="line_conv_rat_max">
+                <property name="inputMask">
+                 <string/>
+                </property>
                 <property name="text">
-                 <string>4.0</string>
+                 <string>5.0</string>
                 </property>
                </widget>
               </item>
@@ -710,8 +713,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>395</width>
-               <height>428</height>
+               <width>472</width>
+               <height>414</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_3">
@@ -896,8 +899,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>393</width>
-               <height>443</height>
+               <width>389</width>
+               <height>435</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_10">
@@ -1076,8 +1079,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>393</width>
-               <height>443</height>
+               <width>419</width>
+               <height>414</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_11">
@@ -1183,8 +1186,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>579</width>
-               <height>428</height>
+               <width>635</width>
+               <height>414</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_13">
@@ -1354,8 +1357,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>520</width>
-               <height>856</height>
+               <width>567</width>
+               <height>902</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_15">
@@ -1983,8 +1986,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>393</width>
-               <height>443</height>
+               <width>389</width>
+               <height>435</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_16">
@@ -2141,7 +2144,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>4</number>
+         <number>0</number>
         </property>
         <property name="elideMode">
          <enum>Qt::ElideNone</enum>
@@ -2164,8 +2167,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>393</width>
-               <height>443</height>
+               <width>389</width>
+               <height>435</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout">
@@ -2374,8 +2377,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>393</width>
-               <height>443</height>
+               <width>389</width>
+               <height>435</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_6">
@@ -2581,8 +2584,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>393</width>
-               <height>443</height>
+               <width>389</width>
+               <height>435</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_8">
@@ -2746,8 +2749,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>393</width>
-               <height>443</height>
+               <width>389</width>
+               <height>435</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_2">
@@ -2888,10 +2891,10 @@
             <widget class="QWidget" name="scrollAreaWidgetContents_13">
              <property name="geometry">
               <rect>
-               <x>-144</x>
+               <x>0</x>
                <y>0</y>
-               <width>537</width>
-               <height>428</height>
+               <width>588</width>
+               <height>414</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_9">
@@ -3030,13 +3033,25 @@
                </widget>
               </item>
               <item row="4" column="1">
-               <widget class="QLineEdit" name="line_cool_Iwall"/>
+               <widget class="QLineEdit" name="line_cool_Iwall">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
               <item row="5" column="1">
-               <widget class="QLineEdit" name="line_cool_Owall"/>
+               <widget class="QLineEdit" name="line_cool_Owall">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
               <item row="6" column="1">
-               <widget class="QLineEdit" name="line_cool_stress"/>
+               <widget class="QLineEdit" name="line_cool_stress">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
               <item row="6" column="2">
                <widget class="QLabel" name="label_14">
@@ -3080,8 +3095,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>393</width>
-               <height>443</height>
+               <width>415</width>
+               <height>414</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_12">
@@ -3224,8 +3239,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>393</width>
-               <height>443</height>
+               <width>389</width>
+               <height>435</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_14">
@@ -3291,7 +3306,7 @@
      <x>0</x>
      <y>0</y>
      <width>1316</width>
-     <height>24</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
