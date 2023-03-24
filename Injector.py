@@ -158,13 +158,13 @@ def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
 
     if (dp_ox/p_c) < eta_s:
         wr = wr|(1<<2)
-        print('dp_ox (', InjType,') <', eta_s,' p_c!')
+        print('dp_ox <', eta_s,' p_c!')
     else:
         wr = wr&(~(1<<2))
 
     if (dp_f/p_c) < eta_s:
         wr = wr|(1<<3)
-        print('dp_f (', InjType,') <', eta_s,' p_c!')
+        print('dp_f <', eta_s,' p_c!')
     else:
         wr = wr&(~(1<<3))
 
@@ -179,7 +179,7 @@ def validateInj():
     m = ((OF+1)/(OF))*359.43
     p_inj = 421.3e5
     #Default.dp_state = True
-    #Default.dp_user = 0.2
+    #Default.dp_user = 0.59
     #Default.dp_user = (421.3e5 - 207.26e5)/207.26e5
     #Propellant.f_dens_l = 804.59
     print('1) dp should be:', (p_inj-p_c)*1e-5, '[bar]')
@@ -206,10 +206,13 @@ def verification():
 
     #a**4 sweeps
     a = 10
-    lst_pc = np.linspace(1e5, 500e5, a)
+    lst_pc = np.linspace(1e5, 300e5, a)
     lst_m = np.linspace(1, 800, a)
     lst_OF = np.linspace(0.1, 10, a)
     lst_p_inj = np.linspace(1e5, 100e6, a)
+
+    Default.dp_state = True
+    Default.dp_user = 0.2
 
     for p_c in lst_pc:
         for m in lst_m:
