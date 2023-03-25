@@ -222,7 +222,7 @@ class SC:
     #Obtain results, calling optimization procedure and then computing variables of interest
     def results(self):
         #Minimization
-        res = minimize(self.opt, [1.0e5,0.01], method = 'Nelder-Mead', bounds=[[self.pa*1.2,10.0e10],[1.0e-5,1.0]])
+        res = minimize(self.opt, [1.0e5,0.01], method = 'Nelder-Mead', bounds=[[self.pa*1.2,10.0e10],[1.0e-5,0.9]])
         self.pt2 = res["x"][0]
         self.l = res["x"][1]
 
@@ -335,7 +335,7 @@ class CB:
     #Obtain results, calling optimization procedure and then computing variables of interest
     def results(self):
         #Minimization
-        res = minimize(self.opt, [5.0e5,0.01], method = 'Nelder-Mead', bounds=[[self.pa*1.2,1.0e12],[1.0e-5,1.0]])
+        res = minimize(self.opt, [5.0e5,0.01], method = 'Nelder-Mead', bounds=[[self.pa*1.2,1.0e12],[1.0e-5,0.9]])
         self.pt2 = res["x"][0]
         self.l = res["x"][1]
 
@@ -361,7 +361,7 @@ class CB:
 
     #Optimize for maximum chamber pressure
     def opt(self,vars):
-        root = least_squares(self.equations,[1.0e6,1.0e7,1.0e7], args = vars, bounds = ((1000.0,self.pa*1.2,1000.0),(10.0e10,10.0e10,10.0e10)))
+        root = least_squares(self.equations,[1.0e6,1.0e7,1.0e7], args = vars, bounds = ((1000.0,self.pa*1.2,1000.0),(10.0e10,10.0e10,10.0e10)), max_nfev=9999)
 
         if(not root["success"] or abs(sum(root["fun"])) > 0.01):
             self.br = self.br | 1<<2
@@ -370,17 +370,17 @@ class CB:
             self.br = self.br & ~(1<<2)
 
         Isp_m = self.get_Isp_m(root["x"][1])
-        Isp_a = self.get_Isp_a(root["x"][1], vars[0], vars[1])
-        return -(Isp_m + Isp_a*(vars[1]/(1.0-vars[1])) * 1.0/(self.O_F+1.0))/(1.0+(vars[1]/(1.0-vars[1])) * 1.0/(self.O_F+1.0))
+        Isp_a = self.get_Isp_a(root["x"][1], vars[0])
+        return -(Isp_m + Isp_a*(vars[1]/(1.0-vars[1]))/(self.O_F+1.0))/(1.0+(vars[1]/(1.0-vars[1]))/(self.O_F+1.0))
     
     #Get Isp of aux nozzle
     def get_Isp_m(self,pinj): #temporaty, needs modification
         return NT.Turbine_nozzle(self.m,pinj,self.prop,self.pa,self.df,self.prop.h_fuel,self.prop.h_ox,self.prop.f_dens_g,self.prop.o_dens,self.O_F)
     
     #get Isp of open cycle auxiliary nozzle
-    def get_Isp_a(self,pt1,pt2,l):
+    def get_Isp_a(self,pt1,pt2):
         T2t = self.Tf_cool*(pt2/pt1)**((self.prop.f_gamma-1.0)/self.prop.f_gamma)
-        return (l/(1.0-l))*self.m_F*math.sqrt(2.0*self.prop.R_f*T2t*self.prop.f_gamma/(self.prop.f_gamma-1.0) * (1.0 - (self.pa/pt2)**((self.prop.f_gamma-1.0)/self.prop.f_gamma)))
+        return math.sqrt(2.0*self.prop.R_f*T2t*self.prop.f_gamma/(self.prop.f_gamma-1.0) * (1.0 - (self.pa/pt2)**((self.prop.f_gamma-1.0)/self.prop.f_gamma)))
 
     #System of equations to be solved
     def equations(self,vars,p2t,l):
