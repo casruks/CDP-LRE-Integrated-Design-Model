@@ -50,13 +50,13 @@ def TurboM(Default : aux.Default, prop : aux.Propellant, O_F : float, p_a : floa
             dptvalve = Default.v_loss
             dptlines = 0.0
             dptmixing = 0.0
-            return [((Default.p_to-dptvalve-dptlines)*O_F+Default.ptf-dptvalve-dptlines)/(1.0+O_F) - dptmixing, 0.0, 0.0, 0.0, 0]
+            return [((Default.p_to-dptvalve-dptlines)*O_F+Default.ptf-dptvalve-dptlines)/(1.0+O_F) - dptmixing, 0.0, 0.0, 0.0, 0.0, m, 0]
         case 6: #Combustion tap off cycle (currently unsuported)
             turbo = TO(Default, prop, O_F, p_a, Tf_cool, dptcool, m) #Will not be currently implmented
-            return [0, 0, 0, 0, 1] #Returns 1 in last position, indicating aux to break
+            return [0, 0, 0, 0, 0, 0, 1] #Returns 1 in last position, indicating aux to break
         case _:
             print("Cycle Not recognized")
-            return [0, 0, 0, 0, 1] #Returns 1 in last position, indicating aux to break
+            return [0, 0, 0, 0, 0, 0, 1] #Returns 1 in last position, indicating aux to break
     
     turbo.results();
     return [turbo.ptinj, turbo.Wop, turbo.Wfp, turbo.Wt, turbo.l, turbo.mt, turbo.br] #Returns 0 in last position, indicating aux to continue
@@ -665,11 +665,11 @@ class EL:
 
 
 #Values used during tests, corresponding to Global or software input
-O_F_ = 5.0 #[-]
+O_F_ = 6.0 #[-]
 Pa_ = 1.0e5 #[Pa] ambient pressure
-Tf_cool_ = 500.0 #[K] temperature after cooling
+Tf_cool_ = 248.0 #[K] temperature after cooling
 dptcool_ = 1.0e5 #[Pa] pressure drop in cooling channel
-m_ = 2.0 #[kg/s] mass flow in the nozzle
+m_ = 456.0 #[kg/s] mass flow in the nozzle
 default = aux.Default(0)
 prop = aux.Propellant(0)
 
@@ -678,7 +678,7 @@ if __name__ == '__main__':
     print('Loading...')
     default.cycle_type = 1 # 0:EX (expander) - 1:CB (coolant bleed) - 2:GG (gas generator) - 3:SC (staged combustion) - 4:EL (electrical) - 5:PF (pressure fed)
     
-    #print(TurboM(default, prop, O_F_, Pa_, Tf_cool_, dptcool_, m_))
+    print(TurboM(default, prop, O_F_, Pa_, Tf_cool_, dptcool_, m_))
     counter = 0
     for m_ in np.linspace(0.1,400,100):
         for Tf_cool_ in np.linspace(100,900,100):

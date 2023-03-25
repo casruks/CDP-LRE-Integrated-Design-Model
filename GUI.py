@@ -260,6 +260,8 @@ class MainWindow(QMainWindow):
                 msg.setText("Error in cooling calculation - mass flow is negative or larger 30 kg/s")
             if (err_cool & (1<<11)):
                 msg.setText("Error in cooling calculation - Heat is negative")
+            if (err_cool & (1<<12)):
+                msg.setText("Error in cooling calculation - Initial temperature is larger than the final temperature")
 
             #Mass
             if (err_mass & (1<<0)):
@@ -418,6 +420,26 @@ class MainWindow(QMainWindow):
         self.line_Mc.setText(str(main.dat[i].chambermass))
 
         #turbo
+        if (main.dat[i].W_Opump == 0.0 or main.dat[i].W_Fpump == 0):
+            self.line_Opump_power.hide();
+            self.label_Opump_power.hide();
+            self.lalbel_W_Opump.hide();
+            self.line_Fpump_power.hide();
+            self.label_Fpump_power.hide();
+            self.lalbel_W_Fpump.hide();
+            self.line_Turb_power.hide();
+            self.label_Turb_power.hide();
+            self.lalbel_W_turb.hide();
+        else:
+            self.line_Opump_power.show();
+            self.label_Opump_power.show();
+            self.lalbel_W_Opump.show();
+            self.line_Fpump_power.show();
+            self.label_Fpump_power.show();
+            self.lalbel_W_Fpump.show();
+            self.line_Turb_power.show();
+            self.label_Turb_power.show();
+            self.lalbel_W_turb.show();
         self.line_Opump_power.setText(str(main.dat[i].W_Opump))
         self.line_Fpump_power.setText(str(main.dat[i].W_Fpump))
         self.line_Turb_power.setText(str(main.dat[i].W_turb))
