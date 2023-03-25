@@ -173,7 +173,7 @@ class Propellant:
         self.o_dens = 1141.0  # Oxidizer density
         self.ocp = 14307.0  # oxidizer cp
         self.h_ox = -12.979  # oxidizer enthalpy
-        self.o_lamb = 1.0e-6
+        self.o_lamb =  0.4e-6
         self.o_nist_enthalpy_coef = [
             20.91,
             10.72,
@@ -276,7 +276,7 @@ class Propellant:
         self.fcp = 1.88  # fuel cp
         self.h_fuel = -1758.456  # fuel enthalpy
         self.R_f = 4.75  # fuel gas constant
-        self.f_lamb = 115e-3
+        self.f_lamb = 0.0078e-4
         self.fmiu = 2.166e-6
         self.f_nist_enthalpy_coef = []  # for shomate equation
         self.heatingvalue = -43100  # for the fuel only!
@@ -293,7 +293,7 @@ class Propellant:
         self.fcp = 111.7 / 46.0684 * 10**3  # fuel cp
         self.h_fuel = -234  # fuel enthalpy
         self.R_f = 8.314 / 46.0684 * 10**3  # fuel gas constant
-        self.f_lamb = 166.4e-3
+        self.f_lamb = 0.0081e-4
         self.fmiu = 1199.4e-6
         self.f_nist_enthalpy_coef = []  # for shomate equation
         self.heatingvalue = -29672  # for the fuel only!
@@ -314,7 +314,7 @@ class Propellant:
         self.fcp = 164.05 / 60.098 * 10**3  # fuel cp
         self.h_fuel = 83.3 * 10**3 / 60.0983  # fuel enthalpy
         self.R_f = 8.314 / 60.0983 * 10**3  # fuel gas constant
-        self.f_lamb = 168e-3
+        self.f_lamb = 0.011e-4
         self.fmiu = 1.1071e-05
         self.f_nist_enthalpy_coef = []  # for shomate equation
         self.heatingvalue = -32928  # for the fuel only!
@@ -332,7 +332,7 @@ class Propellant:
         self.fcp = 2231  # fuel cp
         self.h_fuel = -74.87  # fuel enthalpy
         self.R_f = 8.314 / 16.0425 * 10**3  # fuel gas constant
-        self.f_lamb = 0.033937
+        self.f_lamb = 5e-7
         self.fmiu = 480e-6
         self.f_nist_enthalpy_coef = [
             85.81217,
@@ -357,7 +357,7 @@ class Propellant:
         self.h_ox = (
             -19.56 / 92.0110 * 10**3
         )  # oxidizer enthalpy in liquid phase. Gas phase is +9.08/92.0110*10**3
-        self.o_lamb = 131 * 10 ** (-3)
+        self.o_lamb = 0.016e-4
         self.o_nist_enthalpy_coef = [
             128.6220,
             2.524345,
