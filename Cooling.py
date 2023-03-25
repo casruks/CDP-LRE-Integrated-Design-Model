@@ -208,8 +208,8 @@ class CoolingClass:
         self.Q = self.regencool.Q
         # print("type_variable", type_variable)
         # Check if output variables are within reason
-        #if check_positive_args(T_co_calculated) == False or T_co_calculated > 1000:
-        #    err = err | (1 << 7)
+        if check_positive_args(T_co_calculated) == False:
+            err = err | (1 << 7)
 
         if check_positive_args(Tw_wall_calculated) == False or np.any(
             [x > TestTemp for x in Tw_wall_calculated]
@@ -227,8 +227,8 @@ class CoolingClass:
 
         # if(m_flow_fuel > 6000 or Tw_wall_calculated[-1] > 2000 or T_co_calculated > 1000 or ploss > 10**5):
         # warn=warn|(1<<1)
-        if T_co_calculated > Tw_wall_calculated[-1] and type_variable == 2:
-            err = err | (1 << 6)
+        #if T_co_calculated > Tw_wall_calculated[-1] and type_variable == 2:
+        #    err = err | (1 << 6)
         return (
             T_co_calculated,
             Tw_wall_calculated,
