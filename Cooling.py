@@ -215,7 +215,7 @@ class CoolingClass:
             [x > TestTemp for x in Tw_wall_calculated]
         ):
             err = err | (1 << 8)
-        if check_positive_args(ploss) == False or ploss > 10**6:
+        if check_positive_args(ploss) == False or ploss > 10**7:
             err = err | (1 << 9)
         if check_positive_args(m_flow_fuel) == False:
             err = err | (1 << 10)
