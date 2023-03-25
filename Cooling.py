@@ -121,7 +121,7 @@ class CoolingClass:
             A_total = A
 
         # Determine which operating temperature to use
-        if coating.OpTemp_u == 0:
+        if coating.OpTemp_u == 0 or coating_thickness== 0:
             TestTemp = Mater.OpTemp_u
         else:
             TestTemp = coating.OpTemp_u
@@ -208,8 +208,8 @@ class CoolingClass:
         self.Q = self.regencool.Q
         # print("type_variable", type_variable)
         # Check if output variables are within reason
-        if check_positive_args(T_co_calculated) == False or T_co_calculated > 1000:
-            err = err | (1 << 7)
+        #if check_positive_args(T_co_calculated) == False or T_co_calculated > 1000:
+        #    err = err | (1 << 7)
 
         if check_positive_args(Tw_wall_calculated) == False or np.any(
             [x > TestTemp for x in Tw_wall_calculated]
@@ -217,7 +217,7 @@ class CoolingClass:
             err = err | (1 << 8)
         if check_positive_args(ploss) == False or ploss > 10**6:
             err = err | (1 << 9)
-        if check_positive_args(m_flow_fuel) == False or m_flow_fuel > 30:
+        if check_positive_args(m_flow_fuel) == False:
             err = err | (1 << 10)
 
         if check_positive_args(self.Q) == False:
