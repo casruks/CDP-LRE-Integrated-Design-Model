@@ -193,7 +193,7 @@ class Propellant:
             0,
         ]  # for shomate equation
         self.omiu = 1.0e-6
-        self.ox_M = 15.999  # g/mol
+        self.ox_M = 0.015999  # kg/mol
         self.enthalpy_298_ox = 0  # J/kg
 
     # Fuel
@@ -227,7 +227,7 @@ class Propellant:
             0,
         ]  # for shomate equation
         self.heatingvalue = 119.96 * 10**6  # for the fuel only!
-        self.ox_F = 2.016  # g/mol
+        self.ox_F = 0.02016  # g/mol
         self.enthalpy_298_f = 0  # J/kg
         # Propellant
 
@@ -280,8 +280,9 @@ class Propellant:
         self.fmiu = 2.166e-6
         self.f_nist_enthalpy_coef = []  # for shomate equation
         self.heatingvalue = -43100  # for the fuel only!
-        self.ox_F = 175  # g/mol
+        self.ox_F = 0.0175  # kg/mol
         self.enthalpy_298_f = 0.137899 * 10**6  # J/kg
+        self.molarmass= 0.175  # kg/mol
 
     def Ethanol(self):
         self.Fuel_name = "Ethanol"  # Fuel name for rocketCEA
@@ -296,8 +297,9 @@ class Propellant:
         self.fmiu = 1199.4e-6
         self.f_nist_enthalpy_coef = []  # for shomate equation
         self.heatingvalue = -29672  # for the fuel only!
-        self.ox_F = 46.07
+        self.ox_F = 0.04607
         self.enthalpy_298_f = 5.01766 * 10**6  # J/kh
+        self.molarmass = 0.04607 # kg/mol
 
     def UDMH(self):
         self.Fuel_name = "UDMH"  # Fuel name for rocketCEA
@@ -306,7 +308,7 @@ class Propellant:
         self.f_dens_l = 793  # IDK YET  # liquid fuel density
 
         self.f_dens_g = 10**5 / (
-            298 * 8.31455 / self.molarmass
+            298 * 8.31455 / self.ox_F 
         )  # gaseous fuel density with ideal gas for standard conditions
         self.f_gamma = 1.152  # fuel gamma
         self.fcp = 164.05 / 60.098 * 10**3  # fuel cp
@@ -316,7 +318,7 @@ class Propellant:
         self.fmiu = 1.1071e-05
         self.f_nist_enthalpy_coef = []  # for shomate equation
         self.heatingvalue = -32928  # for the fuel only!
-        self.ox_F = 60.1
+        self.ox_F = 0.0601
         self.enthalpy_298_f = 0.886280 * 10**6  # J/kh
 
     def methane(self):
@@ -343,8 +345,9 @@ class Propellant:
             -74.8731,
         ]  # for shomate equation
         self.heatingvalue = -55511  # for the fuel only!
-        self.ox_F = 16.04  # g/mol
+        self.ox_F = 0.01604  # kg/mol
         self.enthalpy_298_f = 4.56 * 10**6  # J/kh
+        
 
     def NTO(self):
         self.Ox_name = "NTO"  # Oxidizer name for rocketCEA
@@ -366,8 +369,9 @@ class Propellant:
             9.078988,
         ]  # for shomate equation
         self.omiu = 393 * 10 ** (-6)
-        self.ox_M = 92.010  # g/mol
+        self.ox_M = 0.0920010  # kg/mol
         self.enthalpy_298_ox = 1.036 * 10**6  # J/kh
+
 
 
 # Data class
