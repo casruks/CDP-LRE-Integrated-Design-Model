@@ -139,7 +139,6 @@ def Validation1(default):
     default.cycle_type = 3
     R_DBFRSC = Reliability(default, t_SSME, F_SSME, F_SSME, val)[0]
     print('R_SSME =', R_DBFRSC)
-    R_SSME = 0.74746    # [Pratt & Whitney , 2001] ??
     R_SSME = 0.9983     # [B. K. Wood (Boeing & Rocketdyne), 2002]
     print('error =', (abs(R_DBFRSC-R_SSME)/R_SSME)*100,'%')
 
