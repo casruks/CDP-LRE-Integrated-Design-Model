@@ -210,21 +210,21 @@ if __name__ == "__main__":
         np.array([100 for i in range(number_points)]),
         np.array([900 for i in range(number_points)]),
         np.array([2000 for i in range(number_points)]),
-        np.array([200000 for i in range(number_points)])
+        np.array([200000 for i in range(number_points)]),
     ]
     h_c_range = [
         # np.array([j for i in range(number_points)]) for j in range(1, 50000, 100)
         np.array([0.01 for i in range(number_points)]),
         np.array([10 for i in range(number_points)]),
         np.array([100 for i in range(number_points)]),
-        np.array([10000 for i in range(number_points)]) ,
-        np.array([100000 for i in range(number_points)])
+        np.array([10000 for i in range(number_points)]),
+        np.array([100000 for i in range(number_points)]),
     ]
     t_range = [
         # np.array([j / 1000 for i in range(number_points)]) for j in range(1, 4000)
         np.array([0.0001 for i in range(number_points)]),
         np.array([0.01 for i in range(number_points)]),
-        np.array([10 for i in range(number_points)])
+        np.array([10 for i in range(number_points)]),
     ]
     coating_thickness_range = [
         0.0001,
@@ -275,7 +275,7 @@ if __name__ == "__main__":
         x_len_range,
         y_range,
     )
-
+    kkkk = 0
     for (
         Aux_classes.Default.T0,
         c,
@@ -298,6 +298,9 @@ if __name__ == "__main__":
         x_noz_cool[-1],
         y_noz_cool,
     ) in Range:
+        kkkk = kkkk + 1
+        print("loop: ", kkkk)
+        print("x_noz_cool[-1]: ", x_noz_cool[-1])
         (
             Tf_cool,
             Tw_wall_nozzle_calculated,
