@@ -113,7 +113,7 @@ def injector1(default, propellant, p_c, m, OF):
         print('Warning, D_f=,', D_f*1e6,'[1E-6m]')
         D_f = 200e-6
         wr = wr|(1<<1)
-    elif D_ox > 200e-6:
+    if D_ox > 200e-6:
         print('Warning, D_ox=,', D_ox*1e6, '[1E-6m]')
         D_ox = 200e-6
         wr = wr|(1<<1)
@@ -181,7 +181,8 @@ def validateInj():
     #Default.dp_state = True
     #Default.dp_user = 0.59
     #Default.dp_user = (421.3e5 - 207.26e5)/207.26e5
-    #Propellant.f_dens_l = 804.59
+    # Propellant.f_dens_l = 804.59 #RP1
+    Propellant.f_dens_l = 451.13 #Methane
     print('1) dp should be:', (p_inj-p_c)*1e-5, '[bar]')
     v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, A_est, er, wr  = injector1(Default, Propellant, p_c, m, OF)
     print('2)', v_iox, v_if, D_f, D_ox, 'dp=',dp*1e-5, eta_s, m_ox, m_f, n_ox, n_f, 'A_est =',A_est, er, wr)
