@@ -180,7 +180,7 @@ def Reuseability(material, sigma_T, Twg, Twc, H, l, w, p):
         ReuseabilityError == ReuseabilityError|(1<<0)
         return 0,ReuseabilityError,ReuseabilityWarning
 
-    w = l
+    #w = l
     
     #Inelastic Strain:
     if sigma_T > material.yieldstress_l:
