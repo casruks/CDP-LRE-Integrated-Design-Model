@@ -4,7 +4,7 @@ import scipy.optimize
 import scipy.constants
 import numpy as np
 
-import Materials as Mt
+# import Materials as Mt
 
 # import Materials_2 as Mt
 from statistics import mean
@@ -55,8 +55,8 @@ class CoolingClass:
         thickness: float,
         coating_thickness: float,
         prop: Aux_classes.Propellant,
-        Mater: Mt.Materials,
-        coating: Mt.Materials,
+        Mater,
+        coating,
         Dr: float,
         A: float,
         Ti_co: float,
@@ -121,7 +121,7 @@ class CoolingClass:
             A_total = A
 
         # Determine which operating temperature to use
-        if coating.OpTemp_u == 0 or coating_thickness== 0:
+        if coating.OpTemp_u == 0 or np.any(coating_thickness == 0):
             TestTemp = Mater.OpTemp_u
         else:
             TestTemp = coating.OpTemp_u
@@ -160,7 +160,7 @@ class CoolingClass:
                 mean(hg),
                 err,
             )
-            self.Q = self.radiationcool.Q
+            self.Q = self.radiationcool.q * A
             T_co_calculated = Ti_co
             Tw_wall_calculated = [self.radiationcool.T_calculated]
             T_outer_wall = [self.radiationcool.T_outer_wall]
@@ -204,8 +204,8 @@ class CoolingClass:
                     err,
                 )
                 T_outer_wall = self.regencool.T_out_wall
-        # Update heat extracted by cooling
-        self.Q = self.regencool.Q
+            # Update heat extracted by cooling
+            self.Q = self.regencool.Q
         # print("type_variable", type_variable)
         # Check if output variables are within reason
         if check_positive_args(T_co_calculated) == False:
@@ -227,7 +227,7 @@ class CoolingClass:
 
         # if(m_flow_fuel > 6000 or Tw_wall_calculated[-1] > 2000 or T_co_calculated > 1000 or ploss > 10**5):
         # warn=warn|(1<<1)
-        #if T_co_calculated > Tw_wall_calculated[-1] and type_variable == 2:
+        # if T_co_calculated > Tw_wall_calculated[-1] and type_variable == 2:
         #    err = err | (1 << 6)
         return (
             T_co_calculated,
@@ -257,6 +257,7 @@ class Heatsink:
         # if(check_positive_args(T0, Tf, h, A, c, dt, m)==False):
 
         self.T_calculated = (T0 - Tf) * float(math.e ** (-h * A / (m * c) * dt)) + Tf
+        self.Q = (self.T_calculated - T0) * c / dt  # Watts
         if check_positive_args(self.T_calculated) == False:
             err = err | (1 << 1)
         return err
@@ -292,7 +293,7 @@ class RadiationCool:
         )
         self.T_calculated = sol[1]
         self.T_outer_wall = sol[0]
-
+        self.q = (self.T_calculated - self.T_outer_wall) * k / t
         if check_positive_args(self.T_calculated) == False:
             err = err | (1 << 2)
         return err
@@ -327,7 +328,8 @@ class RegenerativeCool:
         self, Tr: float, Ti_co: float, A: float, hg: float, ArrayCounter: int
     ):
         q = (Tr - Ti_co) / (1 / hg + self.t[ArrayCounter] / self.Mater.k + 1 / self.hco)
-        self.Q += q * A[ArrayCounter]
+        # print("I AM HERE")
+        self.Q = self.Q + q * A[ArrayCounter]
         # self.Q += q * A
         # print(A[ArrayCounter])
         Tinext_co = Ti_co + q * A[ArrayCounter] / (self.Prop.fcp * self.m_flow_fuel)
@@ -371,7 +373,7 @@ class RegenerativeCool:
         self,
         t: float,
         Prop: Aux_classes.Propellant,
-        Mater: Mt.Materials,
+        Mater,
         Dr: float,
         Re: float,
         m_flow_fuel: float,
@@ -408,8 +410,8 @@ class RegenerativeCool:
         t: float,
         t_coating: float,
         Prop: Aux_classes.Propellant,
-        Mater: Mt.Materials,
-        Mater_coating: Mt.Materials,
+        Mater,
+        Mater_coating,
         Dr,
         A,
         Ti_co,
@@ -437,12 +439,15 @@ class RegenerativeCool:
         T_co_calcualted[0] = Ti_co
         T_wall_calcualted = [0 for i in range(len(Tr))]
         self.T_out_wall = [0 for i in range(len(Tr))]
+        self.Q = 0
         # Calculate the wall temperature and the coolant temperature for each point along the wall
         for i in range(len(Tr)):
             T_co_calcualted[i + 1], T_wall_calcualted[i] = self.Tcalculation1D(
                 Tr[i], T_co_calcualted[i], A, hg[i], i
             )
             self.T_out_wall[i] = self.T_outer_Wall_loop_val
+            # self.Q=self.Q+(Tr[i]-T_wall_calcualted[i])*hg[i]
+
         # print(T_co_calcualted)
         if check_positive_args(T_co_calcualted, T_wall_calcualted, ploss) == False:
             err = err | (1 << 3)
@@ -463,8 +468,8 @@ class RegenerativeCool:
         t: float,
         t_coating: float,
         Prop: Aux_classes.Propellant,
-        Mater: Mt.Materials,
-        Mater_coating: Mt.Materials,
+        Mater,
+        Mater_coating,
         Dr: float,
         A: float,
         Ti_co: float,

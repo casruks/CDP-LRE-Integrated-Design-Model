@@ -88,7 +88,7 @@ def Mass(Pc, material_N, material_V, arear, rt, mprop, FS, cycle, x, R, t, O_pro
         else:
             Mass_warnings = Mass_warnings & (~(1<<0))
     #Density of the Propellant:
-    rho_prop = ((O_prop*F_prop)*(1+OF))/(F_prop*OF+O_prop)
+    rho_prop = ((O_prop*F_prop)*(1+O_F))/(F_prop*O_F+O_prop)
     
     #Nozzle Mass:
     for i in range(len(x)-1):

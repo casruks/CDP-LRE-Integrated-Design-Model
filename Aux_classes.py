@@ -84,9 +84,7 @@ class Default:
     T_fuel_tanks = 20  # [K] temperature of the fuel tanks, considered the inicial coolant temperature
     # T_ox_tanks = 60 #[K] temperature of the oxidiser tanks
     n = 1  # number of coolant chanels
-    default_coating = Mt.Materials(
-        "default_coating", 0.0, 0.0, 0.0, 0.0, 1, 0, 0.0, 0.0, 0.0, 0.0
-    )  # default coolant
+    default_coating = Mt.Coat_Custom  # default coolant
     default_coating_thickness = 0  # default coolant thickness
     T0 = 293.5  # [k] default inicial temperature
     eps = 0.85  # default emissivity
@@ -173,7 +171,7 @@ class Propellant:
         self.o_dens = 1141.0  # Oxidizer density
         self.ocp = 14307.0  # oxidizer cp
         self.h_ox = -12.979  # oxidizer enthalpy
-        self.o_lamb =  0.4e-6
+        self.o_lamb = 0.4e-6
         self.o_nist_enthalpy_coef = [
             20.91,
             10.72,
@@ -234,7 +232,6 @@ class Propellant:
     gama = 1.4
     tq = 0.9  # characteristic chemical time of propellant
     Frozen_state = 0  # Frozen state of the propellant 0=chemical equilibrium flow, 1=frozen flow (from throat onwards)
-    lstar = [0.76, 1.02]
 
     def __init__(self, type):
         match type:
@@ -243,34 +240,40 @@ class Propellant:
                 o_name = "LOX"
                 self.LH()
                 self.Oxigen()
+                self.lstar = [0.76, 1.02]
 
             case 1:
                 f_name = "CH4"
                 o_name = "LOX"
                 self.methane()
                 self.Oxigen()
+                self.lstar = [1.13, 3.39]
             case 2:
                 f_name = "RP1"
                 o_name = "LOX"
                 self.Rp1()
                 self.Oxigen()
+                self.lstar = [1.016, 1.27]
             case 3:
                 f_name = "Ethanol"
                 o_name = "LOX"
                 self.Ethanol()
                 self.Oxigen()
+                self.lstar = [0.7, 4.5]
             case 4:
-                f_name = "Ethanol"
+                f_name = "UDMH"
                 o_name = "LOX"
                 self.UDMH()
                 self.Oxigen()
+                self.lstar = [0.762, 0.889]
 
     def Rp1(self):
         self.Fuel_name = "RP1"  # Fuel name for rocketCEA
         self.Fuel_composition = "C 1 H 1.95"  # Composition of fuel for rocketcea
         self.f_dens_l = 804.59  # liquid fuel density
+        self.ox_F = 0.0175  # kg/mol
         self.f_dens_g = 10**5 / (
-            298 * 8.31455 / self.molarmass
+            298 * 8.31455 / self.ox_F
         )  # gaseous fuel density with ideal gas for standard conditions
         self.f_gamma = 1.24  # fuel gamma
         self.fcp = 1.88  # fuel cp
@@ -280,9 +283,9 @@ class Propellant:
         self.fmiu = 2.166e-6
         self.f_nist_enthalpy_coef = []  # for shomate equation
         self.heatingvalue = -43100  # for the fuel only!
-        self.ox_F = 0.0175  # kg/mol
+
         self.enthalpy_298_f = 0.137899 * 10**6  # J/kg
-        self.molarmass= 0.175  # kg/mol
+        self.molarmass = 0.175  # kg/mol
 
     def Ethanol(self):
         self.Fuel_name = "Ethanol"  # Fuel name for rocketCEA
@@ -299,16 +302,16 @@ class Propellant:
         self.heatingvalue = -29672  # for the fuel only!
         self.ox_F = 0.04607
         self.enthalpy_298_f = 5.01766 * 10**6  # J/kh
-        self.molarmass = 0.04607 # kg/mol
+        self.molarmass = 0.04607  # kg/mol
 
     def UDMH(self):
         self.Fuel_name = "UDMH"  # Fuel name for rocketCEA
         self.Fuel_composition = "C 2 H 8 N 2"  # Composition of fuel for rocketcea
 
         self.f_dens_l = 793  # IDK YET  # liquid fuel density
-
+        self.ox_F = 0.0601
         self.f_dens_g = 10**5 / (
-            298 * 8.31455 / self.ox_F 
+            298 * 8.31455 / self.ox_F
         )  # gaseous fuel density with ideal gas for standard conditions
         self.f_gamma = 1.152  # fuel gamma
         self.fcp = 164.05 / 60.098 * 10**3  # fuel cp
@@ -318,7 +321,7 @@ class Propellant:
         self.fmiu = 1.1071e-05
         self.f_nist_enthalpy_coef = []  # for shomate equation
         self.heatingvalue = -32928  # for the fuel only!
-        self.ox_F = 0.0601
+
         self.enthalpy_298_f = 0.886280 * 10**6  # J/kh
 
     def methane(self):
@@ -347,7 +350,6 @@ class Propellant:
         self.heatingvalue = -55511  # for the fuel only!
         self.ox_F = 0.01604  # kg/mol
         self.enthalpy_298_f = 4.56 * 10**6  # J/kh
-        
 
     def NTO(self):
         self.Ox_name = "NTO"  # Oxidizer name for rocketCEA
@@ -371,7 +373,6 @@ class Propellant:
         self.omiu = 393 * 10 ** (-6)
         self.ox_M = 0.0920010  # kg/mol
         self.enthalpy_298_ox = 1.036 * 10**6  # J/kh
-
 
 
 # Data class
