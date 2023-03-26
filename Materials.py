@@ -169,7 +169,7 @@ def RhoProp(O_prop, F_prop, OF):
         return rho_prop
 
 ##Reuseability: Prediction of low cycle fatigue life of the thrust chamber
-def Reuseability(material, sigma_T, Twg, Twc, H, l, p):
+def Reuseability(material, sigma_T, Twg, Twc, H, l, w, p):
     
     ReuseabilityError = 0
     ReuseabilityWarning = 0
