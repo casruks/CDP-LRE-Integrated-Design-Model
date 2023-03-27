@@ -130,7 +130,7 @@ class CoolingClass:
 
         # Calculate the heatsink solution
         err = self.heatsink.Tcalculation(
-            T0, mean(Tr), mean(hg), A_rad, c, operationtime, m_casing,err
+            T0, np.amax(Tr), np.amax(hg), A_rad, c, operationtime, m_casing, err
         )
         type_variable = 0
         Tw_wall_calculated = [self.heatsink.T_calculated]
@@ -162,11 +162,11 @@ class CoolingClass:
             err = self.radiationcool.Tcalculation(
                 2000,
                 100,
-                mean(Tr),
+                np.amax(Tr),
                 eps,
                 k_arg,
                 t_Arg,
-                mean(hg),
+                np.amax(hg),
                 err,
             )
             self.Q = self.radiationcool.q * A_rad
@@ -229,7 +229,7 @@ class CoolingClass:
             [x > TestTemp for x in Tw_wall_calculated]
             or np.any([x > TestTemp for x in T_outer_wall])
         ):
-            #print("Tw_wall_calculated: ",Tw_wall_calculated)
+            # print("Tw_wall_calculated: ",Tw_wall_calculated)
             err = err | (1 << 8)
         if check_positive_args(ploss) == False or ploss > 10**7:
             err = err | (1 << 9)
@@ -269,7 +269,7 @@ class Heatsink:
         self.T_calculated = -1
 
     # Final T after a certain operation time dt, assuming a nozzle mass
-    def Tcalculation(self, T0, Tf, h, A, c, dt, m,err):
+    def Tcalculation(self, T0, Tf, h, A, c, dt, m, err):
         # if(check_positive_args(T0, Tf, h, A, c, dt, m)==False):
         # print(A)
         self.T_calculated = (T0 - Tf) * float(math.e ** (-h * A / (m * c) * dt)) + Tf
@@ -304,14 +304,20 @@ class RadiationCool:
         # if check_positive_args(Tr, eps, k, t) == False:
 
         x0 = [Toutguess, Tinguess]
-        sol = scipy.optimize.fsolve(
+        sol = scipy.optimize.least_squares(
             self.Tcalculation_system, x0, args=(Tr, eps, k, t, h)
         )
-        #print("h * (Tr - Ti) - (Ti - Tout) * k / t: ",h * (Tr - sol[1]) - (sol[1] - sol[0]) * k / t)
-        self.T_calculated = sol[1]
-        self.T_outer_wall = sol[0]
-        #print("self.T_calculated",sol[1])
-        #print("self.T_outer_wall",sol[0])
+        if not sol["success"] or abs(sum(sol["fun"])) > 0.01:
+            self.T_calculated = 10**10
+            self.T_outer_wall = 10**10
+            # err = err | (1 << 13)
+        else:
+            self.T_calculated = sol["x"][1]
+            self.T_outer_wall = sol["x"][0]
+        # print("h * (Tr - Ti) - (Ti - Tout) * k / t: ",h * (Tr - sol[1]) - (sol[1] - sol[0]) * k / t)
+
+        # print("self.T_calculated",sol[1])
+        # print("self.T_outer_wall",sol[0])
         self.q = (self.T_calculated - self.T_outer_wall) * k / t
         if check_positive_args(self.T_calculated) == False:
             err = err | (1 << 2)
@@ -347,8 +353,14 @@ class RegenerativeCool:
         self, Tr: float, Ti_co: float, A: float, hg: float, ArrayCounter: int
     ):
         q = (Tr - Ti_co) / (1 / hg + self.t[ArrayCounter] / self.Mater.k + 1 / self.hco)
+        # print("self.t[ArrayCounter] / self.Mater.k: ",self.t[ArrayCounter] / self.Mater.k)
+        # print("1 / hg: ",1 / hg)
+        # print("1 / self.hco: ", 1 / self.hco)
+        # print()
         # print("I AM HERE")
+        # q = 10**8
         self.Q = self.Q + q * A[ArrayCounter]
+
         # self.Q += q * A
         # print(A[ArrayCounter])
         Tinext_co = Ti_co + q * A[ArrayCounter] / (self.Prop.fcp * self.m_flow_fuel)
@@ -356,7 +368,10 @@ class RegenerativeCool:
         # print("self.hco", self.hco)
         # T_wall = self.t[ArrayCounter] / self.Mater.k * q + Ti_co + q / self.hco
         T_wall = Tr - q / hg
+        # print("q / hg: ", q / hg)
         self.T_outer_Wall_loop_val = T_wall - self.t[ArrayCounter] / self.Mater.k * q
+        # print("T_outer by wall: ", T_wall - self.t[ArrayCounter] / self.Mater.k * q)
+        # print("T_out by coolant: ", Ti_co - q / self.hco)
         # Tinext_co: end coolant temperature
         # T_wall: wall temperature
         check_positive_args(Tinext_co, T_wall)
@@ -401,6 +416,7 @@ class RegenerativeCool:
         # self.Pr = 4 * Prop.f_gamma / (9 * Prop.f_gamma - 5)
         self.Pr = 0.69  # PLACEHOLDER
         self.f = (1.82 * math.log10(Re) - 1.64) ** (-2)
+        print("Re: ", Re)
         self.Nu = (
             self.f
             / 8
@@ -409,6 +425,7 @@ class RegenerativeCool:
             / (1 + 12.7 * math.sqrt(self.f / 8) * (self.Pr**2 / 3 - 1))
         )
         self.hco = self.Nu * Mater.k / Dr
+        print("self.hco: ", self.hco)
 
         self.Prop = Prop
         self.m_flow_fuel = m_flow_fuel
@@ -506,9 +523,9 @@ class RegenerativeCool:
         err,
     ):
         if overwriteA == False:
-            A = [self.FindA(y, L, len(y), i) for i in range(len(y))]
+            A_arg = [self.FindA(y, L, len(y), i) for i in range(len(y))]
         else:
-            A = [A / len(y) for i in range(len(y))]
+            A_arg = [A / len(y) for i in range(len(y))]
 
         match case_run:
             case 0:
@@ -521,7 +538,7 @@ class RegenerativeCool:
                     Mater,
                     Mater_coating,
                     Dr,
-                    A,
+                    A_arg,
                     Ti_co,
                     m_flow_fuel,
                     L,

@@ -59,7 +59,6 @@ if __name__ == "__main__":
     chamber_mass = 1
     nozzle_mass = 1
 
-    Aux_classes.Default.default_coating_thickness = 0
     alpha = 2 * math.pi * 1 / 1
     y_for_cooling_channel = np.amin(y_noz_cool)
     # A_nozzle = x_noz_cool[-1] * y_for_cooling_channel * alpha
@@ -69,6 +68,7 @@ if __name__ == "__main__":
             for i in range(len(y_noz_cool))
         ]
     )
+    # print("A_nozzle", A_nozzle)
     Aux_classes.Default.default_coating_thickness = 0
     Coolobj.Q = 0
     Coolobj_c.Q = 0
@@ -96,7 +96,7 @@ if __name__ == "__main__":
         prop,
         Ms.Inc_A_286,
         Ms.Rhenium,
-        0.005,  # Aux_classes.Default.Dr,
+        0.0005,  # Aux_classes.Default.Dr,
         A_nozzle,
         Aux_classes.Default.T_fuel_tanks,
         m_nozz / (1.0 + O_F) / Aux_classes.Default.n,
