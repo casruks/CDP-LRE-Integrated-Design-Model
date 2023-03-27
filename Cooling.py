@@ -292,7 +292,7 @@ class RadiationCool:
 
     # Defines system of equations required in order to find the end temperature. Auxiliary function
     def Tcalculation_system(self, x, Tr, eps, k, t, h):
-        Ti, Tout = x
+        Tout, Ti = x
         return [
             h * (Tr - Ti) - (Ti - Tout) * k / t,
             eps * scipy.constants.sigma * Tout**4 - h * (Tr - Ti),
@@ -307,9 +307,11 @@ class RadiationCool:
         sol = scipy.optimize.fsolve(
             self.Tcalculation_system, x0, args=(Tr, eps, k, t, h)
         )
-        # print("h * (Tr - Ti) - (Ti - Tout) * k / t: ",h * (Tr - sol[0]) - (sol[0] - sol[1]) * k / t)
-        self.T_calculated = sol[0]
-        self.T_outer_wall = sol[1]
+        #print("h * (Tr - Ti) - (Ti - Tout) * k / t: ",h * (Tr - sol[1]) - (sol[1] - sol[0]) * k / t)
+        self.T_calculated = sol[1]
+        self.T_outer_wall = sol[0]
+        print("self.T_calculated",sol[1])
+        print("self.T_outer_wall",sol[0])
         self.q = (self.T_calculated - self.T_outer_wall) * k / t
         if check_positive_args(self.T_calculated) == False:
             err = err | (1 << 2)
