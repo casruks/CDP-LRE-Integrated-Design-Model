@@ -20,9 +20,9 @@ import warnings
 
 #class Propellant:
  #   o_lamb = 1*10**(-6)
-  #  f_lamb = 9.6*10**-6
-   # lstar = [0.76,1.02]
-    #o_dens = 1
+  #  f_lamb = 1.5*10**-6
+   # lstar = [1,4]
+   # o_dens = 1
     #f_dens_g = 1
     #ocp=1
     #fcp=1
@@ -34,7 +34,7 @@ import warnings
 
 #class Default:
  #   SF = 1.0
-  # kloads = 1
+  #  kloads = 1
    # inj_velocity = 20
     #ConvergenceRatio_l = 1.5
     #ConvergenceRatio_h = 3.5
@@ -44,7 +44,7 @@ import warnings
 
 
 
-def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,d_f,d_o,bool,rho_c,cp_c,mu_c,k_c,Pr_c,A_est,of):
+def CombustionChamber (conv,Pc,At,Propellant,Material,default,velocity_f,velocity_ox,d_f,d_o,bool,rho_c,cp_c,mu_c,k_c,Pr_c,A_est,of):
 
 
 
@@ -107,7 +107,7 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
 
     #setting boundaries for chamber diameter based on expected convergence rate
     Ac_low_1 = A_minimum
-    Ac_low_2=At * default.ConvergenceRatio_l
+    Ac_low_2=At *default.ConvergenceRatio_l
 
     if Ac_low_1 > Ac_low_2:
         Ac_low = Ac_low_1
@@ -154,6 +154,7 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
     Achamber = Vchamber / LengthChamber
     Rchamber = (Achamber / math.pi) ** (1.0 / 2.0)
     dchamber = Rchamber * 2.0
+    print('dchamber_in ' + str(dchamber))
     #print("dchamber initial: " + str(dchamber))
 
     #sanity check for the outputs
@@ -272,9 +273,6 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
         if Mass < 0:
             er = er | (1<<7)
             return(0,0,0,0,0,wr,er)
-        if LengthChamber > 1.5:
-            er = er | (1<<5)
-            return (0, 0, 0, 0, 0, wr,er)
 
     a = default.a
     ro = rho_c
@@ -290,7 +288,7 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
         return(0,0,0,0,0,wr,er)
     Re=velocity*ro*dchamber/niu
 
-    if LengthChamber > 0.7:
+    if LengthChamber > 1.2:
         wr = wr | (1 << 8)
 
     if bool == 0:
@@ -302,8 +300,11 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
 #prop = Propellant
 #mat = Material
 #default = Default
-
-#ht,dc,t,lc,re,wr,er = CombustionChamber(20300000, 0.053, prop, mat, default,300,25, 200*10**-6, 68*10**-6, 0, 1, 1, 1, 1, 1,0.000000053)
+#A_t = (0.0106451400000000,	0.0139612624000000,	0.0283225240000000,	0.0349934784000000,	0.0133870700000000,	0.0110515908000000,	0.0784998430000000,	0.0378063760000000,	0.117780409600000,	0.0421999156000000,	0.132902960000000,	0.132902960000000	,0.132257800000000,	0.117780409600000,	0.109419136000000,	0.620256824000000,	2.83870400000000e-06,	5.54837600000000e-06,	7.21288880000000e-05	,6.50321280000000e-05	,4.98063520000000e-05,	0.000148386800000000,	9.67740000000000e-05,	0.000381934720000000,	0.000255418844000000,	0.000255418844000000,	0.000547740840000000,	0.00102580440000000,0.000929030400000000,0.000723224360000000,0.00134838440000000)
+#conv = (2.90000000000000	,3.27000000000000	,2.54000000000000,	2.52000000000000	,4,	5.33500000000000,	2	,4.10000000000000	,2.04000000000000,	2.51000000000000,	1.67000000000000	,1.67000000000000,	1.62000000000000	,2.04000000000000	,1.58000000000000	,1.30700000000000,	0,	0	,0	,3.80000000000000,	0,	0,	0,	4.20000000000000,	3.10000000000000,	3.10000000000000,	0,	0,	4.90000000000000,	0,	3)
+#for i in range(len(A_t)):
+#ht, dc, t, lc, re, wr, er = CombustionChamber(1.5, 20300000, 0.042, prop, mat, default, 200, 30, 100* 10 ** -6,68 * 10 ** -6, 0, 1, 1, 1, 1, 1, 0.00000000000000053,6)
+#print(dc,lc,wr,er)
 #print(dc,lc,er,wr)
 #Ac_low = 0.053 * 1.5
 #Ac_high = 0.053 * 3.5
