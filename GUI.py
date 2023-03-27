@@ -25,8 +25,7 @@ class MainWindow(QMainWindow):
         self.label_outputs.setStyleSheet(''' font-size: ''' + str(fontSize+8) + '''px; ''')
 
         # Initialize graphics
-
-
+        
         #tabs
         self.tab_inputs.setCurrentIndex(0)
         self.tab_outputs.setCurrentIndex(0)
@@ -384,17 +383,18 @@ class MainWindow(QMainWindow):
 
     # Output
     def Output(self, i : int):
-        self.line_Isp.setText(str(main.dat[i].Isp))
-        self.line_cstar.setText(str(main.dat[i].cstar))
-        self.line_m.setText(str(main.dat[i].turbo_m))
-        self.line_prop_mass.setText(str(main.dat[i].Mprop))
-        self.line_mass.setText(str(main.dat[i].Mtot))
-        self.line_cost.setText(str(main.dat[i].cost))
-        self.line_reliability.setText(str(main.dat[i].rel))
+        no_afterdec = 2
+        self.line_Isp.setText(str(round(main.dat[i].Isp, no_afterdec)))
+        self.line_cstar.setText(str(round(main.dat[i].cstar, no_afterdec)))
+        self.line_m.setText(str(round(main.dat[i].turbo_m, no_afterdec)))
+        self.line_prop_mass.setText(str(round(main.dat[i].Mprop, no_afterdec)))
+        self.line_mass.setText(str(round(main.dat[i].Mtot, no_afterdec)))
+        self.line_cost.setText(str(round(main.dat[i].cost, no_afterdec)))
+        self.line_reliability.setText(str(main.dat[i].rel, no_afterdec)) #list, not yet rounded to 2dec
 
         #Nozzle
         if(not main.dat[i].O_F): 
-            self.line_O_F_2.setText(str(main.dat[i].O_F))
+            self.line_O_F_2.setText(str(round(main.dat[i].O_F, no_afterdec)))
             self.line_O_F_2.show()
             self.label_O_F_2.show()
             self.label_O_F_no.show()
@@ -402,22 +402,22 @@ class MainWindow(QMainWindow):
             self.line_O_F_2.hide()
             self.label_O_F_2.hide()
             self.label_O_F_no.hide()
-        self.line_Dt.setText(str(main.dat[i].Dt))
-        self.line_De.setText(str(main.dat[i].De))
-        self.line_eps.setText(str(main.dat[i].Eps))
-        self.line_len.setText(str(main.dat[i].L_total))
-        self.line_len_conv.setText(str(main.dat[i].L_con))
-        self.line_len_div.setText(str(main.dat[i].L_div))
-        self.line_m_nozz.setText(str(main.dat[i].m_nozz))
-        self.line_nozz_mass.setText(str(main.dat[i].Mnoz))
+        self.line_Dt.setText(str(round(main.dat[i].Dt, no_afterdec)))
+        self.line_De.setText(str(round(main.dat[i].De, no_afterdec)))
+        self.line_eps.setText(str(round(main.dat[i].Eps, no_afterdec)))
+        self.line_len.setText(str(round(main.dat[i].L_total, no_afterdec)))
+        self.line_len_conv.setText(str(round(main.dat[i].L_con, no_afterdec)))
+        self.line_len_div.setText(str(round(main.dat[i].L_div, no_afterdec)))
+        self.line_m_nozz.setText(str(round(main.dat[i].m_nozz, no_afterdec)))
+        self.line_nozz_mass.setText(str(round(main.dat[i].Mnoz, no_afterdec)))
 
         #Combustion chamber
-        self.line_Pc.setText(str(main.dat[i].Pc/1.0e5))
-        self.line_Tc.setText(str(main.dat[i].Tc))
-        self.line_Dc.setText(str(main.dat[i].Dc))
-        self.line_Lc.setText(str(main.dat[i].Chamber_L))
-        self.line_tc.setText(str(main.dat[i].ThicknessChamber))
-        self.line_Mc.setText(str(main.dat[i].chambermass))
+        self.line_Pc.setText(str(round(main.dat[i].Pc/1.0e5, no_afterdec)))
+        self.line_Tc.setText(str(round(main.dat[i].Tc, no_afterdec)))
+        self.line_Dc.setText(str(round(main.dat[i].Dc, no_afterdec)))
+        self.line_Lc.setText(str(round(main.dat[i].Chamber_L, no_afterdec)))
+        self.line_tc.setText(str(round(main.dat[i].ThicknessChamber, no_afterdec)))
+        self.line_Mc.setText(str(round(main.dat[i].chambermass, no_afterdec)))
 
         #turbo
         if (main.dat[i].W_Opump == 0.0 or main.dat[i].W_Fpump == 0):
@@ -440,30 +440,30 @@ class MainWindow(QMainWindow):
             self.line_Turb_power.show();
             self.label_Turb_power.show();
             self.lalbel_W_turb.show();
-        self.line_Opump_power.setText(str(main.dat[i].W_Opump))
-        self.line_Fpump_power.setText(str(main.dat[i].W_Fpump))
-        self.line_Turb_power.setText(str(main.dat[i].W_turb))
-        self.line_P_inj_in.setText(str(main.dat[i].ptinj))
-        self.line_turbo_mass.setText(str(main.dat[i].turbo_m))
+        self.line_Opump_power.setText(str(round(main.dat[i].W_Opump, no_afterdec)))
+        self.line_Fpump_power.setText(str(round(main.dat[i].W_Fpump, no_afterdec)))
+        self.line_Turb_power.setText(str(round(main.dat[i].W_turb, no_afterdec)))
+        self.line_P_inj_in.setText(str(round(main.dat[i].ptinj, no_afterdec)))
+        self.line_turbo_mass.setText(str(round(main.dat[i].turbo_m, no_afterdec)))
 
         #Cooling
         self.combo_cool_cham.setCurrentIndex(main.dat[i].type_variable_chamber)
         self.combo_cool_nozz.setCurrentIndex(main.dat[i].type_variable_nozzle)
-        self.line_cool_temp.setText(str(main.dat[i].T_after_cool))
-        self.line_cool_loss.setText(str(main.dat[i].dptcool_cooling))
-        self.line_cool_Iwall.setText(str(main.dat[i].max_temperature_inner))
-        self.line_cool_Owall.setText(str(main.dat[i].max_temperature_outer))
-        self.line_cool_stress.setText(str(main.dat[i].maximum_thermal_stress))
+        self.line_cool_temp.setText(str(round(main.dat[i].T_after_cool, no_afterdec)))
+        self.line_cool_loss.setText(str(round(main.dat[i].dptcool_cooling, no_afterdec)))
+        self.line_cool_Iwall.setText(str(round(main.dat[i].max_temperature_inner, no_afterdec)))
+        self.line_cool_Owall.setText(str(round(main.dat[i].max_temperature_outer, no_afterdec)))
+        self.line_cool_stress.setText(str(round(main.dat[i].maximum_thermal_stress, no_afterdec)))
 
         #Injectors
-        self.line_n_oxinj.setText(str(main.dat[i].n_ox))
-        self.line_n_finj.setText(str(main.dat[i].n_f))
-        self.line_vel_ox.setText(str(main.dat[i].v_iox))
-        self.line_vel_fuel.setText(str(main.dat[i].v_if))
-        self.line_inj_pres.setText(str(main.dat[i].dp))
+        self.line_n_oxinj.setText(str(round(main.dat[i].n_ox, no_afterdec)))
+        self.line_n_finj.setText(str(round(main.dat[i].n_f, no_afterdec)))
+        self.line_vel_ox.setText(str(round(main.dat[i].v_iox, no_afterdec)))
+        self.line_vel_fuel.setText(str(round(main.dat[i].v_if, no_afterdec)))
+        self.line_inj_pres.setText(str(round(main.dat[i].dp, no_afterdec)))
 
         #Ignitors
-        self.line_Mign.setText(str(main.dat[i].Igniter_compound))
+        self.line_Mign.setText(str(round(main.dat[i].Igniter_compound, no_afterdec)))
 
         #Materials
 
