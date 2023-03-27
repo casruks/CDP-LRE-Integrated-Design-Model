@@ -154,7 +154,7 @@ def CombustionChamber (conv,Pc,At,Propellant,Material,default,velocity_f,velocit
     Achamber = Vchamber / LengthChamber
     Rchamber = (Achamber / math.pi) ** (1.0 / 2.0)
     dchamber = Rchamber * 2.0
-    print('dchamber_in ' + str(dchamber))
+    #print('dchamber_in ' + str(dchamber))
     #print("dchamber initial: " + str(dchamber))
 
     #sanity check for the outputs
