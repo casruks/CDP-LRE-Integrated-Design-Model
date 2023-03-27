@@ -403,7 +403,7 @@ def Main(d : aux.Data):
     ##coolant channel width
     ##Ribs width
     ##Chamber Pressure
-    Reuseabitiy = Ms.Reuseability(aux.Default.noz_mat_select, maximum_thermal_stress, max_temperature_inner, max_temperature_outer, 0.445, 1.686, 1.270, p_new )
+    Reuseabitiy = Ms.Reuseability(aux.Default.noz_mat_select, maximum_thermal_stress, max_temperature_inner, max_temperature_outer, 0.445e-3, 1.686e-3, 1.270e-3, p_new )
     #Missing Inputs: H,l,w (geometry of the cooling chanels written as 0.445, in the function above^)
     #They are currently inputs for the cooling function and are not returned anywhere. This is necessary before implementing into the fuction. Currently default values are used 
     #Output:
