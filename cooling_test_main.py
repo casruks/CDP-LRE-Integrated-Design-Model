@@ -27,9 +27,9 @@ if __name__ == "__main__":
 
     Q = 0
     n = 150
-    prop = Aux_classes.Propellant(0)
-    Tw_ad_noz = np.array([2000 for i in range(n)])
-    h_c_noz = [2000 for i in range(n)]
+    prop = Aux_classes.Propellant(2)
+    Tw_ad_noz = np.array([4000 for i in range(n)])
+    h_c_noz = [20000 for i in range(n)]
     t_noz = np.array([0.02 for i in range(n)])
     L = 4.3
     T_w_after_cooling = 0
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     Aux_classes.Default.default_coating_thickness = 0
     Coolobj.Q = 0
     Coolobj_c.Q = 0
-    Aux_classes.Default.Dr = 0.05
+    Aux_classes.Default.Dr = 0.01
     type_variable_nozzle = -1
     (
         Tf_cool,
@@ -96,7 +96,7 @@ if __name__ == "__main__":
         prop,
         Ms.Inc_A_286,
         Ms.Rhenium,
-        0.0005,  # Aux_classes.Default.Dr,
+        0.005,  # Aux_classes.Default.Dr,
         A_nozzle,
         Aux_classes.Default.T_fuel_tanks,
         m_nozz / (1.0 + O_F) / Aux_classes.Default.n,
@@ -113,7 +113,7 @@ if __name__ == "__main__":
         dptcool,
     )
     print("Tw_wall_calculated", np.amax(Tw_wall_nozzle_calculated))
-    print("Outer wall temperature", T_outer_wall_nozzle[-1])
+    print("Outer wall temperature", np.amax(T_outer_wall_nozzle))
     print("errors:", err_nozzle_cooling)
     print("warning", warn_nozzle_cooling)
     print("type: ", type_variable_nozzle)

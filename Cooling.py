@@ -310,8 +310,8 @@ class RadiationCool:
         #print("h * (Tr - Ti) - (Ti - Tout) * k / t: ",h * (Tr - sol[1]) - (sol[1] - sol[0]) * k / t)
         self.T_calculated = sol[1]
         self.T_outer_wall = sol[0]
-        print("self.T_calculated",sol[1])
-        print("self.T_outer_wall",sol[0])
+        #print("self.T_calculated",sol[1])
+        #print("self.T_outer_wall",sol[0])
         self.q = (self.T_calculated - self.T_outer_wall) * k / t
         if check_positive_args(self.T_calculated) == False:
             err = err | (1 << 2)
