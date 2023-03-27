@@ -139,6 +139,8 @@ def Main(d : aux.Data):
         # Tf_cool,dptcool_c=regCool.Run(d.Tc, d.h_comb, d.ThicknessChamber,prop,Ms.Rhenium,default.Dr,d.Chamber_L*default.Dr*math.pi,Tf_cool,d.m_nozz/(1.0+d.O_F)/default.n,d.Chamber_L)
         Coolobj = Cooling.CoolingClass()
         Coolobj_c = Cooling.CoolingClass()
+        Coolobj.Q = 0
+        Coolobj_c.Q = 0
 
         nozzle_mass = Ms.Nozzle_mass(x_noz_cool, y_noz_cool, t_noz, Ms.Rhenium)
         chamber_mass = Ms.Chamber_mass(

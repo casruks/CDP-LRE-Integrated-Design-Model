@@ -73,11 +73,11 @@ class CoolingClass:
         err = 0
         warn = 0
         T_co_calculated = Ti_co
-        Tw_wall_calculated = [-1]
+        Tw_wall_calculated = np.array([1])
         ploss = 0
         m_flow_fuel = 0
-        type_variable = 0
-        T_outer_wall = 0
+        type_variable = -5
+        T_outer_wall = np.array([1])
         # Check if input variables are positive
         if (
             check_positive_args(
@@ -96,8 +96,6 @@ class CoolingClass:
                 m,
                 L,
                 y,
-                overwriteA,
-                case_run,
             )
             == False
         ):
@@ -107,6 +105,7 @@ class CoolingClass:
                 Tw_wall_calculated,
                 ploss,
                 m_flow_fuel,
+                0,
                 T_outer_wall,
                 err,
                 warn,
@@ -119,6 +118,9 @@ class CoolingClass:
             )
         else:
             A_total = A
+            # print("A: ",A)
+
+        A_rad = sum([self.regencool.FindA(y, L, len(y), i) for i in range(len(y))])
 
         # Determine which operating temperature to use
         if coating.OpTemp_u == 0 or np.any(coating_thickness == 0):
@@ -128,9 +130,9 @@ class CoolingClass:
 
         # Calculate the heatsink solution
         err = self.heatsink.Tcalculation(
-            T0, mean(Tr), mean(hg), A_total, c, operationtime, m_casing, err
+            T0, mean(Tr), mean(hg), A_rad, c, operationtime, m_casing,err
         )
-
+        type_variable = 0
         Tw_wall_calculated = [self.heatsink.T_calculated]
         T_outer_wall = Tw_wall_calculated
         self.Q = self.heatsink.Q
@@ -141,6 +143,7 @@ class CoolingClass:
                 Tw_wall_calculated,
                 ploss,
                 m_flow_fuel,
+                type_variable,
                 T_outer_wall,
                 err,
                 warn,
@@ -150,20 +153,28 @@ class CoolingClass:
 
             type_variable = 1
             # Calculate the radiation cooling solution
+            if np.any(x <= 0 for x in coating_thickness):
+                k_arg = Mater.k
+                t_Arg = mean(thickness)
+            else:
+                k_arg = Mater.k * coating.k
+                t_Arg = mean(thickness) * coating.k + mean(coating_thickness) * Mater.k
             err = self.radiationcool.Tcalculation(
-                700,
-                500,
+                2000,
+                100,
                 mean(Tr),
                 eps,
-                Mater.k * coating.k,
-                mean(thickness) * coating.k + mean(coating_thickness) * Mater.k,
+                k_arg,
+                t_Arg,
                 mean(hg),
                 err,
             )
-            self.Q = self.radiationcool.q * A
+            self.Q = self.radiationcool.q * A_rad
             T_co_calculated = Ti_co
             Tw_wall_calculated = [self.radiationcool.T_calculated]
             T_outer_wall = [self.radiationcool.T_outer_wall]
+            # print("T_outer_wall radiation:", T_outer_wall)
+            # print("Tw_wall_calculated radiation:", Tw_wall_calculated)
             ploss = 0
             m_flow_fuel = 0
             if err != 0:
@@ -172,6 +183,8 @@ class CoolingClass:
                     Tw_wall_calculated,
                     ploss,
                     m_flow_fuel,
+                    type_variable,
+                    T_outer_wall,
                     err,
                     warn,
                 )
@@ -194,7 +207,7 @@ class CoolingClass:
                     Mater,
                     coating,
                     Dr,
-                    A,
+                    A_total,
                     Ti_co,
                     m,
                     L,
@@ -204,8 +217,9 @@ class CoolingClass:
                     err,
                 )
                 T_outer_wall = self.regencool.T_out_wall
-            # Update heat extracted by cooling
-            self.Q = self.regencool.Q
+                # print("Tw_wall_calculated: ",Tw_wall_calculated)
+                # Update heat extracted by cooling
+                self.Q = self.regencool.Q
         # print("type_variable", type_variable)
         # Check if output variables are within reason
         if check_positive_args(T_co_calculated) == False:
@@ -213,7 +227,9 @@ class CoolingClass:
 
         if check_positive_args(Tw_wall_calculated) == False or np.any(
             [x > TestTemp for x in Tw_wall_calculated]
+            or np.any([x > TestTemp for x in T_outer_wall])
         ):
+            #print("Tw_wall_calculated: ",Tw_wall_calculated)
             err = err | (1 << 8)
         if check_positive_args(ploss) == False or ploss > 10**7:
             err = err | (1 << 9)
@@ -253,9 +269,9 @@ class Heatsink:
         self.T_calculated = -1
 
     # Final T after a certain operation time dt, assuming a nozzle mass
-    def Tcalculation(self, T0, Tf, h, A, c, dt, m, err):
+    def Tcalculation(self, T0, Tf, h, A, c, dt, m,err):
         # if(check_positive_args(T0, Tf, h, A, c, dt, m)==False):
-
+        # print(A)
         self.T_calculated = (T0 - Tf) * float(math.e ** (-h * A / (m * c) * dt)) + Tf
         self.Q = (self.T_calculated - T0) * c / dt  # Watts
         if check_positive_args(self.T_calculated) == False:
@@ -291,8 +307,9 @@ class RadiationCool:
         sol = scipy.optimize.fsolve(
             self.Tcalculation_system, x0, args=(Tr, eps, k, t, h)
         )
-        self.T_calculated = sol[1]
-        self.T_outer_wall = sol[0]
+        # print("h * (Tr - Ti) - (Ti - Tout) * k / t: ",h * (Tr - sol[0]) - (sol[0] - sol[1]) * k / t)
+        self.T_calculated = sol[0]
+        self.T_outer_wall = sol[1]
         self.q = (self.T_calculated - self.T_outer_wall) * k / t
         if check_positive_args(self.T_calculated) == False:
             err = err | (1 << 2)
@@ -421,9 +438,15 @@ class RegenerativeCool:
     ):
         # if check_positive_args(Tr, hg, t, Dr, A, Ti_co, m_flow_fuel, L) == False:
 
-        self.t = t * Mater_coating.k + t_coating * Mater.k
+        # self.t = t * Mater_coating.k + t_coating * Mater.k
         self.Mater = Mater
-        self.Mater.k = Mater.k * Mater_coating.k
+        if np.any(x <= 0 for x in t_coating):
+            self.t = t
+            self.Mater.k = Mater.k
+        else:
+            self.Mater.k = Mater.k * Mater_coating.k
+            self.t = t * Mater_coating.k + t_coating * Mater.k
+
         Re = m_flow_fuel / Prop.fmiu * 4 / (math.pi * Dr)
         # Inicialise variables
         self.Inicialise(self.t, Prop, self.Mater, Dr, Re, m_flow_fuel)
@@ -581,10 +604,10 @@ def outputs(
     Tw_wall_chamber_calculated = np.array(Tw_wall_chamber_calculated)
     Tw_wall_nozzle_calculated = np.array(Tw_wall_nozzle_calculated)
 
-    max_temperature_inner = np.maximum(
+    max_temperature_outer = np.maximum(
         np.max(T_outer_wall_chamber), np.max(T_outer_wall_nozzle)
     )
-    max_temperature_outer = np.maximum(
+    max_temperature_inner = np.maximum(
         np.max(Tw_wall_chamber_calculated), np.max(Tw_wall_nozzle_calculated)
     )
 
