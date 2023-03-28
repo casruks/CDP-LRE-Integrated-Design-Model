@@ -29,7 +29,7 @@ if __name__ == "__main__":
     n = 2000
     prop = Aux_classes.Propellant(0)
     Tw_ad_noz = np.array([3000 for i in range(n)])
-    h_c_noz = [6000 for i in range(n)]
+    h_c_noz = [20000 for i in range(n)]
     t_noz = np.array([0.003 for i in range(n)])
     L = 4.3
     T_w_after_cooling = 0
@@ -70,12 +70,12 @@ if __name__ == "__main__":
     )
     # print("A_nozzle", A_nozzle)
     # Ms.Inc_A_286.k = 4000000000000
-    Aux_classes.Default.default_coating_thickness = 0.12e-3
+    Aux_classes.Default.default_coating_thickness = 0
     Coolobj.Q = 0
     Coolobj_c.Q = 0
     Aux_classes.Default.Dr = 0.01
     type_variable_nozzle = -1
-    main_material = Ms.Haynes_188
+    main_material = Ms.Inc_A_286
     coating = Ms.GRCop_84
     (
         Tf_cool,

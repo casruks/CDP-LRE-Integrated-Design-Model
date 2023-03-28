@@ -352,8 +352,8 @@ class RegenerativeCool:
     def Tcalculation1D(
         self, Tr: float, Ti_co: float, A: float, hg: float, ArrayCounter: int
     ):
-        q = (Tr - Ti_co) / (1 / hg + self.t[ArrayCounter] / self.Mater.k + 1 / self.hco)
-        #print("self.t[ArrayCounter] / self.Mater.k: ",self.t[ArrayCounter] / self.Mater.k)
+        q = (Tr - Ti_co) / (2 / hg + self.t[ArrayCounter] / self.Mater.k + 1 / self.hco)
+        # print("self.t[ArrayCounter] / self.Mater.k: ",self.t[ArrayCounter] / self.Mater.k)
         # print("self.t[ArrayCounter] / self.Mater.k: ",self.t[ArrayCounter] / self.Mater.k)
         # print("1 / hg: ",1 / hg)
         # print("1 / self.hco: ", 1 / self.hco)
@@ -368,10 +368,10 @@ class RegenerativeCool:
         # Tinext_co = Ti_co + q * A/ (self.Prop.fcp * self.m_flow_fuel)
         # print("self.hco", self.hco)
         # T_wall = self.t[ArrayCounter] / self.Mater.k * q + Ti_co + q / self.hco
-        T_wall = Tr - q / hg
-        #print("hg: ", hg)
+        T_wall = Tr - 2 * q / hg
+        # print("hg: ", hg)
         self.T_outer_Wall_loop_val = T_wall - self.t[ArrayCounter] / self.Mater.k * q
-        #print("self.t[ArrayCounter]",self.t[ArrayCounter])
+        # print("self.t[ArrayCounter]",self.t[ArrayCounter])
         # print("T_outer by wall: ", T_wall - self.t[ArrayCounter] / self.Mater.k * q)
         # print("T_out by coolant: ", Ti_co - q / self.hco)
         # Tinext_co: end coolant temperature
@@ -461,7 +461,7 @@ class RegenerativeCool:
 
         # self.t = t * Mater_coating.k + t_coating * Mater.k
         self.Mater = Mater
-        if np.any(t_coating<= 0):
+        if np.any(t_coating <= 0):
             self.t = t
             self.Mater.k = Mater.k
         else:
