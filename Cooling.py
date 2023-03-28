@@ -231,7 +231,7 @@ class CoolingClass:
         ):
             # print("Tw_wall_calculated: ",Tw_wall_calculated)
             err = err | (1 << 8)
-        if check_positive_args(ploss) == False or ploss > 10**7:
+        if check_positive_args(ploss) == False or ploss > 10**10:
             err = err | (1 << 9)
         if check_positive_args(m_flow_fuel) == False:
             err = err | (1 << 10)
@@ -353,6 +353,7 @@ class RegenerativeCool:
         self, Tr: float, Ti_co: float, A: float, hg: float, ArrayCounter: int
     ):
         q = (Tr - Ti_co) / (1 / hg + self.t[ArrayCounter] / self.Mater.k + 1 / self.hco)
+        #print("self.t[ArrayCounter] / self.Mater.k: ",self.t[ArrayCounter] / self.Mater.k)
         # print("self.t[ArrayCounter] / self.Mater.k: ",self.t[ArrayCounter] / self.Mater.k)
         # print("1 / hg: ",1 / hg)
         # print("1 / self.hco: ", 1 / self.hco)
@@ -368,8 +369,9 @@ class RegenerativeCool:
         # print("self.hco", self.hco)
         # T_wall = self.t[ArrayCounter] / self.Mater.k * q + Ti_co + q / self.hco
         T_wall = Tr - q / hg
-        # print("q / hg: ", q / hg)
+        #print("hg: ", hg)
         self.T_outer_Wall_loop_val = T_wall - self.t[ArrayCounter] / self.Mater.k * q
+        #print("self.t[ArrayCounter]",self.t[ArrayCounter])
         # print("T_outer by wall: ", T_wall - self.t[ArrayCounter] / self.Mater.k * q)
         # print("T_out by coolant: ", Ti_co - q / self.hco)
         # Tinext_co: end coolant temperature
@@ -459,7 +461,7 @@ class RegenerativeCool:
 
         # self.t = t * Mater_coating.k + t_coating * Mater.k
         self.Mater = Mater
-        if np.any(x <= 0 for x in t_coating):
+        if np.any(t_coating<= 0):
             self.t = t
             self.Mater.k = Mater.k
         else:
@@ -487,6 +489,7 @@ class RegenerativeCool:
             T_co_calcualted[i + 1], T_wall_calcualted[i] = self.Tcalculation1D(
                 Tr[i], T_co_calcualted[i], A, hg[i], i
             )
+            # print(Tr[i])
             self.T_out_wall[i] = self.T_outer_Wall_loop_val
             # self.Q=self.Q+(Tr[i]-T_wall_calcualted[i])*hg[i]
 

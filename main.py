@@ -1,3 +1,4 @@
+
 import Turbomachinery_code as Turbo
 import CombustionChamber as Comb
 import Injector as Inj
@@ -9,13 +10,14 @@ import Nozzle_turbine as Nz_t
 import Cooling
 import Materials as Ms
 import numpy as np
+
 import Aux_classes as aux
 import math
 import matplotlib.pyplot as plt
 
-Thrust_ = 1860000 #= input("Introduce thrust")
-Thrust_time_ = 150 #= input("Introduce thrust time")
-Pamb_ = 1e3 #= input("Introudce ambient pressure (Pa)")
+Thrust_ = 1860000  # = input("Introduce thrust")
+Thrust_time_ = 150  # = input("Introduce thrust time")
+Pamb_ = 1e3  # = input("Introudce ambient pressure (Pa)")
 prop = aux.Propellant(0)
 default = aux.Default(0)
 dat = [aux.Data(Thrust_, Thrust_time_, Pamb_)]
@@ -415,3 +417,5 @@ def Main(d : aux.Data):
 
 if __name__ == '__main__':
     Main(dat)
+
+

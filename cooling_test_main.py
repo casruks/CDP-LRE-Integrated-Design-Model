@@ -26,11 +26,11 @@ if __name__ == "__main__":
     Coolobj_c = Cooling.CoolingClass()
 
     Q = 0
-    n = 150
-    prop = Aux_classes.Propellant(2)
-    Tw_ad_noz = np.array([4000 for i in range(n)])
-    h_c_noz = [20000 for i in range(n)]
-    t_noz = np.array([0.02 for i in range(n)])
+    n = 2000
+    prop = Aux_classes.Propellant(0)
+    Tw_ad_noz = np.array([3000 for i in range(n)])
+    h_c_noz = [6000 for i in range(n)]
+    t_noz = np.array([0.003 for i in range(n)])
     L = 4.3
     T_w_after_cooling = 0
     # Ms.Rhenium.OpTemp_u = 700
@@ -69,11 +69,14 @@ if __name__ == "__main__":
         ]
     )
     # print("A_nozzle", A_nozzle)
-    Aux_classes.Default.default_coating_thickness = 0
+    # Ms.Inc_A_286.k = 4000000000000
+    Aux_classes.Default.default_coating_thickness = 0.12e-3
     Coolobj.Q = 0
     Coolobj_c.Q = 0
     Aux_classes.Default.Dr = 0.01
     type_variable_nozzle = -1
+    main_material = Ms.Haynes_188
+    coating = Ms.GRCop_84
     (
         Tf_cool,
         Tw_wall_nozzle_calculated,
@@ -85,17 +88,19 @@ if __name__ == "__main__":
         warn_nozzle_cooling,
     ) = Coolobj.Run_cooling(
         Aux_classes.Default.T0,
-        Ms.Inc_A_286.heat_cap,
+        main_material.heat_cap,
         operationtime,
         nozzle_mass,
         Aux_classes.Default.eps,
         Tw_ad_noz,
         h_c_noz,
         t_noz,
-        np.array([0 for i in range(len(t_noz))]),
+        np.array(
+            [Aux_classes.Default.default_coating_thickness for i in range(len(t_noz))]
+        ),
         prop,
-        Ms.Inc_A_286,
-        Ms.Rhenium,
+        main_material,
+        coating,
         0.0005,  # Aux_classes.Default.Dr,
         A_nozzle,
         Aux_classes.Default.T_fuel_tanks,
@@ -106,14 +111,14 @@ if __name__ == "__main__":
         default.regenerative_case,
     )
 
-    print("\nRun", case_run)
+    print("\nRun Nozzle")
     print("Tf_cool: ", Tf_cool)
     print(
         "p loss",
         dptcool,
     )
-    print("Tw_wall_calculated", np.amax(Tw_wall_nozzle_calculated))
-    print("Outer wall temperature", np.amax(T_outer_wall_nozzle))
+    print("Tw_wall_calculated", max(Tw_wall_nozzle_calculated))
+    print("Outer wall temperature", max(T_outer_wall_nozzle))
     print("errors:", err_nozzle_cooling)
     print("warning", warn_nozzle_cooling)
     print("type: ", type_variable_nozzle)
@@ -160,7 +165,7 @@ if __name__ == "__main__":
         Aux_classes.Default.regenerative_case,
     )
     Coolobj_c.Q = Coolobj_c.Q * Aux_classes.Default.n
-    print("\nRun", case_run)
+    print("\nRun Chamber")
     print("Tf_cool: ", Tf_cool)
     print(
         "p loss",
