@@ -28,14 +28,14 @@ if __name__ == "__main__":
     Coolobj_c = Cooling.CoolingClass()
 
     Q = 0
-    n = 130
+    n = 1300
 
     prop = Aux_classes.Propellant(0)
     # prop.fcp=40000
     Tw_ad_noz = np.array([3000 for i in range(n)])
     h_c_noz = [20000 for i in range(n)]
-    t_noz = np.array([0.7112e-3 for i in range(n)])
-    L = 4.3
+    t_noz = np.array([0.4e-3 for i in range(n)])
+    L = 3
     T_w_after_cooling = 0
     # Ms.Rhenium.OpTemp_u = 700
     Aux_classes.Default.T_fuel_tanks = 20
@@ -75,8 +75,9 @@ if __name__ == "__main__":
         (alpha * y_noz_cool[i]) * x_noz_cool[-1] / len(y_noz_cool)
         for i in range(len(y_noz_cool))
     ]
-    print(A_nozzle)
-    print()
+    A_nozzle = Cooling.Nozzle_area_calculation(alpha, y_noz_cool, x_noz_cool)
+    # print(A_nozzle)
+    # print()
     # A_nozzle = [0.07 for i in range(len(y_noz_cool))]
 
     A_nozzle = [
@@ -107,7 +108,7 @@ if __name__ == "__main__":
             )
         )
     )
-    print(A_nozzle)
+    # print(A_nozzle)
     # A_nozzle = [x * 0.2 for x in A_nozzle]
 
     # print("A_nozzle", A_nozzle)
@@ -117,7 +118,7 @@ if __name__ == "__main__":
     Coolobj_c.Q = 0
     Aux_classes.Default.Dr = 0.01
     type_variable_nozzle = -1
-    main_material = Ms.Narloy_Z  # Ms.Inc_A_286
+    main_material = Ms.Inc_718
     coating = Ms.GRCop_84
 
     # main_material.k = 40000
@@ -392,6 +393,9 @@ if __name__ == "__main__":
         ]
     )
 
+    m_co = m_nozz / (1.0 + O_F) / Aux_classes.Default.n
+    # m_co = 180000000000000000000000
+
     (
         Tf_cool,
         Tw_wall_nozzle_calculated,
@@ -407,8 +411,8 @@ if __name__ == "__main__":
         operationtime,
         nozzle_mass,
         Aux_classes.Default.eps,
-        Tw_ad_noz,
-        h_c_noz,
+        T_noz,
+        h_noz,
         t_noz,
         np.array(
             [Aux_classes.Default.default_coating_thickness for i in range(len(t_noz))]
@@ -416,10 +420,10 @@ if __name__ == "__main__":
         prop,
         main_material,
         coating,
-        0.0005,  # Aux_classes.Default.Dr,
+        0.0000005,  # Aux_classes.Default.Dr,
         A_nozzle,
         Aux_classes.Default.T_fuel_tanks,
-        m_nozz / (1.0 + O_F) / Aux_classes.Default.n,
+        m_co,
         x_noz_cool[-1],
         y_noz_cool,
         True,
@@ -473,7 +477,7 @@ if __name__ == "__main__":
         0.00000005,  # Aux_classes.Default.Dr,
         np.array([A_chamber]),
         Tf_cool,
-        m_nozz / (1.0 + O_F) / Aux_classes.Default.n,
+        m_co,
         Chamber_L,
         np.array([Dc / 2]),
         True,
@@ -564,3 +568,11 @@ print("errors: ", err_nozzle_cooling, " ", err_chamber_cooling, " ", err_out)
 # plt.show()
 
 print(len(y_noz_cool))
+x_plot = np.array([x_noz_cool[-1] / len(T_noz) * x for x in range(len(T_noz))])
+# print(x_plot)
+# x_plot = np.flip(x_plot)
+plt.plot(x_plot, T_noz)
+
+
+plt.plot(x_plot, Tw_wall_nozzle_calculated)
+# plt.show()
