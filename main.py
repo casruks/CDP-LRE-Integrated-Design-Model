@@ -176,7 +176,7 @@ def Main(d : aux.Data, com : GUI.Communicate):
         y_for_cooling_channel = np.amin(y_noz_cool)
         #A_nozzle = [x_noz_cool[-1] * y_for_cooling_channel * alpha]
         A_nozzle=Cooling.Nozzle_area_calculation(alpha,y_noz_cool,x_noz_cool)
-        t_noz_cooling=[default.cooling_thickness for i in range(len(t_noz))]
+        t_noz_cooling=[default.cooling_thickness for i in range(len(Tw_ad_noz))]
         (
             Tf_cool,
             Tw_wall_nozzle_calculated,
