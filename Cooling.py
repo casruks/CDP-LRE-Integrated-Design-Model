@@ -352,7 +352,6 @@ class RegenerativeCool:
     def Tcalculation1D(
         self, Taw: float, Ti_co: float, A: float, hg: float, ArrayCounter: int
     ):
-
         q = (Taw - Ti_co) / (
             1 / (hg) + self.t[ArrayCounter] / self.Mater.k + 1 / self.hco
         )
@@ -364,6 +363,7 @@ class RegenerativeCool:
         # print()
         # print("I AM HERE")
         # q = 10**8
+        #print("A: ",sum(A))
         self.Q = self.Q + q * A[ArrayCounter]
 
         # self.Q += q * A

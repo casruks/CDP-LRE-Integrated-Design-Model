@@ -94,6 +94,7 @@ class Default:
         10000000000000000  # [s] default operation time (large to imply infinite time)
     )
     perimeter_percentage = 1  # percentage of the perimeter used for cooling chambers
+    cooling_thickness = 0.6
 
     # Igniters
 
@@ -281,7 +282,16 @@ class Propellant:
         self.R_f = 4.75 * 10**3  # fuel gas constant
         self.f_lamb = 1.6e-6
         self.fmiu = 2.166e-6
-        self.f_nist_enthalpy_coef = [120.4010,4.616880,-0.663012,0.040232,-41.78650,-11.48110,302.3440,97.35340]  # for shomate equation
+        self.f_nist_enthalpy_coef = [
+            120.4010,
+            4.616880,
+            -0.663012,
+            0.040232,
+            -41.78650,
+            -11.48110,
+            302.3440,
+            97.35340,
+        ]  # for shomate equation
         self.heatingvalue = -43100  # for the fuel only!
 
         self.enthalpy_298_f = 0.137899 * 10**6  # J/kg
@@ -336,7 +346,16 @@ class Propellant:
         self.R_f = 8.314 / 60.0983 * 10**3  # fuel gas constant
         self.f_lamb = 1.11e-6
         self.fmiu = 1.1071e-05
-        self.f_nist_enthalpy_coef = [121.4010,4.816880,-0.763012,0.043232,-40.78650,-11.38110,305.3440,95.35340]  # for shomate equation
+        self.f_nist_enthalpy_coef = [
+            121.4010,
+            4.816880,
+            -0.763012,
+            0.043232,
+            -40.78650,
+            -11.38110,
+            305.3440,
+            95.35340,
+        ]  # for shomate equation
         self.heatingvalue = -32928  # for the fuel only!
 
         self.enthalpy_298_f = 0.886280 * 10**6  # J/kh
@@ -419,7 +438,7 @@ class Data:
     Eps = 0.0  # Expansion ratio [-]
     Dt = 0.0  # Throat diameter [m]
     De = 0.0  # Exit diameter [m]
-    x_nozz = 0.0 ##coordinates
+    x_nozz = 0.0  ##coordinates
     y_nozz = 0.0
 
     # Turbo

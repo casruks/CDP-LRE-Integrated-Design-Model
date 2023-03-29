@@ -176,7 +176,7 @@ def Main(d : aux.Data, com : GUI.Communicate):
         y_for_cooling_channel = np.amin(y_noz_cool)
         #A_nozzle = [x_noz_cool[-1] * y_for_cooling_channel * alpha]
         A_nozzle=Cooling.Nozzle_area_calculation(alpha,y_noz_cool,x_noz_cool)
-        
+        t_noz_cooling=[default.cooling_thickness for i in range(len(t_noz))]
         (
             Tf_cool,
             Tw_wall_nozzle_calculated,
@@ -194,7 +194,7 @@ def Main(d : aux.Data, com : GUI.Communicate):
             default.eps,
             Tw_ad_noz,
             h_c_noz,
-            t_noz,
+            t_noz_cooling,
             np.array([default.default_coating_thickness for i in range(len(t_noz))]),
             prop,
             Ms.Rhenium,
@@ -257,7 +257,7 @@ def Main(d : aux.Data, com : GUI.Communicate):
             default.eps,
             np.array([d[-1].Tc]),
             np.array([d[-1].h_comb]),
-            np.array([d[-1].ThicknessChamber]),
+            np.array([default.cooling_thickness]),
             np.array([default.default_coating_thickness]),
             prop,
             Ms.Rhenium,

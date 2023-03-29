@@ -58,6 +58,8 @@ if __name__ == "__main__":
         [(2.30 - 0.26) / (n - 1) * (n - 1 - i) + 0.26 for i in range(n)]
     )
 
+    y_noz_cool = y_noz_cool / 2
+
     y_noz_cool = np.flip(y_noz_cool)
 
     x_noz_cool = np.array([L])
@@ -65,8 +67,8 @@ if __name__ == "__main__":
 
     chamber_mass = 1
     nozzle_mass = 1
-
-    alpha = 2 * math.pi * 1 / 1
+    Aux_classes.Default.n = 1
+    alpha = 2 * math.pi * 1 / Aux_classes.Default.n
     y_for_cooling_channel = np.amin(y_noz_cool)
     # A_nozzle = x_noz_cool[-1] * y_for_cooling_channel * alpha
     A_nozzle = [
@@ -106,6 +108,7 @@ if __name__ == "__main__":
         )
     )
     print(A_nozzle)
+    # A_nozzle = [x * 0.2 for x in A_nozzle]
 
     # print("A_nozzle", A_nozzle)
     # Ms.Inc_A_286.k = 4000000000000
@@ -116,7 +119,7 @@ if __name__ == "__main__":
     type_variable_nozzle = -1
     main_material = Ms.Narloy_Z  # Ms.Inc_A_286
     coating = Ms.GRCop_84
-    Aux_classes.Default.n = 1
+
     # main_material.k = 40000
 
     h_noz = np.array(
@@ -467,7 +470,7 @@ if __name__ == "__main__":
         prop,
         Ms.Columbium_c103,
         Ms.Rhenium,
-        0.05,  # Aux_classes.Default.Dr,
+        0.00000005,  # Aux_classes.Default.Dr,
         np.array([A_chamber]),
         Tf_cool,
         m_nozz / (1.0 + O_F) / Aux_classes.Default.n,
@@ -557,7 +560,7 @@ print("maximum_thermal_stress", maximum_thermal_stress)
 print("safety_factor_cooling", safety_factor_cooling)
 print("errors: ", err_nozzle_cooling, " ", err_chamber_cooling, " ", err_out)
 
-plt.plot(y_noz_cool)
-plt.show()
+# plt.plot(y_noz_cool)
+# plt.show()
 
 print(len(y_noz_cool))
