@@ -44,7 +44,7 @@ import warnings
 
 
 
-def CombustionChamber (conv,Pc,At,Propellant,Material,default,velocity_f,velocity_ox,d_f,d_o,bool,rho_c,cp_c,mu_c,k_c,Pr_c,A_est,of):
+def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,d_f,d_o,bool,rho_c,cp_c,mu_c,k_c,Pr_c,A_est,of):
 
 
 
