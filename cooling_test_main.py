@@ -26,7 +26,7 @@ if __name__ == "__main__":
     Coolobj_c = Cooling.CoolingClass()
 
     Q = 0
-    n = 2000
+    n = 20000
     prop = Aux_classes.Propellant(0)
     Tw_ad_noz = np.array([3000 for i in range(n)])
     h_c_noz = [20000 for i in range(n)]
@@ -77,6 +77,7 @@ if __name__ == "__main__":
     type_variable_nozzle = -1
     main_material = Ms.Inc_A_286
     coating = Ms.GRCop_84
+    # main_material.k = 40000
     (
         Tf_cool,
         Tw_wall_nozzle_calculated,
