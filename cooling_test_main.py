@@ -57,7 +57,9 @@ if __name__ == "__main__":
     y_noz_cool = np.array(
         [(2.30 - 0.26) / (n - 1) * (n - 1 - i) + 0.26 for i in range(n)]
     )
+
     y_noz_cool = np.flip(y_noz_cool)
+
     x_noz_cool = np.array([L])
     err_out = 0
 
@@ -67,12 +69,44 @@ if __name__ == "__main__":
     alpha = 2 * math.pi * 1 / 1
     y_for_cooling_channel = np.amin(y_noz_cool)
     # A_nozzle = x_noz_cool[-1] * y_for_cooling_channel * alpha
-    A_nozzle = (
-        [
-            (alpha * y_noz_cool[i]) * x_noz_cool[-1] / len(y_noz_cool)
-            for i in range(len(y_noz_cool))
-        ]
+    A_nozzle = [
+        (alpha * y_noz_cool[i]) * x_noz_cool[-1] / len(y_noz_cool)
+        for i in range(len(y_noz_cool))
+    ]
+    print(A_nozzle)
+    print()
+    # A_nozzle = [0.07 for i in range(len(y_noz_cool))]
+
+    A_nozzle = [
+        (alpha * y_noz_cool[i])
+        * (x_noz_cool[-1] / len(y_noz_cool))
+        / (
+            math.cos(
+                math.atan(
+                    abs(y_noz_cool[i + 1] - y_noz_cool[i])
+                    / (x_noz_cool[-1] / len(y_noz_cool))
+                )
+            )
+        )
+        for i in range(len(y_noz_cool) - 1)
+    ]
+
+    A_nozzle.append(
+        (
+            (alpha * y_noz_cool[-1])
+            * (x_noz_cool[-1] / len(y_noz_cool))
+            / (
+                math.cos(
+                    math.atan(
+                        abs(y_noz_cool[-1] - y_noz_cool[-2])
+                        / (x_noz_cool[-1] / len(y_noz_cool))
+                    )
+                )
+            )
+        )
     )
+    print(A_nozzle)
+
     # print("A_nozzle", A_nozzle)
     # Ms.Inc_A_286.k = 4000000000000
     Aux_classes.Default.default_coating_thickness = 0
@@ -409,7 +443,7 @@ if __name__ == "__main__":
     # A_chamber=[Chamber_L * Dc * 2*math.pi]
     y_for_cooling_channel = np.amin(y_noz_cool)
     print("Running for chamber")
-    A_chamber = Chamber_L * Dc / 2 * alpha
+    A_chamber = [Chamber_L * Dc / 2 * alpha]
     ThicknessChamber = 0.02
     (
         Tf_cool,
@@ -523,5 +557,7 @@ print("maximum_thermal_stress", maximum_thermal_stress)
 print("safety_factor_cooling", safety_factor_cooling)
 print("errors: ", err_nozzle_cooling, " ", err_chamber_cooling, " ", err_out)
 
-# plt.plot(h_noz)
-# plt.show()
+plt.plot(y_noz_cool)
+plt.show()
+
+print(len(y_noz_cool))
