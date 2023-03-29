@@ -374,7 +374,7 @@ class RegenerativeCool:
         # print("self.hco", self.hco)
         # T_wall = self.t[ArrayCounter] / self.Mater.k * q + Ti_co + q / self.hco
         T_wall = Taw - q / hg
-        print("T_wall : ", T_wall)
+        # print("T_wall : ", T_wall)
         # print("hg: ", hg)
         self.T_outer_Wall_loop_val = T_wall - self.t[ArrayCounter] / self.Mater.k * q
         # print("self.t[ArrayCounter]",self.t[ArrayCounter])
@@ -422,18 +422,18 @@ class RegenerativeCool:
     ):
         self.Q = 0
         # self.Pr = 4 * Prop.f_gamma / (9 * Prop.f_gamma - 5)
-        self.Pr = 0.69  # PLACEHOLDER
+        self.Pr = 1  # PLACEHOLDER
         self.f = (1.82 * math.log10(Re) - 1.64) ** (-2)
-        print("Re: ", Re)
+        # print("Re: ", Re)
         self.Nu = (
             self.f
             / 8
             * (Re - 1000)
             * self.Pr
-            / (1 + 12.7 * math.sqrt(self.f / 8) * (self.Pr**2 / 3 - 1))
+            / (1 + 12.7 * math.sqrt(self.f / 8) * (self.Pr ** (2 / 3) - 1))
         )
         self.hco = self.Nu * Mater.k / Dr
-        print("self.hco: ", self.hco)
+        # print("self.hco: ", self.hco)
 
         self.Prop = Prop
         self.m_flow_fuel = m_flow_fuel
@@ -534,7 +534,8 @@ class RegenerativeCool:
         if overwriteA == False:
             A_arg = [self.FindA(y, L, len(y), i) for i in range(len(y))]
         else:
-            A_arg = [A / len(y) for i in range(len(y))]
+            # A_arg = [A / len(y) for i in range(len(y))]
+            A_arg = A
 
         match case_run:
             case 0:

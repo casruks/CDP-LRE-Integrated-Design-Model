@@ -14,6 +14,8 @@ import Materials as Ms
 
 # import itertools
 
+import matplotlib.pyplot as plt
+
 default = Aux_classes.Default(0)
 
 
@@ -27,10 +29,12 @@ if __name__ == "__main__":
 
     Q = 0
     n = 130
+
     prop = Aux_classes.Propellant(0)
+    # prop.fcp=40000
     Tw_ad_noz = np.array([3000 for i in range(n)])
     h_c_noz = [20000 for i in range(n)]
-    t_noz = np.array([0.003 for i in range(n)])
+    t_noz = np.array([0.7112e-3 for i in range(n)])
     L = 4.3
     T_w_after_cooling = 0
     # Ms.Rhenium.OpTemp_u = 700
@@ -53,6 +57,7 @@ if __name__ == "__main__":
     y_noz_cool = np.array(
         [(2.30 - 0.26) / (n - 1) * (n - 1 - i) + 0.26 for i in range(n)]
     )
+    y_noz_cool = np.flip(y_noz_cool)
     x_noz_cool = np.array([L])
     err_out = 0
 
@@ -62,7 +67,7 @@ if __name__ == "__main__":
     alpha = 2 * math.pi * 1 / 1
     y_for_cooling_channel = np.amin(y_noz_cool)
     # A_nozzle = x_noz_cool[-1] * y_for_cooling_channel * alpha
-    A_nozzle = sum(
+    A_nozzle = (
         [
             (alpha * y_noz_cool[i]) * x_noz_cool[-1] / len(y_noz_cool)
             for i in range(len(y_noz_cool))
@@ -77,6 +82,7 @@ if __name__ == "__main__":
     type_variable_nozzle = -1
     main_material = Ms.Narloy_Z  # Ms.Inc_A_286
     coating = Ms.GRCop_84
+    Aux_classes.Default.n = 1
     # main_material.k = 40000
 
     h_noz = np.array(
@@ -427,7 +433,7 @@ if __name__ == "__main__":
         prop,
         Ms.Columbium_c103,
         Ms.Rhenium,
-        0.0005,  # Aux_classes.Default.Dr,
+        0.05,  # Aux_classes.Default.Dr,
         np.array([A_chamber]),
         Tf_cool,
         m_nozz / (1.0 + O_F) / Aux_classes.Default.n,
@@ -516,3 +522,6 @@ print("max_temperature_outer", max_temperature_outer)
 print("maximum_thermal_stress", maximum_thermal_stress)
 print("safety_factor_cooling", safety_factor_cooling)
 print("errors: ", err_nozzle_cooling, " ", err_chamber_cooling, " ", err_out)
+
+# plt.plot(h_noz)
+# plt.show()
