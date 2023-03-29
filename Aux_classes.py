@@ -429,6 +429,7 @@ class Data:
     dptop = 0.0  # [Pa] Total pressure rise over oxidizer pump
     dptfp = 0.0  # [Pa] Total pressure rise over fuel pump
     turbo_m = 0.0  # [kg/s] Total mass flow
+    turbo_cycle = 0
 
     # Combustion
     h_comb = 0.0  # Conductive heat transfer coefficient in chamber

@@ -2123,16 +2123,16 @@
      </layout>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="Layout_center" stretch="90,5">
+     <layout class="QVBoxLayout" name="Layout_center" stretch="45,50,5">
       <item>
-       <widget class="QGraphicsView" name="Graphics">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+       <widget class="QLabel" name="Graphics">
+        <property name="text">
+         <string>TextLabel</string>
         </property>
        </widget>
+      </item>
+      <item>
+       <widget class="MplCanvas" name="plots" native="true"/>
       </item>
       <item>
        <widget class="QProgressBar" name="progressBar">
@@ -3425,6 +3425,14 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MplCanvas</class>
+   <extends>QWidget</extends>
+   <header location="global">GUI</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

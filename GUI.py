@@ -2,24 +2,33 @@ import os
 import sys
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets, QtGui, QtCore
-from PyQt5.QtWidgets import QDialog, QApplication, QWidget, QMainWindow, QLabel, QDialogButtonBox, QScrollArea, QVBoxLayout, QSizePolicy, QSpacerItem
+from PyQt5.QtWidgets import QDialog, QApplication, QWidget, QMainWindow, QLabel, QDialogButtonBox, QScrollArea, QVBoxLayout, QSizePolicy, QSpacerItem, QGraphicsScene
 from PyQt5.QtWidgets import QMessageBox
 import main
 import Aux_classes as aux
 import csv
 from datetime import datetime
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
 
 set_images_path = "../Turbomachinery_code/"
+
+class MplCanvas(FigureCanvasQTAgg):
+    def __init__(self, parent=None, width=5, height=4, dpi=100):
+        fig = Figure(figsize=(width, height), dpi=dpi)
+        self.axes = fig.add_subplot(111)
+        super(MplCanvas, self).__init__(fig)
+
 
 class Communicate(QtCore.QObject):
     finished = QtCore.pyqtSignal()
     progress = QtCore.pyqtSignal(int)
 
-
     def runMain(self):
         self.r = main.Main(main.dat,self)
         self.finished.emit()
         return self.r
+    
 
 class MainWindow(QMainWindow):
     com = Communicate()
@@ -37,7 +46,12 @@ class MainWindow(QMainWindow):
         self.label_outputs.setStyleSheet(''' font-size: ''' + str(fontSize+8) + '''px; ''')
 
         # Initialize graphics
-        
+        pixmap = QtGui.QPixmap("images/EX.png")
+        pixmap.scaled(self.Graphics.width(), self.Graphics.height(), QtCore.Qt.KeepAspectRatio)
+        self.Graphics.setPixmap(pixmap)
+        #self.Graphics.setScaledContents(True)
+        self.plots.axes.plot([0, 1], [0,0])
+
         #tabs
         self.tab_inputs.setCurrentIndex(0)
         self.tab_outputs.setCurrentIndex(0)
@@ -139,6 +153,7 @@ class MainWindow(QMainWindow):
         #get propellant, cycle, nozzle, materials, etc...
         main.prop = aux.Propellant(self.combo_prop.currentIndex())
         main.default.cycle_type = self.combo_cycle.currentIndex()
+        main.dat[-1].turbo_cycle = self.combo_cycle.currentIndex()
 
         #run main
         self.thread = QtCore.QThread()
@@ -152,7 +167,7 @@ class MainWindow(QMainWindow):
         self.thread.start()
         self.but_run.setEnabled(False)
         self.tab_inputs.setEnabled(False)
-        self.thread.finished.connect(lambda: self.runEnd())
+        self.thread.finished.connect(lambda: self.RunEnd())
         
     def RunEnd(self):
         err_nozz, err_nozz2, err_chamber, err_turbo, err_inj, err_ign, err_cool, err_mass, err_cost, warn_nozz, warn_nozz2, warn_chamber, warn_turbo, warn_inj, warn_ign, warn_cool, warn_mass, warn_cost = self.com.r
@@ -415,6 +430,15 @@ class MainWindow(QMainWindow):
 
     # Output
     def Output(self, i : int):
+        #Plot
+        cycles = ["EX", "CB", "GG", "SC", "EL", "PF"]
+        pixmap = QtGui.QPixmap("images/" + cycles[main.dat[i].turbo_cycle] + ".png")
+        pixmap.scaled(self.Graphics.width(), self.Graphics.height(), QtCore.Qt.KeepAspectRatio)
+        self.Graphics.setPixmap(pixmap)
+        self.Graphics.setScaledContents(True)
+        self.sc.axes.plot([0,1,2,3,4], [10,1,20,3,40])
+
+        #Global
         no_afterdec = 2
         self.line_Isp.setText(str(round(main.dat[i].Isp, no_afterdec)))
         self.line_cstar.setText(str(round(main.dat[i].cstar, no_afterdec)))
@@ -533,6 +557,12 @@ class MainWindow(QMainWindow):
             self.line_inj_dp.setDisabled(True)
 
     def cycle_changed(self,i : int):
+        cycles = ["EX", "CB", "GG", "SC", "EL", "PF"]
+        pixmap = QtGui.QPixmap("images/" + cycles[i] + ".png")
+        pixmap.scaled(self.Graphics.width(), self.Graphics.height(), QtCore.Qt.KeepAspectRatio)
+        self.Graphics.setPixmap(pixmap)
+        self.Graphics.setScaledContents(True)
+
         if i == 2:
             self.checkLGG()
             self.label_lGG.show()

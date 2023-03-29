@@ -31,12 +31,11 @@ def Main(d : aux.Data, com : GUI.Communicate):
     errors=[]
     warnings=[]
     #First loop, pressure convergence
-    GUI.MainWindow.com.progress.emit(50.0)
     while abs(p_new-p_old)/p_new > default.pres_tol:
+        prog = min(abs(p_new-p_old)/p_new, 1.99)
+        com.progress.emit(int((2.0-prog)*100))
         p_old = p_new
 
-        prog = max(abs(p_new-p_old)/p_new, 1.99)
-        com.progress.emit(int((2.0-prog)*100))
         #Compute nozzle (1)
         #Inputs: 
         ## Chamber pressure in bars
