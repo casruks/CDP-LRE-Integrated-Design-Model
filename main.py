@@ -10,7 +10,7 @@ import Nozzle_turbine as Nz_t
 import Cooling
 import Materials as Ms
 import numpy as np
-
+import GUI
 import Aux_classes as aux
 import math
 import matplotlib.pyplot as plt
@@ -31,9 +31,11 @@ def Main(d : aux.Data):
     errors=[]
     warnings=[]
     #First loop, pressure convergence
+    GUI.MainWindow.com.progress.emit(50.0)
     while abs(p_new-p_old)/p_new > default.pres_tol:
         p_old = p_new
 
+        GUI.MainWindow.com.progress.emit(50.0)
         #Compute nozzle (1)
         #Inputs: 
         ## Chamber pressure in bars
@@ -144,10 +146,8 @@ def Main(d : aux.Data):
         Coolobj.Q = 0
         Coolobj_c.Q = 0
 
-        nozzle_mass = Ms.Nozzle_mass(x_noz_cool, y_noz_cool, t_noz, Ms.Rhenium)
-        chamber_mass = Ms.Chamber_mass(
-            d.Dc, d.Chamber_L, d.ThicknessChamber, Ms.Rhenium
-        )
+        nozzle_mass = 0 #Ms.Nozzle_mass(x_noz_cool, y_noz_cool, t_noz, Ms.Rhenium)
+        chamber_mass = 0 #Ms.Chamber_mass(
 
         # Inputs
         # Inicial temperature in K
@@ -205,7 +205,7 @@ def Main(d : aux.Data):
             default.Dr,
             A_nozzle,
             default.T_fuel_tanks,
-            d.m_nozz / (1.0 + d.O_F) / default.n,
+            d[-1].m_nozz / (1.0 + d[-1].O_F) / default.n,
             x_noz_cool[-1],
             y_noz_cool,
             True,
@@ -242,7 +242,7 @@ def Main(d : aux.Data):
         # Option to overwrite area with input area bool
         # which regenerative function to call (default 0, do not change!)
 
-        A_chamber = [d.Chamber_L * y_for_cooling_channel * alpha]
+        A_chamber = [d[-1].Chamber_L * y_for_cooling_channel * alpha]
         (
             Tf_cool,
             Tw_wall_chamber_calculated,
@@ -258,9 +258,9 @@ def Main(d : aux.Data):
             default.operationtime,
             chamber_mass,
             default.eps,
-            np.array([d.Tc]),
-            np.array([d.h_comb]),
-            np.array([d.ThicknessChamber]),
+            np.array([d[-1].Tc]),
+            np.array([d[-1].h_comb]),
+            np.array([d[-1].ThicknessChamber]),
             np.array([default.default_coating_thickness]),
             prop,
             Ms.Rhenium,
@@ -268,9 +268,9 @@ def Main(d : aux.Data):
             default.Dr,
             np.array(A_chamber),
             Tf_cool,
-            d.m_nozz / (1.0 + d.O_F) / default.n,
-            d.Chamber_L,
-            np.array([d.Dc / 2]),
+            d[-1].m_nozz / (1.0 + d[-1].O_F) / default.n,
+            d[-1].Chamber_L,
+            np.array([d[-1].Dc / 2]),
             True,
             default.regenerative_case,
         )
@@ -286,7 +286,7 @@ def Main(d : aux.Data):
         dptcool_cooling = dptcool
         error_out_cool=0
         err_cooling=0
-        maximum_thermal_stress,safety_factor_cooling, max_temperature_inner,max_temperature_outer,error_out_cool=Cooling.outputs(T_outer_wall_chamber,T_outer_wall_nozzle,Tw_wall_chamber_calculated,Tw_wall_nozzle_calculated,Ms.Rhenium,Ms.Rhenium, default.default_coating, np.array([d.ThicknessChamber for x in range(len(t_noz))]), t_noz, np.array([default.default_coating_thickness for x in range(len(t_noz))]),y_noz,d.Dc/2, error_out_cool )
+        maximum_thermal_stress,safety_factor_cooling, max_temperature_inner,max_temperature_outer,error_out_cool=Cooling.outputs(T_outer_wall_chamber,T_outer_wall_nozzle,Tw_wall_chamber_calculated,Tw_wall_nozzle_calculated,Ms.Rhenium,Ms.Rhenium, default.default_coating, np.array([d[-1].ThicknessChamber for x in range(len(t_noz))]), t_noz, np.array([default.default_coating_thickness for x in range(len(t_noz))]),y_noz,d[-1].Dc/2, error_out_cool )
         err_cooling=err_cooling|error_out_cool
         err_cooling=err_cooling|err_chamber_cooling
         err_cooling=err_cooling|err_nozzle_cooling
@@ -295,7 +295,7 @@ def Main(d : aux.Data):
         dp_cool=np.max(dptcool)
         #dp_cool=0.004
         #Tf_cool=400
-        d[-1].ptinj, d[-1].W_Opump, d[-1].W_Fpump, d[-1].W_turb, d[-1].fuel_frac, error_t = Turbo.TurboM(default, prop, d[-1].O_F, d[-1].Pa, Tf_cool, dp_cool, d[-1].m_nozz)
+        d[-1].ptinj, d[-1].W_Opump, d[-1].W_Fpump, d[-1].W_turb, d[-1].fuel_frac, d[-1].turbo_m, error_t = Turbo.TurboM(default, prop, d[-1].O_F, d[-1].Pa, Tf_cool, dp_cool, d[-1].m_nozz)
         errors.append((error_t))
         
 

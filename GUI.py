@@ -1,7 +1,7 @@
 import os
 import sys
 from PyQt5.uic import loadUi
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtWidgets import QDialog, QApplication, QWidget, QMainWindow, QLabel, QDialogButtonBox, QScrollArea, QVBoxLayout, QSizePolicy, QSpacerItem
 from PyQt5.QtWidgets import QMessageBox
 import main
@@ -10,7 +10,12 @@ import csv
 from datetime import datetime
 
 set_images_path = "../Turbomachinery_code/"
+
+class Communicate(QtCore.QObject):
+    progress = QtCore.pyqtSignal(float)
+
 class MainWindow(QMainWindow):
+    com = Communicate()
     def __init__(self):
         super(MainWindow, self).__init__()
         loadUi("GUI.ui",self)
@@ -36,8 +41,10 @@ class MainWindow(QMainWindow):
         self.label_O_F_no.hide()
 
         # Connects
+        self.com.progress.connect(self.updateProgress); self.updateProgress(0);
+
         #Main
-        self.OptOF(0)
+        self.OptOF(0) 
         self.line_thrust.editingFinished.connect(self.checkThrust);  self.checkThrust(); self.line_thrust.setValidator(QtGui.QDoubleValidator())
         self.line_time.editingFinished.connect(self.checktime); self.checktime(); self.line_time.setValidator(QtGui.QDoubleValidator())
         self.line_pa.editingFinished.connect(self.checkPa); self.checkPa(); self.line_pa.setValidator(QtGui.QDoubleValidator())
@@ -125,6 +132,7 @@ class MainWindow(QMainWindow):
     #Run
     def Run(self):
         #get propellant, cycle, nozzle, materials, etc...
+        self.com.progress.emit(0.0)
         main.prop = aux.Propellant(self.combo_prop.currentIndex())
         main.default.cycle_type = self.combo_cycle.currentIndex()
 
@@ -382,6 +390,11 @@ class MainWindow(QMainWindow):
         self.checkPa()
         self.OptOF(self.check_O_F.isChecked())
         
+
+    #Progress
+    def updateProgress(self, perc : float):
+        self.progressBar.setValue(perc);
+
 
     # Output
     def Output(self, i : int):
@@ -1381,10 +1394,10 @@ class MainWindow(QMainWindow):
 
     def checkPer(self):
         var = float(self.line_cool_per.text())
-        if var > 0.0 and var < 100.0:
-            main.default.perimeter_percentage = var;
+        if var > 0.0 and var <= 100.0:
+            main.default.perimeter_percentage = var/100.0;
         else:
-            self.line_cool_per.setText("10.0")
+            self.line_cool_per.setText("100.0")
             msg = QMessageBox()
             msg.setWindowTitle("Input error!")
             msg.setText("Invalid perimeter percentage in contact, try again.")
