@@ -12,7 +12,14 @@ from datetime import datetime
 set_images_path = "../Turbomachinery_code/"
 
 class Communicate(QtCore.QObject):
-    progress = QtCore.pyqtSignal(float)
+    finished = QtCore.pyqtSignal()
+    progress = QtCore.pyqtSignal(int)
+
+
+    def runMain(self):
+        self.r = main.Main(main.dat,self)
+        self.finished.emit()
+        return self.r
 
 class MainWindow(QMainWindow):
     com = Communicate()
@@ -41,8 +48,6 @@ class MainWindow(QMainWindow):
         self.label_O_F_no.hide()
 
         # Connects
-        self.com.progress.connect(self.updateProgress); self.updateProgress(0);
-
         #Main
         self.OptOF(0) 
         self.line_thrust.editingFinished.connect(self.checkThrust);  self.checkThrust(); self.line_thrust.setValidator(QtGui.QDoubleValidator())
@@ -132,13 +137,25 @@ class MainWindow(QMainWindow):
     #Run
     def Run(self):
         #get propellant, cycle, nozzle, materials, etc...
-        self.com.progress.emit(0.0)
         main.prop = aux.Propellant(self.combo_prop.currentIndex())
         main.default.cycle_type = self.combo_cycle.currentIndex()
 
         #run main
-        err_nozz, err_nozz2, err_chamber, err_turbo, err_inj, err_ign, err_cool, err_mass, err_cost, warn_nozz, warn_nozz2, warn_chamber, warn_turbo, warn_inj, warn_ign, warn_cool, warn_mass, warn_cost = main.Main(main.dat)
+        self.thread = QtCore.QThread()
+        self.worker = self.com
+        self.worker.moveToThread(self.thread)
+        self.thread.started.connect(self.worker.runMain)
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+        self.worker.progress.connect(self.updateProgress); self.updateProgress(0);
+        self.thread.start()
+        self.but_run.setEnabled(False)
+        self.tab_inputs.setEnabled(False)
+        self.thread.finished.connect(lambda: self.runEnd())
         
+    def RunEnd(self):
+        err_nozz, err_nozz2, err_chamber, err_turbo, err_inj, err_ign, err_cool, err_mass, err_cost, warn_nozz, warn_nozz2, warn_chamber, warn_turbo, warn_inj, warn_ign, warn_cool, warn_mass, warn_cost = self.com.r
         #Errors
         if(err_nozz or err_nozz2 or err_chamber or err_turbo or err_inj or err_ign or err_cool or err_mass or err_cost): 
             msg = QMessageBox(self)
@@ -392,7 +409,7 @@ class MainWindow(QMainWindow):
         
 
     #Progress
-    def updateProgress(self, perc : float):
+    def updateProgress(self, perc : int):
         self.progressBar.setValue(perc);
 
 
