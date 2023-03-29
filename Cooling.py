@@ -350,15 +350,13 @@ class RegenerativeCool:
     # Calculates and returns equilibrium wall temperature, and end coolant temperature
 
     def Tcalculation1D(
-        self, Tb: float, Ti_co: float, A: float, hg: float, ArrayCounter: int
+        self, Taw: float, Ti_co: float, A: float, hg: float, ArrayCounter: int
     ):
-        M = 0
-        f_aw = 1 + 0.91 * (self.Prop.f_gamma - 1) / 2 * M**2
-        factor = 1
-        q = (Tb * f_aw - Ti_co) / (
-            1 / (hg * factor) + self.t[ArrayCounter] / self.Mater.k + 1 / self.hco
+
+        q = (Taw - Ti_co) / (
+            1 / (hg) + self.t[ArrayCounter] / self.Mater.k + 1 / self.hco
         )
-        print("q: ",q)
+
         # print("self.t[ArrayCounter] / self.Mater.k: ",self.t[ArrayCounter] / self.Mater.k)
         # print("self.t[ArrayCounter] / self.Mater.k: ",self.t[ArrayCounter] / self.Mater.k)
         # print("1 / hg: ",1 / hg)
@@ -370,12 +368,13 @@ class RegenerativeCool:
 
         # self.Q += q * A
         # print(A[ArrayCounter])
-        #self.Prop.fcp=283.73e3
+        # self.Prop.fcp=283.73e3
         Tinext_co = Ti_co + q * A[ArrayCounter] / (self.Prop.fcp * self.m_flow_fuel)
         # Tinext_co = Ti_co + q * A/ (self.Prop.fcp * self.m_flow_fuel)
         # print("self.hco", self.hco)
         # T_wall = self.t[ArrayCounter] / self.Mater.k * q + Ti_co + q / self.hco
-        T_wall = Tb * f_aw - 1 / factor * q / hg
+        T_wall = Taw - q / hg
+        print("T_wall : ", T_wall)
         # print("hg: ", hg)
         self.T_outer_Wall_loop_val = T_wall - self.t[ArrayCounter] / self.Mater.k * q
         # print("self.t[ArrayCounter]",self.t[ArrayCounter])
