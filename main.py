@@ -32,8 +32,8 @@ def Main(d : aux.Data, com : GUI.Communicate):
     warnings=[]
     #First loop, pressure convergence
     while abs(p_new-p_old)/p_new > default.pres_tol:
-        prog = min(abs(p_new-p_old)/p_new, 1.99)
-        com.progress.emit(int((2.0-prog)*100))
+        prog = min(abs(p_new-p_old)/p_new, 0.99)
+        com.progress.emit(int((1.0-prog)*100))
         p_old = p_new
 
         #Compute nozzle (1)

@@ -419,6 +419,8 @@ class Data:
     Eps = 0.0  # Expansion ratio [-]
     Dt = 0.0  # Throat diameter [m]
     De = 0.0  # Exit diameter [m]
+    x_nozz = 0.0 ##coordinates
+    y_nozz = 0.0
 
     # Turbo
     W_Opump = 0.0  # [W] Oxidizer pump power
