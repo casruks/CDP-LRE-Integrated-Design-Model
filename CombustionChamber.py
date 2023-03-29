@@ -266,10 +266,11 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
             #"Lstar to " + str(lstar))
 
     Thickness = Pc * Rchamber * Safety / Material.yieldstress_l
-
+    if(Thickness<0.005):
+        Thickness=0.005
     if bool == 1:
         kloads = default.kloads
-        Mass = kloads *(1/(LengthChamber/dchamber)+2)*Material.density*Safety/Material.yieldstress_l*Vchamber*Pc
+        Mass = kloads *(1/(LengthChamber/dchamber)+2)*Material.density*Thickness*LengthChamber*Rchamber*3.14 #Safety/Material.yieldstress_l*Vchamber*Pc
         if Mass < 0:
             er = er | (1<<7)
             return(0,0,0,0,0,wr,er)
@@ -283,6 +284,7 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
 
     velocity = velocity_ox*(1-1/(1+of)) + velocity_f*(1/(1+of))
     heattransfer = a * ro**0.8 * velocity**0.8 * (1/(Rchamber*2))**0.2 * (k*Pr**0.33/niu**0.8)
+    #heattransfer = 1.213 * a * m**0.8*niu**0.2*cp*Pr**(-2/3)*(Rchamber*2)**(-1.8)
     if heattransfer < 0:
         er = er | (1<<8)
         return(0,0,0,0,0,wr,er)
