@@ -472,7 +472,7 @@ class GG:
         
         self.mt = (1.0/(1.0+self.l)) * self.m
         self.Wop = self.mt*self.O_F/(self.O_F+1.0) * self.dptop / (self.eff_po*self.prop.o_dens)
-        self.Wfp = self.mt*1.0/(self.O_F+1.0) * self.dptfp / (self.eff_pf*self.prop.f_dens_l)
+        self.Wfp = self.mt/(self.O_F+1.0) * self.dptfp / (self.eff_pf*self.prop.f_dens_l)
         self.T1t = self.ispObj.get_Tcomb(Pc=(self.pt1 + self.dptmix + self.dptcomb)/1.0e5,MR=self.O_F)
         self.Wt = self.l * self.mt * self.eff_t * self.prop.fcp * self.T1t * (1.0-(self.pt2/self.pt1)**((self.prop.f_gamma-1.0)/self.prop.f_gamma))
         
@@ -665,10 +665,10 @@ class EL:
 
 
 #Values used during tests, corresponding to Global or software input
-O_F_ = 6.0 #[-]
-Pa_ = 1.0e5 #[Pa] ambient pressure
-Tf_cool_ = 248.0 #[K] temperature after cooling
-dptcool_ = 1.0e5 #[Pa] pressure drop in cooling channel
+O_F_ = 6.04 #[-]
+Pa_ = 1.0e3 #[Pa] ambient pressure
+Tf_cool_ = 322.0 #[K] temperature after cooling
+dptcool_ = 711 #[Pa] pressure drop in cooling channel
 m_ = 456.0 #[kg/s] mass flow in the nozzle
 default = aux.Default(0)
 prop = aux.Propellant(0)
@@ -676,16 +676,17 @@ prop = aux.Propellant(0)
 #main Function
 if __name__ == '__main__':
     print('Loading...')
-    default.cycle_type = 1 # 0:EX (expander) - 1:CB (coolant bleed) - 2:GG (gas generator) - 3:SC (staged combustion) - 4:EL (electrical) - 5:PF (pressure fed)
-    
-    print(TurboM(default, prop, O_F_, Pa_, Tf_cool_, dptcool_, m_))
-    counter = 0
-    for m_ in np.linspace(0.1,400,100):
-        for Tf_cool_ in np.linspace(100,900,100):
-            ptinj_, Wop_, Wfp_, Wt_, l_, mt_, br_ = TurboM(default, prop, O_F_, Pa_, Tf_cool_, dptcool_, m_)
-            if(br_):
-                print("error for m=" + str(m_) + ", Tf=" + str(Tf_cool_))
-                counter = counter + 1
+    default.cycle_type = 2 # 0:EX (expander) - 1:CB (coolant bleed) - 2:GG (gas generator) - 3:SC (staged combustion) - 4:EL (electrical) - 5:PF (pressure fed)
 
-    print(counter)
+    print(TurboM(default, prop, O_F_, Pa_, Tf_cool_, dptcool_, m_))
+    
+    #counter = 0
+    #for m_ in np.linspace(0.1,400,100):
+    #    for Tf_cool_ in np.linspace(100,900,100):
+    #        ptinj_, Wop_, Wfp_, Wt_, l_, mt_, br_ = TurboM(default, prop, O_F_, Pa_, Tf_cool_, dptcool_, m_)
+    #        if(br_):
+    #            print("error for m=" + str(m_) + ", Tf=" + str(Tf_cool_))
+    #            counter = counter + 1
+
+    #print(counter)
     print('\nProcess Terminated')

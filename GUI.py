@@ -81,6 +81,8 @@ class MainWindow(QMainWindow):
         self.line_T0_wall.editingFinished.connect(self.checkT0wall);  self.checkT0wall(); self.line_T0_wall.setValidator(QtGui.QDoubleValidator())
         self.line_coating_thick.editingFinished.connect(self.checkCoatThick);  self.checkCoatThick(); self.line_coating_thick.setValidator(QtGui.QDoubleValidator())
         self.line_DH.editingFinished.connect(self.checkDH);  self.checkDH(); self.line_DH.setValidator(QtGui.QDoubleValidator())
+        self.line_nchannels.editingFinished.connect(self.checkNCh);  self.checkNCh(); self.line_nchannels.setValidator(QtGui.QIntValidator())
+        self.line_cool_per.editingFinished.connect(self.checkPer);  self.checkPer(); self.line_cool_per.setValidator(QtGui.QDoubleValidator())
 
         #Injectors
         self.Injector_changed(0); self.define_inj_dp(0)
@@ -389,6 +391,9 @@ class MainWindow(QMainWindow):
         self.line_m.setText(str(round(main.dat[i].turbo_m, no_afterdec)))
         self.line_prop_mass.setText(str(round(main.dat[i].Mprop, no_afterdec)))
         self.line_mass.setText(str(round(main.dat[i].Mtot, no_afterdec)))
+        self.line_length.setText(str(round(main.dat[i].L_total + main.dat[i].Chamber_L, no_afterdec)))
+        envDiam = max(main.dat[i].Dc, main.dat[i].De)
+        self.line_envDiam.setText(str(round(envDiam, no_afterdec)))
         self.line_cost.setText(str(round(main.dat[i].cost, no_afterdec)))
         self.line_reliability.setText(str(main.dat[i].rel, no_afterdec)) #list, not yet rounded to 2dec
 
@@ -1361,6 +1366,28 @@ class MainWindow(QMainWindow):
             msg = QMessageBox()
             msg.setWindowTitle("Input error!")
             msg.setText("Invalid experience factor, try again.")
+            msg.exec_()
+
+    def checkNCh(self):
+        var = float(self.line_nchannels.text())
+        if var >= 1 and var < 200:
+            main.default.n = var;
+        else:
+            self.line_nchannels.setText("1")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid number of cooling channels, try again.")
+            msg.exec_()
+
+    def checkPer(self):
+        var = float(self.line_cool_per.text())
+        if var > 0.0 and var < 100.0:
+            main.default.perimeter_percentage = var;
+        else:
+            self.line_cool_per.setText("10.0")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid perimeter percentage in contact, try again.")
             msg.exec_()
 
 # Main
