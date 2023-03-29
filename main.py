@@ -175,34 +175,8 @@ def Main(d : aux.Data, com : GUI.Communicate):
         alpha = 2 * math.pi * default.perimeter_percentage / default.n
         y_for_cooling_channel = np.amin(y_noz_cool)
         #A_nozzle = [x_noz_cool[-1] * y_for_cooling_channel * alpha]
-        A_nozzle = [
-        (alpha * y_noz_cool[i])
-        * (x_noz_cool[-1] / len(y_noz_cool))
-        / (
-            math.cos(
-                math.atan(
-                    abs(y_noz_cool[i + 1] - y_noz_cool[i])
-                    / (x_noz_cool[-1] / len(y_noz_cool))
-                )
-            )
-        )
-        for i in range(len(y_noz_cool) - 1)
-        ]
-
-        A_nozzle.append(
-        (
-            (alpha * y_noz_cool[-1])
-            * (x_noz_cool[-1] / len(y_noz_cool))
-            / (
-                math.cos(
-                    math.atan(
-                        abs(y_noz_cool[-1] - y_noz_cool[-2])
-                        / (x_noz_cool[-1] / len(y_noz_cool))
-                        )
-                 )
-             )
-         )
-        )
+        A_nozzle=Cooling.Nozzle_area_calculation(alpha,y_noz_cool,x_noz_cool)
+        
         (
             Tf_cool,
             Tw_wall_nozzle_calculated,

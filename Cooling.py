@@ -692,3 +692,36 @@ def outputs(
         max_temperature_outer,
         err,
     )
+
+
+
+def Nozzle_area_calculation(alpha,y_noz_cool,x_noz_cool):
+    A_nozzle = [
+        (alpha * y_noz_cool[i])
+        * (x_noz_cool[-1] / len(y_noz_cool))
+        / (
+            math.cos(
+                math.atan(
+                    abs(y_noz_cool[i + 1] - y_noz_cool[i])
+                    / (x_noz_cool[-1] / len(y_noz_cool))
+                )
+            )
+        )
+        for i in range(len(y_noz_cool) - 1)
+    ]
+
+    A_nozzle.append(
+        (
+            (alpha * y_noz_cool[-1])
+            * (x_noz_cool[-1] / len(y_noz_cool))
+            / (
+                math.cos(
+                    math.atan(
+                        abs(y_noz_cool[-1] - y_noz_cool[-2])
+                        / (x_noz_cool[-1] / len(y_noz_cool))
+                    )
+                )
+            )
+        )
+    )
+    return A_nozzle
