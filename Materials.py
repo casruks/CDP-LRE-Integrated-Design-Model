@@ -11,7 +11,7 @@ class Materials:
         self.k = k #Thermal Conductivity of the Material in [W/m*K]
         self.cost = cost #Cost per kilogram [Eur/kg] 
         self.heat_cap = heat_cap #Heat capacity [J/kg*K]
-        self.ulstress = ultstress #Ultimate Tensile Strength [Pa]
+        self.ultstress = ultstress #Ultimate Tensile Strength [Pa]
         self.mu = mu #Poisson Ratio [dimensionless]  
         self.thr_exp = thr_exp  #Coefficient of Thermal Expansion [mm/m*K]
        
