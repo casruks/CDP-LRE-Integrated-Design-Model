@@ -66,22 +66,6 @@ LE5     = ReferenceEngine(3.65e6, 1.03e5, 140.0, 0.068, 23.33, 343.83, 1.1, Inc_
 SSME    = ReferenceEngine(2.04e7, 2.28e6, 77.5,  0.138, 512.6, 361.89, 1.2, Inc_718, D6AC_Steel, D6AC_Steel, 0.0907, 0.1984, 0.0737, 0.1955, 0.2763, 0.1654, 3177)#Stage Combustion Cycle Reference #fixrhoprop
 
 #Mass estimation function Nozzle Tubes:
-
-def Nozzle_mass(x,R,t,material):
-    total_surf = 0
-    for i in range(len(x)-1):
-        if t[i] > aux.Default.t:
-            total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*t[i]*R[i]
-        else:
-            total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*aux.Default.t*R[i]
-    NozzleMass = total_surf*2*mth.pi*material.density
-    return NozzleMass
-
-    ##Computing Chamber Mass:
-def Chamber_mass(ChambR,ChambL,Chambt,material_C):
-    ChamberMass = (2*mth.pi*ChambR*ChambL*Chambt + 2*mth.pi*ChambR**2*Chambt)*material_C.density
-    return ChamberMass
-
 def Mass(Pc, material_N, material_V, arear, rt, mprop, FS, cycle, x, R, t, O_prop,F_prop,O_F):
     
     total_surf = 0
