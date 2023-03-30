@@ -32,6 +32,7 @@ class Communicate(QtCore.QObject):
 
 class MainWindow(QMainWindow):
     com = Communicate()
+    resized = QtCore.pyqtSignal(int)
     def __init__(self):
         super(MainWindow, self).__init__()
         loadUi("GUI.ui",self)
@@ -46,10 +47,7 @@ class MainWindow(QMainWindow):
         self.label_outputs.setStyleSheet(''' font-size: ''' + str(fontSize+8) + '''px; ''')
 
         # Initialize graphics
-        pixmap = QtGui.QPixmap("images/EX.png")
-        pixmap.scaled(self.Graphics.width(), self.Graphics.height(), QtCore.Qt.KeepAspectRatio)
-        self.Graphics.setPixmap(pixmap)
-        #self.Graphics.setScaledContents(True)
+        self.resized.connect(self.cycle_changed)
         self.plots.axes.plot([0, 1], [0,0])
 
         #tabs
@@ -147,6 +145,10 @@ class MainWindow(QMainWindow):
         self.line_cost_tech.editingFinished.connect(self.checkCostTech); self.checkCostTech(); self.line_cost_tech.setValidator(QtGui.QDoubleValidator())
         self.line_cost_exp.editingFinished.connect(self.checkCostExp); self.checkCostExp(); self.line_cost_exp.setValidator(QtGui.QDoubleValidator())
         self.line_cost_learn.editingFinished.connect(self.checkCostLearn); self.checkCostLearn(); self.line_cost_learn.setValidator(QtGui.QDoubleValidator())
+
+    def resizeEvent(self, event):
+        self.resized.emit(self.combo_cycle.currentIndex())
+        return super(MainWindow, self).resizeEvent(event)
 
     #Run
     def Run(self):
@@ -435,7 +437,7 @@ class MainWindow(QMainWindow):
         pixmap = QtGui.QPixmap("images/" + cycles[main.dat[i].turbo_cycle] + ".png")
         pixmap.scaled(self.Graphics.width(), self.Graphics.height(), QtCore.Qt.KeepAspectRatio)
         self.Graphics.setPixmap(pixmap)
-        self.Graphics.setScaledContents(True)
+        #self.Graphics.setScaledContents(True)
         self.sc.axes.plot([0,0], [main.dat[i].Dc/2, -main.dat[i].Dc/2], color='red')
         self.sc.axes.plot([0,main.dat[i].Chamber_L], [main.dat[i].Dc/2,main.dat[i].Dc/2], color='red')
         self.sc.axes.plot([0,main.dat[i].Chamber_L], [-main.dat[i].Dc/2,-main.dat[i].Dc/2], color='red')
@@ -564,8 +566,8 @@ class MainWindow(QMainWindow):
         cycles = ["EX", "CB", "GG", "SC", "EL", "PF"]
         pixmap = QtGui.QPixmap("images/" + cycles[i] + ".png")
         pixmap.scaled(self.Graphics.width(), self.Graphics.height(), QtCore.Qt.KeepAspectRatio)
-        self.Graphics.setPixmap(pixmap)
-        self.Graphics.setScaledContents(True)
+        self.Graphics.setPixmap(pixmap.scaled(self.Graphics.width(), self.Graphics.height(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation))
+        #self.Graphics.setScaledContents(True)
 
         if i == 2:
             self.checkLGG()
