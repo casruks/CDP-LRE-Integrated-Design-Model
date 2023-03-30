@@ -139,7 +139,10 @@ class Default:
     tech_ready = 1.25
     exp_factor = 1.3
     learn_factor = 0
-
+    
+    #Reuseability:
+    Ligament = 0.25e-3
+    
     # Reliabiliy
     # Should be implemented for GUI user input
     # Fop should also be included, but commented out for now as to not mess with code
@@ -427,6 +430,7 @@ class Data:
     Mtot = 0.0  # [kg] Total engine mass
     cost = 0.0  # [EUR] Total engine cost
     rel = 0.0  # [%] Reliability of entire system
+    Life = 0.0 #[Cycles] Low Cycle fatigue limit of the engine.
 
     # Nozzle
     Pc = 0.0
