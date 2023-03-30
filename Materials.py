@@ -156,11 +156,11 @@ def RhoProp(O_prop, F_prop, OF):
 ##Cost function 
 def Cost(m_engine,f1,f3,R,n,cycle):
     TotalCost_MY = 0
-    cost_error = 0
-    cost_warning = 0
+    Cost_error = 0
+    Cost_warning = 0
 
     if R < 0.8:
-        cost_warning = cost_warning|(1<<0)
+        Cost_warning = Cost_warning|(1<<0)
 
     if cycle == 5:
         f2 = 0.25+1.1096*R**51.968
@@ -175,9 +175,9 @@ def Cost(m_engine,f1,f3,R,n,cycle):
     TotalCost_MY = C_D + F_E
 
     if TotalCost_MY < 0:
-        cost_error = cost_error|(1<<0)
-        return 0, cost_warning, cost_error
-    return TotalCost_MY, cost_warning, cost_error
+        Cost_error = Cost_error|(1<<0)
+        return 0, Cost_error, Cost_warning
+    return TotalCost_MY, Cost_error, Cost_warning
 
 def RhoProp(O_prop, F_prop, OF):
         rho_prop = 0
@@ -187,28 +187,28 @@ def RhoProp(O_prop, F_prop, OF):
 ##Life: Prediction of low cycle fatigue life of the thrust chamber
 def Life(material, sigma_T, Twg, Twc, H, l, w, p):
     
-    Life_error = 0
-    Life_warning = 0
+    Cost_error = 0
+    Cost_warning = 0
 
     DT = Twg - Twc #Twg = Temperature on the gas side of the chamber, Twc = Temperature on the coolant channel wall temperature
 
     if Twg < Twc:
-        Life_error == Life_error|(1<<0)
-        return 0,Life_error,Life_warning
+        Cost_error == Cost_error|(1<<1)
+        return 0,Cost_error,Cost_warning
     
     #Inelastic Strain:
     if sigma_T > material.yieldstress_l:
         ep_pl1 =  (sigma_T - material.yieldstress_l)/material.Emod
     else:
         ep_pl1 == 0
-        Life_warning = Life_warning|(1<<0)
+        Cost_warning = Cost_warning|(1<<2)
     
     ep_pl2 = (material.Emod*(material.thr_exp*DT)**2)/(12*material.yieldstress_l*(1-material.mu)**2)
     ep_1 = (ep_pl1+ep_pl2)
 
     if ep_pl2 < 0:
-        Life_error == Life_error|(1<<1)
-        return 0, Life_error, Life_warning
+        Cost_error == Cost_error|(1<<3)
+        return 0, Cost_error, Cost_warning
 
     #Deflection:
     def1 = 2*((H/ep_1) - mth.sqrt(((H/ep_1)**2) - ((l/4)**2)))
@@ -216,12 +216,12 @@ def Life(material, sigma_T, Twg, Twc, H, l, w, p):
     def_tot = def1+def2
 
     if def1 < 0:
-        Life_error == Life_error|(1<<2)
-        return 0, Life_error, Life_warning
+        Cost_error == Cost_error|(1<<4)
+        return 0, Cost_error, Cost_warning
     
     if def2 < 0:
-        Life_error == Life_error|(1<<3)
-        return 0, Life_error, Life_warning
+        Cost_error == Cost_error|(1<<5)
+        return 0, Cost_error, Cost_warning
     
     #Critical Thickness:
     q = material.ultstress/material.yieldstress_l
@@ -231,10 +231,10 @@ def Life(material, sigma_T, Twg, Twc, H, l, w, p):
     Nf = (tcr*(l+w))/(def_tot*w) 
     
     if Nf < 0:
-        Life_error == Life_error|(1<<4)
-        return 0, Life_error, Life_warning
+        Cost_error == Cost_error|(1<<6)
+        return 0, Cost_error, Cost_warning
     
-    return Nf, Life_error, Life_warning
+    return Nf, Cost_error, Cost_warning
 
 #Reuseability: Checking whether the number of reuses is permitted or not:
 def Reuseability(Reuses, ThrustTime):
