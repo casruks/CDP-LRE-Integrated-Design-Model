@@ -184,45 +184,73 @@ def RhoProp(O_prop, F_prop, OF):
         rho_prop = ((O_prop*F_prop)*(1+OF))/(F_prop*OF+O_prop)
         return rho_prop
 
-##Reuseability: Prediction of low cycle fatigue life of the thrust chamber
-def Reuseability(material, sigma_T, Twg, Twc, H, l, w, p):
+##Life: Prediction of low cycle fatigue life of the thrust chamber
+def Life(material, sigma_T, Twg, Twc, H, l, w, p):
     
-    ReuseabilityError = 0
-    ReuseabilityWarning = 0
+    Life_error = 0
+    Life_warning = 0
 
     DT = Twg - Twc #Twg = Temperature on the gas side of the chamber, Twc = Temperature on the coolant channel wall temperature
 
     if Twg < Twc:
-        ReuseabilityError == ReuseabilityError|(1<<0)
-        return 0,ReuseabilityError,ReuseabilityWarning
-
-    #w = l
+        Life_error == Life_error|(1<<0)
+        return 0,Life_error,Life_warning
     
     #Inelastic Strain:
     if sigma_T > material.yieldstress_l:
         ep_pl1 =  (sigma_T - material.yieldstress_l)/material.Emod
     else:
         ep_pl1 == 0
-        ReuseabilityWarning = ReuseabilityWarning|(1<<0)
+        Life_warning = Life_warning|(1<<0)
     
     ep_pl2 = (material.Emod*(material.thr_exp*DT)**2)/(12*material.yieldstress_l*(1-material.mu)**2)
     ep_1 = (ep_pl1+ep_pl2)
 
-    # Deflection:
+    if ep_pl2 < 0:
+        Life_error == Life_error|(1<<1)
+        return 0, Life_error, Life_warning
+
+    #Deflection:
     def1 = 2*((H/ep_1) - mth.sqrt(((H/ep_1)**2) - ((l/4)**2)))
     def2 = (ep_1*p*l**2)/(4*H*material.yieldstress_l)
     def_tot = def1+def2
 
-    #Ligament Deformation:
-    # t_N = (N*w*def_tot)/(l+w)
-    # t_N_min = (2*H*(l+w) - N*w*def_tot)/(l+w)
-    # t_N_max = (2*H*(l+w)**2 + N*w*l*def_tot)/(l+w)**2
-
-
-    # #Critical Thickness:
+    if def1 < 0:
+        Life_error == Life_error|(1<<2)
+        return 0, Life_error, Life_warning
+    
+    if def2 < 0:
+        Life_error == Life_error|(1<<3)
+        return 0, Life_error, Life_warning
+    
+    #Critical Thickness:
     q = material.ultstress/material.yieldstress_l
     tcr = 2*H*(1-mth.e**(-q))
 
     # #Instability life:
     Nf = (tcr*(l+w))/(def_tot*w) 
-    return Nf, ReuseabilityError, ReuseabilityWarning
+    
+    if Nf < 0:
+        Life_error == Life_error|(1<<4)
+        return 0, Life_error, Life_warning
+    
+    return Nf, Life_error, Life_warning
+
+#Reuseability: Checking whether the number of reuses is permitted or not:
+def Reuseability(Reuses, ThrustTime):
+
+    Uses = 0
+    Reuseability_warning = 0
+    Reuseability_error = 0
+
+    Uses = (Reuses+2)*3
+    Condition = 'Reuseability satisfied'
+    Check = 6000*Uses**(-1)
+
+    if ThrustTime < Check:
+        Condition = 'Reuseability satisfied'
+    else:
+        Condition = 'Reuseability not satisfied'
+
+    return Condition,Reuseability_error,Reuseability_warning
+
