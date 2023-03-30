@@ -84,73 +84,17 @@
             <widget class="QWidget" name="scrollAreaWidgetContents_8">
              <property name="geometry">
               <rect>
-               <x>0</x>
+               <x>-3</x>
                <y>0</y>
                <width>503</width>
                <height>428</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_4">
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="line_pa">
-                <property name="text">
-                 <string>101325</string>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="0">
-               <widget class="QLabel" name="label_prop">
-                <property name="text">
-                 <string>Propellant</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_thrust">
-                <property name="text">
-                 <string>Thrust</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="0">
-               <widget class="QLabel" name="label_Ftank_pres">
-                <property name="text">
-                 <string>Fuel tank pressure</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1">
-               <widget class="QCheckBox" name="check_O_F">
-                <property name="text">
-                 <string>Optimize O/F for maximum c*</string>
-                </property>
-               </widget>
-              </item>
               <item row="5" column="2">
                <widget class="QLabel" name="label_Pa_2">
                 <property name="text">
                  <string>[Pa]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="2">
-               <widget class="QLabel" name="label_Pa">
-                <property name="text">
-                 <string>[Pa]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="1">
-               <widget class="QLineEdit" name="line_Otank_pres">
-                <property name="text">
-                 <string>100000</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QLineEdit" name="line_time">
-                <property name="text">
-                 <string>10</string>
                 </property>
                </widget>
               </item>
@@ -161,86 +105,17 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="2">
-               <widget class="QLabel" name="label_s">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_thrust">
                 <property name="text">
-                 <string>[s]</string>
+                 <string>Thrust</string>
                 </property>
                </widget>
               </item>
-              <item row="9" column="0">
-               <spacer name="spacer_left_global">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_O_F">
+              <item row="8" column="0">
+               <widget class="QLabel" name="label_cyle">
                 <property name="text">
-                 <string>O/F ratio</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="1">
-               <widget class="QLineEdit" name="line_Ftank_pres">
-                <property name="text">
-                 <string>100000</string>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="1" colspan="2">
-               <widget class="QComboBox" name="combo_prop">
-                <item>
-                 <property name="text">
-                  <string>LH2-LO2</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>CH4-LO2</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="6" column="2">
-               <widget class="QLabel" name="label_Pa_3">
-                <property name="text">
-                 <string>[Pa]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="2">
-               <widget class="QLabel" name="label_empty">
-                <property name="text">
-                 <string>[-]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="label_Otank_pres">
-                <property name="text">
-                 <string>Oxidizer tank pressure</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLineEdit" name="line_thrust">
-                <property name="text">
-                 <string>15000</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_time">
-                <property name="text">
-                 <string>Thrust time</string>
+                 <string>Cycle type:</string>
                 </property>
                </widget>
               </item>
@@ -258,10 +133,135 @@
                 </property>
                </widget>
               </item>
-              <item row="8" column="0">
-               <widget class="QLabel" name="label_cyle">
+              <item row="7" column="1" colspan="2">
+               <widget class="QComboBox" name="combo_prop">
+                <item>
+                 <property name="text">
+                  <string>LH2-LO2</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>CH4-LO2</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="QLabel" name="label_Pa">
                 <property name="text">
-                 <string>Cycle type:</string>
+                 <string>[Pa]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QCheckBox" name="check_O_F">
+                <property name="text">
+                 <string>Optimize O/F for maximum c*</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QLabel" name="label_empty">
+                <property name="text">
+                 <string>[-]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="line_time">
+                <property name="text">
+                 <string>10</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_time">
+                <property name="text">
+                 <string>Thrust time</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QLineEdit" name="line_Otank_pres">
+                <property name="text">
+                 <string>100000</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="line_thrust">
+                <property name="text">
+                 <string>15000</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_O_F">
+                <property name="text">
+                 <string>O/F ratio</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="2">
+               <widget class="QLabel" name="label_Pa_3">
+                <property name="text">
+                 <string>[Pa]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="0">
+               <widget class="QLabel" name="label_Ftank_pres">
+                <property name="text">
+                 <string>Fuel tank pressure</string>
+                </property>
+               </widget>
+              </item>
+              <item row="10" column="0">
+               <spacer name="spacer_left_global">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="line_pa">
+                <property name="text">
+                 <string>101325</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="0">
+               <widget class="QLabel" name="label_prop">
+                <property name="text">
+                 <string>Propellant</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="label_Otank_pres">
+                <property name="text">
+                 <string>Oxidizer tank pressure</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QLabel" name="label_s">
+                <property name="text">
+                 <string>[s]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QLineEdit" name="line_Ftank_pres">
+                <property name="text">
+                 <string>100000</string>
                 </property>
                </widget>
               </item>
@@ -297,6 +297,27 @@
                   <string>Pressure fed</string>
                  </property>
                 </item>
+               </widget>
+              </item>
+              <item row="9" column="0">
+               <widget class="QLabel" name="label_24">
+                <property name="text">
+                 <string>Number of reuses</string>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="1">
+               <widget class="QLineEdit" name="line_reuses">
+                <property name="text">
+                 <string>1</string>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="2">
+               <widget class="QLabel" name="label_25">
+                <property name="text">
+                 <string>[-]</string>
+                </property>
                </widget>
               </item>
              </layout>
@@ -2039,7 +2060,7 @@
               <item row="2" column="0">
                <widget class="QLabel" name="label_5">
                 <property name="text">
-                 <string>Learning factor</string>
+                 <string>Number of engines produced</string>
                 </property>
                </widget>
               </item>
@@ -2257,10 +2278,80 @@
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout">
+              <item row="9" column="1">
+               <widget class="QLineEdit" name="line_reliability">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="0">
+               <widget class="QLabel" name="label_reliability">
+                <property name="text">
+                 <string>Reliability</string>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="2">
+               <widget class="QLabel" name="label_perc">
+                <property name="text">
+                 <string>[%]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="0">
+               <widget class="QLabel" name="label_cost">
+                <property name="text">
+                 <string>Total cost</string>
+                </property>
+               </widget>
+              </item>
               <item row="0" column="2">
                <widget class="QLabel" name="label_O_F_no">
                 <property name="text">
                  <string>[-]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="2">
+               <widget class="QLabel" name="label_17">
+                <property name="text">
+                 <string>[m]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_m">
+                <property name="text">
+                 <string>Mass flow</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QLabel" name="label_kgs">
+                <property name="text">
+                 <string>[kg/s]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="2">
+               <widget class="QLabel" name="label_19">
+                <property name="text">
+                 <string>[m]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="0">
+               <widget class="QLabel" name="label_18">
+                <property name="text">
+                 <string>Envelope diameter</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="line_Isp">
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -2271,10 +2362,17 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
-               <widget class="QLineEdit" name="line_Isp">
-                <property name="readOnly">
-                 <bool>true</bool>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_Isp">
+                <property name="text">
+                 <string>Isp</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_cstar">
+                <property name="text">
+                 <string>c*</string>
                 </property>
                </widget>
               </item>
@@ -2288,57 +2386,28 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_Isp">
-                <property name="text">
-                 <string>Isp</string>
+              <item row="11" column="0">
+               <spacer name="spacer_right_global">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
                 </property>
-               </widget>
-              </item>
-              <item row="2" column="2">
-               <widget class="QLabel" name="label_ms">
-                <property name="text">
-                 <string>[m/s]</string>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
                 </property>
-               </widget>
+               </spacer>
               </item>
-              <item row="8" column="2">
-               <widget class="QLabel" name="label_EUR">
-                <property name="text">
-                 <string>[hours]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="2">
-               <widget class="QLabel" name="label_17">
-                <property name="text">
-                 <string>[m]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="9" column="2">
-               <widget class="QLabel" name="label_perc">
-                <property name="text">
-                 <string>[%]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1">
-               <widget class="QLineEdit" name="line_prop_mass">
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="line_cstar">
                 <property name="readOnly">
                  <bool>true</bool>
                 </property>
                </widget>
               </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_cstar">
-                <property name="text">
-                 <string>c*</string>
-                </property>
-               </widget>
-              </item>
-              <item row="9" column="1">
-               <widget class="QLineEdit" name="line_reliability">
+              <item row="7" column="1">
+               <widget class="QLineEdit" name="line_envDiam">
                 <property name="readOnly">
                  <bool>true</bool>
                 </property>
@@ -2351,10 +2420,38 @@
                 </property>
                </widget>
               </item>
-              <item row="9" column="0">
-               <widget class="QLabel" name="label_reliability">
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="line_m">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="2">
+               <widget class="QLabel" name="label_kg">
                 <property name="text">
-                 <string>Reliability</string>
+                 <string>[kg]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QLineEdit" name="line_prop_mass">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QLineEdit" name="line_mass">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="QLabel" name="label_ms">
+                <property name="text">
+                 <string>[m/s]</string>
                 </property>
                </widget>
               </item>
@@ -2372,8 +2469,15 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="1">
-               <widget class="QLineEdit" name="line_m">
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_prop_mass">
+                <property name="text">
+                 <string>Propellant mass</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="1">
+               <widget class="QLineEdit" name="line_cost">
                 <property name="readOnly">
                  <bool>true</bool>
                 </property>
@@ -2386,24 +2490,10 @@
                 </property>
                </widget>
               </item>
-              <item row="5" column="1">
-               <widget class="QLineEdit" name="line_mass">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="label_prop_mass">
+              <item row="8" column="2">
+               <widget class="QLabel" name="label_EUR">
                 <property name="text">
-                 <string>Propellant mass</string>
-                </property>
-               </widget>
-              </item>
-              <item row="8" column="0">
-               <widget class="QLabel" name="label_cost">
-                <property name="text">
-                 <string>Total cost</string>
+                 <string>[hours]</string>
                 </property>
                </widget>
               </item>
@@ -2415,69 +2505,14 @@
                </widget>
               </item>
               <item row="10" column="0">
-               <spacer name="spacer_right_global">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="4" column="2">
-               <widget class="QLabel" name="label_kg">
+               <widget class="QLabel" name="label_26">
                 <property name="text">
-                 <string>[kg]</string>
+                 <string>Reusability</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="line_cstar">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="8" column="1">
-               <widget class="QLineEdit" name="line_cost">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="2">
-               <widget class="QLabel" name="label_kgs">
-                <property name="text">
-                 <string>[kg/s]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_m">
-                <property name="text">
-                 <string>Mass flow</string>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="0">
-               <widget class="QLabel" name="label_18">
-                <property name="text">
-                 <string>Envelope diameter</string>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="2">
-               <widget class="QLabel" name="label_19">
-                <property name="text">
-                 <string>[m]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="1">
-               <widget class="QLineEdit" name="line_envDiam">
+              <item row="10" column="1" colspan="2">
+               <widget class="QLineEdit" name="line_reusability">
                 <property name="readOnly">
                  <bool>true</bool>
                 </property>
@@ -2509,90 +2544,6 @@
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_6">
-              <item row="6" column="2">
-               <widget class="QLabel" name="label_m_7">
-                <property name="text">
-                 <string>[m]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_Dt">
-                <property name="text">
-                 <string>Throat diameter</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="label_len_conv">
-                <property name="text">
-                 <string>Convergent length</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="label_len">
-                <property name="text">
-                 <string>Length</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="line_eps">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="0">
-               <widget class="QLabel" name="label_nozz_mass">
-                <property name="text">
-                 <string>Nozzle mass</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1">
-               <widget class="QLineEdit" name="line_len">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="1">
-               <widget class="QLineEdit" name="line_len_div">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="2">
-               <widget class="QLabel" name="label_kgs_2">
-                <property name="text">
-                 <string>[kg/s]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_De">
-                <property name="text">
-                 <string>Exit diameter</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_eps">
-                <property name="text">
-                 <string>Area ratio</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLineEdit" name="line_Dt">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
               <item row="5" column="1">
                <widget class="QLineEdit" name="line_len_conv">
                 <property name="readOnly">
@@ -2600,56 +2551,7 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="2">
-               <widget class="QLabel" name="label_m_3">
-                <property name="text">
-                 <string>[m]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="2">
-               <widget class="QLabel" name="label_kg_3">
-                <property name="text">
-                 <string>[kg]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_m_nozz">
-                <property name="text">
-                 <string>Mass flow</string>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="1">
-               <widget class="QLineEdit" name="line_nozz_mass">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="2">
-               <widget class="QLabel" name="label_m_6">
-                <property name="text">
-                 <string>[m]</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="0">
-               <widget class="QLabel" name="label_len_div">
-                <property name="text">
-                 <string>Divergent length</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QLineEdit" name="line_m_nozz">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="9" column="0">
+              <item row="10" column="0">
                <spacer name="verticalSpacer_4">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
@@ -2662,10 +2564,73 @@
                 </property>
                </spacer>
               </item>
+              <item row="7" column="0">
+               <widget class="QLabel" name="label_nozz_mass">
+                <property name="text">
+                 <string>Nozzle mass</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_eps">
+                <property name="text">
+                 <string>Area ratio</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="2">
+               <widget class="QLabel" name="label_kg_3">
+                <property name="text">
+                 <string>[kg]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="line_m_nozz">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="1">
+               <widget class="QLineEdit" name="line_nozz_mass">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
               <item row="1" column="1">
                <widget class="QLineEdit" name="line_De">
                 <property name="readOnly">
                  <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="label_len_conv">
+                <property name="text">
+                 <string>Convergent length</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="0">
+               <widget class="QLabel" name="label_len_div">
+                <property name="text">
+                 <string>Divergent length</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_De">
+                <property name="text">
+                 <string>Exit diameter</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QLabel" name="label_kgs_2">
+                <property name="text">
+                 <string>[kg/s]</string>
                 </property>
                </widget>
               </item>
@@ -2676,6 +2641,48 @@
                 </property>
                </widget>
               </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="line_eps">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_Dt">
+                <property name="text">
+                 <string>Throat diameter</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QLineEdit" name="line_len_div">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="line_Dt">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_m_3">
+                <property name="text">
+                 <string>[m]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_m_nozz">
+                <property name="text">
+                 <string>Mass flow</string>
+                </property>
+               </widget>
+              </item>
               <item row="1" column="2">
                <widget class="QLabel" name="label_m_4">
                 <property name="text">
@@ -2683,10 +2690,59 @@
                 </property>
                </widget>
               </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_len">
+                <property name="text">
+                 <string>Length</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="2">
+               <widget class="QLabel" name="label_m_6">
+                <property name="text">
+                 <string>[m]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="2">
+               <widget class="QLabel" name="label_m_7">
+                <property name="text">
+                 <string>[m]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QLineEdit" name="line_len">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
               <item row="4" column="2">
                <widget class="QLabel" name="label_m_5">
                 <property name="text">
                  <string>[m]</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="0">
+               <widget class="QLabel" name="label_27">
+                <property name="text">
+                 <string>Fatigue limit</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="1">
+               <widget class="QLineEdit" name="line_fatigue">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="2">
+               <widget class="QLabel" name="label_28">
+                <property name="text">
+                 <string>[cycles]</string>
                 </property>
                </widget>
               </item>

@@ -68,6 +68,7 @@ class MainWindow(QMainWindow):
         self.line_O_F.editingFinished.connect(self.checkOF); self.checkOF(); self.line_O_F.setValidator(QtGui.QDoubleValidator())
         self.line_Otank_pres.editingFinished.connect(self.checkOtankPres); self.checkOtankPres(); self.line_Otank_pres.setValidator(QtGui.QDoubleValidator())
         self.line_Ftank_pres.editingFinished.connect(self.checkFtankPres); self.checkFtankPres(); self.line_Ftank_pres.setValidator(QtGui.QDoubleValidator())
+        self.line_reuses.editingFinished.connect(self.checkReuses); self.checkReuses(); self.line_reuses.setValidator(QtGui.QIntValidator())
 
         #Nozzle
         self.nozzle_changed(0)
@@ -144,7 +145,7 @@ class MainWindow(QMainWindow):
         #Cost
         self.line_cost_tech.editingFinished.connect(self.checkCostTech); self.checkCostTech(); self.line_cost_tech.setValidator(QtGui.QDoubleValidator())
         self.line_cost_exp.editingFinished.connect(self.checkCostExp); self.checkCostExp(); self.line_cost_exp.setValidator(QtGui.QDoubleValidator())
-        self.line_cost_learn.editingFinished.connect(self.checkCostLearn); self.checkCostLearn(); self.line_cost_learn.setValidator(QtGui.QDoubleValidator())
+        self.line_cost_learn.editingFinished.connect(self.checkCostLearn); self.checkCostLearn(); self.line_cost_learn.setValidator(QtGui.QIntValidator())
 
     def resizeEvent(self, event):
         self.resized.emit(self.combo_cycle.currentIndex())
@@ -203,8 +204,7 @@ class MainWindow(QMainWindow):
             if (err_nozz & (1<<10)):
                 msg.setText("Error in nozzle calculation - Throat area in iteration is negative")
             if (err_nozz & (1<<11)):
-                msg.setText("Error in nozzle calculation - Not possible to reach a physical solution for nozzle geometry")
-
+                msg.setText("Error in nozzle calculation - C* is 0 or negative")
             #Nozzle 2
             if (err_nozz2 & (1<<0)):
                 msg.setText("Error in nozzle calculation - Chamber diameter is smaller than throat diameter")
@@ -316,7 +316,17 @@ class MainWindow(QMainWindow):
             if (err_mass & (1<<3)):
                 msg.setText("Error in mass calculation - The valve mass is less than 0")
 
-            #Cost
+            #Reusability
+            if (err_cost & (1<<0)):
+                msg.setText("Error in life prediction calculation - Temperature on the gas side is less than temperature on the coolant channel side")
+            if (err_cost & (1<<1)):
+                msg.setText("Error in life prediction calculation - Inelastic strain is negative")
+            if (err_cost & (1<<2)):
+                msg.setText("Error in life prediction calculation - Bending deflection is negative")
+            if (err_cost & (1<<3)):
+                msg.setText("Error in life prediction calculation - Shear deflection is negative")
+            if (err_cost & (1<<4)):
+                msg.setText("Error in life prediction calculation - fatigue life is negative")
 
             msg.exec_()
             return;
@@ -406,6 +416,8 @@ class MainWindow(QMainWindow):
             #Cost
             if (warn_cost & (1<<0)):
                 lay.addWidget(QLabel("Warning in cost calculation - The reliability of the engine is low", parent = msg))
+            if (warn_cost & (1<<1)):
+                lay.addWidget(QLabel("Warning in life prediction calculations - Thermal stress is less than yield strength, inelastic strain 1 is set to 0", parent = msg))
             
 
             lay.addItem(QSpacerItem(10,10,QSizePolicy.Expanding,QSizePolicy.Expanding))
@@ -455,7 +467,8 @@ class MainWindow(QMainWindow):
         envDiam = max(main.dat[i].Dc, main.dat[i].De)
         self.line_envDiam.setText(str(round(envDiam, no_afterdec)))
         self.line_cost.setText(str(round(main.dat[i].cost, no_afterdec)))
-        self.line_reliability.setText(str(main.dat[i].rel, no_afterdec)) #list, not yet rounded to 2dec
+        self.line_reliability.setText(main.dat[i].rel) #list, not yet rounded to 2dec
+        self.line_reusability.setText(main.dat[i].Reuseabilty)
 
         #Nozzle
         if(not main.dat[i].O_F): 
@@ -475,6 +488,7 @@ class MainWindow(QMainWindow):
         self.line_len_div.setText(str(round(main.dat[i].L_div, no_afterdec)))
         self.line_m_nozz.setText(str(round(main.dat[i].m_nozz, no_afterdec)))
         self.line_nozz_mass.setText(str(round(main.dat[i].Mnoz, no_afterdec)))
+        self.line_fatigue.setText(str(round(main.dat[i].Life, no_afterdec)))
 
         #Combustion chamber
         self.line_Pc.setText(str(round(main.dat[i].Pc/1.0e5, no_afterdec)))
@@ -1414,7 +1428,7 @@ class MainWindow(QMainWindow):
 
     def checkCostLearn(self):
         var = float(self.line_cost_learn.text())
-        if var > 0.0 and var < 10.0:
+        if var > 0.0:
             main.default.learn_factor = var;
         else:
             self.line_cost_learn.setText("1.0")
@@ -1454,6 +1468,17 @@ class MainWindow(QMainWindow):
             msg = QMessageBox()
             msg.setWindowTitle("Input error!")
             msg.setText("Invalid perimeter percentage in contact, try again.")
+            msg.exec_()
+
+    def checkReuses(self):
+        var = float(self.line_reuses.text())
+        if var > 0.0:
+            main.default.Reuses = var;
+        else:
+            self.line_reuses.setText("1.0")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid number of reuses, try again.")
             msg.exec_()
 
 # Main
