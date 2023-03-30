@@ -65,6 +65,7 @@ class CoolingClass:
         y: np.array,
         overwriteA: bool,
         case_run: int,
+        thickness_for_regenerative: float,
     ):
         self.heatsink = Heatsink()
         self.radiationcool = RadiationCool()
@@ -201,7 +202,7 @@ class CoolingClass:
                 ) = self.regencool.Main_regenerative_run_function(
                     Tr,
                     hg,
-                    thickness,
+                    thickness_for_regenerative,
                     coating_thickness,
                     prop,
                     Mater,
@@ -363,7 +364,7 @@ class RegenerativeCool:
         # print()
         # print("I AM HERE")
         # q = 10**8
-        #print("A: ",sum(A))
+        # print("A: ",sum(A))
         self.Q = self.Q + q * A[ArrayCounter]
 
         # self.Q += q * A
@@ -495,7 +496,7 @@ class RegenerativeCool:
             T_co_calcualted[i + 1], T_wall_calcualted[i] = self.Tcalculation1D(
                 Tr[i], T_co_calcualted[i], A, hg[i], i
             )
-            # print(Tr[i])
+            # print(T_co_calcualted[i])
             self.T_out_wall[i] = self.T_outer_Wall_loop_val
             # self.Q=self.Q+(Tr[i]-T_wall_calcualted[i])*hg[i]
 
@@ -694,8 +695,7 @@ def outputs(
     )
 
 
-
-def Nozzle_area_calculation(alpha,y_noz_cool,x_noz_cool):
+def Nozzle_area_calculation(alpha, y_noz_cool, x_noz_cool):
     A_nozzle = [
         (alpha * y_noz_cool[i])
         * (x_noz_cool[-1] / len(y_noz_cool))
