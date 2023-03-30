@@ -428,7 +428,7 @@ class Data:
     m = 0.0  # [kg/s] mass flow
     Mprop = 0.0  # [kg] Total propellant mass
     Mtot = 0.0  # [kg] Total engine mass
-    cost = 0.0  # [EUR] Total engine cost
+    cost = 0.0  # [MY] Total engine cost
     rel = 0.0  # [%] Reliability of entire system
     Life = 0.0 #[Cycles] Low Cycle fatigue limit of the engine.
     Reuseabilty = 'Reuseability Satisfied' #Checks whether reuses and Thrust time combination is possible.
