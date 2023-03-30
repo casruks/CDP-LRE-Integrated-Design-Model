@@ -138,10 +138,10 @@ class Default:
     # Cost:
     tech_ready = 1.25
     exp_factor = 1.3
-    learn_factor = 0
+    engines = 0.0
     
     #Reuseability:
-    Ligament = 0.25e-3
+    Reuses = 0.0
     
     # Reliabiliy
     # Should be implemented for GUI user input
@@ -431,6 +431,7 @@ class Data:
     cost = 0.0  # [EUR] Total engine cost
     rel = 0.0  # [%] Reliability of entire system
     Life = 0.0 #[Cycles] Low Cycle fatigue limit of the engine.
+    Reuseabilty = 'Reuseability Satisfied' #Checks whether reuses and Thrust time combination is possible.
 
     # Nozzle
     Pc = 0.0
