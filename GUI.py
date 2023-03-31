@@ -463,6 +463,7 @@ class MainWindow(QMainWindow):
         self.plots.axes.plot([0,main.dat[i].Chamber_L], [-main.dat[i].Dc/2,-main.dat[i].Dc/2], color='red')
         self.plots.axes.plot(main.dat[i].x_nozz+main.dat[i].Chamber_L, main.dat[i].y_nozz, color='red')
         self.plots.axes.plot(main.dat[i].x_nozz+main.dat[i].Chamber_L, -main.dat[i].y_nozz, color='red')
+        self.plots.axes.axis('equal')
         self.plots.draw()
 
         #Global
@@ -511,13 +512,13 @@ class MainWindow(QMainWindow):
         if (main.dat[i].W_Opump == 0.0 or main.dat[i].W_Fpump == 0):
             self.line_Opump_power.hide();
             self.label_Opump_power.hide();
-            self.label_W_Opump.hide();
+            self.lalbel_W_Opump.hide();
             self.line_Fpump_power.hide();
             self.label_Fpump_power.hide();
-            self.label_W_Fpump.hide();
+            self.lalbel_W_Fpump.hide();
             self.line_Turb_power.hide();
             self.label_Turb_power.hide();
-            self.label_W_turb.hide();
+            self.lalbel_W_turb.hide();
         else:
             self.line_Opump_power.show();
             self.label_Opump_power.show();
