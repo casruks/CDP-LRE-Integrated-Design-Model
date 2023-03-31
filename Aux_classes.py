@@ -282,7 +282,7 @@ class Propellant:
         self.f_gamma = 1.24  # fuel gamma
         self.fcp = 1.88 * 10**6  # fuel cp
         self.h_fuel = -1758.456  # fuel enthalpy
-        self.R_f = 4.75 * 10**3  # fuel gas constant
+        self.R_f = 47.5  # fuel gas constant
         self.f_lamb = 1.6e-6
         self.fmiu = 2.166e-6
         self.f_nist_enthalpy_coef = [
