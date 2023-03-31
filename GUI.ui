@@ -69,7 +69,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="global">
          <attribute name="title">
@@ -143,6 +143,26 @@
                 <item>
                  <property name="text">
                   <string>CH4-LO2</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>RP1-LO2</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Ethanol-LO2</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>UDMH-LO2</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>UDMH-NTO</string>
                  </property>
                 </item>
                </widget>
