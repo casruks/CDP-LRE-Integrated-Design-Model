@@ -231,7 +231,8 @@ class CoolingClass:
             or np.any([x > TestTemp for x in T_outer_wall])
         ):
             # print("Tw_wall_calculated: ",Tw_wall_calculated)
-            err = err | (1 << 8)
+            # err = err | (1 << 8)
+            warn = warn | (1 << 0)
         if check_positive_args(ploss) == False or ploss > 10**10:
             err = err | (1 << 9)
         if check_positive_args(m_flow_fuel) == False:
