@@ -50,32 +50,28 @@ def Reliability(default, t, Fnom, Fop, val):
         prop = propellant code \n"""
 
         if cycle == 0: #"Expander Cycle"
-            cycle = ['SP_EX']
-        elif cycle == 3: #"Staged Combustion Cycle"
-            cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC']
+            cycle = 'SP_EX'
         elif cycle == 2: #"Gas Generator Cycle"
-            cycle = ['S_FR_GG']
+            cycle = 'S_FR_GG'
+        elif cycle == 3: #"Staged Combustion Cycle"
+            cycle = 'D_FR_SC'
         else: 
-            cycle = ['D_FR_SC', 'D_FF_SC', 'S_FR_SC', 'S_OR_SC']
+            cycle = 'D_FR_SC'
         
-        lst = []
-        for i in range(len(cycle)):
-            # Cycle Impact
-            lambda_ref = CyclesData[cycle[i]][0]
-            # Nominal Thrust Impact
-            Fnom_single = Fnom/N
-            lambda_1 = lambda_ref*(Fnom_single/Fref)**delta
-            # De-rating/Up-rating Impact
-            Fop_single = Fop/N
-            alpha = Fop_single/Fnom_single
-            if not prop in RatingData.keys():
-                raise Exception("Submitted Propellant Type is not valid. Valid Propellant Codes are: " + str(RatingData.keys()))
-            p, q, _ = RatingData[prop]
-            lambda_2 = lambda_1*((1 - p) + p*np.exp(-q*(1 - alpha)))
-            R = np.exp(-N*lambda_2*t)
-            lst.append(R)
-        # Number of Engines and Total Burn Time Impact
-        return lst    #list 
+        # Cycle Impact
+        lambda_ref = CyclesData[cycle][0]
+        # Nominal Thrust Impact
+        Fnom_single = Fnom/N
+        lambda_1 = lambda_ref*(Fnom_single/Fref)**delta
+        # De-rating/Up-rating Impact
+        Fop_single = Fop/N
+        alpha = Fop_single/Fnom_single
+        if not prop in RatingData.keys():
+            raise Exception("Submitted Propellant Type is not valid. Valid Propellant Codes are: " + str(RatingData.keys()))
+        p, q, _ = RatingData[prop]
+        lambda_2 = lambda_1*((1 - p) + p*np.exp(-q*(1 - alpha)))
+        R = np.exp(-N*lambda_2*t)
+        return R    
 
     # VALIDATION --> Yields the same figure as Fig.3 in Fernández et al. (2022)
     def validate(Fref):
@@ -103,26 +99,50 @@ from datetime import date
 import csv 
 import Aux_classes as aux
 default = aux.Default(0)
-def verification(default):
-    cycles = default.cycles
-    lst = ['R']
+def Validation1(default):
+    # cycles = default.cycles
+    # lst = ['R']
 
-    with open('Verification_rel_'+str(date.today())+'.csv', mode='w', newline='') as file:
-        writer = csv.writer(file)
-        #writer.writerow(inj1lst)
-        writer.writerows(map(lambda x: [x], lst))
+    # with open('Verification_rel_'+str(date.today())+'.csv', mode='w', newline='') as file:
+    #     writer = csv.writer(file)
+    #     #writer.writerow(inj1lst)
+    #     writer.writerows(map(lambda x: [x], lst))
 
-    lst_t = np.arange(1, 1e3, 150)
-    lst_F = np.arange(1e3, 1e10, 1e7)
+    # lst_t = np.arange(1, 1e3, 150)
+    # lst_F = np.arange(1e3, 1e10, 1e7)
+    # val = False
+    # for cycle in cycles:
+    #     for t in lst_t:
+    #         for F in lst_F:
+    #             lst.append(Reliability(default, t, F, F, val))
+
+    # with open('Verification_rel_'+str(date.today())+'.csv', mode='w', newline='') as file:
+    #     writer = csv.writer(file)
+    #     #writer.writerow(inj1lst)
+    #     writer.writerows(map(lambda x: [x], lst))
+    # print('done')
+
+    #### singular SSME val - 'D_FR_SC'
+    t_SSME = 510
+    F_SSME = 2278e3
+    
+    t_RS68 = 411
+    F_RS68 = 3300e3
+
     val = False
-    for cycle in cycles:
-        for t in lst_t:
-            for F in lst_F:
-                lst.append(Reliability(default, t, F, F, val))
+    
+    ## SSME
+    default.cycle_type = 3
+    R_DBFRSC = Reliability(default, t_SSME, F_SSME, F_SSME, val)
+    print('R_SSME =', R_DBFRSC)
+    R_SSME = 0.9983     # [B. K. Wood (Boeing & Rocketdyne), 2002]
+    R_SSME = 0.997
+    print('error =', (abs(R_DBFRSC-R_SSME)/R_SSME)*100,'%')
 
-    with open('Verification_rel_'+str(date.today())+'.csv', mode='w', newline='') as file:
-        writer = csv.writer(file)
-        #writer.writerow(inj1lst)
-        writer.writerows(map(lambda x: [x], lst))
-    print('done')
-#verification(default)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+    ## RS68 - !PREDICTED!
+    default.cycle_type = 2
+    R_RS68 = Reliability(default, t_RS68, F_RS68, F_RS68, val)
+    print('R_RS68 =', R_RS68)
+    R_ref = 0.9987     # [B. K. Wood (Boeing & Rocketdyne), 2002]
+    print('error =', (abs(R_RS68-R_ref)/R_ref)*100,'%')
+#Validation1(default)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
