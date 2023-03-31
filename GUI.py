@@ -161,6 +161,7 @@ class MainWindow(QMainWindow):
 
         #run main
         self.thread = QtCore.QThread()
+        self.com = Communicate()
         self.worker = self.com
         self.worker.moveToThread(self.thread)
         self.thread.started.connect(self.worker.runMain)
@@ -177,9 +178,11 @@ class MainWindow(QMainWindow):
         err_nozz, err_nozz2, err_chamber, err_turbo, err_inj, err_ign, err_cool, err_mass, err_cost, warn_nozz, warn_nozz2, warn_chamber, warn_turbo, warn_inj, warn_ign, warn_cool, warn_mass, warn_cost = self.com.r
         self.but_run.setEnabled(True)
         self.tab_inputs.setEnabled(True)
+        self.updateProgress(100)
         
         #Errors
         if(err_nozz or err_nozz2 or err_chamber or err_turbo or err_inj or err_ign or err_cool or err_mass or err_cost): 
+            self.updateProgress(0)
             msg = QMessageBox(self)
             msg.setIcon(QMessageBox.Critical)
             msg.setWindowTitle("Calculation error!")
