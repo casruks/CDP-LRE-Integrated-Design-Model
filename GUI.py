@@ -464,6 +464,8 @@ class MainWindow(QMainWindow):
         self.plots.axes.plot(main.dat[i].x_nozz+main.dat[i].Chamber_L, main.dat[i].y_nozz, color='red')
         self.plots.axes.plot(main.dat[i].x_nozz+main.dat[i].Chamber_L, -main.dat[i].y_nozz, color='red')
         self.plots.axes.axis('equal')
+        self.plots.axes.set_xlabel("[m]")
+        self.plots.axes.set_ylabel("[m]")
         self.plots.draw()
 
         #Global
