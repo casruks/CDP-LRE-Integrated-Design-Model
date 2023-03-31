@@ -452,9 +452,9 @@ class MainWindow(QMainWindow):
     def Output(self, i : int):
         #Plot
         cycles = ["EX", "CB", "GG", "SC", "EL", "PF"]
-        pixmap = QtGui.QPixmap("images/" + cycles[main.dat[i].turbo_cycle] + ".png")
+        pixmap = QtGui.QPixmap("images/" + cycles[i] + ".png")
         pixmap.scaled(self.Graphics.width(), self.Graphics.height(), QtCore.Qt.KeepAspectRatio)
-        self.Graphics.setPixmap(pixmap)
+        self.Graphics.setPixmap(pixmap.scaled(self.Graphics.width(), self.Graphics.height(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation))
         #self.Graphics.setScaledContents(True)
         self.plots.axes.plot([0,0], [main.dat[i].Dc/2, -main.dat[i].Dc/2], color='red')
         self.plots.axes.plot([0,main.dat[i].Chamber_L], [main.dat[i].Dc/2,main.dat[i].Dc/2], color='red')
@@ -518,13 +518,13 @@ class MainWindow(QMainWindow):
         else:
             self.line_Opump_power.show();
             self.label_Opump_power.show();
-            self.lalbel_W_Opump.show();
+            self.label_W_Opump.show();
             self.line_Fpump_power.show();
             self.label_Fpump_power.show();
-            self.lalbel_W_Fpump.show();
+            self.label_W_Fpump.show();
             self.line_Turb_power.show();
             self.label_Turb_power.show();
-            self.lalbel_W_turb.show();
+            self.label_W_turb.show();
         self.line_Opump_power.setText(str(round(main.dat[i].W_Opump, no_afterdec)))
         self.line_Fpump_power.setText(str(round(main.dat[i].W_Fpump, no_afterdec)))
         self.line_Turb_power.setText(str(round(main.dat[i].W_turb, no_afterdec)))
