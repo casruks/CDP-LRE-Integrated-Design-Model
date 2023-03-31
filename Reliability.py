@@ -52,6 +52,12 @@ def Reliability(default, t, Fnom, Fop, val):
         wr = 0
         ## Warning codes
         #01 - Engine cycle not included in model, setting to SC cycle reliability.
+        if cycle == 1 or cycle >= 4:
+            wr = wr|(1<<0)
+            print('Warning,', cycle, 'is not modelled for reliability. returning staged combustion reliability.')
+        else:
+            wr = wr&(~(1<<0))
+
         if cycle == 0: #"Expander Cycle"
             cycle = 'SP_EX'
         elif cycle == 2: #"Gas Generator Cycle"
@@ -60,8 +66,6 @@ def Reliability(default, t, Fnom, Fop, val):
             cycle = 'D_FR_SC'
         else: 
             cycle = 'D_FR_SC'
-            wr = wr|(1<<0)
-            print('Warning,', cycle, 'is not modelled for reliability. returning staged combustion reliability.')
         
         # Cycle Impact
         lambda_ref = CyclesData[cycle][0]
