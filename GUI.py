@@ -175,7 +175,7 @@ class MainWindow(QMainWindow):
         self.thread.finished.connect(lambda: self.RunEnd())
         
     def RunEnd(self):
-        err_nozz, err_nozz2, err_chamber, err_turbo, err_inj, err_ign, err_cool, err_mass, err_cost, warn_nozz, warn_nozz2, warn_chamber, warn_turbo, warn_inj, warn_ign, warn_cool, warn_mass, warn_cost = self.com.r
+        err_nozz, err_nozz2, err_chamber, err_turbo, err_inj, err_ign, err_cool, err_mass, err_cost, warn_nozz, warn_nozz2, warn_chamber, warn_turbo, warn_inj, warn_ign, warn_cool, warn_mass, warn_cost, warn_rel = self.com.r
         self.but_run.setEnabled(True)
         self.tab_inputs.setEnabled(True)
         self.updateProgress(100)
@@ -339,7 +339,7 @@ class MainWindow(QMainWindow):
             return;
 
         #warnings
-        if(warn_nozz or warn_nozz2 or warn_chamber or warn_turbo or warn_inj or warn_ign or warn_cool or warn_mass or warn_cost):
+        if(warn_nozz or warn_nozz2 or warn_chamber or warn_turbo or warn_inj or warn_ign or warn_cool or warn_mass or warn_cost or warn_rel):
             msg = QMessageBox(self)
             msg.setIcon(QMessageBox.Warning)
             msg.setWindowTitle("Warnings raised")
@@ -426,6 +426,9 @@ class MainWindow(QMainWindow):
             if (warn_cost & (1<<1)):
                 lay.addWidget(QLabel("Warning in life prediction calculations - Thermal stress is less than yield strength, inelastic strain 1 is set to 0", parent = msg))
             
+            #Reliability
+            if (warn_rel & (1<<0)):
+                lay.addWidget(QLabel("Warning in reliability - The reliability for the selected engine cycle is not included in the model. The reliability is set to the calculated reliability for staged combustion.", parent = msg))
 
             lay.addItem(QSpacerItem(10,10,QSizePolicy.Expanding,QSizePolicy.Expanding))
             msg.exec_()

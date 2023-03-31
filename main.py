@@ -376,7 +376,7 @@ def Main(d : aux.Data, com : GUI.Communicate):
     ## By this order: igniter propellant total mass, igniter fuel mass, igniter oxidizer mass, warnings
 
     #Compute reliability 
-    Reliability = Rel.Reliability(default, d[-1].time, d[-1].Thrust, d[-1].Thrust, default.val)
+    Reliability, wr_rel = Rel.Reliability(default, d[-1].time, d[-1].Thrust, d[-1].Thrust, default.val)
     #d[-1].rel=max(Reliability)*100
     d[-1].rel=Reliability*100
     #Compute Mass:
@@ -449,7 +449,7 @@ def Main(d : aux.Data, com : GUI.Communicate):
    
 
     print("Calculations finished")
-    return errors_nz1,errors_nz2,er_comb,error_t,er_inj,er_ign,0,error_mass,error_cost,warnings_nz1,warnings_nz2,wr_comb,0,wr_inj,wr_ign,0,warning_mass,warning_cost
+    return errors_nz1,errors_nz2,er_comb,error_t,er_inj,er_ign,0,error_mass,error_cost,warnings_nz1,warnings_nz2,wr_comb,0,wr_inj,wr_ign,0,warning_mass,warning_cost, wr_rel
 
 if __name__ == '__main__':
     Main(dat)
