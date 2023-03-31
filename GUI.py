@@ -473,7 +473,7 @@ class MainWindow(QMainWindow):
         envDiam = max(main.dat[i].Dc, main.dat[i].De)
         self.line_envDiam.setText(str(round(envDiam, no_afterdec)))
         self.line_cost.setText(str(round(main.dat[i].cost, no_afterdec)))
-        self.line_reliability.setText(main.dat[i].rel) #list, not yet rounded to 2dec
+        self.line_reliability.setText(str(round(main.dat[i].rel, no_afterdec))) 
         self.line_reusability.setText(main.dat[i].Reuseabilty)
 
         #Nozzle

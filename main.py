@@ -422,7 +422,7 @@ def Main(d : aux.Data, com : GUI.Communicate):
     ##Reliability
     ##Learning Factor
     ##Cycle type
-    Cost,error_cost,warning_cost= Ms.Cost(Mass,aux.Default.tech_ready,aux.Default.exp_factor,max(Reliability),aux.Default.learn_factor,aux.Default.cycle_type)
+    Cost,error_cost,warning_cost= Ms.Cost(Mass,aux.Default.tech_ready,aux.Default.exp_factor, Reliability,aux.Default.learn_factor,aux.Default.cycle_type)
     if error_cost!=0:
             return errors_nz1,errors_nz2,er_comb,error_t,er_inj,er_ign,0,error_mass,error_cost,warnings_nz1,warnings_nz2,wr_comb,0,wr_inj,wr_ign,0,warning_mass,warning_cost;
     d[-1].cost=Cost 
