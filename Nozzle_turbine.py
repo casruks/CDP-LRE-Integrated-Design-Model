@@ -1,4 +1,12 @@
+from rocketcea.cea_obj_w_units import CEA_Obj
+from rocketcea.cea_obj import add_new_fuel, add_new_oxidizer
+import math as mth
+import matplotlib.pyplot as plt
+import numpy as geek
+import rocketcea
+
 def Turbine_nozzle(m_p,Pc,Prop,Pamb,Default,h_fuel,h_ox,rho_fuel,rho_ox,MR):
+
 
     Ox=Prop.Ox_name
     Fuel=Prop.Fuel_name
@@ -10,27 +18,24 @@ def Turbine_nozzle(m_p,Pc,Prop,Pamb,Default,h_fuel,h_ox,rho_fuel,rho_ox,MR):
     Pamb = Pamb/1.0e5
     
 
-    from rocketcea.cea_obj_w_units import CEA_Obj
-    from rocketcea.cea_obj import add_new_fuel, add_new_oxidizer
-    import math as mth
-    import matplotlib.pyplot as plt
-    import numpy as geek
-
+   
     card_str="""
-    oxid {} {} 
+    oxid {} {} wt%=100
     h,kj/kg={} t(k)={} rho={}
     """.format(Ox,Ox_composition,h_ox,298,rho_ox)
     add_new_oxidizer('Ox_turbine',card_str)
 
     card_str="""
-    fuel {} {} 
+    fuel {} {} wt%=100
     h,kj/kg={} t(k)={} rho={}
-    """.format(Fuel,Fuel_composition,h_fuel,298,rho_fuel)
+    """.format(Fuel,Fuel_composition,str(h_fuel),'298',str(rho_fuel))
 
     add_new_fuel('Fuel_turbine',card_str)
-    
-    ispObj = CEA_Obj( oxName='Ox_turbine', fuelName='Fuel_turbine',cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',enthalpy_units='kJ/kg',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise')
+    print(card_str)
+    ispObj = CEA_Obj( oxName=Ox, fuelName=Fuel,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',enthalpy_units='kJ/kg',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise')
 
+    h_f=rocketcea.blends.getFuelHfCalPerMole('Fuel_turbine')
+    h_f1=rocketcea.blends.getFuelHfCalPerMole('RP1')
     Ae_max=De_turbine_noz_max**2.0/4.0*mth.pi
     cs=ispObj.get_Cstar(Pc,MR)
     At=cs*m_p/(Pc*1.0e5)

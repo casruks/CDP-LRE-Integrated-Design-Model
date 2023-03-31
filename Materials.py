@@ -11,7 +11,7 @@ class Materials:
         self.k = k #Thermal Conductivity of the Material in [W/m*K]
         self.cost = cost #Cost per kilogram [Eur/kg] 
         self.heat_cap = heat_cap #Heat capacity [J/kg*K]
-        self.ultstress = ultstress #Ultimate Tensile Strength [Pa]
+        self.ulstress = ultstress #Ultimate Tensile Strength [Pa]
         self.mu = mu #Poisson Ratio [dimensionless]  
         self.thr_exp = thr_exp  #Coefficient of Thermal Expansion [mm/m*K]
        
@@ -64,9 +64,7 @@ class ReferenceEngine:
 RL10    = ReferenceEngine(3.20e6, 7.34e4, 61.1,  0.076, 16.85, 351.91, 1.1, Inc_718, D6AC_Steel, D6AC_Steel, 0.0903, 0.2575, 0.0484, 0.2281, 0.3096, 0.0661, 138) #Expander Cycle Reference
 LE5     = ReferenceEngine(3.65e6, 1.03e5, 140.0, 0.068, 23.33, 343.83, 1.1, Inc_718, Al_7075_T6, Al_7075_T6, 0.1419, 0.0578, 0.1021, 0.2804, 0.3042, 0.1136, 255)#Gas Generator Cycle Reference #fix rhoprop
 SSME    = ReferenceEngine(2.04e7, 2.28e6, 77.5,  0.138, 512.6, 361.89, 1.2, Inc_718, D6AC_Steel, D6AC_Steel, 0.0907, 0.1984, 0.0737, 0.1955, 0.2763, 0.1654, 3177)#Stage Combustion Cycle Reference #fixrhoprop
-
-#Mass estimation function Nozzle Tubes:
-
+   #Nozzle Surface Fucntion:
 def Nozzle_mass(x,R,t,material):
     total_surf = 0
     for i in range(len(x)-1):
@@ -81,7 +79,7 @@ def Nozzle_mass(x,R,t,material):
 def Chamber_mass(ChambR,ChambL,Chambt,material_C):
     ChamberMass = (2*mth.pi*ChambR*ChambL*Chambt + 2*mth.pi*ChambR**2*Chambt)*material_C.density
     return ChamberMass
-
+#Mass estimation function Nozzle Tubes:
 def Mass(Pc, material_N, material_V, arear, rt, mprop, FS, cycle, x, R, t, O_prop,F_prop,O_F):
     
     total_surf = 0
@@ -108,7 +106,7 @@ def Mass(Pc, material_N, material_V, arear, rt, mprop, FS, cycle, x, R, t, O_pro
     
     #Nozzle Mass:
     for i in range(len(x)-1):
-        if t[i] < 0.001:
+        if t[i] > 0.001:
             total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*t[i]*R[i]
         else:
             total_surf += mth.dist([x[i+1],R[i+1]],[x[i],R[i]])*0.001*R[i]
@@ -156,11 +154,11 @@ def RhoProp(O_prop, F_prop, OF):
 ##Cost function 
 def Cost(m_engine,f1,f3,R,n,cycle):
     TotalCost_MY = 0
-    Cost_error = 0
-    Cost_warning = 0
+    cost_error = 0
+    cost_warning = 0
 
     if R < 0.8:
-        Cost_warning = Cost_warning|(1<<0)
+        cost_warning = cost_warning|(1<<0)
 
     if cycle == 5:
         f2 = 0.25+1.1096*R**51.968
@@ -175,9 +173,9 @@ def Cost(m_engine,f1,f3,R,n,cycle):
     TotalCost_MY = C_D + F_E
 
     if TotalCost_MY < 0:
-        Cost_error = Cost_error|(1<<0)
-        return 0, Cost_error, Cost_warning
-    return TotalCost_MY, Cost_error, Cost_warning
+        cost_error = cost_error|(1<<0)
+        return 0, cost_warning, cost_error
+    return TotalCost_MY, cost_warning, cost_error
 
 def RhoProp(O_prop, F_prop, OF):
         rho_prop = 0
@@ -224,7 +222,7 @@ def Life(material, sigma_T, Twg, Twc, H, l, w, p):
         return 0, Cost_error, Cost_warning
     
     #Critical Thickness:
-    q = material.ultstress/material.yieldstress_l
+    q = material.ulstress/material.yieldstress_l
     tcr = 2*H*(1-mth.e**(-q))
 
     # #Instability life:
@@ -253,4 +251,3 @@ def Reuseability(Reuses, ThrustTime):
         Condition = 'Reuseability not satisfied'
 
     return Condition,Reuseability_error,Reuseability_warning
-

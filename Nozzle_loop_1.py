@@ -26,6 +26,7 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
     import math as mth
     import matplotlib.pyplot as plt
     import numpy as geek
+    from rocketcea.cea_obj import add_new_fuel, add_new_oxidizer
     
     Ox=Propellant.Ox_name
     Fuel=Propellant.Fuel_name
@@ -43,6 +44,31 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
     Ru_bell=Default.R_u_bell
     eps_m=Default.Eps_max
     
+    if Fuel=='UDMH':
+        Fuel_composition=Propellant.Fuel_composition
+        wt='wt% 100.'
+        h_fuel= 0.886280*10**3
+        rho_fuel=Propellant.f_dens_l
+
+        card_str="""
+        fuel {} {} {} 
+        h,kj/kg={} t(k)={} rho={}
+        """.format(Fuel,Fuel_composition,wt,h_fuel,298.15,rho_fuel)
+
+        add_new_fuel('UDMH',card_str)
+    
+    if Ox=='NTO':
+        ox_composition=Propellant.Ox_composition
+        wt='wt% 100.'
+        h_ox= 1.036*10**3
+        rho_ox=Propellant.o_dens
+
+        card_str="""
+        oxid {} {} {} 
+        h,kj/kg={} t(k)={} rho={}
+        """.format(Ox,ox_composition,wt,h_ox,298.15,rho_ox)
+
+        add_new_oxidizer('NTO',card_str)
 
     ispObj = CEA_Obj( oxName=Ox, fuelName=Fuel,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise',thermal_cond_units='W/cm-degC')
 
@@ -65,7 +91,7 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
         warnings=warnings & (~(1<<0));
     if Pc<=Pamb:
         errors=errors|(1<<0)
-        return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+        return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
     
     # Angles
     if Default.Theta_conical>18:
@@ -86,16 +112,16 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
     elif warnings & (1<<3):
         warnings=warnings & (~(1<<3));
     
+    if Nozzle_type==0:
+        if eps_loss>=1:
+            errors=errors|(1<<7)
+            return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
     
-    if eps_loss>=1:
-        errors=errors|(1<<7)
-        return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
-    
-    if eps_loss>0.1:
-        if (warnings & (1<<5))==False:
-            warnings=warnings|(1<<5);
-    elif warnings & (1<<5):
-        warnings=warnings & (~(1<<5));
+        if eps_loss>0.1:
+            if (warnings & (1<<5))==False:
+                warnings=warnings|(1<<5);
+        elif warnings & (1<<5):
+            warnings=warnings & (~(1<<5));
     
     if MR==0:
         MR_1=0.01
@@ -125,7 +151,9 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
         c_star=c_star_curr;
     else:
         c_star=ispObj.get_Cstar(Pc=Pc,MR=MR);
-
+    if c_star<=0:
+        errors=errors|(1<<11)
+        return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings;
     Tc=ispObj.get_Tcomb(Pc=Pc,MR=MR) # Function that returns the combustion chamber temperature
 
     v_eff=-1
@@ -194,13 +222,13 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
             L_nozzle_div=a*ye**2+b*ye+c
             if L_nozzle_div<=0:
                 errors=errors|(1<<8)
-                return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings;
+                return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings;
             alpha=mth.atan((ye-yp)/L_nozzle_div)
             eps_loss=0.5*(1-mth.cos((alpha+TH_exit_bell)/2))
             F=F_tar/(1-eps_loss);
         if eps_loss>=1:
             errors=errors|(1<<7)
-            return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+            return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
         
         Isp_it=ispObj.estimate_Ambient_Isp(Pc=Pc,MR=MR,eps=eps_actual,Pamb=Pamb,frozen=frozen_state,frozenAtThroat=frozen_state) # Calculates Isp for this iteration
         v_eff_it=Isp_it[0]*9.80665*(1-eps_loss); # Calculates effective velocity for this iteration
@@ -208,7 +236,7 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
         m_p_it=Pc*100000*At/c_star # Mass flow rate from continuity equation in the throat
         if m_p_it<=0:
             errors=errors|(1<<9)
-            return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+            return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
         F_it=m_p_it*v_eff_it # Force computed at this iteration
     
         variation=abs(F_it-F)/F # Variation from target force
@@ -218,7 +246,7 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
             At=c_star*mp2/(Pc*100000)
             if At<=0:
                 errors=errors|(1<<10)
-                return 0,0,0,0,0,0,0,0,0,0,0,errors
+                return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
     
         it=it+1;
         if it>Max_iterations_mass_flow:
@@ -234,41 +262,43 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
     rhos=ispObj.get_Densities(Pc=Pc,MR=MR,eps=eps_actual,frozen=frozen_state,frozenAtThroat=frozen_state)
     Transp_c=ispObj.get_Chamber_Transport(Pc=Pc,MR=MR,eps=eps_actual,frozen=frozen_state)
 
+
     rho_c=rhos[0]
     cp_c=Transp_c[0]
     mu_c=Transp_c[1]
-    k_c=Transp_c[2]/100
+    k_c=Transp_c[2]*100
     Pr_c=Transp_c[3]
+
 
     ## Sanitizing outputs
 
     # Mass flow rate
     if m_p<=0:
         errors=errors|(1<<1)
-        return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+        return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
     
     # Chamber temperature
     
     if Tc<=0:
         errors=errors|(1<<2)
-        return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+        return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
     
     # Throat area
     if At<=0:
         errors=errors|(1<<3)
-        return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+        return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
 
     
     # Expansion ratio
     if eps<=1:
         errors=errors|(1<<4)
-        return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+        return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
         
     
     # Isp
     if Isp[0]<=0:
         errors=errors|(1<<5)
-        return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+        return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
     
     if Isp[0]>550:
         if (warnings & (1<<4))==False:
@@ -281,13 +311,13 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
 
     if rho_c<=0 or cp_c<=0 or mu_c <=0 or k_c<=0 or Pr_c<=0:
         errors=errors|(1<<6)
-        return 0,0,0,0,0,0,0,0,0,0,0,errors,warnings
+        return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
 
     print('Ae =', Ae, 'm2') 
     print('De =', (4*Ae/mth.pi)**0.5)
     print('At=', At, 'm2')
     print('Dt =', (4*At/mth.pi)**0.5)
-    return m_p,Tc,MR,At,eps,Isp[0]*(1-eps_loss),rho_c,cp_c,mu_c,k_c,Pr_c,errors,warnings
+    return m_p,Tc,MR,At,eps,Isp[0]*(1-eps_loss),rho_c,cp_c,mu_c,k_c,Pr_c,c_star,errors,warnings
 
 
 

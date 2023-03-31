@@ -1,3 +1,9 @@
+from rocketcea.cea_obj import add_new_fuel, add_new_oxidizer
+from rocketcea.cea_obj_w_units import CEA_Obj
+import math as mth
+import matplotlib.pyplot as plt
+import numpy as geek
+
 def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     ## INPUTS:
     # Default
@@ -20,17 +26,38 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     # P_noz Pressure in the nozzle
     # T_noz Temperature in the nozzle
 
-    from rocketcea.cea_obj import add_new_fuel, add_new_oxidizer
-    from rocketcea.cea_obj_w_units import CEA_Obj
-    import math as mth
-    import matplotlib.pyplot as plt
-    import numpy as geek
+    
     
     # We begin by importing all the defaul values and the propellant properties, as well as setting the CEA environment
     Ox=Propellant.Ox_name
     Fuel=Propellant.Fuel_name
     frozen_state=Propellant.Frozen_state
 
+    if Fuel=='UDMH':
+        Fuel_composition=Propellant.Fuel_composition
+        wt='wt% 100.'
+        h_fuel= 0.886280*10**3
+        rho_fuel=Propellant.f_dens_l
+
+        card_str="""
+        fuel {} {} {} 
+        h,kj/kg={} t(k)={} rho={}
+        """.format(Fuel,Fuel_composition,wt,h_fuel,298.15,rho_fuel)
+
+        add_new_fuel('UDMH',card_str)
+    
+    if Ox=='NTO':
+        ox_composition=Propellant.Ox_composition
+        wt='wt% 100.'
+        h_ox= 1.036*10**3
+        rho_ox=Propellant.o_dens
+
+        card_str="""
+        oxid {} {} {} 
+        h,kj/kg={} t(k)={} rho={}
+        """.format(Ox,ox_composition,wt,h_ox,298.15,rho_ox)
+
+        add_new_oxidizer('NTO',card_str)
     ispObj = CEA_Obj( oxName=Ox, fuelName=Fuel,useFastLookup=0, makeOutput=0,isp_units='sec',cstar_units='m/sec',pressure_units='Bar',temperature_units='K', sonic_velocity_units='m/s',enthalpy_units='kJ/kg',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise',thermal_cond_units='W/cm-degC',fac_CR=None, make_debug_prints=False)
 
     ## Sanitizing inputs
@@ -428,7 +455,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         h_c_div[i]=1.213*a_b*m_p**0.8*mu_div[i]**0.2*cp_div[i]*Pr_div[i]**(-0.6)*(2*y_2[i])**(-1)*(Tc/T_f_div[i])**0.68
     h_c_con=geek.zeros(len(T_f_con))
     for i in range(len(T_f_con)):
-        h_c_con[i]=1.213*a_b*m_p**0.8*mu_con[i]**0.2*cp_con[i]*Pr_con[i]**(-0.6)*(2*y_1[i])**(-1)*(Tc/T_f_con[i])**0.68
+        h_c_con[i]=1.213*a_b*(m_p**0.8)*mu_con[i]**0.2*cp_con[i]*Pr_con[i]**(-0.6)*(2*y_1[i])**(-1)*(Tc/T_f_con[i])**0.68
 
     h_c_noz=geek.concatenate((h_c_con,h_c_div))
 
@@ -436,6 +463,7 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
     SF=Default.Safety_factor
 
     t_noz=SF*P_noz*y_noz/sig #Thickness of the wall in the nozzle
+    
     D_t=R_t*2;
     D_e=mth.sqrt(eps)*D_t
 
@@ -484,5 +512,45 @@ def Nozzle_loop(Pc,Tc,Propellant,Material,Nozzle_type,MR,eps,At,m_p,Dc,Default):
         errors=errors|(1<<8)
         return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
 
+    for i in range(len(t_noz)):
+        if mth.isnan(t_noz[i]):
+            t_noz[i]=(t_noz[i-1]+t_noz[i+1])/2
+    
+    
+    for i in range(len(t_noz)):
+        if mth.isnan(t_noz[i]):
+            if i!=0 and i!=(len(t_noz)-1):
+                t_noz[i]=(t_noz[i-1]+t_noz[i+1])/2
+            elif i==0:
+                t_noz[i]=t_noz[i+1]
+            elif i==(len(t_noz)-1):
+                t_noz[i]=t_noz[i-1]
+
+    for i in range(len(Tw_ad_noz)):
+        if mth.isnan(Tw_ad_noz[i]):
+            if i!=0 and i!=(len(Tw_ad_noz)-1):
+                Tw_ad_noz[i]=(Tw_ad_noz[i-1]+Tw_ad_noz[i+1])/2
+            elif i==0:
+                Tw_ad_noz[i]=Tw_ad_noz[i+1]
+            elif i==(len(Tw_ad_noz)-1):
+                Tw_ad_noz[i]=Tw_ad_noz[i-1]
+
+    for i in range(len(h_c_noz)):
+        if mth.isnan(h_c_noz[i]):
+            if i!=0 and i!=(len(h_c_noz)-1):
+                h_c_noz[i]=(h_c_noz[i-1]+h_c_noz[i+1])/2
+            elif i==0:
+                h_c_noz[i]=h_c_noz[i+1]
+            elif i==(len(h_c_noz)-1):
+                h_c_noz[i]=h_c_noz[i-1]
+
 
     return t_noz,x_noz,y_noz,Tw_ad_noz,h_c_noz,D_t,D_e,L_nozzle_con,L_nozzle_div,L_tot,x_noz_cool,y_noz_cool,errors, warnings;
+
+#if __name__=='__main__':
+#    Pc=43.7043704370437
+    #eps_try=geek.linspace(0.0002,0.001,num=200)
+    #for i in eps_try:
+    #    dp=ispObj.get_PcOvPe(Pc=43.7043704370437,MR=3.545,eps=i,frozen=1,frozenAtThroat=1)
+    #    Pe_it=Pc*100000/dp
+    #    P_div.append(Pe_it);
