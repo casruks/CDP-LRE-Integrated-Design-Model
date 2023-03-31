@@ -931,7 +931,7 @@ class MainWindow(QMainWindow):
         if var > 0.0 and var <= 100:
             main.default.De_max = var;
         else:
-            self.line_De_max.setText("5")
+            self.line_De_max.setText("2.5")
             msg = QMessageBox()
             msg.setWindowTitle("Input error!")
             msg.setText("Invalid maximum exit diameter, try again.")
