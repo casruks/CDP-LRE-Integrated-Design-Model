@@ -34,10 +34,10 @@ default                 =       Materials('default_coating',                    
 #Coating Materials:
 Coat_Custom             =       Materials('Carbon-Carbon Matrix coating',       1950.0,   0,          0,          2400.0,   37.4,   6.4,   2093.0,   0,   0,   18.0e-6)
 Copper                  =       Materials('Copper coating',                     8940.0,   40.0e6,     128.0e9,    573.0,    390.0,  6.4,   388.0,    0,   0,   18.0e-6)
-Narloy_Z                =       Materials('Copper Alloy Coating',               9130.0,   0,          0,          740.0,    290.0,  6.4,   388.0,    0,   0,   22.0e-6)
-GRCop_84                =       Materials('GRPCop_84 Copper alloy coating',     8756.0,   0,          0,          1000.0,   351.0,  6.4,   388.0,    0,   0,   20.0e-6)
-Silica                  =       Materials('Scilica Coating',                    1700.0,   0,          0,          1200.0,   0.55,   6.4,   1256.0,   0,   0,   20.0e-6)
-Carbon                  =       Materials('Carbon-Carbon Matrix coating',       1950.0,   0,          0,          2400.0,   37.4,   6.4,   2093.0,   0,   0,   20.0e-6)
+Narloy_Z                =       Materials('Copper Alloy Coating',               9130.0,   40.0e6,     128.0e9,    740.0,    290.0,  24.8,   388.0,    0,   0,   22.0e-6)
+GRCop_84                =       Materials('GRPCop_84 Copper alloy coating',     8756.0,   100.0e6,    140.0e9,    1000.0,   351.0,  26.3,   388.0,    0,   0,   20.0e-6)
+Silica                  =       Materials('Scilica Coating',                    1700.0,   168e6,      74.8e9,     1200.0,   0.55,   8.83,   1256.0,   0,   0,   20.0e-6)
+Carbon                  =       Materials('Carbon-Carbon Matrix coating',       1950.0,   529.0e6,    100.0e9,    2400.0,   37.4,   194.0,   2093.0,   0,   0,   20.0e-6)
 
 
 ##Computing Mass nozzle:
