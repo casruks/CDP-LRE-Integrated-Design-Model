@@ -229,7 +229,7 @@ class Propellant:
             0,
         ]  # for shomate equation
         self.heatingvalue = 119.96 * 10**6  # for the fuel only!
-        self.ox_F = 0.02016  # g/mol
+        self.f_M = 2.016*10**-3  # kg/mol
         self.enthalpy_298_f = 0  # J/kg
         # Propellant
 
@@ -275,7 +275,7 @@ class Propellant:
         self.Fuel_name = "RP1"  # Fuel name for rocketCEA
         self.Fuel_composition = "C 1 H 1.95"  # Composition of fuel for rocketcea
         self.f_dens_l = 804.59  # liquid fuel density
-        self.ox_F = 0.0175  # kg/mol
+        #self.ox_F = 0.0175  # kg/mol
         self.f_dens_g = 10**5 / (
             298 * 8.31455 / self.ox_F
         )  # gaseous fuel density with ideal gas for standard conditions
@@ -298,7 +298,7 @@ class Propellant:
         self.heatingvalue = -43100  # for the fuel only!
 
         self.enthalpy_298_f = 0.137899 * 10**6  # J/kg
-        self.molarmass = 0.175  # kg/mol
+        self.f_M = 0.175  # kg/mol
 
     def Ethanol(self):
         self.Fuel_name = "Ethanol"  # Fuel name for rocketCEA
@@ -330,7 +330,7 @@ class Propellant:
             0,
         ]  # for shomate equation
         self.heatingvalue = -29672  # for the fuel only!
-        self.ox_F = 0.04607
+        self.f_M = 0.04607
         self.enthalpy_298_f = 5.01766 * 10**6  # J/kh
         self.molarmass = 0.04607  # kg/mol
 
@@ -339,7 +339,7 @@ class Propellant:
         self.Fuel_composition = "C 2 H 8 N 2"  # Composition of fuel for rocketcea
 
         self.f_dens_l = 793  # IDK YET  # liquid fuel density
-        self.ox_F = 0.0601
+        self.f_M = 0.0601
         self.f_dens_g = 10**5 / (
             298 * 8.31455 / self.ox_F
         )  # gaseous fuel density with ideal gas for standard conditions
@@ -387,7 +387,7 @@ class Propellant:
             -74.8731,
         ]  # for shomate equation
         self.heatingvalue = -55511  # for the fuel only!
-        self.ox_F = 0.01604  # kg/mol
+        self.f_M = 0.01604  # kg/mol
         self.enthalpy_298_f = 4.56 * 10**6  # J/kh
 
     def NTO(self):
