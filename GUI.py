@@ -1392,7 +1392,7 @@ class MainWindow(QMainWindow):
         if var > 0.0 and var < 0.9:
             main.default.l_def = var;
         else:
-            self.line_lGG.setText("0.1")
+            self.line_lGG.setText("0.03")
             msg = QMessageBox()
             msg.setWindowTitle("Input error!")
             msg.setText("Invalid percentage of total mass flow for GG, try again.")
