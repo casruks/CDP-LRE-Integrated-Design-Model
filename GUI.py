@@ -457,11 +457,13 @@ class MainWindow(QMainWindow):
         pixmap.scaled(self.Graphics.width(), self.Graphics.height(), QtCore.Qt.KeepAspectRatio)
         self.Graphics.setPixmap(pixmap.scaled(self.Graphics.width(), self.Graphics.height(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation))
         #self.Graphics.setScaledContents(True)
+        self.plots.axes.cla()
         self.plots.axes.plot([0,0], [main.dat[i].Dc/2, -main.dat[i].Dc/2], color='red')
         self.plots.axes.plot([0,main.dat[i].Chamber_L], [main.dat[i].Dc/2,main.dat[i].Dc/2], color='red')
         self.plots.axes.plot([0,main.dat[i].Chamber_L], [-main.dat[i].Dc/2,-main.dat[i].Dc/2], color='red')
         self.plots.axes.plot(main.dat[i].x_nozz+main.dat[i].Chamber_L, main.dat[i].y_nozz, color='red')
         self.plots.axes.plot(main.dat[i].x_nozz+main.dat[i].Chamber_L, -main.dat[i].y_nozz, color='red')
+        self.plots.draw()
 
         #Global
         no_afterdec = 2
