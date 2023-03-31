@@ -98,6 +98,7 @@ class MainWindow(QMainWindow):
         self.line_Ele_power.editingFinished.connect(self.checkElePow);  self.checkElePow(); self.line_Ele_power.setValidator(QtGui.QDoubleValidator())
         self.line_valve_losses.editingFinished.connect(self.checkValveLoss);  self.checkValveLoss(); self.line_valve_losses.setValidator(QtGui.QDoubleValidator())
         self.line_lGG.editingFinished.connect(self.checkLGG); self.checkLGG(); self.line_lGG.setValidator(QtGui.QDoubleValidator())
+        self.line_lossLine.editingFinished.connect(self.checkLossLine); self.checkLossLine(); self.line_lossLine.setValidator(QtGui.QDoubleValidator())
 
         #Cooling
         self.coating_changed(0)
@@ -174,6 +175,9 @@ class MainWindow(QMainWindow):
         
     def RunEnd(self):
         err_nozz, err_nozz2, err_chamber, err_turbo, err_inj, err_ign, err_cool, err_mass, err_cost, warn_nozz, warn_nozz2, warn_chamber, warn_turbo, warn_inj, warn_ign, warn_cool, warn_mass, warn_cost = self.com.r
+        self.but_run.setEnabled(True)
+        self.tab_inputs.setEnabled(True)
+        
         #Errors
         if(err_nozz or err_nozz2 or err_chamber or err_turbo or err_inj or err_ign or err_cool or err_mass or err_cost): 
             msg = QMessageBox(self)
@@ -1479,6 +1483,17 @@ class MainWindow(QMainWindow):
             msg = QMessageBox()
             msg.setWindowTitle("Input error!")
             msg.setText("Invalid number of reuses, try again.")
+            msg.exec_()
+
+    def checkLossLine(self):
+        var = float(self.line_lossLine.text())
+        if var > 0.0:
+            main.default.line_loss = var;
+        else:
+            self.line_lossLine.setText("10000.0")
+            msg = QMessageBox()
+            msg.setWindowTitle("Input error!")
+            msg.setText("Invalid line losses, try again.")
             msg.exec_()
 
 # Main

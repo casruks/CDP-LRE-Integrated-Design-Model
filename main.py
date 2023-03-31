@@ -22,8 +22,7 @@ default = aux.Default(0)
 dat = [aux.Data(Thrust_, Thrust_time_, Pamb_)]
 
 #Main Function
-#def Main(d : aux.Data, com : GUI.Communicate):
-def Main(d : aux.Data):
+def Main(d : aux.Data, com : GUI.Communicate):
     p_old = 0.0
     p_new = 19000000/9999000*Thrust_+500000
     bool = 0 #this variable is used to show the combustor function we are in the first loop
@@ -32,15 +31,11 @@ def Main(d : aux.Data):
     it=0;
     #First loop, pressure convergence
     while abs(p_new-p_old)/p_new > default.pres_tol:
-        
-        #prog = min(abs(p_new-p_old)/p_new, 0.99)
-        #com.progress.emit(int((1.0-prog)*100))
-        
-        p_old = p_new
-
         #PROGRESS BAR
-        
-        
+        prog = min(abs(p_new-p_old)/p_new, 0.99)
+        com.progress.emit(int((1.0-prog)*100))
+
+        p_old = p_new
         
         #Compute nozzle (1)
         #Inputs: 

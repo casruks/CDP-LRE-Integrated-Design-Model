@@ -48,7 +48,7 @@ def TurboM(Default : aux.Default, prop : aux.Propellant, O_F : float, p_a : floa
             turbo = EL(Default, prop, O_F, Tf_cool, dptcool, m)
         case 5: #No turbomachinery
             dptvalve = Default.v_loss
-            dptlines = 0.0
+            dptlines = Default.line_loss
             dptmixing = 0.0
             return [((Default.p_to-dptvalve-dptlines)*O_F+Default.ptf-dptvalve-dptlines)/(1.0+O_F) - dptmixing, 0.0, 0.0, 0.0, 0.0, m, 0]
         case 6: #Combustion tap off cycle (currently unsuported)
@@ -113,6 +113,7 @@ class EX:
         self.dptcool = dptcool
         self.m = m
         self.dptvalve = DF.v_loss
+        self.dptlines = DF.line_loss
 
     #Obtain results, calling optimization procedure and then computing variables of interest
     def results(self):
@@ -218,6 +219,7 @@ class SC:
         self.dptcool = dptcool
         self.m = m
         self.dptvalve = DF.v_loss
+        self.dptlines = DF.line_loss
 
     #Obtain results, calling optimization procedure and then computing variables of interest
     def results(self):
@@ -331,6 +333,7 @@ class CB:
         self.m_O = O_F/(O_F+1.0) * m
         self.m_F = 1.0/(O_F+1.0) * m
         self.dptvalve = DF.v_loss
+        self.dptlines = DF.line_loss
 
     #Obtain results, calling optimization procedure and then computing variables of interest
     def results(self):
@@ -450,6 +453,7 @@ class GG:
         self.m = m
         self.df = DF
         self.dptvalve = DF.v_loss
+        self.dptlines = DF.line_loss
         self.l = DF.l_def
         self.ispObj = CEA_Obj( oxName=prop.Ox_name, fuelName=prop.Fuel_name,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise',thermal_cond_units='W/cm-degC')
 
@@ -576,6 +580,7 @@ class TO:
         self.dptcool = dptcool
         self.m = m
         self.dptvalve = DF.v_loss
+        self.dptlines = DF.line_loss
 
 
 #Function that computes Electric driven pumps cycle
@@ -628,6 +633,7 @@ class EL:
         self.dptcool = dptcool
         self.m = m
         self.dptvalve = DF.v_loss
+        self.dptlines = DF.line_loss
 
     #Obtain results, no optimization procedure needed for this cycle
     def results(self):
@@ -659,7 +665,7 @@ class EL:
         dptop, dptfp, pinj = vars
         return [
             self.ptanko - self.dptvalve + dptop - self.dptlines - pinj,
-            self.ptankf - self.dptvalve + dptfp - self.dptcool - pinj,
+            self.ptankf - self.dptvalve + dptfp - self.dptcool - self.dptlines - pinj,
             (self.O_F*dptop/(self.eff_po*self.prop.o_dens) + dptfp/(self.eff_pf*self.prop.f_dens_l))*self.m/(1.0+self.O_F) - self.eff_m*self.wmotor
             ]
 
