@@ -59,14 +59,14 @@ def Main(d : aux.Data, com : GUI.Communicate):
         #if(error==1): return False
         
         if errors_nz1!=0:
-            return errors_nz1,0,0,0,0,0,0,0,0,warnings_nz1,0,0,0,0,0,0,0,0;
+            return errors_nz1,0,0,0,0,0,0,0,0,warnings_nz1,0,0,0,0,0,0,0,0,0;
             
         #Compute injector (1)
         ## Added A_est, representing estimated total orifice area (A_ox+A_f) for sanity check with combustion chamber dimensions..
         d[-1].v_iox, d[-1].v_if, d[-1].D_f, d[-1].D_ox, d[-1].dp, d[-1].eta_s, d[-1].m_ox, d[-1].m_f, d[-1].n_ox, d[-1].n_f, A_est, er_inj1, wr_inj1 = Inj.injector1(default, prop, p_new, d[-1].m_nozz, d[-1].O_F)
 
         if er_inj1!=0:
-            return errors_nz1,0,0,0,er_inj1,0,0,0,0,warnings_nz1,0,0,0,wr_inj1,0,0,0,0;
+            return errors_nz1,0,0,0,er_inj1,0,0,0,0,warnings_nz1,0,0,0,wr_inj1,0,0,0,0,0;
         #outputs
         #Compute Chamber
         #inputs
@@ -84,7 +84,7 @@ def Main(d : aux.Data, com : GUI.Communicate):
         d[-1].h_comb, d[-1].Dc, d[-1].ThicknessChamber, d[-1].Chamber_L, d[-1].Re_c,wr_comb,er_comb= Comb.CombustionChamber(p_new, d[-1].At, prop, default.chamber_mat_select, default, d[-1].v_if, d[-1].v_iox, d[-1].D_f, d[-1].D_ox, bool,rho_c,cp_c,mu_c/10,k_c,Pr_c,A_est,d[-1].O_F)
         
         if er_comb!=0:
-            return errors_nz1,0,er_comb,0,er_inj1,0,0,0,0,warnings_nz1,0,wr_comb,0,wr_inj1,0,0,0,0;
+            return errors_nz1,0,er_comb,0,er_inj1,0,0,0,0,warnings_nz1,0,wr_comb,0,wr_inj1,0,0,0,0,0;
         #outputs
         ## conductive heat transfer coefficient
         ## chamber diameter in m
@@ -123,7 +123,7 @@ def Main(d : aux.Data, com : GUI.Communicate):
         d[-1].x_nozz=x_noz
         d[-1].y_nozz=y_noz
         if errors_nz2!=0:
-            return errors_nz1,errors_nz2,er_comb,0,er_inj1,0,0,0,0,warnings_nz1,warnings_nz2,wr_comb,0,wr_inj1,0,0,0,0;
+            return errors_nz1,errors_nz2,er_comb,0,er_inj1,0,0,0,0,warnings_nz1,warnings_nz2,wr_comb,0,wr_inj1,0,0,0,0,0;
         #Compute regenerative
        
         #Tf_cool,dptcool=regCool.Run_for_Toperating1D(Tw_ad_noz, h_c_noz, t_noz,prop,Ms.Rhenium,default.A,default.T_fuel_tanks,d[-1].m_nozz/(1.0+d[-1].O_F)/default.n,x_noz_cool[-1],y_noz_cool)
@@ -314,7 +314,7 @@ def Main(d : aux.Data, com : GUI.Communicate):
         d[-1].ptinj, d[-1].W_Opump, d[-1].W_Fpump, d[-1].W_turb, d[-1].fuel_frac, d[-1].turbo_m,error_t = Turbo.TurboM(default, prop, d[-1].O_F, d[-1].Pa, Tf_cool, d[-1].dptcool_cooling, d[-1].m_nozz)
         
         if error_t!=0:
-            return errors_nz1,errors_nz2,er_comb,error_t,er_inj1,0,0,0,0,warnings_nz1,warnings_nz2,wr_comb,0,wr_inj1,0,0,0,0;
+            return errors_nz1,errors_nz2,er_comb,error_t,er_inj1,0,0,0,0,warnings_nz1,warnings_nz2,wr_comb,0,wr_inj1,0,0,0,0,0;
         
         #Compute Injector (2)
         p_new, dp_ox, dp_f, er_inj2, wr_inj2 = Inj.injector2(default, prop, d[-1].v_iox, d[-1].v_if, d[-1].ptinj, d[-1].eta_s)
@@ -322,7 +322,7 @@ def Main(d : aux.Data, com : GUI.Communicate):
         if p_new/Pamb_<4:
             p_new=p_new+4*Pamb_;
         if er_inj2!=0:
-            return errors_nz1,errors_nz2,er_comb,error_t,er_inj2,0,0,0,0,warnings_nz1,warnings_nz2,wr_comb,0,wr_inj2,0,0,0,0;
+            return errors_nz1,errors_nz2,er_comb,error_t,er_inj2,0,0,0,0,warnings_nz1,warnings_nz2,wr_comb,0,wr_inj2,0,0,0,0,0;
         print("P_new: " + str(p_new))
               
     d[-1].Pc = p_new
@@ -376,7 +376,7 @@ def Main(d : aux.Data, com : GUI.Communicate):
     ## By this order: igniter propellant total mass, igniter fuel mass, igniter oxidizer mass, warnings
 
     #Compute reliability 
-    Reliability = Rel.Reliability(default, d[-1].time, d[-1].Thrust, d[-1].Thrust, default.val)
+    Reliability, wr_rel = Rel.Reliability(default, d[-1].time, d[-1].Thrust, d[-1].Thrust, default.val)
     #d[-1].rel=max(Reliability)*100
     d[-1].rel=Reliability*100
     #Compute Mass:
@@ -407,7 +407,7 @@ def Main(d : aux.Data, com : GUI.Communicate):
     d[-1].Mnoz=Ms.Nozzle_mass(x_noz,y_noz,t_noz,aux.Default.noz_mat_select)
 
     if error_mass!=0:
-            return errors_nz1,errors_nz2,er_comb,error_t,er_inj,er_ign,0,error_mass,0,warnings_nz1,warnings_nz2,wr_comb,0,wr_inj,wr_ign,0,warning_mass,0;
+            return errors_nz1,errors_nz2,er_comb,error_t,er_inj,er_ign,0,error_mass,0,warnings_nz1,warnings_nz2,wr_comb,0,wr_inj,wr_ign,0,warning_mass,0,0;
     #Output:
     ##Total Mass of the engine
     
@@ -424,7 +424,7 @@ def Main(d : aux.Data, com : GUI.Communicate):
     ##Cycle type
     Cost,error_cost,warning_cost= Ms.Cost(Mass,aux.Default.tech_ready,aux.Default.exp_factor, Reliability,aux.Default.learn_factor,aux.Default.cycle_type)
     if error_cost!=0:
-            return errors_nz1,errors_nz2,er_comb,error_t,er_inj,er_ign,0,error_mass,error_cost,warnings_nz1,warnings_nz2,wr_comb,0,wr_inj,wr_ign,0,warning_mass,warning_cost;
+            return errors_nz1,errors_nz2,er_comb,error_t,er_inj,er_ign,0,error_mass,error_cost,warnings_nz1,warnings_nz2,wr_comb,0,wr_inj,wr_ign,0,warning_mass,warning_cost,0;
     d[-1].cost=Cost 
     #Outputs:
     ##Cost of the engine
@@ -449,7 +449,7 @@ def Main(d : aux.Data, com : GUI.Communicate):
    
 
     print("Calculations finished")
-    return errors_nz1,errors_nz2,er_comb,error_t,er_inj,er_ign,0,error_mass,error_cost,warnings_nz1,warnings_nz2,wr_comb,0,wr_inj,wr_ign,0,warning_mass,warning_cost
+    return errors_nz1,errors_nz2,er_comb,error_t,er_inj,er_ign,0,error_mass,error_cost,warnings_nz1,warnings_nz2,wr_comb,0,wr_inj,wr_ign,0,warning_mass,warning_cost, wr_rel
 
 if __name__ == '__main__':
     Main(dat)
