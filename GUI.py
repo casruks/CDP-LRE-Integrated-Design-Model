@@ -9,6 +9,7 @@ import csv
 from datetime import datetime
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
+import math
 
 set_images_path = "../Turbomachinery_code/"
 
@@ -452,7 +453,7 @@ class MainWindow(QMainWindow):
     def Output(self, i : int):
         #Plot
         cycles = ["EX", "CB", "GG", "SC", "EL", "PF"]
-        pixmap = QtGui.QPixmap("images/" + cycles[i] + ".png")
+        pixmap = QtGui.QPixmap("images/" + cycles[main.dat[i].turbo_cycle] + ".png")
         pixmap.scaled(self.Graphics.width(), self.Graphics.height(), QtCore.Qt.KeepAspectRatio)
         self.Graphics.setPixmap(pixmap.scaled(self.Graphics.width(), self.Graphics.height(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation))
         #self.Graphics.setScaledContents(True)
@@ -473,7 +474,7 @@ class MainWindow(QMainWindow):
         envDiam = max(main.dat[i].Dc, main.dat[i].De)
         self.line_envDiam.setText(str(round(envDiam, no_afterdec)))
         self.line_cost.setText(str(round(main.dat[i].cost, no_afterdec)))
-        self.line_reliability.setText(str(round(main.dat[i].rel, no_afterdec))) 
+        self.line_reliability.setText(str(math.floor(main.dat[i].rel*10.0**no_afterdec)/10.0**no_afterdec)) 
         self.line_reusability.setText(main.dat[i].Reuseabilty)
 
         #Nozzle

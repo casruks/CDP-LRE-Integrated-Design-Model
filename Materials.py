@@ -242,12 +242,12 @@ def Reuseability(Reuses, ThrustTime):
     Reuseability_error = 0
 
     Uses = (Reuses+2)*3
-    Condition = 'Reuseability satisfied'
+    Condition = 'Reusability satisfied'
     Check = 6000*Uses**(-1)
 
     if ThrustTime < Check:
-        Condition = 'Reuseability satisfied'
+        Condition = 'Reusability satisfied'
     else:
-        Condition = 'Reuseability not satisfied'
+        Condition = 'Reusability not satisfied'
 
     return Condition,Reuseability_error,Reuseability_warning
