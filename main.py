@@ -389,7 +389,7 @@ def Main(d : aux.Data, com : GUI.Communicate):
     ##Reliability
     ##Learning Factor
     ##Cycle type
-    Cost = Ms.Cost(Mass,aux.Default.tech_ready,aux.Default.exp_factor,Reliability,aux.Defualt.learn_factor,aux.Defualt.cycle_types)
+    Cost, Cost_error, Cost_warning = Ms.Cost(Mass,aux.Default.tech_ready,aux.Default.exp_factor,Reliability,aux.Defualt.learn_factor,aux.Defualt.cycle_types)
     #Outputs:
     ##Cost of the engine
     
@@ -403,12 +403,13 @@ def Main(d : aux.Data, com : GUI.Communicate):
     ##coolant channel width
     ##Ribs width
     ##Chamber Pressure
-    Reuseabitiy = Ms.Reuseability(aux.Default.noz_mat_select, maximum_thermal_stress, max_temperature_inner, max_temperature_outer, 0.445e-3, 1.686e-3, 1.270e-3, p_new )
+    Life, Life_error, Life_warning = Ms.Life(aux.Default.noz_mat_select, maximum_thermal_stress, max_temperature_inner, max_temperature_outer, 0.445e-3, 1.686e-3, 1.270e-3, p_new )
     #Missing Inputs: H,l,w (geometry of the cooling chanels written as 0.445, in the function above^)
     #They are currently inputs for the cooling function and are not returned anywhere. This is necessary before implementing into the fuction. Currently default values are used 
     #Output:
     #Low cycle fatigue life of the thrust chamber
-   
+    
+    Reuseability, Reuseability_error, Reuseability_warning = Ms.Reuseability(aux.Default.Reuses,aux.Data.time) 
 
     print("Calculations finished")
     return 0,0,0,0,0,0,0,7,0,0,0,0,0,0
