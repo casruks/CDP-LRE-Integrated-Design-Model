@@ -473,6 +473,7 @@ class MainWindow(QMainWindow):
 
         #Global
         no_afterdec = 2
+        no_afterdec_rel = 4
         self.line_Isp.setText(str(round(main.dat[i].Isp, no_afterdec)))
         self.line_cstar.setText(str(round(main.dat[i].cstar, no_afterdec)))
         self.line_m.setText(str(round(main.dat[i].turbo_m, no_afterdec)))
@@ -482,7 +483,7 @@ class MainWindow(QMainWindow):
         envDiam = max(main.dat[i].Dc, main.dat[i].De)
         self.line_envDiam.setText(str(round(envDiam, no_afterdec)))
         self.line_cost.setText(str(round(main.dat[i].cost, no_afterdec)))
-        self.line_reliability.setText(str(math.floor(main.dat[i].rel*10.0**no_afterdec)/10.0**no_afterdec)) 
+        self.line_reliability.setText(str(math.floor(main.dat[i].rel*10.0**no_afterdec_rel)/10.0**no_afterdec_rel)) 
         self.line_reusability.setText(main.dat[i].Reuseabilty)
 
         #Nozzle
