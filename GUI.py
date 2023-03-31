@@ -1,8 +1,7 @@
-import os
 import sys
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets, QtGui, QtCore
-from PyQt5.QtWidgets import QDialog, QApplication, QWidget, QMainWindow, QLabel, QDialogButtonBox, QScrollArea, QVBoxLayout, QSizePolicy, QSpacerItem, QGraphicsScene
+from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QLabel, QScrollArea, QVBoxLayout, QSizePolicy, QSpacerItem
 from PyQt5.QtWidgets import QMessageBox
 import main
 import Aux_classes as aux
@@ -457,11 +456,11 @@ class MainWindow(QMainWindow):
         pixmap.scaled(self.Graphics.width(), self.Graphics.height(), QtCore.Qt.KeepAspectRatio)
         self.Graphics.setPixmap(pixmap)
         #self.Graphics.setScaledContents(True)
-        self.sc.axes.plot([0,0], [main.dat[i].Dc/2, -main.dat[i].Dc/2], color='red')
-        self.sc.axes.plot([0,main.dat[i].Chamber_L], [main.dat[i].Dc/2,main.dat[i].Dc/2], color='red')
-        self.sc.axes.plot([0,main.dat[i].Chamber_L], [-main.dat[i].Dc/2,-main.dat[i].Dc/2], color='red')
-        self.sc.axes.plot(main.dat[i].x_nozz+main.dat[i].Chamber_L, main.dat[i].y_nozz, color='red')
-        self.sc.axes.plot(main.dat[i].x_nozz+main.dat[i].Chamber_L, -main.dat[i].y_nozz, color='red')
+        self.plots.axes.plot([0,0], [main.dat[i].Dc/2, -main.dat[i].Dc/2], color='red')
+        self.plots.axes.plot([0,main.dat[i].Chamber_L], [main.dat[i].Dc/2,main.dat[i].Dc/2], color='red')
+        self.plots.axes.plot([0,main.dat[i].Chamber_L], [-main.dat[i].Dc/2,-main.dat[i].Dc/2], color='red')
+        self.plots.axes.plot(main.dat[i].x_nozz+main.dat[i].Chamber_L, main.dat[i].y_nozz, color='red')
+        self.plots.axes.plot(main.dat[i].x_nozz+main.dat[i].Chamber_L, -main.dat[i].y_nozz, color='red')
 
         #Global
         no_afterdec = 2
@@ -918,7 +917,7 @@ class MainWindow(QMainWindow):
 
     def checkValveLoss(self):
         var = float(self.line_valve_losses.text())
-        if var > 0.0 and var <= 1.0e6:
+        if var >= 0.0 and var <= 1.0e6:
             main.default.v_loss = var;
         else:
             self.line_valve_losses.setText("1000")
@@ -943,7 +942,7 @@ class MainWindow(QMainWindow):
         if var > 1.1 and var <= 1000:
             main.default.Eps_max = var;
         else:
-            self.line_eps_max.setText("300")
+            self.line_eps_max.setText("90")
             msg = QMessageBox()
             msg.setWindowTitle("Input error!")
             msg.setText("Invalid maximum expansion ratio, try again.")
@@ -1490,7 +1489,7 @@ class MainWindow(QMainWindow):
 
     def checkLossLine(self):
         var = float(self.line_lossLine.text())
-        if var > 0.0:
+        if var >= 0.0:
             main.default.line_loss = var;
         else:
             self.line_lossLine.setText("10000.0")

@@ -5,13 +5,11 @@ import Igniters as Ign
 import Reliability as Rel
 import Nozzle_loop_1 as Nz_1
 import Nozzle_loop_2 as Nz_2
-import Nozzle_turbine as Nz_t
 import Cooling
 import Materials as Ms
 import numpy as np
 import Aux_classes as aux
 import math
-import matplotlib.pyplot as plt
 import GUI
 
 Thrust_ = 15000 #= input("Introduce thrust")
