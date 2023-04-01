@@ -146,7 +146,7 @@ class EX:
 
         if(not root["success"] or abs(sum(root["fun"])) > 0.01):
             self.br = self.br | 1<<2
-            return sum(root["fun"])*9999
+            return abs(sum(root["fun"]))*9999
         else:
             self.br = self.br & ~(1<<2)
 
@@ -338,17 +338,17 @@ class CB:
     #Obtain results, calling optimization procedure and then computing variables of interest
     def results(self):
         #Minimization
-        res = minimize(self.opt, [5.0e5,0.01], method = 'Nelder-Mead', bounds=[[self.pa*1.2,1.0e12],[1.0e-5,0.9]])
+        res = minimize(self.opt, [5.0e5,5.0e6], method = 'Nelder-Mead', bounds=[[self.pa*1.1,1.0e12],[self.pa*1.4,5.0e12]],)
         self.pt2 = res["x"][0]
-        self.l = res["x"][1]
+        self.pt1 = res["x"][1]
 
         #Computation of results
-        self.dptop, self.pt1, self.dptfp = fsolve(self.equations,[1.0e6,1.0e7,1.0e7],(self.pt2,self.l))
+        self.dptop, self.l, self.dptfp = fsolve(self.equations,[1.0e6,0.05,1.0e7],(self.pt2,self.pt1))
         self.ptinj = self.pt1
         self.Wop = self.m_O * self.dptop / (self.eff_po*self.prop.o_dens)
         self.Wfp = (1.0/(1.0-self.l)) * self.m_F * self.dptfp / (self.eff_pf*self.prop.f_dens_l)
         self.Wt = (self.l/(1.0-self.l)) * self.m_F * self.eff_t * self.prop.fcp * self.Tf_cool * (1.0-(self.pt2/self.pt1)**((self.prop.f_gamma-1.0)/self.prop.f_gamma))
-        self.mt = (self.l/(1.0-self.l)) * self.m_F + self.m_O
+        self.mt = (self.l/(1.0-self.l)) * self.m_F + self.m
         
         #Check to see if results are coherent
         if(abs(self.Wop+self.Wfp-self.Wt*self.eff_m) > 0.01 ):
@@ -364,17 +364,17 @@ class CB:
 
     #Optimize for maximum chamber pressure
     def opt(self,vars):
-        root = least_squares(self.equations,[1.0e6,1.0e7,1.0e7], args = vars, bounds = ((1000.0,self.pa*1.2,1000.0),(10.0e10,10.0e10,10.0e10)), max_nfev=9999)
+        root = least_squares(self.equations,[1.0e6,0.05,1.0e7], args = vars, bounds = ((1000.0,1.0e-5,1000.0),(10.0e10,0.8,10.0e10)), max_nfev=9999)
 
         if(not root["success"] or abs(sum(root["fun"])) > 0.01):
             self.br = self.br | 1<<2
-            return sum(root["fun"])*9999
+            return abs(sum(root["fun"]))*9999
         else:
             self.br = self.br & ~(1<<2)
 
-        Isp_m = self.get_Isp_m(root["x"][1])
-        Isp_a = self.get_Isp_a(root["x"][1], vars[0])
-        return -(Isp_m + Isp_a*(vars[1]/(1.0-vars[1]))/(self.O_F+1.0))/(1.0+(vars[1]/(1.0-vars[1]))/(self.O_F+1.0))
+        Isp_m = self.get_Isp_m(vars[1])
+        Isp_a = self.get_Isp_a(vars[1], vars[0])
+        return -(Isp_m + Isp_a*(root["x"][1]/(1.0-root["x"][1]))/(self.O_F+1.0))/(1.0+(root["x"][1]/(1.0-root["x"][1]))/(self.O_F+1.0))
     
     #Get Isp of aux nozzle
     def get_Isp_m(self,pinj): #temporaty, needs modification
@@ -386,8 +386,8 @@ class CB:
         return math.sqrt(2.0*self.prop.R_f*T2t*self.prop.f_gamma/(self.prop.f_gamma-1.0) * (1.0 - (self.pa/pt2)**((self.prop.f_gamma-1.0)/self.prop.f_gamma)))
 
     #System of equations to be solved
-    def equations(self,vars,p2t,l):
-        dptop, p1t, dptfp = vars
+    def equations(self,vars,p2t,p1t):
+        dptop, l, dptfp = vars
         return [
             self.ptanko - self.dptvalve + dptop - self.dptlines - p1t,
             self.ptankf - self.dptvalve + dptfp - self.dptcool - p1t,
@@ -470,11 +470,11 @@ class GG:
         self.dptop = root["x"][0]; self.pt1 = root["x"][1]; self.dptfp = root["x"][2]; self.ptinj = root["x"][3];
         if(not root["success"] or abs(sum(root["fun"])) > 0.01):
             self.br = self.br | 1<<2
-            return sum(root["fun"])*9999
+            return abs(sum(root["fun"]))*9999
         else:
             self.br = self.br & ~(1<<2)
         
-        self.mt = (1.0/(1.0+self.l)) * self.m
+        self.mt = (1.0/(1.0-self.l)) * self.m
         self.Wop = self.mt*self.O_F/(self.O_F+1.0) * self.dptop / (self.eff_po*self.prop.o_dens)
         self.Wfp = self.mt/(self.O_F+1.0) * self.dptfp / (self.eff_pf*self.prop.f_dens_l)
         self.T1t = self.ispObj.get_Tcomb(Pc=(self.pt1 + self.dptmix + self.dptcomb)/1.0e5,MR=self.O_F)
@@ -512,7 +512,7 @@ class GG:
     #get Isp of open cycle auxiliary nozzle
     def get_Isp_a(self,pt1,pt2,l):
         T2t = self.Tf_cool*(pt2/pt1)**((self.prop.f_gamma-1.0)/self.prop.f_gamma)
-        return NT.Turbine_nozzle(self.m,pt2,self.prop,self.pa,self.df,self.prop.h_fuel,self.prop.h_ox,self.prop.f_dens_g,self.prop.o_dens,self.O_F)
+        return NT.Turbine_nozzle(self.m*l/(1.0-l),pt2,self.prop,self.pa,self.df,self.prop.h_fuel,self.prop.h_ox,self.prop.f_dens_g,self.prop.o_dens,self.O_F)
 
     #System of equations to be solved
     def equations(self,vars,p2t):
@@ -642,7 +642,7 @@ class EL:
         self.dptop, self.dptfp, self.ptinj = root["x"][0], root["x"][1], root["x"][2]
         if(not root["success"] or abs(sum(root["fun"])) > 0.01):
             self.br = self.br | 1<<2
-            return sum(root["fun"])*9999
+            return 
         else:
             self.br = self.br & ~(1<<2)
         
