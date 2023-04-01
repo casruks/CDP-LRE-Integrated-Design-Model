@@ -198,7 +198,7 @@ def Life(material, sigma_T, Twg, Twc, H, l, w, p):
     if sigma_T > material.yieldstress_l:
         ep_pl1 =  (sigma_T - material.yieldstress_l)/material.Emod
     else:
-        ep_pl1 == 0
+        ep_pl1 = 0
         Cost_warning = Cost_warning|(1<<2)
     
     ep_pl2 = (material.Emod*(material.thr_exp*DT)**2)/(12*material.yieldstress_l*(1-material.mu)**2)
