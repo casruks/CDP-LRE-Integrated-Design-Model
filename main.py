@@ -431,6 +431,9 @@ def Main(d : aux.Data, com : GUI.Communicate):
     
     ligament = aux.Default.cooling_thickness*(0.5)
     Life, Life_error, Life_warning = Ms.Life(aux.Default.noz_mat_select, maximum_thermal_stress, max_temperature_inner, max_temperature_outer, ligament, 1.686e-3, 1.270e-3, p_new )
+    d[-1].Life=Life
+    error_cost=error_cost|Life_error
+    warning_cost=warning_cost|Life_warning
     #Reuseability Funtion:
     #inputs:
     ##Nozzle Material
