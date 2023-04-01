@@ -461,7 +461,7 @@ class GG:
     def results(self):
         #Here the main nozzle function should be called, for a given chamber pressure to get the mass flow required, then the total mass flow for that pressure is computed and it is minimized
         #Minimization
-        res = minimize(self.opt, [5.0e5], method = 'Nelder-Mead', bounds=[[self.pa*1.2,1.0e8]])
+        res = minimize(self.opt, [5.0e5], method = 'Nelder-Mead', bounds=[[self.pa*1.1,1.0e8]])
         self.pt2 = res["x"][0]
 
         #Computation of results
@@ -477,8 +477,8 @@ class GG:
         self.mt = (1.0/(1.0-self.l)) * self.m
         self.Wop = self.mt*self.O_F/(self.O_F+1.0) * self.dptop / (self.eff_po*self.prop.o_dens)
         self.Wfp = self.mt/(self.O_F+1.0) * self.dptfp / (self.eff_pf*self.prop.f_dens_l)
-        self.T1t = self.ispObj.get_Tcomb(Pc=(self.pt1 + self.dptmix + self.dptcomb)/1.0e5,MR=self.O_F)
-        self.Wt = self.l * self.mt * self.eff_t * self.prop.fcp * self.T1t * (1.0-(self.pt2/self.pt1)**((self.prop.f_gamma-1.0)/self.prop.f_gamma))
+        self.T1t = self.ispObj.get_Tcomb(Pc=(self.pt1 - self.dptmix - self.dptcomb)/1.0e5,MR=self.O_F)
+        self.Wt = self.l * self.mt * self.eff_t * (self.prop.fcp+self.prop.ocp)*0.5 * self.T1t * (1.0-(self.pt2/self.pt1)**((1.2-1.0)/1.2))
         
         #Check to see if results are coherent
         if(abs(self.Wop+self.Wfp-self.Wt*self.eff_m) > 0.01 ):
@@ -495,7 +495,7 @@ class GG:
     #Optimize for maximum chamber pressure
     def opt(self,vars):
         self.ispObj = CEA_Obj( oxName=prop.Ox_name, fuelName=prop.Fuel_name,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise',thermal_cond_units='W/cm-degC')
-        root = least_squares(self.equations,[1.0e7,1.0e7,1.0e7,1.0e7], args = vars, bounds = ((10.0,self.pa*1.1,10.0,self.pa*1.5),(10.0e10,10.0e10,10.0e10,10.0e10)))
+        root = least_squares(self.equations,[1.0e7,1.0e7,1.0e7,1.0e7], args = vars, bounds = ((1000.0,self.pa*1.5,1000.0,self.pa*1.5),(10.0e10,10.0e10,10.0e10,10.0e10)))
         if(not root["success"] or abs(sum(root["fun"])) > 0.01):
             self.br = self.br | 1<<2
             return np.Inf
@@ -521,8 +521,8 @@ class GG:
         return [
             self.ptanko - self.dptvalve + dptop - self.dptlines - pinj,
             self.ptankf - self.dptvalve + dptfp - self.dptcool - pinj,
-            pinj - self.dptmix - self.dptcomb - p1t,
-            self.O_F*dptop/(self.eff_po*self.prop.o_dens) + dptfp/(self.eff_pf*self.prop.f_dens_l) - self.l*(self.O_F+1.0)*self.eff_m*self.eff_t*self.prop.fcp*self.T1t*(1.0-(p2t/p1t)**((self.prop.f_gamma-1.0)/self.prop.f_gamma))
+            pinj + self.dptmix + self.dptcomb - p1t,
+            self.O_F*dptop/(self.eff_po*self.prop.o_dens) + dptfp/(self.eff_pf*self.prop.f_dens_l) - self.l*(self.O_F+1.0)*self.eff_m*self.eff_t*(self.prop.fcp+self.prop.ocp)*0.5*self.T1t*(1.0-(p2t/p1t)**((1.2-1.0)/1.2))
             ]
 
 
