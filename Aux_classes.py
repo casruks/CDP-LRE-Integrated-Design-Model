@@ -87,7 +87,7 @@ class Default:
         10000000000000000  # [s] default operation time (large to imply infinite time)
     )
     perimeter_percentage = 1  # percentage of the perimeter used for cooling chambers
-    cooling_thickness = 0.6
+    cooling_thickness = 0.6e-3
     #Igniters
 
     ignburntime = 4 #Put on advanced inputs, it is the ignition burn time.
