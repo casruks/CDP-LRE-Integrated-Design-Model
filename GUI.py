@@ -518,13 +518,13 @@ class MainWindow(QMainWindow):
         if (main.dat[i].W_Opump == 0.0 or main.dat[i].W_Fpump == 0):
             self.line_Opump_power.hide();
             self.label_Opump_power.hide();
-            self.lalbel_W_Opump.hide();
+            self.label_W_Opump.hide();
             self.line_Fpump_power.hide();
             self.label_Fpump_power.hide();
-            self.lalbel_W_Fpump.hide();
+            self.label_W_Fpump.hide();
             self.line_Turb_power.hide();
             self.label_Turb_power.hide();
-            self.lalbel_W_turb.hide();
+            self.label_W_turb.hide();
         else:
             self.line_Opump_power.show();
             self.label_Opump_power.show();
