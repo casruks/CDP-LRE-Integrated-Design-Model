@@ -246,7 +246,16 @@ class Propellant:
         self.R_f = 47.5# fuel gas constant
         self.f_lamb = 1.6e-6
         self.fmiu = 2.166e-6
-        self.f_nist_enthalpy_coef = []  # for shomate equation
+        self.f_nist_enthalpy_coef =  [
+            120.4010,
+            4.916880,
+            -0.663012,
+            0.042232,
+            -40.88650,
+            -11.48110,
+            307.3440,
+            95.35340,
+        ]  # for shomate equation
         self.heatingvalue = 43.100*10**6  # for the fuel only!
         
         self.enthalpy_298_f = 0.137899*10**6#J/kh
