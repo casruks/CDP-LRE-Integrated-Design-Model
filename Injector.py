@@ -109,14 +109,14 @@ def injector1(default, propellant, p_c, m, OF):
     A_ox = n_ox*((np.pi/4) * d_ox**2)  
     A_est = (A_f + A_ox) * 6/(np.pi*(3)**0.5)   #Estimated effective area of hexagonal circle packing eff = pi * sqrt(3)/6
     #print('A_f =', A_f, 'A_ox =', A_ox)
-    if D_f> 200e-6:
-        print('Warning, D_f=,', D_f*1e6,'[1E-6m]')
-        D_f = 200e-6
-        wr = wr|(1<<1)
-    if D_ox > 200e-6:
-        print('Warning, D_ox=,', D_ox*1e6, '[1E-6m]')
-        D_ox = 200e-6
-        wr = wr|(1<<1)
+    if D_f> 150e-6:
+        #print('Warning, D_f=,', D_f*1e6,'[1E-6m]')
+        D_f = 150e-6
+        #wr = wr|(1<<1)
+    if D_ox > 100e-6:
+        #print('Warning, D_ox=,', D_ox*1e6, '[1E-6m]')
+        D_ox = 100e-6
+        #wr = wr|(1<<1)
     else:
         wr = wr&(~(1<<1))
 
