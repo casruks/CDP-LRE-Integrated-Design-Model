@@ -311,7 +311,7 @@ def Main(d : aux.Data, com : GUI.Communicate):
         #Tf_cool=400
         
     
-        d[-1].ptinj, d[-1].W_Opump, d[-1].W_Fpump, d[-1].W_turb, d[-1].fuel_frac, d[-1].turbo_m,error_t = Turbo.TurboM(default, prop, d[-1].O_F, d[-1].Pa, Tf_cool, d[-1].dptcool_cooling, d[-1].m_nozz)
+        d[-1].ptinj, d[-1].W_Opump, d[-1].W_Fpump, d[-1].W_turb, d[-1].fuel_frac, d[-1].turbo_m, error_t = Turbo.TurboM(default, prop, d[-1].O_F, d[-1].Pa, Tf_cool, d[-1].dptcool_cooling, d[-1].m_nozz)
         
         if error_t!=0:
             return errors_nz1,errors_nz2,er_comb,error_t,er_inj1,0,0,0,0,warnings_nz1,warnings_nz2,wr_comb,0,wr_inj1,0,0,0,0,0;
@@ -413,7 +413,7 @@ def Main(d : aux.Data, com : GUI.Communicate):
     
     # Total propellant mass
 
-    d[-1].Mprop=d[-1].m_nozz*d[-1].time
+    d[-1].Mprop=d[-1].turbo_m*d[-1].time
     #Compute Cost:
     #Inputs for Ms.Cost
     ##Mass of the engine
