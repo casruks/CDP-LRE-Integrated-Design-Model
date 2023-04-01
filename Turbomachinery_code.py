@@ -470,7 +470,6 @@ class GG:
         self.dptop = root["x"][0]; self.pt1 = root["x"][1]; self.dptfp = root["x"][2]; self.ptinj = root["x"][3];
         if(not root["success"] or abs(sum(root["fun"])) > 0.01):
             self.br = self.br | 1<<2
-            return abs(sum(root["fun"]))*9999
         else:
             self.br = self.br & ~(1<<2)
         
