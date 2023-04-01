@@ -484,7 +484,7 @@ class MainWindow(QMainWindow):
         self.line_envDiam.setText(str(round(envDiam, no_afterdec)))
         self.line_cost.setText(str(round(main.dat[i].cost, no_afterdec)))
         self.line_reliability.setText(str(math.floor(main.dat[i].rel*10.0**no_afterdec_rel)/10.0**no_afterdec_rel)) 
-        self.line_reusability.setText(main.dat[i].Reusabilty)
+        self.line_reusability.setText(main.dat[i].Reusability)
 
         #Nozzle
         if(not main.dat[i].O_F): 
