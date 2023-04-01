@@ -57,6 +57,7 @@ class Default:
     Wmotor = 1.0e6 #[W] Power of the electric motor
     v_loss = 100 #[Pa] valve losses
     l_def = 0.1 #[-] Default percentage of total mass flow for GG
+    line_loss=1200000
 
     #Combustion chamber
     SF = 1.0 # Safety factor for thickness estimation, put on advanced inputs
