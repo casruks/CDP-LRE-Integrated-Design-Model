@@ -153,14 +153,6 @@ class Propellant:
             5.338,
             237.62,
             0,
-            31.33,
-            -20.235,
-            57.87,
-            -36.51,
-            -0.007374,
-            -8.9035,
-            246.79,
-            0,
         ]  # for shomate equation
         self.omiu = 1.0e-6
         self.ox_M = 15.999e-3  # g/mol
@@ -186,14 +178,6 @@ class Propellant:
             -20.5339,
             -38.5151,
             162.08,
-            0,
-            33.066,
-            -11.363,
-            11.4328,
-            -2.773,
-            -0.15856,
-            -9.981,
-            172.71,
             0,
         ]  # for shomate equation
         self.heatingvalue = 119.96 * 10**6  # for the fuel only!
@@ -262,7 +246,7 @@ class Propellant:
         self.f_lamb = 1.6e-6
         self.fmiu = 2.166e-6
         self.f_nist_enthalpy_coef = []  # for shomate equation
-        self.heatingvalue = -43100  # for the fuel only!
+        self.heatingvalue = 43.100*10**6  # for the fuel only!
         
         self.enthalpy_298_f = 0.137899*10**6#J/kh
         self.Frozen_state=1
@@ -287,16 +271,8 @@ class Propellant:
             -37.5151,
             163.08,
             0,
-            34.066,
-            -11.263,
-            12.4328,
-            -2.773,
-            -0.15856,
-            -10.081,
-            173.71,
-            0,
         ]  # for shomate equation
-        self.heatingvalue = -29672  # for the fuel only!
+        self.heatingvalue = 29.67*10**3  # for the fuel only!
         self.f_M = 46.07e-3
         self.enthalpy_298_f = 5.01766*10**6#J/kh
         self.Frozen_state=1
@@ -327,7 +303,7 @@ class Propellant:
             305.3440,
             95.35340,
         ]  # for shomate equation
-        self.heatingvalue = -32928  # for the fuel only!
+        self.heatingvalue = 32.928*10**6  # for the fuel only!
         self.enthalpy_298_f = 0.886280*10**6#J/kh
         self.Frozen_state=1
 
@@ -354,7 +330,7 @@ class Propellant:
             224.4143,
             -74.8731,
         ]  # for shomate equation
-        self.heatingvalue = -55511  # for the fuel only!
+        self.heatingvalue = 55.511*10**6  # for the fuel only!
         self.f_M = 16.04e-3  # g/mol
         self.enthalpy_298_f = 4.56*10**6#J/kh
         self.Frozen_state=0
