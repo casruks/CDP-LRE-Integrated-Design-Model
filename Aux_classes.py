@@ -400,7 +400,7 @@ class Data:
     cost = 0.0 #[EUR] Total engine cost
     rel = 0.0 #[%] Reliability of entire system
     Life = 0.0 #[Cycles] Low Cycle fatigue limit of the engine.
-    Reuseabilty = 'Reuseability Satisfied' #Checks whether reuses and Thrust time combination is possible.
+    Reuseabilty = 'Reusability Satisfied' #Checks whether reuses and Thrust time combination is possible.
 
     #Nozzle
     Pc = 0.0 
