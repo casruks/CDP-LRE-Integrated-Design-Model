@@ -442,6 +442,7 @@ def Main(d : aux.Data, com : GUI.Communicate):
     ##Ribs width
     ##Chamber Pressure
     Reuseability, Reuseability_error, Reuseability_warning = Ms.Reuseability(aux.Default.Reuses,aux.Data.time) 
+    d[-1].Reusability=Reuseability
     #Missing Inputs: H,l,w (geometry of the cooling chanels written as 0.445, in the function above^)
     #They are currently inputs for the cooling function and are not returned anywhere. This is necessary before implementing into the fuction. Currently default values are used 
     #Output:
