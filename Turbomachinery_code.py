@@ -455,7 +455,7 @@ class GG:
         self.dptvalve = DF.v_loss
         self.dptlines = DF.line_loss
         self.l = DF.l_def
-        self.ispObj = CEA_Obj( oxName=prop.Ox_name, fuelName=prop.Fuel_name,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise',thermal_cond_units='W/cm-degC')
+        self.ispObj = CEA_Obj( oxName=self.prop.Ox_name, fuelName=self.prop.Fuel_name,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise',thermal_cond_units='W/cm-degC')
 
     #Obtain results, calling optimization procedure and then computing variables of interest
     def results(self):
@@ -465,7 +465,7 @@ class GG:
         self.pt2 = res["x"][0]
 
         #Computation of results
-        self.ispObj = CEA_Obj( oxName=prop.Ox_name, fuelName=prop.Fuel_name,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise',thermal_cond_units='W/cm-degC')
+        self.ispObj = CEA_Obj( oxName=self.prop.Ox_name, fuelName=self.prop.Fuel_name,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise',thermal_cond_units='W/cm-degC')
         root = least_squares(self.equations,[1.0e7,1.0e7,1.0e7,1.0e7], args = [self.pt2], bounds = ((10.0,self.pa*1.1,10.0,self.pa*1.5),(10.0e10,10.0e10,10.0e10,10.0e10)))
         self.dptop = root["x"][0]; self.pt1 = root["x"][1]; self.dptfp = root["x"][2]; self.ptinj = root["x"][3];
         if(not root["success"] or abs(sum(root["fun"])) > 0.01):
@@ -493,7 +493,7 @@ class GG:
 
     #Optimize for maximum chamber pressure
     def opt(self,vars):
-        self.ispObj = CEA_Obj( oxName=prop.Ox_name, fuelName=prop.Fuel_name,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise',thermal_cond_units='W/cm-degC')
+        self.ispObj = CEA_Obj( oxName=self.prop.Ox_name, fuelName=self.prop.Fuel_name,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise',thermal_cond_units='W/cm-degC')
         root = least_squares(self.equations,[1.0e7,1.0e7,1.0e7,1.0e7], args = vars, bounds = ((1000.0,self.pa*1.5,1000.0,self.pa*1.5),(10.0e10,10.0e10,10.0e10,10.0e10)))
         if(not root["success"] or abs(sum(root["fun"])) > 0.01):
             self.br = self.br | 1<<2
