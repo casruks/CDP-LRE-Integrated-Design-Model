@@ -2,9 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import Aux_classes as aux
 
-Propellant = aux.Propellant(0)
-Default = aux.Default(0)
-
 def injector1(default, propellant, p_c, m, OF):
     
     '''
@@ -58,16 +55,18 @@ def injector1(default, propellant, p_c, m, OF):
     ## For throttled 0.2, for Unthrottled engines 0.3
     if InjType == 'like':
         eta_s = 0.1 #10-15% [Humble et al.]
+        dp = eta_s * p_c
     elif InjType == 'unlike':
         eta_s = 0.2 #20-25% [Humble et al.]
+        dp = eta_s * p_c
     elif InjType == 'pintle':
         eta_s = 0.1 # [Humble et al.], [DARE, Sparrow]
+        dp = eta_s * p_c
 
     #else: (technically)
     if default.dp_state == True:
-        eta_s = default.dp_user #user specified pressure drop
-
-    dp = eta_s * p_c
+        eta_user = default.dp_user #user specified pressure drop
+        dp = eta_user * p_c
     
     v_iox = C_d * (2*dp/rho_ox)**0.5
     v_if = C_d * (2*dp/rho_f)**0.5
@@ -119,7 +118,6 @@ def injector1(default, propellant, p_c, m, OF):
         #wr = wr|(1<<1)
     else:
         wr = wr&(~(1<<1))
-
     return v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, A_est, er, wr 
            
 def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
@@ -152,21 +150,33 @@ def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
     rho_f = propellant.f_dens_l
     
     p_c = p_inj / (1 + eta_s)
-    zeta = 1.0/ C_d**2.0
+    zeta = 1.0 #/ C_d**2.0
     dp_ox = zeta * 0.5 * rho_ox*v_iox**2.0
     dp_f = zeta * 0.5 * rho_f*v_if**2.0
+    
+    InjType = default.InjType
+    if InjType == 'like':
+        eta_s = 0.1 #10-15% [Humble et al.]
+    elif InjType == 'unlike':
+        eta_s = 0.2 #20-25% [Humble et al.]
+    elif InjType == 'pintle':
+        eta_s = 0.1 # [Humble et al.], [DARE, Sparrow]
 
-    if (dp_ox/p_c) < eta_s:
-        wr = wr|(1<<2)
-        print('dp_ox <', eta_s,' p_c!')
-    else:
-        wr = wr&(~(1<<2))
+    #else: (technically)
+    if default.dp_state == True:
+        eta_user = default.dp_user #user specified pressure drop    
+    
+        if eta_user < eta_s:
+            wr = wr|(1<<2)
+            print('dp_ox <', eta_s,' p_c!')
+        else:
+            wr = wr&(~(1<<2))
 
-    if (dp_f/p_c) < eta_s:
-        wr = wr|(1<<3)
-        print('dp_f <', eta_s,' p_c!')
-    else:
-        wr = wr&(~(1<<3))
+        if (dp_f/p_c) < eta_s:
+            wr = wr|(1<<3)
+            print('dp_f <', eta_s,' p_c!')
+        else:
+            wr = wr&(~(1<<3))
 
     return p_c, dp_ox, dp_f, er, wr
 
@@ -177,7 +187,7 @@ def validateInj():
     p_c = 300e5 
     OF = 359.43/102.42
     m = ((OF+1)/(OF))*359.43
-    p_inj = 421.3e5
+    p_inj = 300e5
     #Default.dp_state = True
     #Default.dp_user = 0.59
     #Default.dp_user = (421.3e5 - 207.26e5)/207.26e5
