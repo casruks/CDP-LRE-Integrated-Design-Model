@@ -12,17 +12,11 @@ import Aux_classes as aux
 import math
 import GUI
 
-Thrust_ = 15000 #= input("Introduce thrust")
-Thrust_time_ = 150 #= input("Introduce thrust time")
-Pamb_ = 1000 #= input("Introudce ambient pressure (Pa)")
-prop = aux.Propellant(0)
-default = aux.Default(0)
-dat = [aux.Data(Thrust_, Thrust_time_, Pamb_)]
 
 #Main Function
-def Main(d : aux.Data, com : GUI.Communicate):
+def Main(d : list[aux.Data], default : aux.Default, prop : aux.Propellant, com : GUI.Communicate):
     p_old = 0.0
-    p_new = 19000000/9999000*Thrust_+500000
+    p_new = 19000000/9999000*d[-1].Thrust+500000
     bool = 0 #this variable is used to show the combustor function we are in the first loop
     regCool=Cooling.RegenerativeCool(); #inicialise cooling
 
@@ -319,8 +313,8 @@ def Main(d : aux.Data, com : GUI.Communicate):
         #Compute Injector (2)
         p_new, dp_ox, dp_f, er_inj2, wr_inj2 = Inj.injector2(default, prop, d[-1].v_iox, d[-1].v_if, d[-1].ptinj, d[-1].eta_s)
 
-        if p_new/Pamb_<4:
-            p_new=p_new+4*Pamb_;
+        if p_new/d[-1].Pa<4:
+            p_new=p_new+4*d[-1].Pa;
         if er_inj2!=0:
             return errors_nz1,errors_nz2,er_comb,error_t,er_inj2,0,0,0,0,warnings_nz1,warnings_nz2,wr_comb,0,wr_inj2,0,0,0,0,0;
         print("P_new: " + str(p_new))
@@ -456,7 +450,7 @@ def Main(d : aux.Data, com : GUI.Communicate):
     return errors_nz1,errors_nz2,er_comb,error_t,er_inj,er_ign,0,error_mass,error_cost,warnings_nz1,warnings_nz2,wr_comb,0,wr_inj,wr_ign,0,warning_mass,warning_cost, wr_rel
 
 if __name__ == '__main__':
-    Main(dat)
+    Main(aux.Data(15000,10,1000), aux.Default(0), aux.Propellant(0))
 
 
 

@@ -23,16 +23,26 @@ class MplCanvas(FigureCanvasQTAgg):
 class Communicate(QtCore.QObject):
     finished = QtCore.pyqtSignal()
     progress = QtCore.pyqtSignal(int)
+    data = [aux.Data(0,0,0)]
+
+    def __init__(self, dat : list[aux.Data], defa : aux.Default, prop : aux.Propellant):
+        super(Communicate, self).__init__()
+        self.data = dat
+        self.default = defa
+        self.prope = prop
 
     def runMain(self):
-        self.r = main.Main(main.dat,self)
+        self.r = main.Main(self.data, self.default, self.prope, self)
         self.finished.emit()
         return self.r
     
 
 class MainWindow(QMainWindow):
-    com = Communicate()
+    dat = [aux.Data(0, 0, 0)]
+    default = aux.Default(0)
+    prop = aux.Propellant(0)
     resized = QtCore.pyqtSignal(int)
+
     def __init__(self):
         super(MainWindow, self).__init__()
         loadUi("GUI.ui",self)
@@ -155,20 +165,19 @@ class MainWindow(QMainWindow):
     #Run
     def Run(self):
         #get propellant, cycle, nozzle, materials, etc...
-        main.prop = aux.Propellant(self.combo_prop.currentIndex())
-        main.default.cycle_type = self.combo_cycle.currentIndex()
-        main.dat[-1].turbo_cycle = self.combo_cycle.currentIndex()
+        self.prop = aux.Propellant(self.combo_prop.currentIndex())
+        self.default.cycle_type = self.combo_cycle.currentIndex()
+        self.dat[-1].turbo_cycle = self.combo_cycle.currentIndex()
 
         #run main
+        self.com = Communicate(self.dat,self.default,self.prop)
         self.thread = QtCore.QThread()
-        self.com = Communicate()
-        self.worker = self.com
-        self.worker.moveToThread(self.thread)
-        self.thread.started.connect(self.worker.runMain)
-        self.worker.finished.connect(self.thread.quit)
-        self.worker.finished.connect(self.worker.deleteLater)
+        self.com.moveToThread(self.thread)
+        self.thread.started.connect(self.com.runMain)
+        self.com.finished.connect(self.thread.quit)
+        self.com.finished.connect(self.com.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
-        self.worker.progress.connect(self.updateProgress); self.updateProgress(0);
+        self.com.progress.connect(self.updateProgress); self.updateProgress(0);
         self.thread.start()
         self.but_run.setEnabled(False)
         self.tab_inputs.setEnabled(False)
@@ -434,13 +443,13 @@ class MainWindow(QMainWindow):
             msg.exec_()
 
         #Out
-        runNum = len(main.dat)
+        runNum = len(self.dat)
         self.combo_run.addItem("Run " + str(runNum))
         self.combo_run.setCurrentIndex(runNum-1)
         self.Output(runNum-1)
 
         #New data element
-        main.dat.append(aux.Data(0,0,0))
+        self.dat.append(aux.Data(0,0,0))
         self.checkThrust()
         self.checktime()
         self.checkPa()
@@ -456,16 +465,16 @@ class MainWindow(QMainWindow):
     def Output(self, i : int):
         #Plot
         cycles = ["EX", "CB", "GG", "SC", "EL", "PF"]
-        pixmap = QtGui.QPixmap("images/" + cycles[main.dat[i].turbo_cycle] + ".png")
+        pixmap = QtGui.QPixmap("images/" + cycles[self.dat[i].turbo_cycle] + ".png")
         pixmap.scaled(self.Graphics.width(), self.Graphics.height(), QtCore.Qt.KeepAspectRatio)
         self.Graphics.setPixmap(pixmap.scaled(self.Graphics.width(), self.Graphics.height(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation))
         #self.Graphics.setScaledContents(True)
         self.plots.axes.cla()
-        self.plots.axes.plot([0,0], [main.dat[i].Dc/2, -main.dat[i].Dc/2], color='red')
-        self.plots.axes.plot([0,main.dat[i].Chamber_L], [main.dat[i].Dc/2,main.dat[i].Dc/2], color='red')
-        self.plots.axes.plot([0,main.dat[i].Chamber_L], [-main.dat[i].Dc/2,-main.dat[i].Dc/2], color='red')
-        self.plots.axes.plot(main.dat[i].x_nozz+main.dat[i].Chamber_L, main.dat[i].y_nozz, color='red')
-        self.plots.axes.plot(main.dat[i].x_nozz+main.dat[i].Chamber_L, -main.dat[i].y_nozz, color='red')
+        self.plots.axes.plot([0,0], [self.dat[i].Dc/2, -self.dat[i].Dc/2], color='red')
+        self.plots.axes.plot([0,self.dat[i].Chamber_L], [self.dat[i].Dc/2,self.dat[i].Dc/2], color='red')
+        self.plots.axes.plot([0,self.dat[i].Chamber_L], [-self.dat[i].Dc/2,-self.dat[i].Dc/2], color='red')
+        self.plots.axes.plot(self.dat[i].x_nozz+self.dat[i].Chamber_L, self.dat[i].y_nozz, color='red')
+        self.plots.axes.plot(self.dat[i].x_nozz+self.dat[i].Chamber_L, -self.dat[i].y_nozz, color='red')
         self.plots.axes.axis('equal')
         self.plots.axes.set_xlabel("[m]")
         self.plots.axes.set_ylabel("[m]")
@@ -474,21 +483,21 @@ class MainWindow(QMainWindow):
         #Global
         no_afterdec = 2
         no_afterdec_rel = 4
-        self.line_Isp.setText(str(round(main.dat[i].Isp, no_afterdec)))
-        self.line_cstar.setText(str(round(main.dat[i].cstar, no_afterdec)))
-        self.line_m.setText(str(round(main.dat[i].turbo_m, no_afterdec)))
-        self.line_prop_mass.setText(str(round(main.dat[i].Mprop, no_afterdec)))
-        self.line_mass.setText(str(round(main.dat[i].Mtot, no_afterdec)))
-        self.line_length.setText(str(round(main.dat[i].L_total + main.dat[i].Chamber_L, no_afterdec)))
-        envDiam = max(main.dat[i].Dc, main.dat[i].De)
+        self.line_Isp.setText(str(round(self.dat[i].Isp, no_afterdec)))
+        self.line_cstar.setText(str(round(self.dat[i].cstar, no_afterdec)))
+        self.line_m.setText(str(round(self.dat[i].turbo_m, no_afterdec)))
+        self.line_prop_mass.setText(str(round(self.dat[i].Mprop, no_afterdec)))
+        self.line_mass.setText(str(round(self.dat[i].Mtot, no_afterdec)))
+        self.line_length.setText(str(round(self.dat[i].L_total + self.dat[i].Chamber_L, no_afterdec)))
+        envDiam = max(self.dat[i].Dc, self.dat[i].De)
         self.line_envDiam.setText(str(round(envDiam, no_afterdec)))
-        self.line_cost.setText(str(round(main.dat[i].cost, no_afterdec)))
-        self.line_reliability.setText(str(math.floor(main.dat[i].rel*10.0**no_afterdec_rel)/10.0**no_afterdec_rel)) 
-        self.line_reusability.setText(main.dat[i].Reusability)
+        self.line_cost.setText(str(round(self.dat[i].cost, no_afterdec)))
+        self.line_reliability.setText(str(math.floor(self.dat[i].rel*10.0**no_afterdec_rel)/10.0**no_afterdec_rel)) 
+        self.line_reusability.setText(self.dat[i].Reusability)
 
         #Nozzle
-        if(not main.dat[i].O_F): 
-            self.line_O_F_2.setText(str(round(main.dat[i].O_F, no_afterdec)))
+        if(not self.dat[i].O_F): 
+            self.line_O_F_2.setText(str(round(self.dat[i].O_F, no_afterdec)))
             self.line_O_F_2.show()
             self.label_O_F_2.show()
             self.label_O_F_no.show()
@@ -496,26 +505,26 @@ class MainWindow(QMainWindow):
             self.line_O_F_2.hide()
             self.label_O_F_2.hide()
             self.label_O_F_no.hide()
-        self.line_Dt.setText(str(round(main.dat[i].Dt, no_afterdec)))
-        self.line_De.setText(str(round(main.dat[i].De, no_afterdec)))
-        self.line_eps.setText(str(round(main.dat[i].Eps, no_afterdec)))
-        self.line_len.setText(str(round(main.dat[i].L_total, no_afterdec)))
-        self.line_len_conv.setText(str(round(main.dat[i].L_con, no_afterdec)))
-        self.line_len_div.setText(str(round(main.dat[i].L_div, no_afterdec)))
-        self.line_m_nozz.setText(str(round(main.dat[i].m_nozz, no_afterdec)))
-        self.line_nozz_mass.setText(str(round(main.dat[i].Mnoz, no_afterdec)))
-        self.line_fatigue.setText(str(round(main.dat[i].Life, no_afterdec)))
+        self.line_Dt.setText(str(round(self.dat[i].Dt, no_afterdec)))
+        self.line_De.setText(str(round(self.dat[i].De, no_afterdec)))
+        self.line_eps.setText(str(round(self.dat[i].Eps, no_afterdec)))
+        self.line_len.setText(str(round(self.dat[i].L_total, no_afterdec)))
+        self.line_len_conv.setText(str(round(self.dat[i].L_con, no_afterdec)))
+        self.line_len_div.setText(str(round(self.dat[i].L_div, no_afterdec)))
+        self.line_m_nozz.setText(str(round(self.dat[i].m_nozz, no_afterdec)))
+        self.line_nozz_mass.setText(str(round(self.dat[i].Mnoz, no_afterdec)))
+        self.line_fatigue.setText(str(round(self.dat[i].Life, no_afterdec)))
 
         #Combustion chamber
-        self.line_Pc.setText(str(round(main.dat[i].Pc/1.0e5, no_afterdec)))
-        self.line_Tc.setText(str(round(main.dat[i].Tc, no_afterdec)))
-        self.line_Dc.setText(str(round(main.dat[i].Dc, no_afterdec)))
-        self.line_Lc.setText(str(round(main.dat[i].Chamber_L, no_afterdec)))
-        self.line_tc.setText(str(round(main.dat[i].ThicknessChamber, no_afterdec)))
-        self.line_Mc.setText(str(round(main.dat[i].chambermass, no_afterdec)))
+        self.line_Pc.setText(str(round(self.dat[i].Pc/1.0e5, no_afterdec)))
+        self.line_Tc.setText(str(round(self.dat[i].Tc, no_afterdec)))
+        self.line_Dc.setText(str(round(self.dat[i].Dc, no_afterdec)))
+        self.line_Lc.setText(str(round(self.dat[i].Chamber_L, no_afterdec)))
+        self.line_tc.setText(str(round(self.dat[i].ThicknessChamber, no_afterdec)))
+        self.line_Mc.setText(str(round(self.dat[i].chambermass, no_afterdec)))
 
         #turbo
-        if (main.dat[i].W_Opump == 0.0 or main.dat[i].W_Fpump == 0):
+        if (self.dat[i].W_Opump == 0.0 or self.dat[i].W_Fpump == 0):
             self.line_Opump_power.hide();
             self.label_Opump_power.hide();
             self.label_W_Opump.hide();
@@ -535,30 +544,30 @@ class MainWindow(QMainWindow):
             self.line_Turb_power.show();
             self.label_Turb_power.show();
             self.label_W_turb.show();
-        self.line_Opump_power.setText(str(round(main.dat[i].W_Opump, no_afterdec)))
-        self.line_Fpump_power.setText(str(round(main.dat[i].W_Fpump, no_afterdec)))
-        self.line_Turb_power.setText(str(round(main.dat[i].W_turb, no_afterdec)))
-        self.line_P_inj_in.setText(str(round(main.dat[i].ptinj, no_afterdec)))
-        self.line_turbo_mass.setText(str(round(main.dat[i].turbo_m, no_afterdec)))
+        self.line_Opump_power.setText(str(round(self.dat[i].W_Opump, no_afterdec)))
+        self.line_Fpump_power.setText(str(round(self.dat[i].W_Fpump, no_afterdec)))
+        self.line_Turb_power.setText(str(round(self.dat[i].W_turb, no_afterdec)))
+        self.line_P_inj_in.setText(str(round(self.dat[i].ptinj, no_afterdec)))
+        self.line_turbo_mass.setText(str(round(self.dat[i].turbo_m, no_afterdec)))
 
         #Cooling
-        self.combo_cool_cham.setCurrentIndex(main.dat[i].type_variable_chamber)
-        self.combo_cool_nozz.setCurrentIndex(main.dat[i].type_variable_nozzle)
-        self.line_cool_temp.setText(str(round(main.dat[i].T_after_cool, no_afterdec)))
-        self.line_cool_loss.setText(str(round(main.dat[i].dptcool_cooling, no_afterdec)))
-        self.line_cool_Iwall.setText(str(round(main.dat[i].max_temperature_inner, no_afterdec)))
-        self.line_cool_Owall.setText(str(round(main.dat[i].max_temperature_outer, no_afterdec)))
-        self.line_cool_stress.setText(str(round(main.dat[i].maximum_thermal_stress, no_afterdec)))
+        self.combo_cool_cham.setCurrentIndex(self.dat[i].type_variable_chamber)
+        self.combo_cool_nozz.setCurrentIndex(self.dat[i].type_variable_nozzle)
+        self.line_cool_temp.setText(str(round(self.dat[i].T_after_cool, no_afterdec)))
+        self.line_cool_loss.setText(str(round(self.dat[i].dptcool_cooling, no_afterdec)))
+        self.line_cool_Iwall.setText(str(round(self.dat[i].max_temperature_inner, no_afterdec)))
+        self.line_cool_Owall.setText(str(round(self.dat[i].max_temperature_outer, no_afterdec)))
+        self.line_cool_stress.setText(str(round(self.dat[i].maximum_thermal_stress, no_afterdec)))
 
         #Injectors
-        self.line_n_oxinj.setText(str(round(main.dat[i].n_ox, no_afterdec)))
-        self.line_n_finj.setText(str(round(main.dat[i].n_f, no_afterdec)))
-        self.line_vel_ox.setText(str(round(main.dat[i].v_iox, no_afterdec)))
-        self.line_vel_fuel.setText(str(round(main.dat[i].v_if, no_afterdec)))
-        self.line_inj_pres.setText(str(round(main.dat[i].dp, no_afterdec)))
+        self.line_n_oxinj.setText(str(round(self.dat[i].n_ox, no_afterdec)))
+        self.line_n_finj.setText(str(round(self.dat[i].n_f, no_afterdec)))
+        self.line_vel_ox.setText(str(round(self.dat[i].v_iox, no_afterdec)))
+        self.line_vel_fuel.setText(str(round(self.dat[i].v_if, no_afterdec)))
+        self.line_inj_pres.setText(str(round(self.dat[i].dp, no_afterdec)))
 
         #Ignitors
-        self.line_Mign.setText(str(round(main.dat[i].Igniter_compound, no_afterdec)))
+        self.line_Mign.setText(str(round(self.dat[i].Igniter_compound, no_afterdec)))
 
         #Materials
 
@@ -566,7 +575,7 @@ class MainWindow(QMainWindow):
     #Export CSV
     def exportCSV(self):
         filename = "Export_" + datetime.now().strftime("%H_%M_%S") + ".csv"
-        for data in main.dat:
+        for data in self.dat:
             members = [attr for attr in dir(data) if not callable(getattr(data, attr)) and not attr.startswith("__")]
             with open(filename, 'w', newline='') as file:
                 writer = csv.writer(file)
@@ -577,17 +586,17 @@ class MainWindow(QMainWindow):
     #Blocks
     def OptOF(self, ischeck : bool):
         if ischeck:
-            main.dat[-1].O_F = 0
-            main.default.MR = 0
+            self.dat[-1].O_F = 0
+            self.default.MR = 0
             self.line_O_F.setEnabled(False)
         else:
             self.checkOF()
             self.line_O_F.setEnabled(True)
 
     def define_inj_dp(self, ischeck : bool):
-        main.default.dp_state = ischeck
+        self.default.dp_state = ischeck
         if ischeck:
-            main.default.dp_user = float(self.line_inj_dp.text())
+            self.default.dp_user = float(self.line_inj_dp.text())
             self.line_inj_dp.setEnabled(True)
         else:
             self.line_inj_dp.setDisabled(True)
@@ -627,18 +636,18 @@ class MainWindow(QMainWindow):
 
     def nozzle_changed(self,i : int):
         if i==0:
-            main.default.Nozzle_type = 0
+            self.default.Nozzle_type = 0
             self.line_par_0ang.setEnabled(False)
             self.line_par_fang.setEnabled(False)
             self.line_div_ang.setEnabled(True)
         else:
-            main.default.Nozzle_type = 1
+            self.default.Nozzle_type = 1
             self.line_par_0ang.setEnabled(True)
             self.line_par_fang.setEnabled(True)
             self.line_div_ang.setEnabled(False)
 
     def Injector_changed(self, i : int):
-        main.default.InjType = main.default.InjTypes[i]
+        self.default.InjType = self.default.InjTypes[i]
 
     def igniter_changed(self, i : int):
         if(i==0):
@@ -650,18 +659,18 @@ class MainWindow(QMainWindow):
             self.combo_hypergolic.show()
             self.combo_torch.hide()
         else:
-            main.default.type = "10"
+            self.default.type = "10"
             self.combo_hypergolic.hide()
             self.combo_torch.hide()
 
     def torch_changed(self, i : int):
-        main.default.type = "0" + str(i)
+        self.default.type = "0" + str(i)
 
     def hypergolic_changed(self, i : int):
-        main.default.type = "2" + str(i)
+        self.default.type = "2" + str(i)
 
     def nozz_mat_changed(self, i: int):
-        main.default.noz_mat_select = main.default.material_list[i]
+        self.default.noz_mat_select = self.default.material_list[i]
         if(i):
             self.label_dens_nozz.hide()
             self.label_yield_nozz.hide()
@@ -730,7 +739,7 @@ class MainWindow(QMainWindow):
             self.label_no_nozz.show()
 
     def cham_mat_changed(self, i : int):
-        main.default.noz_mat_select = main.default.material_list[i]
+        self.default.noz_mat_select = self.default.material_list[i]
         if(i):
             self.label_dens_cham.hide()
             self.label_yield_cham.hide()
@@ -765,7 +774,7 @@ class MainWindow(QMainWindow):
             self.label_K_cham_2.hide()
             self.label_no_cham.hide()
         else:
-            main.default.noz_mat_select = main.default.coating_list[0]
+            self.default.noz_mat_select = self.default.coating_list[0]
             self.label_dens_cham.show()
             self.label_yield_cham.show()
             self.label_E_cham.show()
@@ -800,13 +809,13 @@ class MainWindow(QMainWindow):
             self.label_no_cham.show()
 
     def coating_changed(self, i : int):
-        main.default.default_coating = main.default.coating_list[i+1]
+        self.default.default_coating = self.default.coating_list[i+1]
 
     #Checks
     def checkThrust(self):
         thrust = float(self.line_thrust.text())
         if thrust > 0.0 and thrust < 1.0e10:
-            main.dat[-1].Thrust = thrust;
+            self.dat[-1].Thrust = thrust;
         else:
             self.line_thrust.setText("15000.0")
             msg = QMessageBox()
@@ -817,7 +826,7 @@ class MainWindow(QMainWindow):
     def checktime(self):
         var = float(self.line_time.text())
         if var > 0.0 and var < 1000:
-            main.dat[-1].time = var;
+            self.dat[-1].time = var;
         else:
             self.line_time.setText("10.0")
             msg = QMessageBox()
@@ -828,7 +837,7 @@ class MainWindow(QMainWindow):
     def checkPa(self):
         var = float(self.line_pa.text())
         if var > 0.0 and var < 1.0e6:
-            main.dat[-1].Pa = var;
+            self.dat[-1].Pa = var;
         else:
             self.line_pa.setText("101325.0")
             msg = QMessageBox()
@@ -839,8 +848,8 @@ class MainWindow(QMainWindow):
     def checkOF(self):
         var = float(self.line_O_F.text())
         if var > 0.0 and var < 100:
-            main.dat[-1].O_F = var;
-            main.default.MR = var;
+            self.dat[-1].O_F = var;
+            self.default.MR = var;
         else:
             self.line_O_F.setText("5.0")
             msg = QMessageBox()
@@ -851,7 +860,7 @@ class MainWindow(QMainWindow):
     def checkOtankPres(self):
         var = float(self.line_Otank_pres.text())
         if var > 0.0 and var < 1.0e10:
-            main.default.p_to = var;
+            self.default.p_to = var;
         else:
             self.line_Otank_pres.setText("1.0e5")
             msg = QMessageBox()
@@ -862,7 +871,7 @@ class MainWindow(QMainWindow):
     def checkFtankPres(self):
         var = float(self.line_Ftank_pres.text())
         if var > 0.0 and var < 1.0e10:
-            main.default.ptf = var;
+            self.default.ptf = var;
         else:
             self.line_Ftank_pres.setText("1.0e5")
             msg = QMessageBox()
@@ -873,7 +882,7 @@ class MainWindow(QMainWindow):
     def checkOpumpEff(self):
         var = float(self.line_Opump_eff.text())
         if var > 0.0 and var <= 1.0:
-            main.default.Eff_po = var;
+            self.default.Eff_po = var;
         else:
             self.line_Opump_eff.setText("0.3")
             msg = QMessageBox()
@@ -884,7 +893,7 @@ class MainWindow(QMainWindow):
     def checkFpumpEff(self):
         var = float(self.line_Fpump_eff.text())
         if var > 0.0 and var <= 1.0:
-            main.default.Eff_pf = var;
+            self.default.Eff_pf = var;
         else:
             self.line_Fpump_eff.setText("0.3")
             msg = QMessageBox()
@@ -895,7 +904,7 @@ class MainWindow(QMainWindow):
     def checkTurbEff(self):
         var = float(self.line_turb_eff.text())
         if var > 0.0 and var <= 1.0:
-            main.default.Eff_t = var;
+            self.default.Eff_t = var;
         else:
             self.line_turb_eff.setText("0.5")
             msg = QMessageBox()
@@ -906,7 +915,7 @@ class MainWindow(QMainWindow):
     def checkMechEff(self):
         var = float(self.line_mech_eff.text())
         if var > 0.0 and var <= 1.0:
-            main.default.Eff_m = var;
+            self.default.Eff_m = var;
         else:
             self.line_mech_eff.setText("0.95")
             msg = QMessageBox()
@@ -917,7 +926,7 @@ class MainWindow(QMainWindow):
     def checkElePow(self):
         var = float(self.line_Ele_power.text())
         if var > 0.0 and var <= 1.0e10:
-            main.default.Wmotor = var;
+            self.default.Wmotor = var;
         else:
             self.line_Ele_power.setText("1.0e6")
             msg = QMessageBox()
@@ -928,7 +937,7 @@ class MainWindow(QMainWindow):
     def checkValveLoss(self):
         var = float(self.line_valve_losses.text())
         if var >= 0.0 and var <= 1.0e6:
-            main.default.v_loss = var;
+            self.default.v_loss = var;
         else:
             self.line_valve_losses.setText("1000")
             msg = QMessageBox()
@@ -939,7 +948,7 @@ class MainWindow(QMainWindow):
     def checkDeMax(self):
         var = float(self.line_De_max.text())
         if var > 0.0 and var <= 100:
-            main.default.De_max = var;
+            self.default.De_max = var;
         else:
             self.line_De_max.setText("2.5")
             msg = QMessageBox()
@@ -950,7 +959,7 @@ class MainWindow(QMainWindow):
     def checkEpsMax(self):
         var = float(self.line_eps_max.text())
         if var > 1.1 and var <= 1000:
-            main.default.Eps_max = var;
+            self.default.Eps_max = var;
         else:
             self.line_eps_max.setText("90")
             msg = QMessageBox()
@@ -961,7 +970,7 @@ class MainWindow(QMainWindow):
     def checkConvAng(self):
         var = float(self.line_conv_ang.text())
         if var > 0.0 and var < 90:
-            main.default.Theta_con = var;
+            self.default.Theta_con = var;
         else:
             self.line_conv_ang.setText("60")
             msg = QMessageBox()
@@ -972,7 +981,7 @@ class MainWindow(QMainWindow):
     def checkDivAng(self):
         var = float(self.line_div_ang.text())
         if var > 0.0 and var < 90:
-            main.default.Theta_conical = var;
+            self.default.Theta_conical = var;
         else:
             self.line_div_ang.setText("15")
             msg = QMessageBox()
@@ -983,7 +992,7 @@ class MainWindow(QMainWindow):
     def checkParAng0(self):
         var = float(self.line_par_0ang.text())
         if var > float(self.line_par_fang.text()) and var < 90:
-            main.default.Theta_bell = var;
+            self.default.Theta_bell = var;
         else:
             self.line_par_0ang.setText("55")
             msg = QMessageBox()
@@ -994,7 +1003,7 @@ class MainWindow(QMainWindow):
     def checkParAngf(self):
         var = float(self.line_par_fang.text())
         if var > 0.0 and var < float(self.line_par_0ang.text()):
-            main.default.TH_exit_bell = var;
+            self.default.TH_exit_bell = var;
         else:
             self.line_par_fang.setText("55")
             msg = QMessageBox()
@@ -1005,7 +1014,7 @@ class MainWindow(QMainWindow):
     def checkCurvConv(self):
         var = float(self.line_curv_conv.text())
         if var > 0.0 and var < 4.0:
-            main.default.R_u_ratio = var;
+            self.default.R_u_ratio = var;
         else:
             self.line_curv_conv.setText("1.5")
             msg = QMessageBox()
@@ -1016,7 +1025,7 @@ class MainWindow(QMainWindow):
     def checkCurvDiv(self):
         var = float(self.line_curv_div.text())
         if var > 0.0 and var < 2.0:
-            main.default.R_u_bell = var;
+            self.default.R_u_bell = var;
         else:
             self.line_curv_div.setText("1.5")
             msg = QMessageBox()
@@ -1027,7 +1036,7 @@ class MainWindow(QMainWindow):
     def checkSF(self):
         var = float(self.line_SF.text())
         if var > 1.0 and var < 20.0:
-            main.default.SF = var;
+            self.default.SF = var;
         else:
             self.line_SF.setText("1.2")
             msg = QMessageBox()
@@ -1038,7 +1047,7 @@ class MainWindow(QMainWindow):
     def checkCd(self):
         var = float(self.line_Cd.text())
         if var > 0.0 and var < 2.0:
-            main.default.Cd = var;
+            self.default.Cd = var;
         else:
             self.line_Cd.setText("0.7")
             msg = QMessageBox()
@@ -1049,7 +1058,7 @@ class MainWindow(QMainWindow):
     def checktIgn(self):
         var = float(self.line_tign.text())
         if var > 0.0 and var < 6.0:
-            main.default.ignburntime = var;
+            self.default.ignburntime = var;
         else:
             self.line_tign.setText("4")
             msg = QMessageBox()
@@ -1060,7 +1069,7 @@ class MainWindow(QMainWindow):
     def checkOFIgn(self):
         var = float(self.line_O_F_ign.text())
         if var > 0.0 and var < 6.0:
-            main.default.ign_o_f = var;
+            self.default.ign_o_f = var;
         else:
             self.line_O_F_ign.setText("0.7")
             msg = QMessageBox()
@@ -1071,7 +1080,7 @@ class MainWindow(QMainWindow):
     def checkCorrIgn(self):
         var = float(self.line_corr_ign.text())
         if var > 1.0 and var < 30.0:
-            main.default.fudgefactor = var;
+            self.default.fudgefactor = var;
         else:
             self.line_corr_ign.setText("20")
             msg = QMessageBox()
@@ -1082,7 +1091,7 @@ class MainWindow(QMainWindow):
     def checkDropRat(self):
         var = float(self.line_drop_ratio.text())
         if var > 0.0 and var < 0.3:
-            main.default.factor = var;
+            self.default.factor = var;
         else:
             self.line_drop_ratio.setText("0.2")
             msg = QMessageBox()
@@ -1093,7 +1102,7 @@ class MainWindow(QMainWindow):
     def checkKloads(self):
         var = float(self.line_kloads.text())
         if var > 0.0:
-            main.default.kloads = var;
+            self.default.kloads = var;
         else:
             self.line_kloads.setText("1")
             msg = QMessageBox()
@@ -1104,7 +1113,7 @@ class MainWindow(QMainWindow):
     def checkOTankTemp(self):
         var = float(self.line_OxTank_temp.text())
         if var > 0.0 and var < 2000:
-            main.default.T_ox_tanks = var;
+            self.default.T_ox_tanks = var;
         else:
             self.line_OxTank_temp.setText("60")
             msg = QMessageBox()
@@ -1115,7 +1124,7 @@ class MainWindow(QMainWindow):
     def checkFTankTemp(self):
         var = float(self.line_FuelTank_temp.text())
         if var > 0.0 and var < 2000:
-            main.default.T_fuel_tanks = var;
+            self.default.T_fuel_tanks = var;
         else:
             self.line_FuelTank_temp.setText("20")
             msg = QMessageBox()
@@ -1126,7 +1135,7 @@ class MainWindow(QMainWindow):
     def checkDensNozz(self):
         var = float(self.line_dens_nozz.text())
         if var > 0.0:
-            main.default.material_list[0].density = var;
+            self.default.material_list[0].density = var;
         else:
             self.line_dens_nozz.setText("21000")
             msg = QMessageBox()
@@ -1137,7 +1146,7 @@ class MainWindow(QMainWindow):
     def checkYieldNozz(self):
         var = float(self.line_yield_nozz.text())
         if var > 0.0:
-            main.default.material_list[0].yieldstress_l = var;
+            self.default.material_list[0].yieldstress_l = var;
         else:
             self.line_yield_nozz.setText("2300e6")
             msg = QMessageBox()
@@ -1148,7 +1157,7 @@ class MainWindow(QMainWindow):
     def checkENozz(self):
         var = float(self.line_E_nozz.text())
         if var > 0.0:
-            main.default.material_list[0].Emod = var;
+            self.default.material_list[0].Emod = var;
         else:
             self.line_E_nozz.setText("471e9")
             msg = QMessageBox()
@@ -1159,7 +1168,7 @@ class MainWindow(QMainWindow):
     def checkOpTNozz(self):
         var = float(self.line_OpT_nozz.text())
         if var > 0.0:
-            main.default.material_list[0].OpTemp_u = var;
+            self.default.material_list[0].OpTemp_u = var;
         else:
             self.line_OpT_nozz.setText("2200")
             msg = QMessageBox()
@@ -1170,7 +1179,7 @@ class MainWindow(QMainWindow):
     def checkKNozz(self):
         var = float(self.line_k_nozz.text())
         if var > 0.0:
-            main.default.material_list[0].k = var;
+            self.default.material_list[0].k = var;
         else:
             self.line_k_nozz.setText("48")
             msg = QMessageBox()
@@ -1181,7 +1190,7 @@ class MainWindow(QMainWindow):
     def checkCostNozz(self):
         var = float(self.line_cost_nozz.text())
         if var > 0.0:
-            main.default.material_list[0].cost = var;
+            self.default.material_list[0].cost = var;
         else:
             self.line_cost_nozz.setText("938")
             msg = QMessageBox()
@@ -1192,7 +1201,7 @@ class MainWindow(QMainWindow):
     def checkHeatNozz(self):
         var = float(self.line_heat_nozz.text())
         if var > 0.0:
-            main.default.material_list[0].heat_cap = var;
+            self.default.material_list[0].heat_cap = var;
         else:
             self.line_heat_nozz.setText("145")
             msg = QMessageBox()
@@ -1203,7 +1212,7 @@ class MainWindow(QMainWindow):
     def checkUltNozz(self):
         var = float(self.line_ult_nozz.text())
         if var > 0.0:
-            main.default.material_list[0].ulstress = var;
+            self.default.material_list[0].ulstress = var;
         else:
             self.line_ult_nozz.setText("2500e6")
             msg = QMessageBox()
@@ -1214,7 +1223,7 @@ class MainWindow(QMainWindow):
     def checkMuNozz(self):
         var = float(self.line_mu_nozz.text())
         if var > 0.0:
-            main.default.material_list[0].mu = var;
+            self.default.material_list[0].mu = var;
         else:
             self.line_mu_nozz.setText("0.625")
             msg = QMessageBox()
@@ -1225,7 +1234,7 @@ class MainWindow(QMainWindow):
     def checkAlfNozz(self):
         var = float(self.line_alf_nozz.text())
         if var > 0.0:
-            main.default.material_list[0].thr_exp = var;
+            self.default.material_list[0].thr_exp = var;
         else:
             self.line_cost_nozz.setText("7.25")
             msg = QMessageBox()
@@ -1236,7 +1245,7 @@ class MainWindow(QMainWindow):
     def checkDensCham(self):
         var = float(self.line_dens_cham.text())
         if var > 0.0:
-            main.default.coating_list[0].density = var;
+            self.default.coating_list[0].density = var;
         else:
             self.line_dens_cham.setText("21000")
             msg = QMessageBox()
@@ -1247,7 +1256,7 @@ class MainWindow(QMainWindow):
     def checkYieldCham(self):
         var = float(self.line_yield_cham.text())
         if var > 0.0:
-            main.default.coating_list[0].yieldstress_l = var;
+            self.default.coating_list[0].yieldstress_l = var;
         else:
             self.line_yield_cham.setText("2300e6")
             msg = QMessageBox()
@@ -1258,7 +1267,7 @@ class MainWindow(QMainWindow):
     def checkECham(self):
         var = float(self.line_E_cham.text())
         if var > 0.0:
-            main.default.coating_list[0].Emod = var;
+            self.default.coating_list[0].Emod = var;
         else:
             self.line_E_cham.setText("471e9")
             msg = QMessageBox()
@@ -1269,7 +1278,7 @@ class MainWindow(QMainWindow):
     def checkOpTCham(self):
         var = float(self.line_OpT_cham.text())
         if var > 0.0:
-            main.default.coating_list[0].OpTemp_u = var;
+            self.default.coating_list[0].OpTemp_u = var;
         else:
             self.line_OpT_cham.setText("2200")
             msg = QMessageBox()
@@ -1280,7 +1289,7 @@ class MainWindow(QMainWindow):
     def checkKCham(self):
         var = float(self.line_k_cham.text())
         if var > 0.0:
-            main.default.coating_list[0].k = var;
+            self.default.coating_list[0].k = var;
         else:
             self.line_k_cham.setText("48")
             msg = QMessageBox()
@@ -1291,7 +1300,7 @@ class MainWindow(QMainWindow):
     def checkCostCham(self):
         var = float(self.line_cost_cham.text())
         if var > 0.0:
-            main.default.coating_list[0].cost = var;
+            self.default.coating_list[0].cost = var;
         else:
             self.line_cost_cham.setText("938")
             msg = QMessageBox()
@@ -1302,7 +1311,7 @@ class MainWindow(QMainWindow):
     def checkHeatCham(self):
         var = float(self.line_heat_cham.text())
         if var > 0.0:
-            main.default.coating_list[0].heat_cap = var;
+            self.default.coating_list[0].heat_cap = var;
         else:
             self.line_heat_cham.setText("145")
             msg = QMessageBox()
@@ -1313,7 +1322,7 @@ class MainWindow(QMainWindow):
     def checkUltCham(self):
         var = float(self.line_ult_cham.text())
         if var > 0.0:
-            main.default.coating_list[0].ulstress = var;
+            self.default.coating_list[0].ulstress = var;
         else:
             self.line_ult_cham.setText("2500e6")
             msg = QMessageBox()
@@ -1324,7 +1333,7 @@ class MainWindow(QMainWindow):
     def checkMuCham(self):
         var = float(self.line_mu_cham.text())
         if var > 0.0:
-            main.default.coating_list[0].mu = var;
+            self.default.coating_list[0].mu = var;
         else:
             self.line_mu_cham.setText("0.625")
             msg = QMessageBox()
@@ -1335,7 +1344,7 @@ class MainWindow(QMainWindow):
     def checkAlfCham(self):
         var = float(self.line_alf_cham.text())
         if var > 0.0:
-            main.default.coating_list[0].thr_exp = var;
+            self.default.coating_list[0].thr_exp = var;
         else:
             self.line_cost_cham.setText("7.25")
             msg = QMessageBox()
@@ -1346,7 +1355,7 @@ class MainWindow(QMainWindow):
     def checkT0wall(self):
         var = float(self.line_T0_wall.text())
         if var > 0.0 and var < 1000:
-            main.default.T0 = var;
+            self.default.T0 = var;
         else:
             self.line_T0_wall.setText("298")
             msg = QMessageBox()
@@ -1357,7 +1366,7 @@ class MainWindow(QMainWindow):
     def checkCoatThick(self):
         var = float(self.line_coating_thick.text())
         if var >= 0.0 and var < 0.4:
-            main.default.default_coating_thickness = var;
+            self.default.default_coating_thickness = var;
         else:
             self.line_coating_thick.setText("0")
             msg = QMessageBox()
@@ -1368,7 +1377,7 @@ class MainWindow(QMainWindow):
     def checkDH(self):
         var = float(self.line_DH.text())
         if var > 0.0 and var < 0.3:
-            main.default.Dr = var;
+            self.default.Dr = var;
         else:
             self.line_DH.setText("0.01")
             msg = QMessageBox()
@@ -1379,7 +1388,7 @@ class MainWindow(QMainWindow):
     def checkInjDp(self):
         var = float(self.line_inj_dp.text())
         if var > 0.0 and var < 0.6:
-            main.default.dp_user = var;
+            self.default.dp_user = var;
         else:
             self.line_inj_dp.setText("0.2")
             msg = QMessageBox()
@@ -1390,7 +1399,7 @@ class MainWindow(QMainWindow):
     def checkLGG(self):
         var = float(self.line_lGG.text())
         if var > 0.0 and var < 0.9:
-            main.default.l_def = var;
+            self.default.l_def = var;
         else:
             self.line_lGG.setText("0.03")
             msg = QMessageBox()
@@ -1401,7 +1410,7 @@ class MainWindow(QMainWindow):
     def checkSFNozz(self):
         var = float(self.line_SF_nozz.text())
         if var > 1.0 and var < 20.0:
-            main.default.SF_noz = var;
+            self.default.SF_noz = var;
         else:
             self.line_SF_nozz.setText("1.3")
             msg = QMessageBox()
@@ -1412,7 +1421,7 @@ class MainWindow(QMainWindow):
     def checkConvRatMin(self):
         var = float(self.line_conv_rat_min.text())
         if var > 1.1 and var < float(self.line_conv_rat_max.text()):
-            main.default.ConvergenceRatio_l = var;
+            self.default.ConvergenceRatio_l = var;
         else:
             self.line_conv_rat_min.setText("1.5")
             msg = QMessageBox()
@@ -1423,7 +1432,7 @@ class MainWindow(QMainWindow):
     def checkConvRatMax(self):
         var = float(self.line_conv_rat_max.text())
         if var > float(self.line_conv_rat_min.text()) and var < 20.0:
-            main.default.ConvergenceRatio_h = var;
+            self.default.ConvergenceRatio_h = var;
         else:
             self.line_conv_rat_max.setText("4.0")
             msg = QMessageBox()
@@ -1434,7 +1443,7 @@ class MainWindow(QMainWindow):
     def checkCostTech(self):
         var = float(self.line_cost_tech.text())
         if var > 0.4 and var < 1.25:
-            main.default.tech_ready = var;
+            self.default.tech_ready = var;
         else:
             self.line_cost_tech.setText("0.5")
             msg = QMessageBox()
@@ -1445,7 +1454,7 @@ class MainWindow(QMainWindow):
     def checkCostLearn(self):
         var = float(self.line_cost_learn.text())
         if var > 0.0:
-            main.default.learn_factor = var;
+            self.default.learn_factor = var;
         else:
             self.line_cost_learn.setText("1.0")
             msg = QMessageBox()
@@ -1456,7 +1465,7 @@ class MainWindow(QMainWindow):
     def checkCostExp(self):
         var = float(self.line_cost_exp.text())
         if var > 0.0 and var < 10.0:
-            main.default.exp_factor = var;
+            self.default.exp_factor = var;
         else:
             self.line_cost_exp.setText("1.0")
             msg = QMessageBox()
@@ -1467,7 +1476,7 @@ class MainWindow(QMainWindow):
     def checkNCh(self):
         var = float(self.line_nchannels.text())
         if var >= 1 and var < 200:
-            main.default.n = var;
+            self.default.n = var;
         else:
             self.line_nchannels.setText("1")
             msg = QMessageBox()
@@ -1478,7 +1487,7 @@ class MainWindow(QMainWindow):
     def checkPer(self):
         var = float(self.line_cool_per.text())
         if var > 0.0 and var <= 100.0:
-            main.default.perimeter_percentage = var/100.0;
+            self.default.perimeter_percentage = var/100.0;
         else:
             self.line_cool_per.setText("100.0")
             msg = QMessageBox()
@@ -1489,7 +1498,7 @@ class MainWindow(QMainWindow):
     def checkReuses(self):
         var = float(self.line_reuses.text())
         if var > 0.0:
-            main.default.Reuses = var;
+            self.default.Reuses = var;
         else:
             self.line_reuses.setText("1.0")
             msg = QMessageBox()
@@ -1500,7 +1509,7 @@ class MainWindow(QMainWindow):
     def checkLossLine(self):
         var = float(self.line_lossLine.text())
         if var >= 0.0:
-            main.default.line_loss = var;
+            self.default.line_loss = var;
         else:
             self.line_lossLine.setText("10000.0")
             msg = QMessageBox()
