@@ -669,20 +669,20 @@ class EL:
             ]
 
 
-#Values used during tests, corresponding to Global or software input
-O_F_ = 6.04 #[-]
-Pa_ = 1.0e3 #[Pa] ambient pressure
-Tf_cool_ = 322.0 #[K] temperature after cooling
-dptcool_ = 711 #[Pa] pressure drop in cooling channel
-m_ = 456.0 #[kg/s] mass flow in the nozzle
-default = aux.Default(0)
-prop = aux.Propellant(0)
-
 #main Function
 if __name__ == '__main__':
     print('Loading...')
+    default = aux.Default(0)
     default.cycle_type = 2 # 0:EX (expander) - 1:CB (coolant bleed) - 2:GG (gas generator) - 3:SC (staged combustion) - 4:EL (electrical) - 5:PF (pressure fed)
 
+    #Values used during tests, corresponding to Global or software input
+    O_F_ = 6.04 #[-]
+    Pa_ = 1.0e3 #[Pa] ambient pressure
+    Tf_cool_ = 322.0 #[K] temperature after cooling
+    dptcool_ = 711 #[Pa] pressure drop in cooling channel
+    m_ = 456.0 #[kg/s] mass flow in the nozzle
+    default = aux.Default(0)
+    prop = aux.Propellant(0)
     print(TurboM(default, prop, O_F_, Pa_, Tf_cool_, dptcool_, m_))
     
     #counter = 0
