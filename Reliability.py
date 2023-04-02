@@ -107,7 +107,7 @@ def Reliability(default, t, Fnom, Fop, val):
 from datetime import date
 import csv 
 import Aux_classes as aux
-default = aux.Default(0)
+
 def Validation1(default):
     # cycles = default.cycles
     # lst = ['R']
