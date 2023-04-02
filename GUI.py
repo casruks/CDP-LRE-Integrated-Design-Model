@@ -23,7 +23,6 @@ class MplCanvas(FigureCanvasQTAgg):
 class Communicate(QtCore.QObject):
     finished = QtCore.pyqtSignal()
     progress = QtCore.pyqtSignal(int)
-    data = [aux.Data(0,0,0)]
 
     def __init__(self, dat : list[aux.Data], defa : aux.Default, prop : aux.Propellant):
         super(Communicate, self).__init__()
@@ -38,14 +37,16 @@ class Communicate(QtCore.QObject):
     
 
 class MainWindow(QMainWindow):
-    dat = [aux.Data(0, 0, 0)]
-    default = aux.Default(0)
-    prop = aux.Propellant(0)
     resized = QtCore.pyqtSignal(int)
 
     def __init__(self):
         super(MainWindow, self).__init__()
         loadUi("GUI.ui",self)
+
+        # Initialize classes
+        self.dat = [aux.Data(0, 0, 0)]
+        self.default = aux.Default(0)
+        self.prop = aux.Propellant(0)
 
         # Initialize Font
         screen = QApplication.primaryScreen()
@@ -126,12 +127,13 @@ class MainWindow(QMainWindow):
         self.line_inj_dp.editingFinished.connect(self.checkInjDp); self.checkInjDp(); self.line_inj_dp.setValidator(QtGui.QDoubleValidator())
 
         #Ignitors
-        self.igniter_changed(0)
+        self.igniter_changed(0);
         self.line_tign.editingFinished.connect(self.checktIgn);  self.checktIgn(); self.line_tign.setValidator(QtGui.QDoubleValidator())
         self.line_O_F_ign.editingFinished.connect(self.checkOFIgn);  self.checkOFIgn(); self.line_O_F_ign.setValidator(QtGui.QDoubleValidator())
         self.line_corr_ign.editingFinished.connect(self.checkCorrIgn);  self.checkCorrIgn(); self.line_corr_ign.setValidator(QtGui.QDoubleValidator())
 
         #Materials
+        self.nozz_mat_changed(0); self.cham_mat_changed(0);
         self.line_dens_nozz.editingFinished.connect(self.checkDensNozz); self.checkDensNozz(); self.line_dens_nozz.setValidator(QtGui.QDoubleValidator())
         self.line_yield_nozz.editingFinished.connect(self.checkYieldNozz); self.checkYieldNozz(); self.line_yield_nozz.setValidator(QtGui.QDoubleValidator())
         self.line_OpT_nozz.editingFinished.connect(self.checkOpTNozz); self.checkOpTNozz(); self.line_OpT_nozz.setValidator(QtGui.QDoubleValidator())
@@ -599,7 +601,7 @@ class MainWindow(QMainWindow):
             self.default.dp_user = float(self.line_inj_dp.text())
             self.line_inj_dp.setEnabled(True)
         else:
-            self.line_inj_dp.setDisabled(True)
+            self.line_inj_dp.setEnabled(False)
 
     def cycle_changed(self,i : int):
         cycles = ["EX", "CB", "GG", "SC", "EL", "PF"]

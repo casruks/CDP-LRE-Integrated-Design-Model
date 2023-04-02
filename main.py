@@ -450,7 +450,7 @@ def Main(d : list[aux.Data], default : aux.Default, prop : aux.Propellant, com :
     return errors_nz1,errors_nz2,er_comb,error_t,er_inj,er_ign,0,error_mass,error_cost,warnings_nz1,warnings_nz2,wr_comb,0,wr_inj,wr_ign,0,warning_mass,warning_cost, wr_rel
 
 if __name__ == '__main__':
-    Main(aux.Data(15000,10,1000), aux.Default(0), aux.Propellant(0))
+    Main([aux.Data(15000,10,1000)], aux.Default(0), aux.Propellant(0))
 
 
 
