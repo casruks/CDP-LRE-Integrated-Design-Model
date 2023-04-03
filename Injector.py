@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import Aux_classes as aux
+import math as math
 
 def injector1(default, propellant, p_c, m, OF):
     
@@ -119,7 +120,7 @@ def injector1(default, propellant, p_c, m, OF):
     else:
         wr = wr&(~(1<<1))
     print('here', dp/p_c)
-    return v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, A_est, er, wr 
+    return v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, math.ceil(n_ox), math.ceil(n_f), A_est, er, wr 
            
 def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
     '''
