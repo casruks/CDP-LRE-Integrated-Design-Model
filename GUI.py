@@ -576,11 +576,11 @@ class MainWindow(QMainWindow):
 
     #Export CSV
     def exportCSV(self):
-        filename = "Export_" + datetime.now().strftime("%H_%M_%S") + ".csv"
-        for data in self.dat:
-            members = [attr for attr in dir(data) if not callable(getattr(data, attr)) and not attr.startswith("__")]
-            with open(filename, 'w', newline='') as file:
-                writer = csv.writer(file)
+        filename = "Export_" + datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + ".csv"
+        with open(filename, 'w', newline='') as file:
+            writer = csv.writer(file)
+            for data in self.dat[0:-1]:
+                members = [attr for attr in dir(data) if not callable(getattr(data, attr)) and not attr.startswith("__")]
                 writer.writerow(members)
                 writer.writerow([getattr(data, attr) for attr in members])
 
