@@ -70,7 +70,7 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
 
         add_new_oxidizer('NTO',card_str)
 
-    ispObj = CEA_Obj( oxName=Ox, fuelName=Fuel,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise',thermal_cond_units='W/cm-degC')
+    ispObj = CEA_Obj( oxName=Ox, fuelName=Fuel,cstar_units='m/s',pressure_units='bar',temperature_units='K',isp_units='sec',density_units='kg/m^3',specific_heat_units='J/kg-K',viscosity_units='poise',thermal_cond_units='W/cm-degC', sonic_velocity_units='m/s', enthalpy_units='kJ/kg')
 
 
     # Sanitizing the inputs
@@ -313,10 +313,10 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
         errors=errors|(1<<6)
         return 0,0,0,0,0,0,0,0,0,0,0,0,errors,warnings
 
-    print('Ae =', Ae, 'm2') 
-    print('De =', (4*Ae/mth.pi)**0.5)
-    print('At=', At, 'm2')
-    print('Dt =', (4*At/mth.pi)**0.5)
+    #print('Ae =', Ae, 'm2') 
+    #print('De =', (4*Ae/mth.pi)**0.5)
+    #print('At=', At, 'm2')
+    #print('Dt =', (4*At/mth.pi)**0.5)
     return m_p,Tc,MR,At,eps,Isp[0]*(1-eps_loss),rho_c,cp_c,mu_c,k_c,Pr_c,c_star,errors,warnings
 
 

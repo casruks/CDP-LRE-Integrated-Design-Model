@@ -42,7 +42,7 @@ def injector1(default, propellant, p_c, m, OF):
 
     #Input sanitize
     if p_c<=0 or m<=0 or OF<=0:   #error 0...1, p_c, m or OF <0.
-        print('Error, p_c=', p_c,', m=', m,', OF=', OF)
+        #print('Error, p_c=', p_c,', m=', m,', OF=', OF)
         er = er|(1<<0)
         return 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, er, wr 
     
@@ -75,12 +75,12 @@ def injector1(default, propellant, p_c, m, OF):
     n_f = m_f / (rho_f * v_if * (np.pi/4) * d_f**2) 
     if n_f<=0 or n_ox<=0 or v_iox<=0 or v_if <=0:
         er = er|(1<<1)
-        print('Error, n_f =', n_f, 'n_ox =', n_ox, 'v_if =', v_if, 'v_iox =', v_iox)
+        #print('Error, n_f =', n_f, 'n_ox =', n_ox, 'v_if =', v_if, 'v_iox =', v_iox)
         return 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, er, wr
     
     if v_iox>100 or v_if>100:
         wr = wr|(1<<0)
-        print('Warning, v_if=,', v_if,' v_iox=,', v_iox)
+        #print('Warning, v_if=,', v_if,' v_iox=,', v_iox)
     else:
         wr = wr&(~(1<<0))
         
@@ -138,7 +138,7 @@ def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
     #Input sanitize
     if p_inj <= 0:
         er = er|(1<<2)
-        print('Error, p_inj=', p_inj)
+        #print('Error, p_inj=', p_inj)
         return 0, 0, 0, er, wr
 
     #Default variables
@@ -168,13 +168,13 @@ def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
     
         if eta_user < eta_s:
             wr = wr|(1<<2)
-            print('dp_ox <', eta_s,' p_c!')
+            #print('dp_ox <', eta_s,' p_c!')
         else:
             wr = wr&(~(1<<2))
 
         if (dp_f/p_c) < eta_s:
             wr = wr|(1<<3)
-            print('dp_f <', eta_s,' p_c!')
+            #print('dp_f <', eta_s,' p_c!')
         else:
             wr = wr&(~(1<<3))
 
