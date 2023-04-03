@@ -317,7 +317,7 @@ def Main(d : list[aux.Data], default : aux.Default, prop : aux.Propellant, com :
             p_new=p_new+4*d[-1].Pa;
         if er_inj2!=0:
             return errors_nz1,errors_nz2,er_comb,error_t,er_inj2,0,0,0,0,warnings_nz1,warnings_nz2,wr_comb,0,wr_inj2,0,0,0,0,0;
-        print("P_new: " + str(p_new))
+        #print("P_new: " + str(p_new))
               
     d[-1].Pc = p_new
     bool = 1 #Shows the combustor it is out of the loop in order to compute mass!

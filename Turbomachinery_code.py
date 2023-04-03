@@ -100,7 +100,7 @@ class EX:
 
     #Initialize values
     def __init__(self, DF : aux.Default, prop : aux.Propellant, O_F : float, Tf_cool : float, dptcool : float, m : float):
-        print("Expander cycle selected")
+        #print("Expander cycle selected")
         self.ptanko = DF.p_to
         self.ptankf = DF.ptf
         self.prop = prop
@@ -137,8 +137,8 @@ class EX:
             self.br = self.br | 1<<1
 
         #Debugging information
-        print([self.dptop, self.dptfp, self.pt1, self.pt2, self.ptinj])
-        print([self.Wop,self.Wfp,self.Wt])
+        #print([self.dptop, self.dptfp, self.pt1, self.pt2, self.ptinj])
+        #print([self.Wop,self.Wfp,self.Wt])
 
     #Optimize for maximum chamber pressure
     def opt(self,dptfp):
@@ -205,7 +205,7 @@ class SC:
 
     #Initialize values
     def __init__(self, DF : aux.Default, prop : aux.Propellant, O_F : float, p_a : float, Tf_cool : float, dptcool : float, m : float):
-        print("Staged Combustion cycle selected")
+        #print("Staged Combustion cycle selected")
         self.ptanko = DF.p_to
         self.ptankf = DF.ptf
         self.prop = prop
@@ -243,8 +243,8 @@ class SC:
             self.br = self.br | 1<<1
 
         #Debugging information
-        print([self.dptop, self.dptfp, self.pt1, self.pt2, self.ptinj])
-        print([self.Wop,self.Wfp,self.Wt])
+        #print([self.dptop, self.dptfp, self.pt1, self.pt2, self.ptinj])
+        #print([self.Wop,self.Wfp,self.Wt])
 
     #Optimize for maximum chamber pressure
     def opt(self,vars):
@@ -316,7 +316,7 @@ class CB:
 
     #Initialize values
     def __init__(self, DF : aux.Default, prop : aux.Propellant, O_F : float, p_a : float, Tf_cool : float, dptcool : float, m : float):
-        print("Coolant bleed cycle selected")
+        #print("Coolant bleed cycle selected")
         self.df = DF
         self.ptanko = DF.p_to
         self.ptankf = DF.ptf
@@ -359,8 +359,8 @@ class CB:
             self.br = self.br | 1<<1
 
         #Debugging information
-        print([self.dptop, self.dptfp, self.pt1, self.pt2, self.l])
-        print([self.Wop,self.Wfp,self.Wt])
+        #print([self.dptop, self.dptfp, self.pt1, self.pt2, self.l])
+        #print([self.Wop,self.Wfp,self.Wt])
 
     #Optimize for maximum chamber pressure
     def opt(self,vars):
@@ -438,7 +438,7 @@ class GG:
 
     #Initialize values
     def __init__(self, DF : aux.Default, prop : aux.Propellant, O_F : float, p_a : float, Tf_cool : float, dptcool : float, m : float):
-        print("Gas generator cycle selected")
+        #print("Gas generator cycle selected")
         self.ptanko = DF.p_to
         self.ptankf = DF.ptf
         self.prop = prop
@@ -488,8 +488,8 @@ class GG:
             self.br = self.br | 1<<1
 
         #Debugging information
-        print([self.dptop, self.dptfp, self.pt1, self.pt2, self.ptinj])
-        print([self.Wop,self.Wfp,self.Wt])
+        #print([self.dptop, self.dptfp, self.pt1, self.pt2, self.ptinj])
+        #print([self.Wop,self.Wfp,self.Wt])
 
     #Optimize for maximum chamber pressure
     def opt(self,vars):
@@ -565,7 +565,7 @@ class TO:
 
     #Initialize values
     def __init__(self, DF : aux.Default, prop : aux.Propellant, O_F : float, p_a : float, Tf_cool : float, dptcool : float, m : float):
-        print("Tap-off cycle not supported")
+        #print("Tap-off cycle not supported")
         self.ptanko = DF.p_to
         self.ptankf = DF.ptf
         self.prop = prop
@@ -618,7 +618,7 @@ class EL:
 
     #Initialize values
     def __init__(self, DF : aux.Default, prop : aux.Propellant, O_F : float, Tf_cool : float, dptcool : float, m : float):
-        print("Electrical motor cycle selected")
+        #print("Electrical motor cycle selected")
         self.ptanko = DF.p_to
         self.ptankf = DF.ptf
         self.prop = prop
@@ -656,8 +656,8 @@ class EL:
             self.br = self.br | 1<<4
 
         #Debugging information
-        print([self.dptop, self.dptfp, self.ptinj])
-        print([self.Wop,self.Wfp,self.wmotor])
+        #print([self.dptop, self.dptfp, self.ptinj])
+        #print([self.Wop,self.Wfp,self.wmotor])
 
     #Equations to be solved
     def equations(self,vars):
