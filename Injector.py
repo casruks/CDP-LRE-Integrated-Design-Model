@@ -118,6 +118,7 @@ def injector1(default, propellant, p_c, m, OF):
         #wr = wr|(1<<1)
     else:
         wr = wr&(~(1<<1))
+    print('here', dp/p_c)
     return v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, n_ox, n_f, A_est, er, wr 
            
 def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
@@ -149,23 +150,27 @@ def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
     rho_ox = propellant.o_dens
     rho_f = propellant.f_dens_l
     
-    p_c = p_inj / (1 + eta_s)
-    zeta = 1.0 #/ C_d**2.0
-    dp_ox = zeta * 0.5 * rho_ox*v_iox**2.0
-    dp_f = zeta * 0.5 * rho_f*v_if**2.0
-    
     InjType = default.InjType
     if InjType == 'like':
         eta_s = 0.1 #10-15% [Humble et al.]
+        p_c = p_inj / (1 + eta_s) 
     elif InjType == 'unlike':
         eta_s = 0.2 #20-25% [Humble et al.]
+        p_c = p_inj / (1 + eta_s) 
     elif InjType == 'pintle':
         eta_s = 0.1 # [Humble et al.], [DARE, Sparrow]
+        p_c = p_inj / (1 + eta_s) 
 
     #else: (technically)
     if default.dp_state == True:
-        eta_user = default.dp_user #user specified pressure drop    
+        eta_user = default.dp_user #user specified pressure drop  
+        p_c = p_inj / (1 + eta_user)  
     
+    zeta = 1.0 / C_d**2.0
+    dp_ox = zeta * 0.5 * rho_ox*v_iox**2.0
+    dp_f = zeta * 0.5 * rho_f*v_if**2.0
+    
+    if default.dp_state == True:  
         if eta_user < eta_s:
             wr = wr|(1<<2)
             #print('dp_ox <', eta_s,' p_c!')
@@ -178,4 +183,5 @@ def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
         else:
             wr = wr&(~(1<<3))
 
+    print('here1', dp_ox/p_c, dp_f/p_c)
     return p_c, dp_ox, dp_f, er, wr
