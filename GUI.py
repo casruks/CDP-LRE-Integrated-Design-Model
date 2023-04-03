@@ -292,6 +292,8 @@ class MainWindow(QMainWindow):
                 msg.setText("Error in injectors - The injection velocities or amount of required orifices are smaller than 0.")
             if (err_inj & (1<<2)):
                 msg.setText("Error in injectors - The injection pressure is given lower than 0.")
+            if (err_inj & (1<<3)):
+                msg.setText("Error in injectors - The chamber pressure is less than 2 times the ambient pressure.")
 
             #Igniter
 

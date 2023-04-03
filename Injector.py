@@ -21,6 +21,7 @@ def injector1(default, propellant, p_c, m, OF):
         #Errors:
         #01 - pc, m, or OF is less than or equal to zero.
         #02 - v_iox, v_if, n_ox or n_f is less than or equal to zero.
+        #03 - pc is less than 2*p_ambient.
         #Warnings:
         #01 - Injection velocities are > 100 m/s.
         #02 - Droplet size of fuel or oxidizer droplet > 200 *10^{-6} m.
@@ -119,10 +120,9 @@ def injector1(default, propellant, p_c, m, OF):
         #wr = wr|(1<<1)
     else:
         wr = wr&(~(1<<1))
-    print('here', dp/p_c)
     return v_iox, v_if, D_f, D_ox, dp, eta_s, m_ox, m_f, math.ceil(n_ox), math.ceil(n_f), A_est, er, wr 
            
-def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
+def injector2(default, propellant, v_iox, v_if, p_inj, eta_s, p_amb):
     '''
     Computes chamber pressure after injector.
     
@@ -167,6 +167,10 @@ def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
         eta_user = default.dp_user #user specified pressure drop  
         p_c = p_inj / (1 + eta_user)  
     
+    if p_c < 2*p_amb:
+        er = er|(1<<3)
+        return 0, 0, 0, er, wr
+
     zeta = 1.0 / C_d**2.0
     dp_ox = zeta * 0.5 * rho_ox*v_iox**2.0
     dp_f = zeta * 0.5 * rho_f*v_if**2.0
@@ -184,5 +188,4 @@ def injector2(default, propellant, v_iox, v_if, p_inj, eta_s):
         else:
             wr = wr&(~(1<<3))
 
-    print('here1', dp_ox/p_c, dp_f/p_c)
     return p_c, dp_ox, dp_f, er, wr
