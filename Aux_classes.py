@@ -45,6 +45,7 @@ class Default:
     noz_res=150 # Number of points in the discretization of the whole nozzle (Nozzle_2) LIMIT: >0
     n_cool=90 # Number of points used for cooling properties in the divergent part of the nozzle (Nozzle_2) LIMIT: >0
     SF_noz=1.3 # Safety factor for nozzle thickness
+    max_it_tool=20 # Max iterations the tool is allowed to do
 
     #Turbomachinery
     cycle_type = 0 # 0:EX (expander) - 1:CB (coolant bleed) - 2:GG (gas generator) - 3:SC (staged combustion) - 4:EL (electrical) - 5:PF (pressure fed)

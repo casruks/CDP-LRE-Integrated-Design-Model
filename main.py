@@ -313,6 +313,9 @@ def Main(d : list[aux.Data], default : aux.Default, prop : aux.Propellant, com :
         #Compute Injector (2)
         p_new, dp_ox, dp_f, er_inj2, wr_inj2 = Inj.injector2(default, prop, d[-1].v_iox, d[-1].v_if, d[-1].ptinj, d[-1].eta_s, d[-1].Pa)
 
+        it=it+1
+        if it>default.max_it_tool:
+            break
         if p_new/d[-1].Pa<4:
             p_new=p_new+4*d[-1].Pa;
         if er_inj2!=0:
