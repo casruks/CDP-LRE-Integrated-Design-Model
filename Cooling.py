@@ -410,7 +410,7 @@ class RegenerativeCool:
         local_f = scipy.optimize.fsolve(
             self.auxiliary_calculation_f_for_pressureloss, 1, args=(Dr, local_Re)
         )
-        delta_p = local_f * m_flow_fuel**2 / (2 * self.Prop.f_dens_l) * L / Dr
+        delta_p = local_f * m_flow_fuel**2 / (2 * self.Prop.f_dens_g) * L / Dr
         return delta_p
 
     def Inicialise(
@@ -569,11 +569,11 @@ def check_positive_args(*args):
     for arg in args:
         if isinstance(arg, (int, float, np.int32, np.generic)):
             if arg < 0:
-                #print("All numerical arguments must be positive")
+                # print("All numerical arguments must be positive")
                 return False
         elif isinstance(arg, (list, tuple, np.ndarray)):
             if any(x < 0 for x in arg):
-                #print("All elements of numerical arguments must be positive")
+                # print("All elements of numerical arguments must be positive")
                 return False
         else:
             raise ValueError("Unsupported argument type: {type(arg)._name_}")
@@ -608,7 +608,7 @@ def thermal_stress(
         stress_main = (
             delta_T * main_material.thr_exp * main_material.Emod / (2 * (1 - v))
         )
-        #print("stress main: ", stress_main)
+        # print("stress main: ", stress_main)
 
         stress_coating = 0
         return stress_main, stress_coating
@@ -650,7 +650,7 @@ def outputs(
         np.max((Tw_wall_nozzle_calculated + T_outer_wall_nozzle) / 2)
         - Aux_classes.Default.T0,
     )
-    #print("DeltaT: ", delta_T)
+    # print("DeltaT: ", delta_T)
     if check_positive_args(delta_T) == False:
         err = err | (1 << 12)
 
