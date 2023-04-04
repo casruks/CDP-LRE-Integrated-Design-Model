@@ -90,10 +90,12 @@ def Mass(Pc, material_N, material_V, arear, rt, mprop, FS, cycle, x, R, t, O_pro
 
     if cycle == 3:
         reference = SSME
-    elif cycle == 2:
-        reference == LE5
+    elif cycle == 2 and mprop<200:
+        reference = LE5
+    elif cycle == 2 and mprop>=200:
+        reference = SSME
     else:
-        reference == RL10
+        reference = RL10
 
     #Warnings:
     for i in range(len(t)):
