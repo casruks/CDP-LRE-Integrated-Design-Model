@@ -37,6 +37,9 @@ def injector1(default, propellant, p_c, m, OF):
     p_center = default.p_center     # 1
     p_j = default.p_j               # 1
     InjTypes = default.InjTypes     # ['like', 'unlike', 'pintle']
+    mu_wax = default.mu_wax         # [lbm/(ft-s)], 1 lbm/(ft-s) = 1.4881639 Pa.s
+    sig_wax = default.sig_wax       # [dynes/cm], 1 dyn/cm = 1e-7 N/m     
+    rho_wax = default.rho_wax       # [lbm/ft3], 1 lbm/ft3 = 16.0185 kg/m3
     
     #Propellant densities
     rho_ox = propellant.o_dens
@@ -85,10 +88,6 @@ def injector1(default, propellant, p_c, m, OF):
         #print('Warning, v_if=,', v_if,' v_iox=,', v_iox)
     else:
         wr = wr&(~(1<<0))
-        
-    mu_wax = 2.69e-3        # [lbm/(ft-s)], 1 lbm/(ft-s) = 1.4881639 Pa.s
-    sig_wax = 17.0          # [dynes/cm], 1 dyn/cm = 1e-7 N/m     
-    rho_wax = 47.7          # [lbm/ft3], 1 lbm/ft3 = 16.0185 kg/m3
     
     if InjType == 'like':                
         K_prop = ((mu_prop*sig_prop/rho_prop)/(mu_wax*sig_wax/rho_wax))**0.25 # https://ntrs.nasa.gov/citations/19760023196     
