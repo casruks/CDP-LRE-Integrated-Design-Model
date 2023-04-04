@@ -170,15 +170,12 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
 
     while v_eff<0 or variation>toll_F_obj:
 
-        eps_max=Ae_max/At # Maximum expansion ratio with this throat area
-
-        if eps_max>eps_m:
-            eps_max=eps_m;
+        eps_max=Ae_max/At # Maximum expansion ratio with this throat are
         
         Pratio_max=ispObj.get_PcOvPe(Pc=Pc,MR=MR,eps=eps_max,frozen=frozen_state,frozenAtThroat=frozen_state)
         Pe_max=Pc/Pratio_max
 
-        if Pe_max>Pamb or eps_max==eps_m:
+        if Pe_max>Pamb:
             difference=0.001
             Pe=Pe_max
             Ae=At*eps_max; #In this case the maximum exit area cannot reach adapted conditions and we will simply take that
@@ -209,6 +206,10 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
                 Pe=Pe_1;
             
         eps_actual=Ae/At;
+        
+        if eps_actual>eps_m:
+            eps_actual=eps_m
+            Pe=ispObj.get_PcOvPe(Pc=Pc,MR=MR,eps=eps_actual,frozen=frozen_state,frozenAtThroat=frozen_state)
         
         # Divergence losses in case of a bell nozzle:
         if Nozzle_type==1:
@@ -318,6 +319,10 @@ def Nozzle_loop_1(Pc,F_tar,Pamb,Propellant,Default,Nozzle_type):
     #print('At=', At, 'm2')
     #print('Dt =', (4*At/mth.pi)**0.5)
     return m_p,Tc,MR,At,eps,Isp[0]*(1-eps_loss),rho_c,cp_c,mu_c,k_c,Pr_c,c_star,errors,warnings
+
+
+
+
 
 
 
