@@ -428,8 +428,8 @@ def Main(d : list[aux.Data], default : aux.Default, prop : aux.Propellant, com :
     
     ligament = aux.Default.cooling_thickness*(0.5)
     P_n = aux.default.perimeter_percentage/aux.default.n
-    l = 2*mth.pi()*P_n
-    w = 2*mth.pi()*(1-P_n)
+    l = 2*mth.pi()*y_noz.min*P_n
+    w = 2*mth.pi()*y_noz.min*(1-P_n)
     Life, Life_error, Life_warning = Ms.Life(aux.Default.noz_mat_select, maximum_thermal_stress, max_temperature_inner, max_temperature_outer, ligament, l, w, p_new )
     d[-1].Life=Life
     error_cost=error_cost|Life_error
