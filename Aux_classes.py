@@ -69,6 +69,7 @@ class Default:
     ConvergenceRatio_l = 1.5 #Minimum acceptable Convergence ratio
     ConvergenceRatio_h = 3.5 #Maximum acceptable Convergence ratio
     factor = 0.3  # this is the factor that correlates initial droplet volume to final droplet volume. final droplet Volume = initial droplet volume * factor
+    cct = 0.005
 
     # Cooling
     Dr = 0.01  # [m] hydralic diameter of the coolant channel

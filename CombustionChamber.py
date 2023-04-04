@@ -266,8 +266,8 @@ def CombustionChamber (Pc,At,Propellant,Material,default,velocity_f,velocity_ox,
             #"Lstar to " + str(lstar))
 
     Thickness = Pc * Rchamber * Safety / Material.yieldstress_l
-    if(Thickness<0.005):
-        Thickness=0.005
+    if(Thickness<default.cct):
+        Thickness=default.cct
     if bool == 1:
         kloads = default.kloads
         Mass = kloads *(1/(LengthChamber/dchamber)+2)*Material.density*Thickness*LengthChamber*Rchamber*3.14 #Safety/Material.yieldstress_l*Vchamber*Pc
