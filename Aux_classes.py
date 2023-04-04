@@ -282,7 +282,7 @@ class Propellant:
             163.08,
             0,
         ]  # for shomate equation
-        self.heatingvalue = 29.67*10**3  # for the fuel only!
+        self.heatingvalue = 29.67*10**6  # for the fuel only!
         self.f_M = 46.07e-3
         self.enthalpy_298_f = 5.01766*10**6#J/kh
         self.Frozen_state=1
