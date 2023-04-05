@@ -185,15 +185,17 @@ def RhoProp(O_prop, F_prop, OF):
         return rho_prop
 
 ##Life: Prediction of low cycle fatigue life of the thrust chamber
-def Life(material, sigma_T, Twg, Twc, H, l, w, p):
+def Life(material, sigma_T, Twg, Twc, H, p, y_noz,P_n,channel_number):
     
     Cost_error = 0
     Cost_warning = 0
 
     DT = Twg - Twc #Twg = Temperature on the gas side of the chamber, Twc = Temperature on the coolant channel wall temperature
+    l = (2*mth.pi*min(y_noz)*P_n)/channel_number
+    w = (2*mth.pi*min(y_noz)*(1-P_n))/channel_number
 
     if Twg < Twc:
-        Cost_error == Cost_error|(1<<1)
+        Cost_error = Cost_error|(1<<1)
         return 0,Cost_error,Cost_warning
     
     #Inelastic Strain:
@@ -207,31 +209,38 @@ def Life(material, sigma_T, Twg, Twc, H, l, w, p):
     ep_1 = (ep_pl1+ep_pl2)
 
     if ep_pl2 < 0:
-        Cost_error == Cost_error|(1<<3)
+        Cost_error = Cost_error|(1<<3)
         return 0, Cost_error, Cost_warning
 
     #Deflection:
-    def1 = 2*((H/ep_1) - mth.sqrt(((H/ep_1)**2) - ((l/4)**2)))
+    if ((H/ep_1)**2 - (l/4)**2) < 0:
+        def1 = 0
+        Cost_warning = Cost_warning|(1<<3)
+    else:
+        def1 = 2*((H/ep_1) - mth.sqrt(((H/ep_1)**2) - ((l/4)**2)))
     def2 = (ep_1*p*l**2)/(4*H*material.yieldstress_l)
     def_tot = def1+def2
 
     if def1 < 0:
-        Cost_error == Cost_error|(1<<4)
+        Cost_error = Cost_error|(1<<4)
         return 0, Cost_error, Cost_warning
     
     if def2 < 0:
-        Cost_error == Cost_error|(1<<5)
+        Cost_error = Cost_error|(1<<5)
         return 0, Cost_error, Cost_warning
     
     #Critical Thickness:
-    q = material.ulstress/material.yieldstress_l
+    q = material.ultstress/material.yieldstress_l
     tcr = 2*H*(1-mth.e**(-q))
 
     # #Instability life:
-    Nf = (tcr*(l+w))/(def_tot*w) 
+    if (tcr*(l+w))/(def_tot) < 1:
+        Nf = 1
+    else:
+        Nf = (tcr*(l+w))/(def_tot) 
     
     if Nf < 0:
-        Cost_error == Cost_error|(1<<6)
+        Cost_error = Cost_error|(1<<6)
         return 0, Cost_error, Cost_warning
     
     return Nf, Cost_error, Cost_warning
