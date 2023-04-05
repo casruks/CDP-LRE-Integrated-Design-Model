@@ -185,7 +185,7 @@ def RhoProp(O_prop, F_prop, OF):
         return rho_prop
 
 ##Life: Prediction of low cycle fatigue life of the thrust chamber
-def Life(material, sigma_T, Twg, Twc, H, p, y_noz,P_n,channel_number):
+def Life(material, sigma_T, Twg, Twc, t_noz, p, y_noz,P_n,channel_number):
     
     Cost_error = 0
     Cost_warning = 0
@@ -193,6 +193,11 @@ def Life(material, sigma_T, Twg, Twc, H, p, y_noz,P_n,channel_number):
     DT = Twg - Twc #Twg = Temperature on the gas side of the chamber, Twc = Temperature on the coolant channel wall temperature
     l = (2*mth.pi*min(y_noz)*P_n)/channel_number
     w = (2*mth.pi*min(y_noz)*(1-P_n))/channel_number
+    
+    if t_noz < 0.001:
+        t_noz = 0.001
+    
+    H = t_noz/6
 
     if Twg < Twc:
         Cost_error = Cost_error|(1<<1)
