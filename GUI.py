@@ -663,15 +663,18 @@ class MainWindow(QMainWindow):
             self.combo_hypergolic.show()
             self.combo_torch.hide()
         else:
-            self.default.type = "10"
+            self.default.type = "20"
             self.combo_hypergolic.hide()
             self.combo_torch.hide()
 
     def torch_changed(self, i : int):
-        self.default.type = "0" + str(i)
+        if(i==0):
+            self.default.type = "00"
+        else:
+            self.default.type = "1" + str(i-1)
 
     def hypergolic_changed(self, i : int):
-        self.default.type = "2" + str(i)
+        self.default.type = "3" + str(i)
 
     def nozz_mat_changed(self, i: int):
         self.default.noz_mat_select = self.default.material_list[i]
